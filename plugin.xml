@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension
+	      point="net.jazz.ajax.webBundles">
+	</extension>
+	<extension
+	      point="com.ibm.team.workitem.web.editorToolbarAction">
+	      <action
+             action="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.RunConnector"
+             iconContext="com.siemens.bt.jazz.workitemeditor.rtcGitConnector"
+             iconDisabledUri="images/GitIcon.png"
+             iconUri="images/GitIcon.png"
+             id="runconnector.action"
+             isMenuAction="true"
+             label="Connect with Git">
+	      </action>
+	</extension>
+
+	<!-- bind javascript modules to css files for BT AddOns -->
+	<extension point="net.jazz.ajax.cssBindingSets">
+		<cssBindingSet id="com.siemens.bt.jazz.workitemeditor.rtcGitConnector" path="">
+            <!-- bindings used in all modules -->
+        	<cssBinding jsModule="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.RunConnector">
+                <cssModule path="/widget/css/RtcGitConnector.css"/>
+            </cssBinding>
+        </cssBindingSet>
+    </extension>
+</plugin>
