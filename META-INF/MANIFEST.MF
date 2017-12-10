@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Web
+Bundle-SymbolicName: com.siemens.bt.jazz.workitemeditor.rtcGitConnector;singleton:=true
+Bundle-Version: 1.0.0.qualifier
