@@ -2,7 +2,7 @@ define([
     "dojo/_base/declare"
 ], function(declare) {
     var cssSelector = "img.button-img";
-    return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.RunConnector",
+    return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.RunConnector",
         com.ibm.team.workitem.web.ui2.internal.action.AbstractAction, {
             // summary:
             //  Default constructor called when the WorkItemEditor is instantiated.

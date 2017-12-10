@@ -7,7 +7,7 @@
 	<extension
 	      point="com.ibm.team.workitem.web.editorToolbarAction">
 	      <action
-             action="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.RunConnector"
+             action="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.RunConnector"
              iconContext="com.siemens.bt.jazz.workitemeditor.rtcGitConnector"
              iconDisabledUri="images/icons/git-icon.png"
              iconUri="images/icons/git-icon.png"
@@ -21,8 +21,8 @@
 	<extension point="net.jazz.ajax.cssBindingSets">
 		<cssBindingSet id="com.siemens.bt.jazz.workitemeditor.rtcGitConnector" path="">
             <!-- bindings used in all modules -->
-        	<cssBinding jsModule="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.RunConnector">
-                <cssModule path="/widget/css/RtcGitConnector.css"/>
+        	<cssBinding jsModule="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.RunConnector">
+                <cssModule path="/ui/widget/css/RtcGitConnector.css"/>
             </cssBinding>
         </cssBindingSet>
     </extension>
