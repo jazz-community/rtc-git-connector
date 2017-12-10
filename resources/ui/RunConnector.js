@@ -1,6 +1,7 @@
 define([
-    "dojo/_base/declare"
-], function(declare) {
+    "dojo/_base/declare",
+    "./widget/RtcGitConnector"
+], function(declare, RtcGitConnector) {
     var cssSelector = "img.button-img";
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.RunConnector",
         com.ibm.team.workitem.web.ui2.internal.action.AbstractAction, {
@@ -24,7 +25,6 @@ define([
             //      workingCopy: {}
             //  }
             constructor: function(params) {
-                console.log("Constructor params: ", params);
             },
 
             isEnabled: function(params) {
@@ -37,8 +37,8 @@ define([
             //  params: {actionSpec, workingCopy}
             //      Same as the params passed to the constructor.
             run: function(params) {
-                console.log("Run params: ", params);
-                alert("Run Widget");
+                var workingCopy = params.workingCopy || params;
+                new RtcGitConnector(workingCopy);
             }
     });
 });
