@@ -17,11 +17,19 @@
     width: 100%;
 }
 
+.rtcGitConnectorSelectList .dijitArrowButton {
+    width: 1rem;
+}
+
 .rtcGitConnectorSelectListSpan {
     display: block;
     width: 100%;
     text-align: left;
     padding: .2rem;
+}
+
+.dijitSelectSelectedOption .rtcGitConnectorSelectListSpan {
+    background-color: #cfe5fa;
 }
 
 .rtcGitConnectorSelectListFirstLine {
