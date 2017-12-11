@@ -1,17 +1,33 @@
 define([
     "dojo/_base/declare",
-    "dijit/_WidgetBase",
+    "./_AbstractActionWidget",
     "dijit/_TemplatedMixin",
-    "dojo/text!./templates/RtcGitConnector.html",
-    "dijit/Dialog"
-], function(declare, _WidgetBase, _TemplateMixin, template) {
-    return declare([_WidgetBase, _TemplateMixin], {
+    "dijit/Dialog",
+    "dojo/text!./templates/RtcGitConnector.html"
+], function (declare, _AbstractActionWidget, _TemplateMixin, Dialog, template) {
+    return declare([_AbstractActionWidget, _TemplateMixin], {
         templateString: template,
 
-        constructor: function(params) {
-            this.workItem = params;
-            mainDialog.show();
-            console.log("templateString: ", this.templateString);
+        constructor: function () {
+            console.log("constructor templateString: ", this.templateString);
+        },
+
+        startup: function () {
+            this.showDialog();
+        },
+
+        showDialog: function () {
+            console.log("show templateString: ", this.templateString);
+
+            this.mainDialog = new Dialog({
+                title: "Test Dialog",
+                content: this.templateString,
+                onCancel: function() {
+                    this.destroyRecursive(false);
+                }
+            });
+            this.mainDialog.startup();
+            this.mainDialog.show();
         }
     });
 });
