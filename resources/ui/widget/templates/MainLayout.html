@@ -4,26 +4,25 @@
     My Button
     </div>
 
-    <div data-dojo-type="dijit/Dialog" data-dojo-id="myDialog" title="Name and Address">
+    <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="myDialog" title="Name and Address">
         <table class="dijitDialogPaneContentArea">
             <tr>
                 <td><label for="name">Name:</label></td>
-                <td><input data-dojo-type="dijit/form/TextBox" name="name" id="name"></td>
+                <td><input data-dojo-type="dijit/form/TextBox" name="name" data-dojo-attach-point="nameInput"></td>
             </tr>
             <tr>
                 <td><label for="address">Address:</label></td>
-                <td><input data-dojo-type="dijit/form/TextBox" name="address" id="address"></td>
+                <td><input data-dojo-type="dijit/form/TextBox" name="address" data-dojo-attach-point="addressInput"></td>
             </tr>
         </table>
 
         <div class="dijitDialogPaneActionBar">
-            <button data-dojo-type="dijit/form/Button" type="submit" id="ok">OK</button>
-            <button data-dojo-type="dijit/form/Button" type="button" onClick="myDialog.onCancel();"
-                    id="cancel">Cancel</button>
+            <button data-dojo-type="dijit/form/Button" type="button" data-dojo-attach-point="submitDialogButton">OK</button>
+            <button data-dojo-type="dijit/form/Button" type="button" data-dojo-attach-point="cancelDialogButton">Cancel</button>
         </div>
     </div>
 
-    <button data-dojo-type="dijit/form/Button" type="button" onClick="myDialog.show();">
+    <button data-dojo-attach-point="showDialogButton" data-dojo-type="dijit/form/Button" type="button">
         Show me!
     </button>
 </div>

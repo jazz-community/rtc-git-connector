@@ -17,6 +17,23 @@ define([
 
         startup: function () {
             this.buttonWidget.setDisabled(true);
+            this.setOnClickHandlers();
+        },
+
+        setOnClickHandlers: function () {
+            var self = this;
+
+            this.showDialogButton.onClick = function (event) {
+                self.myDialog.show();
+            };
+
+            this.submitDialogButton.onClick = function (event) {
+                self.myDialog.hide();
+            };
+
+            this.cancelDialogButton.onClick = function (event) {
+                self.myDialog.hide();
+            };
         }
     });
 });
