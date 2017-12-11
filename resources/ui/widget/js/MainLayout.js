@@ -3,9 +3,12 @@ define([
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
+    "dijit/Dialog",
+    "dijit/form/TextBox",
     "dijit/form/Button",
     "dojo/text!../templates/MainLayout.html"
-], function (declare, _AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin, Dialog, template) {
+], function (declare, _AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin,
+    Dialog, TextBox, Button, template) {
     return declare([_AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
@@ -14,7 +17,6 @@ define([
 
         startup: function () {
             this.buttonWidget.setDisabled(true);
-            console.log("buttonWidget: ", this.buttonWidget);
         }
     });
 });
