@@ -19,6 +19,7 @@ define([
         },
 
         startup: function () {
+            this.selectRegisteredGitRepository.maxHeight = -1;
 
             // Just for testing...
             this.buttonWidget.setDisabled(true);
