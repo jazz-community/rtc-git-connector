@@ -5,26 +5,19 @@ define([
     "./js/MainLayout",
     "./_AbstractActionWidget",
     "dijit/_TemplatedMixin",
+    "dijit/_WidgetsInTemplateMixin",
     "dijit/Dialog",
     "dojo/text!./templates/RtcGitConnector.html"
-], function (declare, dom, domStyle, MainLayout, _AbstractActionWidget, _TemplateMixin, Dialog, template) {
-    return declare([_AbstractActionWidget, _TemplateMixin], {
+], function (declare, dom, domStyle, MainLayout, _AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin, Dialog, template) {
+    return declare([_AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
         constructor: function () {
         },
 
         startup: function () {
-            this.makeMainDialog();
+            this.mainDialog.startup();
             this.mainDialog.show();
-        },
-
-        makeMainDialog: function () {
-            this.mainDialog = new Dialog({
-                title: "Connect with Git",
-                content: new MainLayout(),
-                style: "background-color: white;"
-            });
         }
     });
 });
