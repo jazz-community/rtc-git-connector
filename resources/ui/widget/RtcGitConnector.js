@@ -15,22 +15,16 @@ define([
         },
 
         startup: function () {
-            this.showDialog();
+            this.makeMainDialog();
+            this.mainDialog.show();
         },
 
-        showDialog: function () {
+        makeMainDialog: function () {
             this.mainDialog = new Dialog({
                 title: "Connect with Git",
-                content: this.templateString,
+                content: new MainLayout(),
                 style: "background-color: white;"
             });
-            this.mainDialog.startup();
-
-            var rtcGitConnectorDialog = dom.byId("rtcGitConnectorDialog");
-            var mainLayout = new MainLayout().placeAt(rtcGitConnectorDialog);
-            domStyle.set(rtcGitConnectorDialog, "display", "");
-
-            this.mainDialog.show();
         }
     });
 });
