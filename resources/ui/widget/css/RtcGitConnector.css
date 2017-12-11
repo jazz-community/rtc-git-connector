@@ -17,19 +17,19 @@
     width: 100%;
 }
 
-.rtcGitConnectorSelectList span {
+.rtcGitConnectorSelectListSpan {
     display: block;
     width: 100%;
     text-align: left;
     padding: .2rem;
 }
 
-.rtcGitConnectorSelectList .selectListFirstLine {
+.rtcGitConnectorSelectListFirstLine {
     font-size: 1rem;
     font-weight: bold;
 }
 
-.rtcGitConnectorSelectList .selectListSecondLine {
+.rtcGitConnectorSelectListSecondLine {
     font-size: 1rem;
     color: gray;
 }
