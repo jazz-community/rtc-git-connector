@@ -6,9 +6,10 @@ define([
     "dijit/Dialog",
     "dijit/form/TextBox",
     "dijit/form/Button",
+    "dijit/form/Select",
     "dojo/text!../templates/MainLayout.html"
 ], function (declare, _AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin,
-    Dialog, TextBox, Button, template) {
+    Dialog, TextBox, Button, Select, template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.mainLayout",
         [_AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin],
     {
@@ -18,6 +19,8 @@ define([
         },
 
         startup: function () {
+
+            // Just for testing...
             this.buttonWidget.setDisabled(true);
             this.setOnClickHandlers();
         },
