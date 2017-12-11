@@ -9,7 +9,9 @@ define([
     "dojo/text!../templates/MainLayout.html"
 ], function (declare, _AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, template) {
-    return declare("MainLayout", [_AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin], {
+    return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.mainLayout",
+        [_AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin],
+    {
         templateString: template,
 
         constructor: function () {
