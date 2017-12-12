@@ -1,16 +1,12 @@
 define([
     "dojo/_base/declare",
-    "dojo/store/Memory",
-    "dojo/store/Observable"
-], function (declare, Memory, Observable) {
+    "dojox/mvc/StatefulArray"
+], function (declare, StatefulArray) {
     return declare(null, {
-        registeredGitRepositoryStore: null,
+        registeredGitRepositories: null,
 
         constructor: function () {
-        },
-
-        createRegisteredGitRepositoryStore: function (data) {
-            this.registeredGitRepositoryStore = new Observable(new Memory({ idProperty: "key", data: data }));
+            this.registeredGitRepositories = new StatefulArray([]);
         }
     });
 });

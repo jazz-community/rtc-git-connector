@@ -22,24 +22,19 @@ define([
         },
 
         startup: function () {
+            this.watchDataStore();
+
             // Just for testing...
             this.setOnClickHandlers();
         },
 
-        createDataStore: function (registeredGitRepositories) {
-            this.mainDataStore.createRegisteredGitRepositoryStore(registeredGitRepositories);
-            this.observeDataStore();
-            console.log("create store done");
-            console.log("registeredGitRepositoryStore.data", this.mainDataStore.registeredGitRepositoryStore.data);
-        },
-
-        observeDataStore: function () {
+        watchDataStore: function () {
             var self = this;
 
-            this.mainDataStore.registeredGitRepositoryStore.query().observe(function () {
-                console.log("registeredGitRepositoryStore observe: ", self.mainDataStore.registeredGitRepositoryStore);
-                console.log("registeredGitRepositoryStore.data", self.mainDataStore.registeredGitRepositoryStore.data);
-                // set view store from main data store
+            this.mainDataStore.registeredGitRepositories.watchElements(function () {
+                console.log("watch registeredGitRepositories event");
+                console.log("registeredGitRepositories: ", self.mainDataStore.registeredGitRepositories);
+                // update view data
             });
         },
 
@@ -47,7 +42,7 @@ define([
             var self = this;
 
             this.buttonWidget.onClick = function (event) {
-                self.createDataStore([{
+                self.mainDataStore.registeredGitRepositories.push({
                     key: "123",
                     name: "Git Commit Picker",
                     url: "https://github.com/jazz-community/rtc-git-commit-picker"
@@ -61,7 +56,7 @@ define([
                     key: "789",
                     name: "rtc-create-child-item-plugin",
                     url: "https://github.com/jazz-community/rtc-create-child-item-plugin"
-                }]);
+                });
 
                 this.setDisabled(true);
             };
