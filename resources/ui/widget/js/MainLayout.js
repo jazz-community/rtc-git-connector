@@ -1,6 +1,7 @@
 define([
     "dojo/_base/declare",
     "./MainDataStore",
+    "./SelectRegisteredGitRepository",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
@@ -9,7 +10,7 @@ define([
     "dijit/form/Button",
     "dijit/form/Select",
     "dojo/text!../templates/MainLayout.html"
-], function (declare, MainDataStore, _WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin,
+], function (declare, MainDataStore, SelectRegisteredGitRepository, _WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, Select, template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.mainLayout",
         [_WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin],
@@ -22,21 +23,6 @@ define([
         },
 
         startup: function () {
-            var self = this;
-
-            this.selectRegisteredGitRepository.maxHeight = -1;
-            this.selectRegisteredGitRepository.onChange = function (value) {
-                if (this.options[0].value === "") {
-                    this.removeOption(this.options[0]);
-                }
-
-                self.mainDataStore.registeredGitRepositoryStore.put({ key: value });
-
-                console.log("onChange value: ", value);
-                console.log("onChange this: ", this);
-                console.log("registeredGitRepositoryStore: ", self.mainDataStore.registeredGitRepositoryStore);
-            }
-
             this.observeDataStore();
 
             // Just for testing...
