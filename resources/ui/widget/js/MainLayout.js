@@ -41,22 +41,24 @@ define([
         setOnClickHandlers: function () {
             var self = this;
 
+            var repositoriesFromSomewhere = [{
+                key: "123",
+                name: "Git Commit Picker",
+                url: "https://github.com/jazz-community/rtc-git-commit-picker"
+            },
+            {
+                key: "456",
+                name: "rtc-secure-user-property-store",
+                url: "https://github.com/jazz-community/rtc-secure-user-property-store"
+            },
+            {
+                key: "789",
+                name: "rtc-create-child-item-plugin",
+                url: "https://github.com/jazz-community/rtc-create-child-item-plugin"
+            }];
+
             this.buttonWidget.onClick = function (event) {
-                self.mainDataStore.registeredGitRepositories.push({
-                    key: "123",
-                    name: "Git Commit Picker",
-                    url: "https://github.com/jazz-community/rtc-git-commit-picker"
-                },
-                {
-                    key: "456",
-                    name: "rtc-secure-user-property-store",
-                    url: "https://github.com/jazz-community/rtc-secure-user-property-store"
-                },
-                {
-                    key: "789",
-                    name: "rtc-create-child-item-plugin",
-                    url: "https://github.com/jazz-community/rtc-create-child-item-plugin"
-                });
+                self.mainDataStore.registeredGitRepositories.push.apply(self.mainDataStore.registeredGitRepositories, repositoriesFromSomewhere);
 
                 this.setDisabled(true);
             };
