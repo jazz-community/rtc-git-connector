@@ -15,12 +15,12 @@ define([
         constructor: function () {
             this.selectListOptions = [{
                 value: "",
-                label: "Loading...",
+                label: this.createLabelString("&nbsp;", "Loading..."),
                 selected: true,
                 disabled: true
             }, {
                 value: "123",
-                label: "test"
+                label: this.createLabelString("Test repository name", "the url to the repository 1234 asdfg 234  asdf asdf")
             }];
         },
 
@@ -37,6 +37,11 @@ define([
                     this.removeOption(this.options[0]);
                 }
             }
+        },
+
+        createLabelString: function (firstLine, secondLine) {
+            return '<span class="rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine">' + firstLine + '</span>' +
+                    '<span class="rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine">' + secondLine + '</span>';
         }
     });
 });
