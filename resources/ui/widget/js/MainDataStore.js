@@ -7,7 +7,7 @@ define([
         registeredGitRepositoryStore: null,
 
         constructor: function () {
-            this.registeredGitRepositoryStore = new Observable(new Memory({ idProperty: "key", data: [] }));
+            this.registeredGitRepositoryStore = new Observable(new Memory({ idProperty: "key" }));
         }
     });
 });
