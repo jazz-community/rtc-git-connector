@@ -32,9 +32,7 @@ define([
             var self = this;
 
             this.mainDataStore.registeredGitRepositories.watchElements(function () {
-                console.log("watch registeredGitRepositories event");
-                console.log("registeredGitRepositories: ", self.mainDataStore.registeredGitRepositories);
-                // update view data
+                self.selectRegisteredGitRepository.setRegisteredGitRepositoriesAsListOptions(self.mainDataStore.registeredGitRepositories);
             });
         },
 
@@ -56,6 +54,10 @@ define([
                 name: "rtc-create-child-item-plugin",
                 url: "https://github.com/jazz-community/rtc-create-child-item-plugin"
             }];
+
+            repositoriesFromSomewhere.sort(function (a, b) {
+                return a.name.localeCompare(b.name);
+            });
 
             this.buttonWidget.onClick = function (event) {
                 self.mainDataStore.registeredGitRepositories.push.apply(self.mainDataStore.registeredGitRepositories, repositoriesFromSomewhere);
