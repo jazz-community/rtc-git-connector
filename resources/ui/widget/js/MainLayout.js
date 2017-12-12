@@ -20,6 +20,15 @@ define([
 
         startup: function () {
             this.selectRegisteredGitRepository.maxHeight = -1;
+            this.selectRegisteredGitRepository.onChange = function (value) {
+                if (this.options[0].value === "") {
+                    this.removeOption(this.options[0]);
+                }
+
+
+                console.log("onChange value: ", value);
+                console.log("onChange this: ", this);
+            }
 
             // Just for testing...
             this.buttonWidget.setDisabled(true);
