@@ -10,8 +10,18 @@ define([
         [_WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin],
     {
         templateString: template,
+        selectListOptions: null,
 
         constructor: function () {
+            this.selectListOptions = [{
+                value: "",
+                label: "Loading...",
+                selected: true,
+                disabled: true
+            }, {
+                value: "123",
+                label: "test"
+            }];
         },
 
         postCreate: function () {
@@ -19,6 +29,8 @@ define([
         },
 
         initializeSelectList: function () {
+            this.selectRegisteredGitRepository.set("options", this.selectListOptions);
+            this.selectRegisteredGitRepository.startup();
             this.selectRegisteredGitRepository.maxHeight = -1;
             this.selectRegisteredGitRepository.onChange = function (value) {
                 if (this.options[0].value === "") {
