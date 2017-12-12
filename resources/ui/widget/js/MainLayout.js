@@ -8,10 +8,10 @@ define([
     "dijit/form/Button",
     "dijit/form/Select",
     "dojo/text!../templates/MainLayout.html"
-], function (declare, _AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin,
+], function (declare, _WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, Select, template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.mainLayout",
-        [_AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin],
+        [_WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin],
     {
         templateString: template,
 
