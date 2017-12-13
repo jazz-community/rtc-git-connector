@@ -2,7 +2,6 @@ define([
     "dojo/_base/declare",
     "dojo/dom",
     "dojo/dom-style",
-    "dojo/topic",
     "./js/MainLayout",
     "./js/MainDataStore",
     "./_AbstractActionWidget",
@@ -11,7 +10,7 @@ define([
     "dijit/registry",
     "dijit/Dialog",
     "dojo/text!./templates/RtcGitConnector.html"
-], function (declare, dom, domStyle, topic,
+], function (declare, dom, domStyle,
     MainLayout, MainDataStore,
     _AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin,
     registry, Dialog, template) {
@@ -20,7 +19,6 @@ define([
         mainDataStore: null,
 
         constructor: function () {
-            console.log("MainDataStore", MainDataStore);
             this.mainDataStore = MainDataStore.getInstance();
             this.mainDataStore.workItem = this.workItem;
             this.mainDataStore.projectArea = this.workItem.object.attributes.projectArea;
@@ -30,7 +28,6 @@ define([
             this.setEventHandlers();
             this.mainDialog.startup();
             this.mainDialog.show();
-            topic.publish("rtcGitConnector/workItem", this.workItem);
         },
 
         setEventHandlers: function () {

@@ -1,7 +1,6 @@
 define([
     "dojo/_base/declare",
     "dojo/dom",
-    "dojo/topic",
     "./MainDataStore",
     "./SelectRegisteredGitRepository",
     "dijit/_WidgetBase",
@@ -11,7 +10,7 @@ define([
     "dijit/form/TextBox",
     "dijit/form/Button",
     "dojo/text!../templates/MainLayout.html"
-], function (declare, dom, topic,
+], function (declare, dom,
     MainDataStore, SelectRegisteredGitRepository,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, template) {
@@ -26,11 +25,6 @@ define([
         },
 
         startup: function () {
-            console.log("mainDataStore from startup", this.mainDataStore);
-            var handle = topic.subscribe("rtcGitConnector/workItem", function (workItem) {
-                console.log("got workItem", workItem);
-                handle.remove();
-            });
             this.watchDataStore();
             this.setEventHandlers();
         },
@@ -38,9 +32,8 @@ define([
         watchDataStore: function () {
             var self = this;
 
-            var handle = this.mainDataStore.registeredGitRepositories.watchElements(function () {
+            this.mainDataStore.registeredGitRepositories.watchElements(function () {
                 self.selectRegisteredGitRepository.setRegisteredGitRepositoriesAsListOptions(self.mainDataStore.registeredGitRepositories);
-                handle.unwatch(); // need to do this because the datastore instance is perssistant. it should be recreated together with the widget...
             });
 
             this.mainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
