@@ -38,6 +38,7 @@ define([
             var self = this;
 
             this.mainDataStore.registeredGitRepositories.watchElements(function () {
+                // fix this causing and exception when the widget is opened for the second time
                 self.selectRegisteredGitRepository.setRegisteredGitRepositoriesAsListOptions(self.mainDataStore.registeredGitRepositories);
             });
 
