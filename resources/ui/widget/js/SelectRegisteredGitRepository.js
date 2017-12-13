@@ -1,19 +1,25 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/array",
+    "./MainDataStore",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dijit/form/Select",
     "dojo/text!../templates/SelectRegisteredGitRepository.html"
-], function (declare, array, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, Select, template) {
+], function (declare, array,
+    MainDataStore,
+    _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
+    Select, template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectRegisteredGitRepository",
         [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],
     {
         templateString: template,
+        mainDataStore: null,
         selectListOptions: null,
 
         constructor: function () {
+            this.mainDataStore = MainDataStore.getInstance();
             this.selectListOptions = [{
                 value: "",
                 label: this.createLabelString("&nbsp;", "Loading..."),
