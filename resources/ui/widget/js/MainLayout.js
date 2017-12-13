@@ -26,9 +26,7 @@ define([
 
         startup: function () {
             this.watchDataStore();
-
-            // Just for testing...
-            this.setOnClickHandlers();
+            this.setEventHandlers();
         },
 
         watchDataStore: function () {
@@ -45,7 +43,7 @@ define([
             });
         },
 
-        setOnClickHandlers: function () {
+        setEventHandlers: function () {
             var self = this;
             var originalOnChangeFunction = this.selectRegisteredGitRepository.selectRegisteredGitRepository.onChange;
 
