@@ -8,6 +8,10 @@ define([
             this.allRegisteredGitRepositoriesUrl =
                     net.jazz.ajax._contextRoot +
                     "/service/com.ibm.team.git.common.internal.IGitRepositoryRegistrationRestService/allRegisteredGitRepositories";
+        },
+
+        getAllRegisteredGitRepositoriesForProjectArea: function () {
+
         }
     });
 });
