@@ -3,7 +3,8 @@ define([
     "dojo/Stateful",
     "dojox/mvc/StatefulArray"
 ], function (declare, Stateful, StatefulArray) {
-    return declare(null, {
+    var MainDataStore = declare(null, {
+        workItem: null,
         projectArea: null,
         registeredGitRepositories: null,
         selectedRepositorySettings: {
@@ -12,10 +13,10 @@ define([
             accessToken: null
         },
 
-        constructor: function (projectArea) {
-            this.projectArea = projectArea;
+        constructor: function () {
             this.registeredGitRepositories = new StatefulArray([]);
             this.selectedRepositorySettings = new Stateful(this.selectedRepositorySettings);
         }
     });
+    return new MainDataStore();
 });

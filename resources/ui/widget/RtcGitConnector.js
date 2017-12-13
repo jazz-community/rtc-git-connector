@@ -4,6 +4,7 @@ define([
     "dojo/dom-style",
     "dojo/topic",
     "./js/MainLayout",
+    "./js/MainDataStore",
     "./_AbstractActionWidget",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
@@ -11,13 +12,15 @@ define([
     "dijit/Dialog",
     "dojo/text!./templates/RtcGitConnector.html"
 ], function (declare, dom, domStyle, topic,
-    MainLayout,
+    MainLayout, MainDataStore,
     _AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin,
     registry, Dialog, template) {
     return declare([_AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
         constructor: function () {
+            MainDataStore.workItem = this.workItem;
+            MainDataStore.projectArea = this.workItem.object.attributes.projectArea;
         },
 
         startup: function () {

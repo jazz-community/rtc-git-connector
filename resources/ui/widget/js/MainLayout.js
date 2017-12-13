@@ -22,10 +22,11 @@ define([
         mainDataStore: null,
 
         constructor: function () {
-            this.mainDataStore = new MainDataStore("test");
         },
 
         startup: function () {
+            this.mainDataStore = MainDataStore;
+            console.log("mainDataStore from startup", this.mainDataStore);
             topic.subscribe("rtcGitConnector/workItem", function (workItem) {
                 console.log("got workItem", workItem);
             });
