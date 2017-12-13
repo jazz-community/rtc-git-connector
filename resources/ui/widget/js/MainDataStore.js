@@ -5,11 +5,15 @@ define([
 ], function (declare, Stateful, StatefulArray) {
     return declare(null, {
         registeredGitRepositories: null,
-        selectedGitRepository: null,
+        selectedRepositorySettings: {
+            repository: null,
+            gitHost: null,
+            accessToken: null
+        },
 
         constructor: function () {
             this.registeredGitRepositories = new StatefulArray([]);
-            this.selectedGitRepository = new Stateful();
+            this.selectedRepositorySettings = new Stateful(this.selectedRepositorySettings);
         }
     });
 });
