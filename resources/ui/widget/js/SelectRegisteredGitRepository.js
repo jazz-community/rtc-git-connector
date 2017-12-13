@@ -30,15 +30,34 @@ define([
 
         postCreate: function () {
             this.initializeSelectList();
+            this.setEventHandlers();
+            this.watchDataStore();
         },
 
         initializeSelectList: function () {
             this.setOptionsList();
             this.selectRegisteredGitRepository.maxHeight = -1;
+        },
+
+        watchDataStore: function () {
+            var self = this;
+
+            this.mainDataStore.registeredGitRepositories.watchElements(function () {
+                self.setRegisteredGitRepositoriesAsListOptions(self.mainDataStore.registeredGitRepositories);
+            });
+        },
+
+        setEventHandlers: function () {
+            var self = this;
+
             this.selectRegisteredGitRepository.onChange = function (value) {
                 if (this.options[0].value === "") {
                     this.removeOption(this.options[0]);
                 }
+
+                self.mainDataStore.selectedRepositorySettings.set("repository", self.mainDataStore.registeredGitRepositories.find(function (element) {
+                    return element.key === value;
+                }));
             }
         },
 
@@ -53,6 +72,7 @@ define([
         },
 
         setRegisteredGitRepositoriesAsListOptions: function (registeredGitRepositories) {
+            this.mainDataStore.selectedRepositorySettings.set("repository", null);
             this.selectListOptions = [{
                 value: "",
                 label: this.createLabelString("&nbsp;", "Select a Git Repository..."),

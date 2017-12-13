@@ -25,17 +25,11 @@ define([
         },
 
         startup: function () {
-            this.watchDataStore();
             this.setEventHandlers();
+            this.watchDataStore();
         },
 
         watchDataStore: function () {
-            var self = this;
-
-            this.mainDataStore.registeredGitRepositories.watchElements(function () {
-                self.selectRegisteredGitRepository.setRegisteredGitRepositoriesAsListOptions(self.mainDataStore.registeredGitRepositories);
-            });
-
             this.mainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
                 dom.byId("selectedRegisteredGitRepositoryContainer").innerHTML = value
                     ? value.name || value
@@ -45,15 +39,6 @@ define([
 
         setEventHandlers: function () {
             var self = this;
-            var originalOnChangeFunction = this.selectRegisteredGitRepository.selectRegisteredGitRepository.onChange;
-
-            this.selectRegisteredGitRepository.selectRegisteredGitRepository.onChange = function (value) {
-                originalOnChangeFunction.call(this, value);
-
-                self.mainDataStore.selectedRepositorySettings.set("repository", self.mainDataStore.registeredGitRepositories.find(function (element) {
-                    return element.key === value;
-                }));
-            };
 
             var repositoriesFromSomewhere = [{
                 key: "123",
