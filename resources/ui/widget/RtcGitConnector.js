@@ -35,9 +35,7 @@ define([
 
             this.mainDialog.onHide = function () {
                 // Destroy all dialogs and remove them from the dom
-                self.destroyWidgetById("com-siemens-bt-jazz-workitemeditor-rtcGitConnector-ui-widget-selectRegisteredGitRepository");
                 self.destroyWidgetById("mainLayoutMyDialog");
-                self.destroyWidgetById("com-siemens-bt-jazz-workitemeditor-rtcGitConnector-ui-widget-mainLayout");
                 this.destroyRecursive(false);
 
                 // Destroy the data store
