@@ -10,8 +10,8 @@ define([
                     "/service/com.ibm.team.git.common.internal.IGitRepositoryRegistrationRestService/allRegisteredGitRepositories";
         },
 
-        getAllRegisteredGitRepositoriesForProjectArea: function () {
-
+        getAllRegisteredGitRepositoriesForProjectArea: function (projectAreaId) {
+            // HTTP GET: this.allRegisteredGitRepositoriesUrl + "?findRecursively=true&ownerItemIds=" + projectAreaId
         }
     });
 });
