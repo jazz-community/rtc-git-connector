@@ -2,6 +2,7 @@ define([
     "dojo/_base/declare",
     "dojo/dom",
     "dojo/dom-style",
+    "dojo/topic",
     "./js/MainLayout",
     "./_AbstractActionWidget",
     "dijit/_TemplatedMixin",
@@ -9,7 +10,7 @@ define([
     "dijit/registry",
     "dijit/Dialog",
     "dojo/text!./templates/RtcGitConnector.html"
-], function (declare, dom, domStyle,
+], function (declare, dom, domStyle, topic,
     MainLayout,
     _AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin,
     registry, Dialog, template) {
@@ -23,6 +24,7 @@ define([
             this.setEventHandlers();
             this.mainDialog.startup();
             this.mainDialog.show();
+            topic.publish("rtcGitConnector/workItem", this.workItem);
         },
 
         setEventHandlers: function () {

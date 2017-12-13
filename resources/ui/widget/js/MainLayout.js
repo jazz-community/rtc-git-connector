@@ -1,6 +1,7 @@
 define([
     "dojo/_base/declare",
     "dojo/dom",
+    "dojo/topic",
     "./MainDataStore",
     "./SelectRegisteredGitRepository",
     "dijit/_WidgetBase",
@@ -10,7 +11,7 @@ define([
     "dijit/form/TextBox",
     "dijit/form/Button",
     "dojo/text!../templates/MainLayout.html"
-], function (declare, dom,
+], function (declare, dom, topic,
     MainDataStore, SelectRegisteredGitRepository,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, template) {
@@ -21,10 +22,13 @@ define([
         mainDataStore: null,
 
         constructor: function () {
-            this.mainDataStore = new MainDataStore();
+            this.mainDataStore = new MainDataStore("test");
         },
 
         startup: function () {
+            topic.subscribe("rtcGitConnector/workItem", function (workItem) {
+                console.log("got workItem", workItem);
+            });
             this.watchDataStore();
             this.setEventHandlers();
         },
