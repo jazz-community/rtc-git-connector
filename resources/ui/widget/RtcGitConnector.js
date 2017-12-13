@@ -8,8 +8,8 @@ define([
     "dijit/_WidgetsInTemplateMixin",
     "dijit/Dialog",
     "dojo/text!./templates/RtcGitConnector.html"
-], function (declare, dom, domStyle, MainLayout, _AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin, Dialog, template) {
-    return declare([_AbstractActionWidget, _TemplateMixin, _WidgetsInTemplateMixin], {
+], function (declare, dom, domStyle, MainLayout, _AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin, Dialog, template) {
+    return declare([_AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
 
         constructor: function () {

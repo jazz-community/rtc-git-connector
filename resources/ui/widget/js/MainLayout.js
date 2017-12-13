@@ -12,10 +12,10 @@ define([
     "dojo/text!../templates/MainLayout.html"
 ], function (declare, dom,
     MainDataStore, SelectRegisteredGitRepository,
-    _WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin,
+    _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.mainLayout",
-        [_WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin],
+        [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],
     {
         templateString: template,
         mainDataStore: null,

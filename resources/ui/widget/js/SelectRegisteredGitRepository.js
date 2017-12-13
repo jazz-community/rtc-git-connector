@@ -6,9 +6,9 @@ define([
     "dijit/_WidgetsInTemplateMixin",
     "dijit/form/Select",
     "dojo/text!../templates/SelectRegisteredGitRepository.html"
-], function (declare, array, _WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin, Select, template) {
+], function (declare, array, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, Select, template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectRegisteredGitRepository",
-        [_WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin],
+        [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],
     {
         templateString: template,
         selectListOptions: null,
