@@ -19,16 +19,15 @@ define([
         [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],
     {
         templateString: template,
-        mainDataStore: null,
 
         constructor: function () {
         },
 
         startup: function () {
-            this.mainDataStore = MainDataStore;
-            console.log("mainDataStore from startup", this.mainDataStore);
-            topic.subscribe("rtcGitConnector/workItem", function (workItem) {
+            console.log("mainDataStore from startup", MainDataStore);
+            var handle = topic.subscribe("rtcGitConnector/workItem", function (workItem) {
                 console.log("got workItem", workItem);
+                handle.remove();
             });
             this.watchDataStore();
             this.setEventHandlers();
@@ -37,12 +36,12 @@ define([
         watchDataStore: function () {
             var self = this;
 
-            this.mainDataStore.registeredGitRepositories.watchElements(function () {
+            MainDataStore.registeredGitRepositories.watchElements(function () {
                 // fix this causing and exception when the widget is opened for the second time
-                self.selectRegisteredGitRepository.setRegisteredGitRepositoriesAsListOptions(self.mainDataStore.registeredGitRepositories);
+                self.selectRegisteredGitRepository.setRegisteredGitRepositoriesAsListOptions(MainDataStore.registeredGitRepositories);
             });
 
-            this.mainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
+            MainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
                 dom.byId("selectedRegisteredGitRepositoryContainer").innerHTML = value
                     ? value.name || value
                     : "No git repository selected";
@@ -56,7 +55,7 @@ define([
             this.selectRegisteredGitRepository.selectRegisteredGitRepository.onChange = function (value) {
                 originalOnChangeFunction.call(this, value);
 
-                self.mainDataStore.selectedRepositorySettings.set("repository", self.mainDataStore.registeredGitRepositories.find(function (element) {
+                MainDataStore.selectedRepositorySettings.set("repository", MainDataStore.registeredGitRepositories.find(function (element) {
                     return element.key === value;
                 }));
             };
@@ -82,7 +81,7 @@ define([
             });
 
             this.buttonWidget.onClick = function (event) {
-                self.mainDataStore.registeredGitRepositories.push.apply(self.mainDataStore.registeredGitRepositories, repositoriesFromSomewhere);
+                MainDataStore.registeredGitRepositories.push.apply(MainDataStore.registeredGitRepositories, repositoriesFromSomewhere);
 
                 this.setDisabled(true);
             };
