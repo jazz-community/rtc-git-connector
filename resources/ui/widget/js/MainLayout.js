@@ -36,9 +36,9 @@ define([
         watchDataStore: function () {
             var self = this;
 
-            MainDataStore.registeredGitRepositories.watchElements(function () {
-                // fix this causing and exception when the widget is opened for the second time
+            var handle = MainDataStore.registeredGitRepositories.watchElements(function () {
                 self.selectRegisteredGitRepository.setRegisteredGitRepositoriesAsListOptions(MainDataStore.registeredGitRepositories);
+                handle.unwatch(); // need to do this because the datastore instance is perssistant. it should be recreated together with the widget...
             });
 
             MainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
