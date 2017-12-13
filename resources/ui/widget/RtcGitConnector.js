@@ -17,10 +17,13 @@ define([
     registry, Dialog, template) {
     return declare([_AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
+        mainDataStore: null,
 
         constructor: function () {
-            MainDataStore.workItem = this.workItem;
-            MainDataStore.projectArea = this.workItem.object.attributes.projectArea;
+            console.log("MainDataStore", MainDataStore);
+            this.mainDataStore = MainDataStore.getInstance();
+            this.mainDataStore.workItem = this.workItem;
+            this.mainDataStore.projectArea = this.workItem.object.attributes.projectArea;
         },
 
         startup: function () {
@@ -39,6 +42,9 @@ define([
                 self.destroyWidgetById("mainLayoutMyDialog");
                 self.destroyWidgetById("com-siemens-bt-jazz-workitemeditor-rtcGitConnector-ui-widget-mainLayout");
                 this.destroyRecursive(false);
+
+                // Destroy the data store
+                MainDataStore.destroyInstance();
             };
         },
 
