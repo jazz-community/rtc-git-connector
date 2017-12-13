@@ -1,5 +1,6 @@
 define([
     "dojo/_base/declare",
+    "dojo/dom",
     "./MainDataStore",
     "./SelectRegisteredGitRepository",
     "dijit/_WidgetBase",
@@ -9,7 +10,9 @@ define([
     "dijit/form/TextBox",
     "dijit/form/Button",
     "dojo/text!../templates/MainLayout.html"
-], function (declare, MainDataStore, SelectRegisteredGitRepository, _WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin,
+], function (declare, dom,
+    MainDataStore, SelectRegisteredGitRepository,
+    _WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.mainLayout",
         [_WidgetBase, _TemplateMixin, _WidgetsInTemplateMixin],
@@ -34,10 +37,25 @@ define([
             this.mainDataStore.registeredGitRepositories.watchElements(function () {
                 self.selectRegisteredGitRepository.setRegisteredGitRepositoriesAsListOptions(self.mainDataStore.registeredGitRepositories);
             });
+
+            this.mainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
+                dom.byId("selectedRegisteredGitRepositoryContainer").innerHTML = value
+                    ? value.name || value
+                    : "No git repository selected";
+            });
         },
 
         setOnClickHandlers: function () {
             var self = this;
+            var originalOnChangeFunction = this.selectRegisteredGitRepository.selectRegisteredGitRepository.onChange;
+
+            this.selectRegisteredGitRepository.selectRegisteredGitRepository.onChange = function (value) {
+                originalOnChangeFunction.call(this, value);
+
+                self.mainDataStore.selectedRepositorySettings.set("repository", self.mainDataStore.registeredGitRepositories.find(function (element) {
+                    return element.key === value;
+                }));
+            };
 
             var repositoriesFromSomewhere = [{
                 key: "123",
