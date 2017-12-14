@@ -35,16 +35,16 @@ define([
             var self = this;
 
             this.mainDialog.onHide = function () {
-                this.destroyWidgetInstance();
+                // Destroy all dialogs and remove them from the dom
+                self.destroyWidgetById("mainLayoutMyDialog");
+                this.destroyRecursive(false);
+
+                // Destroy data store and services
+                self.destroyWidgetInstance();
             };
         },
 
         destroyWidgetInstance: function () {
-            // Destroy all dialogs and remove them from the dom
-            self.destroyWidgetById("mainLayoutMyDialog");
-            this.destroyRecursive(false);
-
-            // Destroy the data store and services
             MainDataStore.destroyInstance();
             JazzRestService.destroyInstance();
         },
