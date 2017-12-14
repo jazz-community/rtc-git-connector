@@ -41,15 +41,13 @@ define([
                     self._sortArrayByNameProperty(registeredGitRepositories);
                     self.mainDataStore.registeredGitRepositories.push.apply(self.mainDataStore.registeredGitRepositories, registeredGitRepositories);
 
-                    domStyle.set("noRegisteredGitRepositoriesContainer", "display", registeredGitRepositories.length ? "none" : "block");
+                    domStyle.set("noRegisteredGitRepositoriesContainer", "display", !registeredGitRepositories.length ? "block" : "none");
             });
         },
 
         watchDataStore: function () {
             this.mainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
-                dom.byId("selectedRegisteredGitRepositoryContainer").innerHTML = (value && value.name)
-                    ? value.name
-                    : "No git repository selected";
+                domStyle.set("noGitRepositorySelectedContainer", "display", value === null ? "block" : "none");
             });
         },
 
