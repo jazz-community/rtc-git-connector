@@ -53,6 +53,9 @@ define([
 
                 // Reset the selected repository settings because it has changed
                 self.resetSelectedRepositorySettings();
+
+                // Determine the git host, then get / set the access token
+                self.determineSelectedRepositoryGitHost();
             });
         },
 
@@ -60,6 +63,13 @@ define([
         resetSelectedRepositorySettings: function () {
             this.mainDataStore.selectedRepositorySettings.gitHost = null;
             this.mainDataStore.selectedRepositorySettings.accessToken = null;
+        },
+
+        // Find out if the selected git repository is hosted on GitHub, GitLab, or neither of the two
+        determineSelectedRepositoryGitHost: function () {
+            // todo
+            // Set the git host in the data store once it has been determined.
+            // That should trigger the getting of the access token...
         },
 
         _sortArrayByNameProperty: function (objectsWithNames) {
