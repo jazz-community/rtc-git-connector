@@ -44,8 +44,8 @@ define([
 
         watchDataStore: function () {
             this.mainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
-                dom.byId("selectedRegisteredGitRepositoryContainer").innerHTML = value
-                    ? value.name || value
+                dom.byId("selectedRegisteredGitRepositoryContainer").innerHTML = (value && value.name)
+                    ? value.name
                     : "No git repository selected";
             });
         },

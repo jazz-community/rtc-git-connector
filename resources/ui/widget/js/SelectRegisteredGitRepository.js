@@ -73,7 +73,6 @@ define([
 
         setRegisteredGitRepositoriesAsListOptions: function (registeredGitRepositories) {
             if (!registeredGitRepositories.length) {
-                this.mainDataStore.selectedRepositorySettings.set("repository", "Please register a git repository in this project area.");
                 this.selectListOptions = [{
                     value: "",
                     label: this.createLabelString("&nbsp;", "No git repositories registered..."),
@@ -81,7 +80,6 @@ define([
                     disabled: true
                 }];
             } else {
-                this.mainDataStore.selectedRepositorySettings.set("repository", null);
                 this.selectListOptions = [{
                     value: "",
                     label: this.createLabelString("&nbsp;", "Select a Git Repository..."),
@@ -96,6 +94,7 @@ define([
                 }, this);
             }
 
+            this.mainDataStore.selectedRepositorySettings.set("repository", null);
             this.setOptionsList();
         }
     });
