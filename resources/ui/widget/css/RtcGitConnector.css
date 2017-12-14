@@ -1,3 +1,25 @@
+/*
+    Don't depend on the styles being withing this container style (or any container really).
+    Dojo can and does place the elements at different places in the dom from where they were defined.
+
+    If you try something like this:
+
+        .rtcGitConnectorMainLayout .span {
+            some style rule...
+        }
+
+    You would expect all spans under the element with the "rtcGitConnectorMainLayout" class
+    to have the specified style rules. Because the spans may have been moved by dojo this might
+    not be the case (e.g. Dialog, Select, ...).
+
+    Just use long descriptive names and apply the classes to the elements directly.
+*/
+
+/*
+    Set the height and width of the widget in percentage of the window height / width.
+    This is nice and responsive but may require a minimum height / width to be set once
+    the layout has been better defined.
+*/
 .rtcGitConnectorMainLayout {
     box-sizing: border-box;
     width: 80vw;
@@ -17,6 +39,7 @@
     width: 100%;
 }
 
+/* Limit the size of the dojo select list drop-down arrow. It looks bad when any larger. */
 .rtcGitConnectorSelectList .dijitArrowButton {
     width: 1rem;
 }
@@ -27,18 +50,18 @@
     width: 100%;
     text-align: left;
     padding: .2rem;
+    font-size: 1rem;
 }
 
+/* Add a light blue background to the selected option in the drop-down list. */
 .dijitSelectSelectedOption .rtcGitConnectorSelectListSpan {
     background-color: #cfe5fa;
 }
 
 .rtcGitConnectorSelectListFirstLine {
-    font-size: 1rem;
     font-weight: bold;
 }
 
 .rtcGitConnectorSelectListSecondLine {
-    font-size: 1rem;
     color: gray;
 }
