@@ -36,11 +36,14 @@ define([
         getInitialData: function () {
             var self = this;
 
+            // Get registered git repositories from Jazz
             this.jazzRestService.getAllRegisteredGitRepositoriesForProjectArea(this.mainDataStore.projectArea.id)
                 .then(function (registeredGitRepositories) {
+                    // Sort and store the repositories
                     self._sortArrayByNameProperty(registeredGitRepositories);
                     self.mainDataStore.registeredGitRepositories.push.apply(self.mainDataStore.registeredGitRepositories, registeredGitRepositories);
 
+                    // Show an element if no repositories where found
                     domStyle.set("noRegisteredGitRepositoriesContainer", "display", !registeredGitRepositories.length ? "block" : "none");
             });
         },
@@ -48,6 +51,7 @@ define([
         watchDataStore: function () {
             var self = this;
 
+            // React when the selected repository changes
             this.mainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
                 domStyle.set("noGitRepositorySelectedContainer", "display", value === null ? "block" : "none");
 
@@ -72,6 +76,7 @@ define([
             // That should trigger the getting of the access token...
         },
 
+        // Sorts an array of objects alphabetically by their name property
         _sortArrayByNameProperty: function (objectsWithNames) {
             objectsWithNames.sort(function (a, b) {
                 return a.name.localeCompare(b.name);
