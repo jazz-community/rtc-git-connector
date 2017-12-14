@@ -19,7 +19,7 @@ define([
             this.selectedRepositorySettings = new Stateful(this.selectedRepositorySettings);
         }
     });
-    return new function() {
+    return new function () {
         this.getInstance = function () {
             if (!_instance) {
                 _instance = new MainDataStore();
@@ -30,6 +30,6 @@ define([
 
         this.destroyInstance = function () {
             _instance = null;
-        }
+        };
     };
 });

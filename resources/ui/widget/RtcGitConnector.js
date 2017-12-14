@@ -4,6 +4,7 @@ define([
     "dojo/dom-style",
     "./js/MainLayout",
     "./js/MainDataStore",
+    "./js/JazzRestService",
     "./_AbstractActionWidget",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
@@ -11,7 +12,7 @@ define([
     "dijit/Dialog",
     "dojo/text!./templates/RtcGitConnector.html"
 ], function (declare, dom, domStyle,
-    MainLayout, MainDataStore,
+    MainLayout, MainDataStore, JazzRestService,
     _AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin,
     registry, Dialog, template) {
     return declare([_AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin], {
@@ -34,13 +35,18 @@ define([
             var self = this;
 
             this.mainDialog.onHide = function () {
-                // Destroy all dialogs and remove them from the dom
-                self.destroyWidgetById("mainLayoutMyDialog");
-                this.destroyRecursive(false);
-
-                // Destroy the data store
-                MainDataStore.destroyInstance();
+                this.destroyWidgetInstance();
             };
+        },
+
+        destroyWidgetInstance: function () {
+            // Destroy all dialogs and remove them from the dom
+            self.destroyWidgetById("mainLayoutMyDialog");
+            this.destroyRecursive(false);
+
+            // Destroy the data store and services
+            MainDataStore.destroyInstance();
+            JazzRestService.destroyInstance();
         },
 
         destroyWidgetById: function (domId) {
