@@ -33,6 +33,7 @@ define([
             this._buttonNode = new ActionNode(cssSelector, nodeLabel);
         },
 
+        // Disable the widget button if the work item is new or has unsaved changes
         isEnabled: function (params) {
             var workingCopy = params.workingCopy || params;
             return !workingCopy.isChanged() && !workingCopy.isNewWorkItem();
