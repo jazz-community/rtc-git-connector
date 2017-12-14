@@ -1,6 +1,7 @@
 define([
-    "dojo/_base/declare"
-], function (declare) {
+    "dojo/_base/declare",
+    "dojo/request/xhr"
+], function (declare, xhr) {
     return declare(null, {
         allRegisteredGitRepositoriesUrl: null,
 
@@ -11,7 +12,13 @@ define([
         },
 
         getAllRegisteredGitRepositoriesForProjectArea: function (projectAreaId) {
-            // HTTP GET: this.allRegisteredGitRepositoriesUrl + "?findRecursively=true&ownerItemIds=" + projectAreaId
+            return xhr.get(this.allRegisteredGitRepositoriesUrl, {
+                query: {
+                    findRecursively: "true",
+                    ownerItemIds: projectAreaId
+                },
+                handleAs: "xml"
+            });
         }
     });
 });
