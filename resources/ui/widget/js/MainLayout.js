@@ -1,6 +1,7 @@
 define([
     "dojo/_base/declare",
     "dojo/dom",
+    "dojo/dom-style",
     "./MainDataStore",
     "./JazzRestService",
     "./SelectRegisteredGitRepository",
@@ -11,7 +12,7 @@ define([
     "dijit/form/TextBox",
     "dijit/form/Button",
     "dojo/text!../templates/MainLayout.html"
-], function (declare, dom,
+], function (declare, dom, domStyle,
     MainDataStore, JazzRestService, SelectRegisteredGitRepository,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, template) {
@@ -39,6 +40,12 @@ define([
                 .then(function (registeredGitRepositories) {
                     self._sortArrayByNameProperty(registeredGitRepositories);
                     self.mainDataStore.registeredGitRepositories.push.apply(self.mainDataStore.registeredGitRepositories, registeredGitRepositories);
+
+                    if (!registeredGitRepositories.length) {
+                        domStyle.set("noRegisteredGitRepositoriesContainer", "display", "block");
+                    } else {
+                        domStyle.set("noRegisteredGitRepositoriesContainer", "display", "none");
+                    }
             });
         },
 
