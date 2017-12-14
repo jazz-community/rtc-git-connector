@@ -60,11 +60,20 @@ define([
                 return a.name.localeCompare(b.name);
             });
 
-            this.buttonWidget.onClick = function (event) {
-                self.mainDataStore.registeredGitRepositories.push.apply(self.mainDataStore.registeredGitRepositories, repositoriesFromSomewhere);
+            this.buttonWidget.onClick = (function (event) {
+                var toggle = true;
 
-                this.setDisabled(true);
-            };
+                return function (event) {
+
+                    if (toggle) {
+                        self.mainDataStore.registeredGitRepositories.push.apply(self.mainDataStore.registeredGitRepositories, repositoriesFromSomewhere);
+                    } else {
+                        self.mainDataStore.registeredGitRepositories.splice(0, self.mainDataStore.registeredGitRepositories.length);
+                    }
+
+                    toggle = !toggle;
+                };
+            })();
 
             this.showDialogButton.onClick = function (event) {
                 self.myDialog.show();
