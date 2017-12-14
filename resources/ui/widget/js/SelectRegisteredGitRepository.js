@@ -72,19 +72,30 @@ define([
         },
 
         setRegisteredGitRepositoriesAsListOptions: function (registeredGitRepositories) {
-            this.mainDataStore.selectedRepositorySettings.set("repository", null);
-            this.selectListOptions = [{
-                value: "",
-                label: this.createLabelString("&nbsp;", "Select a Git Repository..."),
-                selected: true,
-                disabled: true
-            }];
-            array.forEach(registeredGitRepositories, function (registeredGitRepository) {
-                this.selectListOptions.push({
-                    value: registeredGitRepository.key,
-                    label: this.createLabelString(registeredGitRepository.name, registeredGitRepository.url)
-                });
-            }, this);
+            if (!registeredGitRepositories.length) {
+                this.mainDataStore.selectedRepositorySettings.set("repository", "Please register a git repository in this project area.");
+                this.selectListOptions = [{
+                    value: "",
+                    label: this.createLabelString("&nbsp;", "No git repositories registered..."),
+                    selected: true,
+                    disabled: true
+                }];
+            } else {
+                this.mainDataStore.selectedRepositorySettings.set("repository", null);
+                this.selectListOptions = [{
+                    value: "",
+                    label: this.createLabelString("&nbsp;", "Select a Git Repository..."),
+                    selected: true,
+                    disabled: true
+                }];
+                array.forEach(registeredGitRepositories, function (registeredGitRepository) {
+                    this.selectListOptions.push({
+                        value: registeredGitRepository.key,
+                        label: this.createLabelString(registeredGitRepository.name, registeredGitRepository.url)
+                    });
+                }, this);
+            }
+
             this.setOptionsList();
         }
     });
