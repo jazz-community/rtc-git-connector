@@ -39,8 +39,10 @@ define([
             // Get registered git repositories from Jazz
             this.jazzRestService.getAllRegisteredGitRepositoriesForProjectArea(this.mainDataStore.projectArea.id)
                 .then(function (registeredGitRepositories) {
-                    // Sort and store the repositories
+                    // Sort the repositories before adding to the store to prevent an extra change event
                     self._sortArrayByNameProperty(registeredGitRepositories);
+
+                    // Use push.apply to add multiple elements at once so that only one change event is caused
                     self.mainDataStore.registeredGitRepositories.push.apply(self.mainDataStore.registeredGitRepositories, registeredGitRepositories);
 
                     // Show an element if no repositories where found
