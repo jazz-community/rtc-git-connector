@@ -35,9 +35,7 @@ define([
 
         getInitialData: function () {
             this.jazzRestService.getAllRegisteredGitRepositoriesForProjectArea(this.mainDataStore.projectArea.id).then(function (response) {
-                console.log("response", response);
-            }, function (error) {
-                console.log("error", error);
+                console.log("response1", response);
             });
         },
 
