@@ -30,6 +30,15 @@ define([
         startup: function () {
             this.setEventHandlers();
             this.watchDataStore();
+            this.getInitialData();
+        },
+
+        getInitialData: function () {
+            this.jazzRestService.getAllRegisteredGitRepositoriesForProjectArea(this.mainDataStore.projectArea.id).then(function (response) {
+                console.log("response", response);
+            }, function (error) {
+                console.log("error", error);
+            });
         },
 
         watchDataStore: function () {
