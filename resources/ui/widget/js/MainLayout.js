@@ -28,7 +28,6 @@ define([
         },
 
         startup: function () {
-            this.setEventHandlers();
             this.watchDataStore();
             this.getInitialData();
         },
@@ -49,55 +48,6 @@ define([
                     ? value.name || value
                     : "No git repository selected";
             });
-        },
-
-        setEventHandlers: function () {
-            var self = this;
-
-            var repositoriesFromSomewhere = [{
-                key: "123",
-                name: "Git Commit Picker",
-                url: "https://github.com/jazz-community/rtc-git-commit-picker"
-            },
-            {
-                key: "456",
-                name: "rtc-secure-user-property-store",
-                url: "https://github.com/jazz-community/rtc-secure-user-property-store"
-            },
-            {
-                key: "789",
-                name: "rtc-create-child-item-plugin",
-                url: "https://github.com/jazz-community/rtc-create-child-item-plugin"
-            }];
-
-            this._sortArrayByNameProperty(repositoriesFromSomewhere);
-
-            this.buttonWidget.onClick = (function (event) {
-                var toggle = true;
-
-                return function (event) {
-
-                    if (toggle) {
-                        self.mainDataStore.registeredGitRepositories.push.apply(self.mainDataStore.registeredGitRepositories, repositoriesFromSomewhere);
-                    } else {
-                        self.mainDataStore.registeredGitRepositories.splice(0, self.mainDataStore.registeredGitRepositories.length);
-                    }
-
-                    toggle = !toggle;
-                };
-            })();
-
-            this.showDialogButton.onClick = function (event) {
-                self.myDialog.show();
-            };
-
-            this.submitDialogButton.onClick = function (event) {
-                self.myDialog.hide();
-            };
-
-            this.cancelDialogButton.onClick = function (event) {
-                self.myDialog.hide();
-            };
         },
 
         _sortArrayByNameProperty: function (objectsWithNames) {
