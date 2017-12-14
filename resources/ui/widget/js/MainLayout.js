@@ -2,6 +2,7 @@ define([
     "dojo/_base/declare",
     "dojo/dom",
     "./MainDataStore",
+    "./JazzRestService",
     "./SelectRegisteredGitRepository",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
@@ -11,7 +12,7 @@ define([
     "dijit/form/Button",
     "dojo/text!../templates/MainLayout.html"
 ], function (declare, dom,
-    MainDataStore, SelectRegisteredGitRepository,
+    MainDataStore, JazzRestService, SelectRegisteredGitRepository,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.mainLayout",
@@ -19,9 +20,11 @@ define([
     {
         templateString: template,
         mainDataStore: null,
+        jazzRestService: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
+            this.jazzRestService = JazzRestService.getInstance();
         },
 
         startup: function () {
