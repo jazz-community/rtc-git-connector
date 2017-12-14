@@ -46,13 +46,20 @@ define([
         },
 
         watchDataStore: function () {
+            var self = this;
+
             this.mainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
                 domStyle.set("noGitRepositorySelectedContainer", "display", value === null ? "block" : "none");
 
                 // Reset the selected repository settings because it has changed
-                self.mainDataStore.selectedRepositorySettings.gitHost = null;
-                self.mainDataStore.selectedRepositorySettings.accessToken = null;
+                self.resetSelectedRepositorySettings();
             });
+        },
+
+        // Reset all settings except for the "repository" itself
+        resetSelectedRepositorySettings: function () {
+            this.mainDataStore.selectedRepositorySettings.gitHost = null;
+            this.mainDataStore.selectedRepositorySettings.accessToken = null;
         },
 
         _sortArrayByNameProperty: function (objectsWithNames) {
