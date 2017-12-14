@@ -19,6 +19,8 @@ define([
         templateString: template,
         mainDataStore: null,
 
+        // Set the work item and project area properties in the
+        // data store so that other classes can access them
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
             this.mainDataStore.workItem = this.workItem;
@@ -34,6 +36,9 @@ define([
         setEventHandlers: function () {
             var self = this;
 
+            // Clean up the dom and custom class instances when the widget is closed.
+            // This is especially important for making the widget work when opened
+            // and closed multiple times.
             this.mainDialog.onHide = function () {
                 // Destroy all dialogs and remove them from the dom
                 self.destroyWidgetById("mainLayoutMyDialog");
@@ -44,11 +49,16 @@ define([
             };
         },
 
+        // These custom singleton instances need to be manually destroyed.
+        // If the widget is opened again it will then get new instances,
+        // which is the intended behavior.
         destroyWidgetInstance: function () {
             MainDataStore.destroyInstance();
             JazzRestService.destroyInstance();
         },
 
+        // Finds a widget by it's HTML id and destroys it,
+        // also removing it from the dom.
         destroyWidgetById: function (domId) {
             var widgetToDestroy = registry.byId(domId);
 
