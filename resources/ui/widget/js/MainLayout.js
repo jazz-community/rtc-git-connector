@@ -48,6 +48,10 @@ define([
         watchDataStore: function () {
             this.mainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
                 domStyle.set("noGitRepositorySelectedContainer", "display", value === null ? "block" : "none");
+
+                // Reset the selected repository settings because it has changed
+                self.mainDataStore.selectedRepositorySettings.gitHost = null;
+                self.mainDataStore.selectedRepositorySettings.accessToken = null;
             });
         },
 
