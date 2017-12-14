@@ -41,11 +41,7 @@ define([
                     self._sortArrayByNameProperty(registeredGitRepositories);
                     self.mainDataStore.registeredGitRepositories.push.apply(self.mainDataStore.registeredGitRepositories, registeredGitRepositories);
 
-                    if (!registeredGitRepositories.length) {
-                        domStyle.set("noRegisteredGitRepositoriesContainer", "display", "block");
-                    } else {
-                        domStyle.set("noRegisteredGitRepositoriesContainer", "display", "none");
-                    }
+                    domStyle.set("noRegisteredGitRepositoriesContainer", "display", registeredGitRepositories.length ? "none" : "block");
             });
         },
 
