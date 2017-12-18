@@ -1,0 +1,34 @@
+{
+    "name": "com.siemens.bt.jazz.workitemeditor.rtcgitconnector",
+    "version": "1.0.0",
+    "description": "Connect RTC work items with various Git hosting systems",
+    "main": "./resources/ui/RunConnector.js",
+    "dependencies": {
+        "base64-js": "^1.2.1",
+        "buffer": "^5.0.7",
+        "gzip-js": "^0.3.2"
+    },
+    "devDependencies": {
+        "jazz-update-site-webpack-plugin": "^0.4.1",
+        "webpack": "^3.6.0"
+    },
+    "scripts": {
+        "build": "webpack --optimize-minimize"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MartinBenninger/rtc-git-connector.git"
+    },
+    "keywords": [
+        "Jazz",
+        "Git",
+        "GitLab",
+        "GitHub"
+    ],
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/MartinBenninger/rtc-git-connector/issues"
+    },
+    "homepage": "https://github.com/MartinBenninger/rtc-git-connector#readme"
+}
