@@ -3,3 +3,4 @@ node_modules/
 *.jazzignore
 *.log
 /com.siemens.bt.jazz.workitemeditor.rtcGitConnector*.zip
+resources/dist/
