@@ -38,3 +38,5 @@ export function encoder () {
         return buffer.toString();
     };
 }
+
+export const GitHubApi = require('github');

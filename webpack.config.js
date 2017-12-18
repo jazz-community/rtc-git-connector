@@ -1,3 +1,4 @@
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const packageJson = require('./package.json');
 const JazzUpdateSitePlugin = require('jazz-update-site-webpack-plugin');
 
@@ -29,8 +30,10 @@ module.exports = (env) => {
 				   license: packageJson.license,
 				   version: version,
 				},
-			}),
-		],
+            }),
+
+            new UglifyJsPlugin()
+		]
 	};
 	return config;
 };
