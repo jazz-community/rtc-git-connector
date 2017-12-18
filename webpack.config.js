@@ -5,9 +5,16 @@ const JazzUpdateSitePlugin = require('jazz-update-site-webpack-plugin');
 module.exports = (env) => {
    const version = (typeof env !== 'undefined' && env.buildUUID) || packageJson.version;
 	const config = {
+        node : {
+            fs : 'empty',
+            net : 'empty',
+            tls : 'empty'
+        },
+
 		entry: {
 			app: './src/RtcGitConnectorModules.js',
-		},
+        },
+
 		output: {
 			libraryTarget: 'var',
 			library: 'com_siemens_bt_jazz_rtcgitconnector_modules',
