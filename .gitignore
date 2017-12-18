@@ -1,0 +1,5 @@
+node_modules/
+.vscode/
+*.jazzignore
+*.log
+/com.siemens.bt.jazz.workitemeditor.rtcGitConnector*.zip
