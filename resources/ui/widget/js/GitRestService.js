@@ -7,9 +7,11 @@ define([
         gitLabApi: null, // use without new
 
         constructor: function () {
-            this.gitHubApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitHubApi;
-            this.gitLabApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitLabApi;
-        },
+            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules != 'undefined') {
+                this.gitHubApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitHubApi;
+                this.gitLabApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitLabApi;
+            }
+        }
     });
 
     // Returns an instance so that you don't need to instantiate this class.

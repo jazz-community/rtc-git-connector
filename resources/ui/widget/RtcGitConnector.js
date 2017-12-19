@@ -30,8 +30,14 @@ define([
 
         startup: function () {
             this.setEventHandlers();
-            this.mainDialog.startup();
-            this.mainDialog.show();
+
+            if (this.isInternetExplorer()) {
+                this.mainErrorDialog.startup();
+                this.mainErrorDialog.show();
+            } else {
+                this.mainDialog.startup();
+                this.mainDialog.show();
+            }
         },
 
         setEventHandlers: function () {
@@ -42,10 +48,17 @@ define([
             // and closed multiple times.
             this.mainDialog.onHide = function () {
                 // Destroy all dialogs and remove them from the dom
-                self.destroyWidgetById("mainLayoutMyDialog");
+                self.destroyWidgetById("browserIsInternetExplorerContainer");
                 this.destroyRecursive(false);
 
                 // Destroy data store and services
+                self.destroyWidgetInstance();
+            };
+
+            this.mainErrorDialog.onHide = function () {
+                self.destroyWidgetById("connectWithGitMainDialog");
+                this.destroyRecursive(false);
+
                 self.destroyWidgetInstance();
             };
         },
@@ -67,6 +80,19 @@ define([
             if (widgetToDestroy) {
                 widgetToDestroy.destroyRecursive(false);
             }
+        },
+
+        isInternetExplorer: function () {
+            var ms_ie = false;
+            var ua = window.navigator.userAgent;
+            var old_ie = ua.indexOf('MSIE ');
+            var new_ie = ua.indexOf('Trident/');
+
+            if ((old_ie > -1) || (new_ie > -1)) {
+                ms_ie = true;
+            }
+
+            return ms_ie;
         }
     });
 });

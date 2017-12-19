@@ -1,5 +1,8 @@
 <div id="rtcGitConnectorDialog" style="display:none">
-    <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="mainDialog" title="Connect with Git" >
+    <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="mainDialog" title="Connect with Git" id="connectWithGitMainDialog">
         <div data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.mainLayout"></div>
+    </div>
+    <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="mainErrorDialog" title="Browser Error" id="browserIsInternetExplorerContainer">
+        <p>Internet Explorer is not supported. Please use <a href="https://www.google.com/chrome/index.html" target="_blank">Google Chrome</a> or <a href="https://www.mozilla.org/en-US/firefox/" target="_blank">Firefox</a> instead.</p>
     </div>
 </div>

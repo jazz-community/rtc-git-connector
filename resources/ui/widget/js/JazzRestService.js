@@ -9,7 +9,10 @@ define([
         allRegisteredGitRepositoriesUrl: null,
 
         constructor: function () {
-            this.commitLinkEncoder = new com_siemens_bt_jazz_rtcgitconnector_modules.encoder();
+            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules != 'undefined') {
+                this.commitLinkEncoder = new com_siemens_bt_jazz_rtcgitconnector_modules.encoder();
+            }
+
             this.allRegisteredGitRepositoriesUrl =
                     net.jazz.ajax._contextRoot +
                     "/service/com.ibm.team.git.common.internal.IGitRepositoryRegistrationRestService/allRegisteredGitRepositories";
