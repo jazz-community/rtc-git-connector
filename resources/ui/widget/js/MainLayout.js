@@ -69,6 +69,13 @@ define([
                     self.determineSelectedRepositoryGitHost();
                 }
             });
+
+            // React when the selected repository host type changes
+            this.mainDataStore.selectedRepositorySettings.watch("gitHost", function (name, oldValue, value) {
+                domStyle.set("invalidGitRepositoryTypeContainer", "display", (value === "GITHUB" || value === "GITLAB" || value === null) ? "none" : "block");
+                dom.byId("selectedRegisteredGitRepositoryContainer").innerHTML = value;
+                // get access token...
+            });
         },
 
         // Reset all settings except for the "repository" itself
