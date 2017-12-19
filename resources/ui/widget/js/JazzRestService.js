@@ -25,9 +25,13 @@ define([
             return xhr.get(this.allRegisteredGitRepositoriesUrl, {
                 query: {
                     findRecursively: "true",
-                    ownerItemIds: projectAreaId
+                    ownerItemIds: projectAreaId,
+                    populateProcessOwner: "false"
                 },
-                handleAs: "xml"
+                handleAs: "json",
+                headers: {
+                    "Accept": "text/json"
+                }
             }).then(function (response) {
                 return self._parseGitRepositories(response);
             }, function (error) {
@@ -41,34 +45,14 @@ define([
 
         // Get an array of git repository objects from the document provided by the service
         _parseGitRepositories: function (responseDocument) {
-            var gitRepositories = [];
-            var repositoryNodes = responseDocument.getElementsByTagName("response")[0]
-                                    .getElementsByTagName("returnValue")[0]
-                                    .getElementsByTagName("values");
+            var gitRepositories = responseDocument["soapenv:Body"].response.returnValue.values;
 
-            for (var i = 0; i < repositoryNodes.length; i++) {
-                gitRepositories.push(this._createGitRepositoryObjectFromNode(repositoryNodes[i]));
+            // Parse the configurationData because it contains a stringified json object
+            for (var i = 0; i < gitRepositories.length; i++) {
+                gitRepositories[i].configurationData = json.parse(gitRepositories[i].configurationData);
             }
 
             return gitRepositories;
-        },
-
-        // Map the values from the node to a new git repository object.
-        // The configurationData is additionally parsed because it contains json data.
-        _createGitRepositoryObjectFromNode: function (repositoryNode) {
-            return {
-                name: repositoryNode.getElementsByTagName("name")[0].innerHTML,
-                description: repositoryNode.getElementsByTagName("description")[0].innerHTML,
-                url: repositoryNode.getElementsByTagName("url")[0].innerHTML,
-                key: repositoryNode.getElementsByTagName("key")[0].innerHTML,
-                configurationData: json.parse(repositoryNode.getElementsByTagName("configurationData")[0].innerHTML),
-                message: repositoryNode.getElementsByTagName("message")[0].innerHTML,
-                secretKey: repositoryNode.getElementsByTagName("secretKey")[0].innerHTML,
-                ownerPresent: repositoryNode.getElementsByTagName("ownerPresent")[0].innerHTML,
-                ownerName: repositoryNode.getElementsByTagName("ownerName")[0].innerHTML,
-                ownerItemId: repositoryNode.getElementsByTagName("ownerItemId")[0].innerHTML,
-                isOwnerPa: repositoryNode.getElementsByTagName("isOwnerPa")[0].innerHTML
-            };
         }
     });
 
