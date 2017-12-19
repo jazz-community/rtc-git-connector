@@ -9,7 +9,8 @@ define([
         allRegisteredGitRepositoriesUrl: null,
 
         constructor: function () {
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules != 'undefined') {
+            // Prevent errors in Internet Explorer (dojo parse error because undefined)
+            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
                 this.commitLinkEncoder = new com_siemens_bt_jazz_rtcgitconnector_modules.encoder();
             }
 

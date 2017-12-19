@@ -31,6 +31,7 @@ define([
         startup: function () {
             this.setEventHandlers();
 
+            // Show the error dialog in Internet Explorer (better than nothing happening)
             if (this.isInternetExplorer()) {
                 this.mainErrorDialog.startup();
                 this.mainErrorDialog.show();
@@ -55,6 +56,7 @@ define([
                 self.destroyWidgetInstance();
             };
 
+            // Clean up for the error dialog
             this.mainErrorDialog.onHide = function () {
                 self.destroyWidgetById("connectWithGitMainDialog");
                 this.destroyRecursive(false);
@@ -82,6 +84,7 @@ define([
             }
         },
 
+        // Check if the current browser is Internet Explorer
         isInternetExplorer: function () {
             var ms_ie = false;
             var ua = window.navigator.userAgent;

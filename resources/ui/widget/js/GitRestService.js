@@ -7,7 +7,8 @@ define([
         gitLabApi: null, // use without new
 
         constructor: function () {
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules != 'undefined') {
+            // Prevent errors in Internet Explorer (dojo parse error because undefined)
+            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
                 this.gitHubApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitHubApi;
                 this.gitLabApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitLabApi;
             }
