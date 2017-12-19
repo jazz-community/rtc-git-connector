@@ -53,11 +53,7 @@ define([
                     "Accept": "application/json"
                 }
             }).then(function (response) {
-                if (response.status === 200) {
-                    return true;
-                }
-
-                return false;
+                return true;
             }, function (error) {
                 return false;
             });
