@@ -9,9 +9,9 @@ define([
         projectArea: null,
         registeredGitRepositories: null,
         selectedRepositorySettings: {
-            repository: null,
-            gitHost: null,
-            accessToken: null
+            repository: null, // Object from registeredGitRepositories
+            gitHost: null, // Uppercase "GITHUB", "GITLAB", "OTHER"
+            accessToken: null // For github or gitlab
         },
 
         constructor: function () {

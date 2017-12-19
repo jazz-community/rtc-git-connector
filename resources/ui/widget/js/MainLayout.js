@@ -4,6 +4,7 @@ define([
     "dojo/dom-style",
     "./MainDataStore",
     "./JazzRestService",
+    "./GitRestService",
     "./SelectRegisteredGitRepository",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
@@ -13,7 +14,7 @@ define([
     "dijit/form/Button",
     "dojo/text!../templates/MainLayout.html"
 ], function (declare, dom, domStyle,
-    MainDataStore, JazzRestService, SelectRegisteredGitRepository,
+    MainDataStore, JazzRestService, GitRestService, SelectRegisteredGitRepository,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.mainLayout",
@@ -22,10 +23,12 @@ define([
         templateString: template,
         mainDataStore: null,
         jazzRestService: null,
+        gitRestService: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
             this.jazzRestService = JazzRestService.getInstance();
+            this.gitRestService = GitRestService.getInstance();
         },
 
         startup: function () {
@@ -60,26 +63,35 @@ define([
                 // Reset the selected repository settings because it has changed
                 self.resetSelectedRepositorySettings();
 
-                // Determine the git host, then get / set the access token
-                self.determineSelectedRepositoryGitHost();
+                // Don't continue if the repository was set to null
+                if (value !== null) {
+                    // Determine the git host, then get / set the access token
+                    self.determineSelectedRepositoryGitHost();
+                }
             });
         },
 
         // Reset all settings except for the "repository" itself
         resetSelectedRepositorySettings: function () {
-            this.mainDataStore.selectedRepositorySettings.gitHost = null;
-            this.mainDataStore.selectedRepositorySettings.accessToken = null;
+            this.mainDataStore.selectedRepositorySettings.set("gitHost", null);
+            this.mainDataStore.selectedRepositorySettings.set("accessToken", null);
         },
 
         // Find out if the selected git repository is hosted on GitHub, GitLab, or neither of the two
         determineSelectedRepositoryGitHost: function () {
-            // todo
+            var self = this;
+
             // Set the git host in the data store once it has been determined.
-            // That should trigger the getting of the access token...
-            if (typeof this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server === "string") {
-                this.mainDataStore.selectedRepositorySettings.gitHost = this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server;
+            if (this.mainDataStore.selectedRepositorySettings.repository &&
+                typeof this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server === "string") {
+                this.mainDataStore.selectedRepositorySettings
+                    .set("gitHost", this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server.toUpperCase());
             } else {
-                // call method from git rest service...
+                this.gitRestService.determineRepositoryGitHost(this.mainDataStore.selectedRepositorySettings.get("repository"))
+                    .then(function (hostType) {
+                        self.mainDataStore.selectedRepositorySettings.set("gitHost", hostType.toUpperCase());
+                        console.log("hostType", hostType);
+                });
             }
         },
 

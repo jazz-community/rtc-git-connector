@@ -1,6 +1,9 @@
 define([
-    "dojo/_base/declare"
-], function (declare) {
+    "dojo/_base/declare",
+    "dojo/_base/url",
+    "dojo/Deferred",
+    "dojo/request/xhr"
+], function (declare, url, Deferred, xhr) {
     var _instance = null;
     var GitRestService = declare(null, {
         gitHubApi: null, // use with new
@@ -12,6 +15,47 @@ define([
                 this.gitHubApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitHubApi;
                 this.gitLabApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitLabApi;
             }
+        },
+
+        determineRepositoryGitHost: function (selectedGitRepository) {
+            var deferred = new Deferred();
+            var repositoryUrl = new url(selectedGitRepository.url);
+
+            if (repositoryUrl.host.toLowerCase() === "github.com") {
+                deferred.resolve("GITHUB");
+            } else {
+                this.isGitLabRepository(repositoryUrl).then(function (statusOk) {
+                    if (statusOk) {
+                        deferred.resolve("GITLAB");
+                    } else {
+                        deferred.resolve("OTHER");
+                    }
+                });
+            }
+
+            return deferred.promise;
+        },
+
+        isGitLabRepository: function (gitRepositoryUrl) {
+            var origin = gitRepositoryUrl.scheme + "://" + gitRepositoryUrl.host + (gitRepositoryUrl.port ? ":" + gitRepositoryUrl.port : "");
+
+            return xhr.get(origin + "/api/v4/projects", {
+                query: {
+                    per_page: "1"
+                },
+                handleAs: "json",
+                headers: {
+                    "Accept": "application/json"
+                }
+            }).then(function (response) {
+                if (response.status === 200) {
+                    return true;
+                }
+
+                return false;
+            }, function (error) {
+                return false;
+            });
         }
     });
 
