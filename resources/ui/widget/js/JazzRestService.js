@@ -51,9 +51,14 @@ define([
         _parseGitRepositories: function (responseDocument) {
             var gitRepositories = responseDocument["soapenv:Body"].response.returnValue.values;
 
-            // Parse the configurationData because it contains a stringified json object
-            for (var i = 0; i < gitRepositories.length; i++) {
-                gitRepositories[i].configurationData = json.parse(gitRepositories[i].configurationData);
+            if (typeof gitRepositories === "undefined") {
+                // Set to an empty array when there aren't any values
+                gitRepositories = [];
+            } else {
+                // Parse the configurationData because it contains a stringified json object
+                for (var i = 0; i < gitRepositories.length; i++) {
+                    gitRepositories[i].configurationData = json.parse(gitRepositories[i].configurationData);
+                }
             }
 
             return gitRepositories;
