@@ -27,6 +27,10 @@
     margin: 1rem;
 }
 
+#broserIsInternetExplorerContainer {
+    color: red;
+}
+
 .rtcGitConnectorLabelText {
     display: inline-block;
     margin-bottom: .5rem;

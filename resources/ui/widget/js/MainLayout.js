@@ -31,6 +31,13 @@ define([
         startup: function () {
             this.watchDataStore();
             this.getInitialData();
+            this.checkEnvironment();
+        },
+
+        checkEnvironment: function () {
+            if (this.isInternetExplorer()) {
+                domStyle.set("broserIsInternetExplorerContainer", "display", "block");
+            }
         },
 
         getInitialData: function () {
@@ -83,6 +90,19 @@ define([
             objectsWithNames.sort(function (a, b) {
                 return a.name.localeCompare(b.name);
             });
+        },
+
+        isInternetExplorer: function () {
+            var ms_ie = false;
+            var ua = window.navigator.userAgent;
+            var old_ie = ua.indexOf('MSIE ');
+            var new_ie = ua.indexOf('Trident/');
+
+            if ((old_ie > -1) || (new_ie > -1)) {
+                ms_ie = true;
+            }
+
+            return ms_ie;
         }
     });
 });
