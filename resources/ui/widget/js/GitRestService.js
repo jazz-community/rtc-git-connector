@@ -21,9 +21,12 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
 
+            // Check if the host is github (the github url doesn't vary)
             if (repositoryUrl.host.toLowerCase() === "github.com") {
                 deferred.resolve("GITHUB");
             } else {
+                // Make a request to a gitlab api endpoint. If the request is
+                // successful, assume that the repository is hosted on a gitlab instance
                 this.isGitLabRepository(repositoryUrl).then(function (statusOk) {
                     if (statusOk) {
                         deferred.resolve("GITLAB");
@@ -36,6 +39,8 @@ define([
             return deferred.promise;
         },
 
+        // Make a request for a single public project from the gitlab api.
+        // Return true if the request was successful, otherwise false.
         isGitLabRepository: function (gitRepositoryUrl) {
             var origin = gitRepositoryUrl.scheme + "://" + gitRepositoryUrl.host + (gitRepositoryUrl.port ? ":" + gitRepositoryUrl.port : "");
 

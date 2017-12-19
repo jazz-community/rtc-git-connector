@@ -82,15 +82,15 @@ define([
             var self = this;
 
             // Set the git host in the data store once it has been determined.
-            if (this.mainDataStore.selectedRepositorySettings.repository &&
-                typeof this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server === "string") {
+            if (typeof this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server === "string") {
+                // Set from the config
                 this.mainDataStore.selectedRepositorySettings
                     .set("gitHost", this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server.toUpperCase());
             } else {
+                // Make requests to find the type and then set it
                 this.gitRestService.determineRepositoryGitHost(this.mainDataStore.selectedRepositorySettings.get("repository"))
                     .then(function (hostType) {
                         self.mainDataStore.selectedRepositorySettings.set("gitHost", hostType.toUpperCase());
-                        console.log("hostType", hostType);
                 });
             }
         },
