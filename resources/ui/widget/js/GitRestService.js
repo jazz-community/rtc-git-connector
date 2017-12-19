@@ -3,8 +3,12 @@ define([
 ], function (declare) {
     var _instance = null;
     var GitRestService = declare(null, {
+        gitHubApi: null, // use with new
+        gitLabApi: null, // use without new
 
         constructor: function () {
+            this.gitHubApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitHubApi;
+            this.gitLabApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitLabApi;
         },
     });
 

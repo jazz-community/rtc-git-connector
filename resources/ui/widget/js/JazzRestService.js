@@ -5,9 +5,11 @@ define([
 ], function (declare, xhr, json) {
     var _instance = null;
     var JazzRestService = declare(null, {
+        commitLinkEncoder: null,
         allRegisteredGitRepositoriesUrl: null,
 
         constructor: function () {
+            this.commitLinkEncoder = new com_siemens_bt_jazz_rtcgitconnector_modules.encoder();
             this.allRegisteredGitRepositoriesUrl =
                     net.jazz.ajax._contextRoot +
                     "/service/com.ibm.team.git.common.internal.IGitRepositoryRegistrationRestService/allRegisteredGitRepositories";
