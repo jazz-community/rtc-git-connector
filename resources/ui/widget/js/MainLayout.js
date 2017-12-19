@@ -76,6 +76,11 @@ define([
             // todo
             // Set the git host in the data store once it has been determined.
             // That should trigger the getting of the access token...
+            if (typeof this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server === "string") {
+                this.mainDataStore.selectedRepositorySettings.gitHost = this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server;
+            } else {
+                // call method from git rest service...
+            }
         },
 
         // Sorts an array of objects alphabetically by their name property
