@@ -5,6 +5,7 @@ define([
     "./js/MainLayout",
     "./js/MainDataStore",
     "./js/JazzRestService",
+    "./js/GitRestService",
     "./_AbstractActionWidget",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
@@ -12,7 +13,7 @@ define([
     "dijit/Dialog",
     "dojo/text!./templates/RtcGitConnector.html"
 ], function (declare, dom, domStyle,
-    MainLayout, MainDataStore, JazzRestService,
+    MainLayout, MainDataStore, JazzRestService, GitRestService,
     _AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin,
     registry, Dialog, template) {
     return declare([_AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin], {
@@ -55,6 +56,7 @@ define([
         destroyWidgetInstance: function () {
             MainDataStore.destroyInstance();
             JazzRestService.destroyInstance();
+            GitRestService.destroyInstance();
         },
 
         // Finds a widget by it's HTML id and destroys it,
