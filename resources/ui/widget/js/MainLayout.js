@@ -1,5 +1,6 @@
 define([
     "dojo/_base/declare",
+    "dojo/_base/url",
     "dojo/dom",
     "dojo/dom-style",
     "./MainDataStore",
@@ -13,7 +14,7 @@ define([
     "dijit/form/TextBox",
     "dijit/form/Button",
     "dojo/text!../templates/MainLayout.html"
-], function (declare, dom, domStyle,
+], function (declare, url, dom, domStyle,
     MainDataStore, JazzRestService, GitRestService, SelectRegisteredGitRepository,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, template) {
@@ -79,9 +80,13 @@ define([
 
             // React when the selected repository host type changes
             this.mainDataStore.selectedRepositorySettings.watch("gitHost", function (name, oldValue, value) {
-                domStyle.set("invalidGitRepositoryTypeContainer", "display", (value === "GITHUB" || value === "GITLAB" || value === null) ? "none" : "block");
+                var valueIsValid = (value === "GITHUB" || value === "GITLAB");
+                domStyle.set("invalidGitRepositoryTypeContainer", "display", (valueIsValid || value === null) ? "none" : "block");
                 dom.byId("selectedRegisteredGitRepositoryContainer").innerHTML = value;
                 // get access token...
+                if (valueIsValid) {
+                    self.getAccessTokenForSelectedRepository();
+                }
             });
         },
 
@@ -107,6 +112,22 @@ define([
                         self.mainDataStore.selectedRepositorySettings.set("gitHost", hostType.toUpperCase());
                 });
             }
+        },
+
+        getAccessTokenForSelectedRepository: function () {
+            var selectedRepository = this.mainDataStore.selectedRepositorySettings.get("repository");
+            var repositoryUrl = new url(selectedRepository.url);
+            this.jazzRestService.getAccessTokenByHost(repositoryUrl.host).then(function (accessToken) {
+                if (accessToken !== null) {
+                    // set the access token in the store
+                    console.log("got access token: ", accessToken);
+                } else {
+                    // ask for a access token
+                    console.log("access token was null. ask for one");
+                }
+            }, function (error) {
+                console.log("error", error);
+            });
         },
 
         // Sorts an array of objects alphabetically by their name property

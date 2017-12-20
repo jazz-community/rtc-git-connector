@@ -9,6 +9,7 @@ define([
         ajaxContextRoot: null,
         allRegisteredGitRepositoriesUrl: null,
         currentUserUrl: null,
+        personalTokenServiceUrl: null,
 
         constructor: function () {
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
@@ -21,6 +22,31 @@ define([
                     this.ajaxContextRoot +
                     "/service/com.ibm.team.git.common.internal.IGitRepositoryRegistrationRestService/allRegisteredGitRepositories";
             this.currentUserUrl = this.ajaxContextRoot + "/authenticated/identity";
+            this.personalTokenServiceUrl =
+                this.ajaxContextRoot +
+                "/service/com.siemens.bt.jazz.services.PersonalTokenService.IPersonalTokenService/tokenStore";
+        },
+
+        getAccessTokenByHost: function (hostUrl) {
+            return xhr.get(this.personalTokenServiceUrl, {
+                query: {
+                    key: hostUrl
+                },
+                handleAs: "json",
+                headers : {
+                    "Accept" : "application/json"
+                }
+            }).then(function (response) {
+                return response.token ? response.token : null;
+            }, function (error) {
+                // return null if the service didn't find a token
+                // change this when the service is fixed (it should only need to check for 404)
+                if (error.response.status >= 400 && error.response.status < 500) {
+                    return null;
+                }
+
+                // return error
+            });
         },
 
         // Gets the Jazz user id. This is usually the email address.
