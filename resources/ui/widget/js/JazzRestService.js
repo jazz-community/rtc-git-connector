@@ -28,7 +28,7 @@ define([
         },
 
         getAccessTokenByHost: function (hostUrl) {
-            return xhr.get(this.personalTokenServiceUrl, {
+            var xhrPromise = xhr.get(this.personalTokenServiceUrl, {
                 query: {
                     key: hostUrl
                 },
@@ -45,8 +45,10 @@ define([
                     return null;
                 }
 
-                // return error
+                xhrPromise.reject(error); // fix this. xhrPromise doesn't have a reject function...
             });
+
+            return xhrPromise;
         },
 
         // Gets the Jazz user id. This is usually the email address.

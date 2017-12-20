@@ -118,15 +118,15 @@ define([
             var selectedRepository = this.mainDataStore.selectedRepositorySettings.get("repository");
             var repositoryUrl = new url(selectedRepository.url);
             this.jazzRestService.getAccessTokenByHost(repositoryUrl.host).then(function (accessToken) {
-                if (accessToken !== null) {
+                if (accessToken) {
                     // set the access token in the store
                     console.log("got access token: ", accessToken);
                 } else {
-                    // ask for a access token
+                    // ask for an access token
                     console.log("access token was null. ask for one");
                 }
             }, function (error) {
-                console.log("error", error);
+                console.log("error. show an error", error);
             });
         },
 
