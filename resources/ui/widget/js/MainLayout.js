@@ -51,6 +51,13 @@ define([
                     // Show an element if no repositories where found
                     domStyle.set("noRegisteredGitRepositoriesContainer", "display", !registeredGitRepositories.length ? "block" : "none");
             });
+
+            // Get the current user from Jazz
+            this.jazzRestService.getCurrentUserId().then(function (userId) {
+                // Set the current user id in the sore.
+                // Be aware that the currentUserId can be null
+                self.mainDataStore.currentUserId = userId;
+            });
         },
 
         watchDataStore: function () {

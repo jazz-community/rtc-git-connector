@@ -23,6 +23,8 @@ define([
             this.currentUserUrl = this.ajaxContextRoot + "/authenticated/identity";
         },
 
+        // Gets the Jazz user id. This is usually the email address.
+        // Returns null if not found or on error.
         getCurrentUserId: function () {
             return xhr.get(this.currentUserUrl, {
                 handleAs: "json",
