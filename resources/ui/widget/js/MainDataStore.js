@@ -13,6 +13,7 @@ define([
             gitHost: null, // Uppercase "GITHUB", "GITLAB", "OTHER"
             accessToken: null // For github or gitlab
         },
+        currentUserId: null,
 
         constructor: function () {
             this.registeredGitRepositories = new StatefulArray([]);

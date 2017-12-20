@@ -6,7 +6,9 @@ define([
     var _instance = null;
     var JazzRestService = declare(null, {
         commitLinkEncoder: null,
+        ajaxContextRoot: null,
         allRegisteredGitRepositoriesUrl: null,
+        currentUserUrl: null,
 
         constructor: function () {
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
@@ -14,9 +16,24 @@ define([
                 this.commitLinkEncoder = new com_siemens_bt_jazz_rtcgitconnector_modules.encoder();
             }
 
+            this.ajaxContextRoot = net.jazz.ajax._contextRoot;
             this.allRegisteredGitRepositoriesUrl =
-                    net.jazz.ajax._contextRoot +
+                    this.ajaxContextRoot +
                     "/service/com.ibm.team.git.common.internal.IGitRepositoryRegistrationRestService/allRegisteredGitRepositories";
+            this.currentUserUrl = this.ajaxContextRoot + "/authenticated/identity";
+        },
+
+        getCurrentUserId: function () {
+            return xhr.get(this.currentUserUrl, {
+                handleAs: "json",
+                headers: {
+                    "Accept" : "application/json"
+                }
+            }).then(function (response) {
+                return response.userId ? response.userId : null;
+            }, function (error) {
+                return null;
+            });
         },
 
         // Gets the registered git repositories from the service. Returns a promise
