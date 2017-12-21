@@ -1,8 +1,9 @@
 define([
     "dojo/_base/declare",
     "dojo/request/xhr",
-    "dojo/json"
-], function (declare, xhr, json) {
+    "dojo/json",
+    "dojo/Deferred"
+], function (declare, xhr, json, Deferred) {
     var _instance = null;
     var JazzRestService = declare(null, {
         commitLinkEncoder: null,
@@ -28,7 +29,8 @@ define([
         },
 
         getAccessTokenByHost: function (hostUrl) {
-            var xhrPromise = xhr.get(this.personalTokenServiceUrl, {
+            var deferred = new Deferred();
+            xhr.get(this.personalTokenServiceUrl, {
                 query: {
                     key: hostUrl
                 },
@@ -37,18 +39,18 @@ define([
                     "Accept" : "application/json"
                 }
             }).then(function (response) {
-                return response.token ? response.token : null;
+                deferred.resolve(response.token ? response.token : null);
             }, function (error) {
                 // return null if the service didn't find a token
                 // change this when the service is fixed (it should only need to check for 404)
                 if (error.response.status >= 400 && error.response.status < 500) {
-                    return null;
+                    deferred.resolve(null);
                 }
 
-                xhrPromise.reject(error); // fix this. xhrPromise doesn't have a reject function...
+                deferred.reject(error);
             });
 
-            return xhrPromise;
+            return deferred.promise;
         },
 
         // Gets the Jazz user id. This is usually the email address.
