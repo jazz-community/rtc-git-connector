@@ -6,6 +6,8 @@ define([
 ], function (declare, url, Deferred, xhr) {
     var _instance = null;
     var GitRestService = declare(null, {
+        gitHubString: "GITHUB",
+        gitLabString: "GITLAB",
         gitHubApi: null, // use with new
         gitLabApi: null, // use without new
 
@@ -18,18 +20,19 @@ define([
         },
 
         determineRepositoryGitHost: function (selectedGitRepository) {
+            var self = this;
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
 
             // Check if the host is github (the github url doesn't vary)
             if (repositoryUrl.host.toLowerCase() === "github.com") {
-                deferred.resolve("GITHUB");
+                deferred.resolve(this.gitHubString);
             } else {
                 // Make a request to a gitlab api endpoint. If the request is
                 // successful, assume that the repository is hosted on a gitlab instance
                 this.isGitLabRepository(repositoryUrl).then(function (statusOk) {
                     if (statusOk) {
-                        deferred.resolve("GITLAB");
+                        deferred.resolve(this.gitLabString);
                     } else {
                         deferred.resolve("OTHER");
                     }
