@@ -117,12 +117,13 @@ define([
 
         // Get the access token for the host of the selected git repository
         getAccessTokenForSelectedRepository: function () {
+            var self = this;
             var selectedRepository = this.mainDataStore.selectedRepositorySettings.get("repository");
             var repositoryUrl = new url(selectedRepository.url);
             this.jazzRestService.getAccessTokenByHost(repositoryUrl.host).then(function (accessToken) {
                 if (accessToken) {
-                    // set the access token in the store
-                    console.log("got access token: ", accessToken);
+                    // Set the access token in the store
+                    self.mainDataStore.selectedRepositorySettings.set("accessToken", accessToken);
                 } else {
                     // ask for an access token
                     console.log("access token was null. ask for one");
