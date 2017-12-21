@@ -49,6 +49,7 @@ define([
             // and closed multiple times.
             this.mainDialog.onHide = function () {
                 // Destroy all dialogs and remove them from the dom
+                self.destroyWidgetById("getAndSaveAccessTokenDialog");
                 self.destroyWidgetById("browserIsInternetExplorerContainer");
                 this.destroyRecursive(false);
 
@@ -58,6 +59,7 @@ define([
 
             // Clean up for the error dialog
             this.mainErrorDialog.onHide = function () {
+                self.destroyWidgetById("getAndSaveAccessTokenDialog");
                 self.destroyWidgetById("connectWithGitMainDialog");
                 this.destroyRecursive(false);
 
