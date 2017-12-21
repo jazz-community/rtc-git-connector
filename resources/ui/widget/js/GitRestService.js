@@ -45,9 +45,7 @@ define([
         // Make a request for a single public project from the gitlab api.
         // Return true if the request was successful, otherwise false.
         isGitLabRepository: function (gitRepositoryUrl) {
-            var origin = gitRepositoryUrl.scheme + "://" + gitRepositoryUrl.host + (gitRepositoryUrl.port ? ":" + gitRepositoryUrl.port : "");
-
-            return xhr.get(origin + "/api/v4/projects", {
+            return xhr.get(this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects", {
                 query: {
                     per_page: "1"
                 },
@@ -69,7 +67,10 @@ define([
             if (gitHost === this.gitHubString) {
                 // Check access token with GitHub
                 var github = new this.gitHubApi({});
-                github.authenticate({ type: 'token', token: accessToken });
+                github.authenticate({
+                    type: 'token',
+                    token: accessToken
+                });
                 github.users.get({}, function (error, response) {
                     if (error) {
                         deferred.resolve(false);
@@ -79,12 +80,26 @@ define([
                 });
             } else if (gitHost === this.gitLabString) {
                 // Check access token with GitLab
-                deferred.resolve("didn't check for git lab");
+                var gitlab = this.gitLabApi({
+                    url: this._getOriginFromUrlObject(gitRepositoryUrl),
+                    token: accessToken
+                });
+                gitlab.users.current().then(function (response) {
+                    console.log("get current user response", response);
+                    deferred.resolve(true);
+                }, function (error) {
+                    console.log("get current user error", error);
+                    deferred.resolve(false);
+                });
             } else {
                 deferred.reject("Invalid git host.");
             }
 
             return deferred.promise;
+        },
+
+        _getOriginFromUrlObject: function (url) {
+            return url.scheme + "://" + url.host + (url.port ? ":" + url.port : "");
         }
     });
 
