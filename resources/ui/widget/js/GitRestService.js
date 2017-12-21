@@ -32,7 +32,7 @@ define([
                 // successful, assume that the repository is hosted on a gitlab instance
                 this.isGitLabRepository(repositoryUrl).then(function (statusOk) {
                     if (statusOk) {
-                        deferred.resolve(this.gitLabString);
+                        deferred.resolve(self.gitLabString);
                     } else {
                         deferred.resolve("OTHER");
                     }
@@ -60,6 +60,34 @@ define([
             }, function (error) {
                 return false;
             });
+        },
+
+        // Check if the access token works for the specified host type
+        checkAccessToken: function (gitRepositoryUrl, gitHost, accessToken) {
+            var deferred = new Deferred();
+
+            if (gitHost === this.gitHubString) {
+                // Check access token with GitHub
+                var github = new this.gitHubApi({});
+                github.authenticate({ type: 'token', token: accessToken });
+                github.users.get({}, function (error, response) {
+                    console.log("error", error);
+                    console.log("response", response);
+
+                    if (error) {
+                        deferred.reject(error);
+                    }
+
+                    deferred.resolve(response);
+                });
+            } else if (gitHost === this.gitLabString) {
+                // Check access token with GitLab
+                deferred.resolve("didn't check for git lab");
+            } else {
+                deferred.reject("Invalid git host.");
+            }
+
+            return deferred.promise;
         }
     });
 
