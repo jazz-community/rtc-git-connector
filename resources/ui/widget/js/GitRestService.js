@@ -71,14 +71,11 @@ define([
                 var github = new this.gitHubApi({});
                 github.authenticate({ type: 'token', token: accessToken });
                 github.users.get({}, function (error, response) {
-                    console.log("error", error);
-                    console.log("response", response);
-
                     if (error) {
-                        deferred.reject(error);
+                        deferred.resolve(false);
                     }
 
-                    deferred.resolve(response);
+                    deferred.resolve(true);
                 });
             } else if (gitHost === this.gitLabString) {
                 // Check access token with GitLab

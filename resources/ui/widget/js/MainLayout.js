@@ -126,10 +126,16 @@ define([
                 if (accessToken) {
                     // Check the access token (store if works)
                     self.gitRestService.checkAccessToken(repositoryUrl, self.mainDataStore.selectedRepositorySettings.get("gitHost"), accessToken)
-                        .then(function (response) {
-                            console.log("got check access token response", response);
-                        }, function (error) {
-                            console.log("got check access token error", error);
+                        .then(function (isTokenValid) {
+                            console.log("got check access token response isTokenValid", isTokenValid);
+
+                            if (isTokenValid) {
+                                // Store the token in the store if it's valid
+                                console.log("The access token is valid.");
+                            } else {
+                                // Ask for a new token if it's invalid
+                                console.log("The access token is not valid. Ask for a new one.");
+                            }
                         });
                 } else {
                     // ask for an access token
