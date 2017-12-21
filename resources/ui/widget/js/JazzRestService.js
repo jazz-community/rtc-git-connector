@@ -28,6 +28,7 @@ define([
                 "/service/com.siemens.bt.jazz.services.PersonalTokenService.IPersonalTokenService/tokenStore";
         },
 
+        // Get the access token for the user and host
         getAccessTokenByHost: function (hostUrl) {
             var deferred = new Deferred();
             xhr.get(this.personalTokenServiceUrl, {

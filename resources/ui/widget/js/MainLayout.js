@@ -82,8 +82,9 @@ define([
             this.mainDataStore.selectedRepositorySettings.watch("gitHost", function (name, oldValue, value) {
                 var valueIsValid = (value === "GITHUB" || value === "GITLAB");
                 domStyle.set("invalidGitRepositoryTypeContainer", "display", (valueIsValid || value === null) ? "none" : "block");
-                dom.byId("selectedRegisteredGitRepositoryContainer").innerHTML = value;
-                // get access token...
+                dom.byId("selectedRegisteredGitRepositoryContainer").innerHTML = value; // remove this later
+
+                // Get the access token if the host type is valid
                 if (valueIsValid) {
                     self.getAccessTokenForSelectedRepository();
                 }
@@ -114,6 +115,7 @@ define([
             }
         },
 
+        // Get the access token for the host of the selected git repository
         getAccessTokenForSelectedRepository: function () {
             var selectedRepository = this.mainDataStore.selectedRepositorySettings.get("repository");
             var repositoryUrl = new url(selectedRepository.url);
@@ -126,6 +128,7 @@ define([
                     console.log("access token was null. ask for one");
                 }
             }, function (error) {
+                // Service error. Can't continue here
                 console.log("error. show an error", error);
             });
         },
