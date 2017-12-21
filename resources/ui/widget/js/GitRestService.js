@@ -85,10 +85,8 @@ define([
                     token: accessToken
                 });
                 gitlab.users.current().then(function (response) {
-                    console.log("get current user response", response);
                     deferred.resolve(true);
                 }, function (error) {
-                    console.log("get current user error", error);
                     deferred.resolve(false);
                 });
             } else {

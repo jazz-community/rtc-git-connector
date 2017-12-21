@@ -127,8 +127,6 @@ define([
                     // Check the access token (store if works)
                     self.gitRestService.checkAccessToken(repositoryUrl, self.mainDataStore.selectedRepositorySettings.get("gitHost"), accessToken)
                         .then(function (isTokenValid) {
-                            console.log("got check access token response isTokenValid", isTokenValid);
-
                             if (isTokenValid) {
                                 // Store the token in the store if it's valid
                                 console.log("The access token is valid.");
