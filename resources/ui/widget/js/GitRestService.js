@@ -23,10 +23,18 @@ define([
             var self = this;
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
+            var lowerCaseHost = repositoryUrl.host.toLowerCase();
 
             // Check if the host is github (the github url doesn't vary)
-            if (repositoryUrl.host.toLowerCase() === "github.com") {
+            if (lowerCaseHost === "github.com") {
                 deferred.resolve(this.gitHubString);
+            } else if (lowerCaseHost === "gitlab.com") {
+                // Check for gitlab.com directly. This is for two reasons:
+                // 1. It also is a static url
+                // 2. Requesting a repository from gitlab.com is quite slow.
+                //    Other gitlab instances are generally faster and there is
+                //    no way to statically check for them.
+                deferred.resolve(this.gitLabString);
             } else {
                 // Make a request to a gitlab api endpoint. If the request is
                 // successful, assume that the repository is hosted on a gitlab instance
