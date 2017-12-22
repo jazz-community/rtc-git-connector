@@ -58,7 +58,7 @@ define([
         saveAccessTokenByHost: function (hostUrl, accessToken) {
             return xhr.post(this.personalTokenServiceUrl, {
                 data: json.stringify({
-                    key: host,
+                    key: hostUrl,
                     token: accessToken
                 }),
                 headers: {
