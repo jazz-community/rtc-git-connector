@@ -78,9 +78,16 @@ define([
             });
 
             this.saveAccessTokenButton.onClick = function (event) {
+                var accessTokenInputValue = self.accessTokenInput.value;
                 self.saveAccessTokenButton.setDisabled(true);
-                console.log("access token input value", self.accessTokenInput.value);
-                self.getAccessTokenDialog.hide();
+
+                // Hide the dialog and check the access token
+                self.getAccessTokenDialog.hide().then(function () {
+                    // Wait for the dialog to be hidden before checking the token.
+                    // Otherwise the check function might open a new dialog before
+                    // this one is finished closing
+                    self.checkAccessTokenForSelectedRepository(accessTokenInputValue);
+                });
             };
 
             this.cancelAccessTokenButton.onClick = function (event) {
