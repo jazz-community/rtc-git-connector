@@ -176,32 +176,42 @@ define([
             var self = this;
             var selectedRepository = this.mainDataStore.selectedRepositorySettings.get("repository");
             var repositoryUrl = new url(selectedRepository.url);
+            var gitHost = this.mainDataStore.selectedRepositorySettings.get("gitHost");
+
             this.jazzRestService.getAccessTokenByHost(repositoryUrl.host).then(function (accessToken) {
-                var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
                 domStyle.set("couldNotGetAccessTokenContainer", "display", "none");
 
                 if (accessToken) {
                     // Check the access token (store if works)
-                    self.gitRestService.checkAccessToken(repositoryUrl, gitHost, accessToken)
-                        .then(function (isTokenValid) {
-                            if (isTokenValid) {
-                                // Store the token in the store if it's valid
-                                console.log("The access token is valid.");
-                            } else {
-                                // Ask for a new token if it's invalid
-                                console.log("The access token is not valid. Ask for a new one.");
-                                self.getAccessTokenDialog.show(gitHost);
-                            }
-                        });
+                    self.checkAccessTokenForSelectedRepository(accessToken);
                 } else {
-                    // ask for an access token
-                    console.log("access token was null. ask for one");
+                    // Ask for an access token if the user doesn't already have one
                     self.getAccessTokenDialog.show(gitHost);
                 }
             }, function (error) {
                 // Service error. Can't continue here
                 domStyle.set("couldNotGetAccessTokenContainer", "display", "block");
             });
+        },
+
+        // Check if the access token works for the repository.
+        // Set the token in the store if it does
+        checkAccessTokenForSelectedRepository: function (accessToken) {
+            var self = this;
+            var selectedRepository = this.mainDataStore.selectedRepositorySettings.get("repository");
+            var repositoryUrl = new url(selectedRepository.url);
+            var gitHost = this.mainDataStore.selectedRepositorySettings.get("gitHost");
+
+            this.gitRestService.checkAccessToken(repositoryUrl, gitHost, accessToken)
+                .then(function (isTokenValid) {
+                    if (isTokenValid) {
+                        // Store the token in the store if it's valid
+                        console.log("The access token is valid.");
+                    } else {
+                        // Ask for a new token if it's invalid
+                        self.getAccessTokenDialog.show(gitHost);
+                    }
+                });
         },
 
         // Sorts an array of objects alphabetically by their name property
