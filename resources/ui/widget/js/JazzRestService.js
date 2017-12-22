@@ -54,6 +54,19 @@ define([
             return deferred.promise;
         },
 
+        // Saves the specified access token using the specified host
+        saveAccessTokenByHost: function (hostUrl, accessToken) {
+            return xhr.post(this.personalTokenServiceUrl, {
+                data: json.stringify({
+                    key: host,
+                    token: accessToken
+                }),
+                headers: {
+                    "Content-Type" : "application/json"
+                }
+            });
+        },
+
         // Gets the Jazz user id. This is usually the email address.
         // Returns null if not found or on error.
         getCurrentUserId: function () {
