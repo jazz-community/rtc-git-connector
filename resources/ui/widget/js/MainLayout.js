@@ -41,6 +41,8 @@ define([
         setEventHandlers: function () {
             var self = this;
             var originalAccessTokenDialogShow = this.getAccessTokenDialog.show;
+            var originalAccessTokenDialogHide = this.getAccessTokenDialog.hide;
+
             this.getAccessTokenDialog.show = function (hostType) {
                 if (hostType === "GITHUB") {
                     domStyle.set("getGitHubAccessTokenContainer", "display", "block");
@@ -49,6 +51,16 @@ define([
                 }
 
                 originalAccessTokenDialogShow.apply(self.getAccessTokenDialog);
+            };
+
+            this.getAccessTokenDialog.hide = function () {
+                originalAccessTokenDialogHide.apply(self.getAccessTokenDialog);
+
+                // Prevent the user from seeing the content being removed
+                window.setTimeout(function () {
+                    domStyle.set("getGitHubAccessTokenContainer", "display", "none");
+                    domStyle.set("getGitLabAccessTokenContainer", "display", "none");
+                }, 200);
             };
         },
 
