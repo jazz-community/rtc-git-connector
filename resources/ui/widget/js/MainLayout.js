@@ -63,6 +63,10 @@ define([
                 }, 200);
             };
 
+            this.saveAccessTokenButton.onClick = function (event) {
+                self.getAccessTokenDialog.hide();
+            };
+
             this.cancelAccessTokenButton.onClick = function (event) {
                 self.getAccessTokenDialog.hide();
             };
