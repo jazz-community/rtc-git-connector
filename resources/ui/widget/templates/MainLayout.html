@@ -25,6 +25,17 @@
     <div id="selectedRegisteredGitRepositoryContainer"></div>
 
     <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="getAccessTokenDialog" title="Save access token" id="getAndSaveAccessTokenDialog">
-        <p>Please giff access token...</p>>
+        <p id="getGitHubAccessTokenContainer">Please enter your GitHub access token below.<br />
+            You can create a new access token here: <a href='https://github.com/settings/tokens' target='_blank'>GitHub Access Token</a><br />
+            Please grant the token access to the "repo" and "user" scopes in order to ensure that it has enough permissions.<br /><br />
+            If you already saved an access token for GitHub, you are seeing it again because your access token has expired or has been revoked.<br />
+            Please follow the instructions above to create a new access token to continue.<br /><br />
+        </p>
+        <p id="getGitLabAccessTokenContainer">Please enter your GitLab access token below.<br />
+            Instructions on creating an access token for GitLab can be found here: <a href='https://docs.gitlab.com/ce/user/profile/personal_access_tokens.html' target='_blank'>GitLab Access Token</a><br />
+            Please grant the token access to the "api" and "read_user" scopes in order to ensure that it has enough permissions.<br /><br />
+            If you already saved an access token for this GitLab host, you are seeing it again because your access token has expired or has been revoked.<br />
+            Please follow the instructions above to create a new access token to continue.<br /><br />
+        </p>
     </div>
 </div>
