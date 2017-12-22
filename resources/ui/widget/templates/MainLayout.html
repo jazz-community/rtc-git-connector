@@ -37,5 +37,10 @@
             If you already saved an access token for this GitLab host, you are seeing it again because your access token has expired or has been revoked.<br />
             Please follow the instructions above to create a new access token to continue.<br /><br />
         </p>
+        <label for="getAccessTokenInput">Access Token</label>
+        <input name="getAccessTokenInput" data-dojo-type="dijit/form/TextBox" data-dojo-attach-point="accessTokenInput">
+        <br />
+        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-point="saveAccessTokenButton">Save</button>
+        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-point="cancelAccessTokenButton">Cancel</button>
     </div>
 </div>
