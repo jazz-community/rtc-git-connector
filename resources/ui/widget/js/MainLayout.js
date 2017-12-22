@@ -205,13 +205,19 @@ define([
             this.gitRestService.checkAccessToken(repositoryUrl, gitHost, accessToken)
                 .then(function (isTokenValid) {
                     if (isTokenValid) {
-                        // Store the token in the store if it's valid
+                        // Store the token in the service and store if it's valid
                         console.log("The access token is valid.");
+                        self.saveAccessTokenForSelectedRepository(accessToken);
                     } else {
                         // Ask for a new token if it's invalid
                         self.getAccessTokenDialog.show(gitHost);
                     }
                 });
+        },
+
+        // Sets the token in the store and also saves it with the service
+        saveAccessTokenForSelectedRepository: function (accessToken) {
+            // todo
         },
 
         // Sorts an array of objects alphabetically by their name property
