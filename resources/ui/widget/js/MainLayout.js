@@ -43,28 +43,22 @@ define([
         setEventHandlers: function () {
             var self = this;
             var originalAccessTokenDialogShow = this.getAccessTokenDialog.show;
-            var originalAccessTokenDialogHide = this.getAccessTokenDialog.hide;
 
             this.getAccessTokenDialog.show = function (hostType) {
                 if (hostType === "GITHUB") {
                     domStyle.set("getGitHubAccessTokenContainer", "display", "block");
+                    domStyle.set("getGitLabAccessTokenContainer", "display", "none");
                 } else if (hostType === "GITLAB") {
+                    domStyle.set("getGitHubAccessTokenContainer", "display", "none");
                     domStyle.set("getGitLabAccessTokenContainer", "display", "block");
+                } else {
+                    domStyle.set("getGitHubAccessTokenContainer", "display", "none");
+                    domStyle.set("getGitLabAccessTokenContainer", "display", "none");
                 }
 
                 self.accessTokenInput.setValue("");
                 self.saveAccessTokenButton.setDisabled(true);
                 originalAccessTokenDialogShow.apply(self.getAccessTokenDialog);
-            };
-
-            this.getAccessTokenDialog.hide = function () {
-                originalAccessTokenDialogHide.apply(self.getAccessTokenDialog);
-
-                // Prevent the user from seeing the content being removed
-                window.setTimeout(function () {
-                    domStyle.set("getGitHubAccessTokenContainer", "display", "none");
-                    domStyle.set("getGitLabAccessTokenContainer", "display", "none");
-                }, 200);
             };
 
             on(this.accessTokenInput, "keydown", function (event) {
@@ -207,7 +201,6 @@ define([
                 .then(function (isTokenValid) {
                     if (isTokenValid) {
                         // Store the token in the service and store if it's valid
-                        console.log("The access token is valid.");
                         self.saveAccessTokenForSelectedRepository(accessToken);
                     } else {
                         // Ask for a new token if it's invalid
@@ -219,6 +212,7 @@ define([
         // Sets the token in the store and also saves it with the service
         saveAccessTokenForSelectedRepository: function (accessToken) {
             // todo
+            console.log("run save access token", accessToken);
         },
 
         // Sorts an array of objects alphabetically by their name property
