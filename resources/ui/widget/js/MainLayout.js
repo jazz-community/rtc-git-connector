@@ -3,6 +3,8 @@ define([
     "dojo/_base/url",
     "dojo/dom",
     "dojo/dom-style",
+    "dojo/on",
+    "dojo/keys",
     "./MainDataStore",
     "./JazzRestService",
     "./GitRestService",
@@ -14,7 +16,7 @@ define([
     "dijit/form/TextBox",
     "dijit/form/Button",
     "dojo/text!../templates/MainLayout.html"
-], function (declare, url, dom, domStyle,
+], function (declare, url, dom, domStyle, on, keys,
     MainDataStore, JazzRestService, GitRestService, SelectRegisteredGitRepository,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, template) {
@@ -50,6 +52,7 @@ define([
                     domStyle.set("getGitLabAccessTokenContainer", "display", "block");
                 }
 
+                self.saveAccessTokenButton.setDisabled(true);
                 originalAccessTokenDialogShow.apply(self.getAccessTokenDialog);
             };
 
@@ -63,7 +66,19 @@ define([
                 }, 200);
             };
 
+            on(this.accessTokenInput, "keydown", function (event) {
+                window.setTimeout(function () {
+                    if (self.accessTokenInput.displayedValue.trim()) {
+                        self.saveAccessTokenButton.setDisabled(false);
+                    } else {
+                        self.saveAccessTokenButton.setDisabled(true);
+                    }
+                }, 10);
+            });
+
             this.saveAccessTokenButton.onClick = function (event) {
+                self.saveAccessTokenButton.setDisabled(true);
+                console.log("access token input value", self.accessTokenInput.value);
                 self.getAccessTokenDialog.hide();
             };
 
