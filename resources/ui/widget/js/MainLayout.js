@@ -52,6 +52,7 @@ define([
                     domStyle.set("getGitLabAccessTokenContainer", "display", "block");
                 }
 
+                self.accessTokenInput.setValue("");
                 self.saveAccessTokenButton.setDisabled(true);
                 originalAccessTokenDialogShow.apply(self.getAccessTokenDialog);
             };
