@@ -62,6 +62,10 @@ define([
                     domStyle.set("getGitLabAccessTokenContainer", "display", "none");
                 }, 200);
             };
+
+            this.cancelAccessTokenButton.onClick = function (event) {
+                self.getAccessTokenDialog.hide();
+            };
         },
 
         getInitialData: function () {
