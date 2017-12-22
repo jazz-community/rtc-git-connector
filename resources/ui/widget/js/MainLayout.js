@@ -35,6 +35,21 @@ define([
         startup: function () {
             this.watchDataStore();
             this.getInitialData();
+            this.setEventHandlers();
+        },
+
+        setEventHandlers: function () {
+            var self = this;
+            var originalAccessTokenDialogShow = this.getAccessTokenDialog.show;
+            this.getAccessTokenDialog.show = function (hostType) {
+                if (hostType === "GITHUB") {
+                    domStyle.set("getGitHubAccessTokenContainer", "display", "block");
+                } else if (hostType === "GITLAB") {
+                    domStyle.set("getGitLabAccessTokenContainer", "display", "block");
+                }
+
+                originalAccessTokenDialogShow.apply(self.getAccessTokenDialog);
+            };
         },
 
         getInitialData: function () {
@@ -121,11 +136,12 @@ define([
             var selectedRepository = this.mainDataStore.selectedRepositorySettings.get("repository");
             var repositoryUrl = new url(selectedRepository.url);
             this.jazzRestService.getAccessTokenByHost(repositoryUrl.host).then(function (accessToken) {
+                var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
                 domStyle.set("couldNotGetAccessTokenContainer", "display", "none");
 
                 if (accessToken) {
                     // Check the access token (store if works)
-                    self.gitRestService.checkAccessToken(repositoryUrl, self.mainDataStore.selectedRepositorySettings.get("gitHost"), accessToken)
+                    self.gitRestService.checkAccessToken(repositoryUrl, gitHost, accessToken)
                         .then(function (isTokenValid) {
                             if (isTokenValid) {
                                 // Store the token in the store if it's valid
@@ -133,11 +149,13 @@ define([
                             } else {
                                 // Ask for a new token if it's invalid
                                 console.log("The access token is not valid. Ask for a new one.");
+                                self.getAccessTokenDialog.show(gitHost);
                             }
                         });
                 } else {
                     // ask for an access token
                     console.log("access token was null. ask for one");
+                    self.getAccessTokenDialog.show(gitHost);
                 }
             }, function (error) {
                 // Service error. Can't continue here
