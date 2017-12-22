@@ -86,6 +86,7 @@ define([
                     // Wait for the dialog to be hidden before checking the token.
                     // Otherwise the check function might open a new dialog before
                     // this one is finished closing
+                    self.saveAccessTokenForSelectedRepository(accessTokenInputValue);
                     self.checkAccessTokenForSelectedRepository(accessTokenInputValue);
                 });
             };
@@ -207,8 +208,8 @@ define([
             this.gitRestService.checkAccessToken(repositoryUrl, gitHost, accessToken)
                 .then(function (isTokenValid) {
                     if (isTokenValid) {
-                        // Store the token in the service and store if it's valid
-                        self.saveAccessTokenForSelectedRepository(accessToken);
+                        // Set the token in the store if it's valid
+                        console.log("todo set in store...")
                     } else {
                         // Ask for a new token if it's invalid
                         self.getAccessTokenDialog.show(gitHost);
@@ -216,10 +217,12 @@ define([
                 });
         },
 
-        // Sets the token in the store and also saves it with the service
+        // Saves the access token with the service
         saveAccessTokenForSelectedRepository: function (accessToken) {
-            // todo
-            console.log("run save access token", accessToken);
+            var selectedRepository = this.mainDataStore.selectedRepositorySettings.get("repository");
+            var repositoryUrl = new url(selectedRepository.url);
+
+            this.jazzRestService.saveAccessTokenByHost(repositoryUrl.host, accessToken);
         },
 
         // Sorts an array of objects alphabetically by their name property
