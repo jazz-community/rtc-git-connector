@@ -68,6 +68,7 @@ define([
                     console.log("enter key pressed");
                 }
 
+                // Delay checking the value so that the new value is used
                 window.setTimeout(function () {
                     if (self.accessTokenInput.displayedValue.trim()) {
                         self.saveAccessTokenButton.setDisabled(false);
@@ -164,6 +165,7 @@ define([
         resetSelectedRepositorySettings: function () {
             this.mainDataStore.selectedRepositorySettings.set("gitHost", null);
             this.mainDataStore.selectedRepositorySettings.set("accessToken", null);
+            this.mainDataStore.selectedRepositorySettings.set("linkType", null);
         },
 
         // Find out if the selected git repository is hosted on GitHub, GitLab, or neither of the two

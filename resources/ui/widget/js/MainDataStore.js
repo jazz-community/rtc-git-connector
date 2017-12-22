@@ -11,7 +11,9 @@ define([
         selectedRepositorySettings: {
             repository: null, // Object from registeredGitRepositories
             gitHost: null, // Uppercase "GITHUB", "GITLAB", "OTHER"
-            accessToken: null // For github or gitlab
+            accessToken: null, // For github or gitlab
+            linkType: null // Uppercase "COMMIT", "ISSUE", "REQUEST"
+
         },
         currentUserId: null,
 
