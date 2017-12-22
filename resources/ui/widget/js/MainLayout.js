@@ -209,7 +209,7 @@ define([
                 .then(function (isTokenValid) {
                     if (isTokenValid) {
                         // Set the token in the store if it's valid
-                        console.log("todo set in store...")
+                        self.mainDataStore.selectedRepositorySettings.set("accessToken", accessToken);
                     } else {
                         // Ask for a new token if it's invalid
                         self.getAccessTokenDialog.show(gitHost);
