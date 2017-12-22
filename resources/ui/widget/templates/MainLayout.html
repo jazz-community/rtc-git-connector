@@ -35,11 +35,16 @@
             Instructions on creating an access token for GitLab can be found here: <a href='https://docs.gitlab.com/ce/user/profile/personal_access_tokens.html' target='_blank'>GitLab Access Token</a><br />
             Please grant the token access to the "api" and "read_user" scopes in order to ensure that it has enough permissions.<br /><br />
             If you already saved an access token for this GitLab host, you are seeing it again because your access token has expired or has been revoked.<br />
-            Please follow the instructions above to create a new access token to continue.<br /><br />
+            Please follow the instructions above to create a new access token to continue.<br />
         </p>
-        <label for="getAccessTokenInput">Access Token</label>
-        <input name="getAccessTokenInput" data-dojo-type="dijit/form/TextBox" data-dojo-attach-point="accessTokenInput">
-        <br />
+        <label for="getAccessTokenInput">Access Token</label><br />
+        <input id="getAccessTokenInput"
+            style="width: 100%;"
+            placeholder="Paste your access token here..."
+            data-dojo-type="dijit/form/TextBox"
+            data-dojo-attach-point="accessTokenInput"
+            data-dojo-props="trim:true">
+        <br /><br />
         <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-point="saveAccessTokenButton">Save</button>
         <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-point="cancelAccessTokenButton">Cancel</button>
     </div>
