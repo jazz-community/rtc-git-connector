@@ -69,3 +69,28 @@
 .rtcGitConnectorSelectListSecondLine {
     color: gray;
 }
+
+.rtcGitConnectorSelectLinkType {
+    display: flex;
+    background-color: gray;
+}
+
+.rtcGitConnectorSelectLinkType .linkTypeItem {
+    display: inline-block;
+    flex-grow: 1;
+    padding: .5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: white;
+    margin: 1px;
+}
+
+.rtcGitConnectorSelectLinkType .linkTypeItem:hover {
+    background-color: lightgray;
+}
+
+.rtcGitConnectorSelectLinkType .linkTypeItem.selected {
+    background-color: #cfe5fa;
+    cursor: default;
+}
