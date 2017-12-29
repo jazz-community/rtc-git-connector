@@ -1,6 +1,7 @@
 define([
     "dojo/_base/declare",
     "dojo/dom-class",
+    "dojo/dom-style",
     "dojo/on",
     "dojo/query",
     "./MainDataStore",
@@ -8,7 +9,7 @@ define([
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/SelectLinkType.html"
-], function (declare, domClass, on, query,
+], function (declare, domClass, domStyle, on, query,
     MainDataStore,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
@@ -23,7 +24,20 @@ define([
         },
 
         startup: function () {
+            this.watchDataStore()
             this.setEventHandlers();
+        },
+
+        watchDataStore: function () {
+            var self = this;
+
+            this.mainDataStore.selectedRepositorySettings.watch("linkType", function (name, oldValue, value) {
+                domStyle.set("rtcGitConnectorSelectLinkTypeContainer", "display", value === null ? "none" : "block");
+
+                if (value !== null) {
+                    self.setSelectedLinkType(value);
+                }
+            });
         },
 
         setEventHandlers: function () {
