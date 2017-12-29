@@ -41,6 +41,17 @@ define([
                     self.setSelectedLinkType(value);
                     self.setRequestsText(self.mainDataStore.selectedRepositorySettings.get("gitHost"));
                 }
+
+                if (value === "COMMIT" && !self.mainDataStore.selectedRepositorySettings.get("commitsLoaded")) {
+                    // load commits from host
+                    console.log("load commits from host");
+                } else if (value === "ISSUE" && !self.mainDataStore.selectedRepositorySettings.get("issuesLoaded")) {
+                    // load issues from host
+                    console.log("load issues from host");
+                } else if (value === "REQUEST" && !self.mainDataStore.selectedRepositorySettings.get("requestsLoaded")) {
+                    // load requests from host
+                    console.log("load requests from host");
+                }
             });
         },
 
