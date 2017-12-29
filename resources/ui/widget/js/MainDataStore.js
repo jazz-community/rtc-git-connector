@@ -34,6 +34,19 @@ define([
             this.selectedRepositoryData.commitsToLink = new StatefulArray([]);
             this.selectedRepositoryData.issuesToLink = new StatefulArray([]);
             this.selectedRepositoryData.requestsToLink = new StatefulArray([]);
+        },
+
+        // Rest settings and data for the selected repository
+        resetSelectedRepository: function () {
+            this.selectedRepositorySettings.set("gitHost", null);
+            this.selectedRepositorySettings.set("accessToken", null);
+            this.selectedRepositorySettings.set("linkType", null);
+            this.selectedRepositoryData.commits.length = 0;
+            this.selectedRepositoryData.issues.length = 0;
+            this.selectedRepositoryData.requests.length = 0;
+            this.selectedRepositoryData.commitsToLink.length = 0;
+            this.selectedRepositoryData.issuesToLink.length = 0;
+            this.selectedRepositoryData.requestsToLink.length = 0;
         }
     });
 

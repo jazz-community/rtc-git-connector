@@ -128,8 +128,8 @@ define([
             this.mainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
                 domStyle.set("noGitRepositorySelectedContainer", "display", value === null ? "block" : "none");
 
-                // Reset the selected repository settings because it has changed
-                self.resetSelectedRepositorySettings();
+                // Reset the selected repository settings and data because it has changed
+                self.mainDataStore.resetSelectedRepository();
 
                 // Don't continue if the repository was set to null
                 if (value !== null) {
@@ -159,13 +159,6 @@ define([
                     console.log("watch store access token change", value);
                 }
             });
-        },
-
-        // Reset all settings except for the "repository" itself
-        resetSelectedRepositorySettings: function () {
-            this.mainDataStore.selectedRepositorySettings.set("gitHost", null);
-            this.mainDataStore.selectedRepositorySettings.set("accessToken", null);
-            this.mainDataStore.selectedRepositorySettings.set("linkType", null);
         },
 
         // Find out if the selected git repository is hosted on GitHub, GitLab, or neither of the two
