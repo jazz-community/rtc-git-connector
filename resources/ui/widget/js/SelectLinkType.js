@@ -33,10 +33,13 @@ define([
 
             // React when the selected repository link type changes in the store
             this.mainDataStore.selectedRepositorySettings.watch("linkType", function (name, oldValue, value) {
+                // Hide the hole widget if the linkType is null
                 domStyle.set("rtcGitConnectorSelectLinkTypeContainer", "display", value === null ? "none" : "block");
 
+                // Set the selected type in the view
                 if (value !== null) {
                     self.setSelectedLinkType(value);
+                    self.setRequestsText(self.mainDataStore.selectedRepositorySettings.get("gitHost"));
                 }
             });
         },
@@ -44,11 +47,13 @@ define([
         setEventHandlers: function () {
             var self = this;
 
+            // Set the clicked link type in the data store
             query(".rtcGitConnectorSelectLinkType").on(".linkTypeItem:click", function (event) {
                 self.mainDataStore.selectedRepositorySettings.set("linkType", event.target.getAttribute("data-link-type"));
             });
         },
 
+        // Add the selected class to the specified type. Remove it from the other types
         setSelectedLinkType: function (linkType) {
             query(".rtcGitConnectorSelectLinkType .linkTypeItem").forEach(function (node) {
                 if (node.getAttribute("data-link-type") === linkType) {
@@ -58,6 +63,8 @@ define([
                 }
             });
         },
+
+        // Set the requests text to Pull Requests for GitHub or Merge Requests for GitLab
         setRequestsText: function (gitHost) {
             var requestsText = "Requests";
 
@@ -67,6 +74,7 @@ define([
                 requestsText = "Merge " + requestsText;
             }
 
+            // Find the element using the data attribute
             query(".rtcGitConnectorSelectLinkType .linkTypeItem[data-link-type='REQUEST']")[0].innerHTML = requestsText;
         }
     });
