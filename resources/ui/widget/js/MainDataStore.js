@@ -15,11 +15,25 @@ define([
             linkType: null // Uppercase "COMMIT", "ISSUE", "REQUEST"
 
         },
+        selectedRepositoryData: {
+            commits: null,
+            issues: null,
+            requests: null,
+            commitsToLink: null,
+            issuesToLink: null,
+            requestsToLink: null
+        },
         currentUserId: null,
 
         constructor: function () {
             this.registeredGitRepositories = new StatefulArray([]);
             this.selectedRepositorySettings = new Stateful(this.selectedRepositorySettings);
+            this.selectedRepositoryData.commits = new StatefulArray([]);
+            this.selectedRepositoryData.issues = new StatefulArray([]);
+            this.selectedRepositoryData.requests = new StatefulArray([]);
+            this.selectedRepositoryData.commitsToLink = new StatefulArray([]);
+            this.selectedRepositoryData.issuesToLink = new StatefulArray([]);
+            this.selectedRepositoryData.requestsToLink = new StatefulArray([]);
         }
     });
 
