@@ -57,6 +57,17 @@ define([
                     domClass.remove(node, "selected");
                 }
             });
+        },
+        setRequestsText: function (gitHost) {
+            var requestsText = "Requests";
+
+            if (gitHost === "GITHUB") {
+                requestsText = "Pull " + requestsText;
+            } else if (gitHost === "GITLAB") {
+                requestsText = "Merge " + requestsText;
+            }
+
+            query(".rtcGitConnectorSelectLinkType .linkTypeItem[data-link-type='REQUEST']")[0].innerHTML = requestsText;
         }
     });
 });
