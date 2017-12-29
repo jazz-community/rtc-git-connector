@@ -12,8 +12,10 @@ define([
             repository: null, // Object from registeredGitRepositories
             gitHost: null, // Uppercase "GITHUB", "GITLAB", "OTHER"
             accessToken: null, // For github or gitlab
-            linkType: null // Uppercase "COMMIT", "ISSUE", "REQUEST"
-
+            linkType: null, // Uppercase "COMMIT", "ISSUE", "REQUEST"
+            commitsLoaded: false,
+            issuesLoaded: false,
+            requestsLoaded: false
         },
         selectedRepositoryData: {
             commits: null,
@@ -41,6 +43,9 @@ define([
             this.selectedRepositorySettings.set("gitHost", null);
             this.selectedRepositorySettings.set("accessToken", null);
             this.selectedRepositorySettings.set("linkType", null);
+            this.selectedRepositorySettings.set("commitsLoaded", false);
+            this.selectedRepositorySettings.set("issuesLoaded", false);
+            this.selectedRepositorySettings.set("requestsLoaded", false);
             this.selectedRepositoryData.commits.length = 0;
             this.selectedRepositoryData.issues.length = 0;
             this.selectedRepositoryData.requests.length = 0;
