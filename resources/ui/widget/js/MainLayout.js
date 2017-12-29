@@ -9,6 +9,7 @@ define([
     "./JazzRestService",
     "./GitRestService",
     "./SelectRegisteredGitRepository",
+    "./SelectLinkType",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
@@ -17,7 +18,8 @@ define([
     "dijit/form/Button",
     "dojo/text!../templates/MainLayout.html"
 ], function (declare, url, dom, domStyle, on, keys,
-    MainDataStore, JazzRestService, GitRestService, SelectRegisteredGitRepository,
+    MainDataStore, JazzRestService, GitRestService,
+    SelectRegisteredGitRepository, SelectLinkType,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     Dialog, TextBox, Button, template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.mainLayout",
