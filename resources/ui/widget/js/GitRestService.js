@@ -19,6 +19,61 @@ define([
             }
         },
 
+        // Get the last 100 commits from the specified repository on GitHub or GitLab
+        getRecentCommits: function (selectedGitRepository, gitHost, accessToken) {
+            // Depending on how the returned objects look like, they may need to be converted
+            // first so that the same property names are always used.
+            if (gitHost === gitHubString) {
+                return this.getRecentGitHubCommits(selectedGitRepository, accessToken);
+            } else if (gitHost === gitLabString) {
+                return this.getRecentGitLabCommits(selectedGitRepository, accessToken);
+            } else {
+                var deferred = new Deferred();
+                deferred.reject("Invalid git host.");
+                return deferred.promise;
+            }
+        },
+
+        // Get the last 100 commits from the specified repository on GitHub
+        getRecentGitHubCommits: function (selectedGitRepository, accessToken) {
+
+        },
+
+        // Get the last 100 commits from the specified repository on GitLab
+        getRecentGitLabCommits: function (selectedGitRepository, accessToken) {
+
+        },
+
+        // Get the last 100 issues form the specified repository on GitHub or GitLab
+        getRecentIssues: function (selectedGitRepository, gitHost, accessToken) {
+
+        },
+
+        // Get the last 100 issues from the specified repository on GitHub
+        getRecentGitHubIssues: function (selectedGitRepository, accessToken) {
+
+        },
+
+        // Get the last 100 issues from the specified repository on GitLab
+        getRecentGitLabIssues: function (selectedGitRepository, accessToken) {
+
+        },
+
+        // Get the last 100 requests (pull/merge) from the selected repository on GitHub or GitLab
+        getRecentRequests: function (selectedGitRepository, gitHost, accessToken) {
+
+        },
+
+        // Get the last 100 pull requests from the selected repository on GitHub
+        getRecentGitHubRequests: function (selectedGitRepository, accessToken) {
+
+        },
+
+        // Get the last 100 merge requests from the selected repository on GitLab
+        getRecentGitLabRequests: function (selectedGitRepository, accessToken) {
+
+        },
+
         determineRepositoryGitHost: function (selectedGitRepository) {
             var self = this;
             var deferred = new Deferred();
