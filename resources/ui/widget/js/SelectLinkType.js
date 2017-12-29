@@ -17,6 +17,10 @@ define([
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
+        },
+
+        startup: function () {
+            console.log("SelectLinkType startup");
         }
     });
 });

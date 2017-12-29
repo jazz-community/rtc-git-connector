@@ -37,6 +37,10 @@ define([
         },
 
         startup: function () {
+            // Manually call the startup methods from custom widgets used in the template
+            this.selectRegisteredGitRepository.startup();
+            this.selectLinkType.startup();
+
             this.watchDataStore();
             this.getInitialData();
             this.setEventHandlers();

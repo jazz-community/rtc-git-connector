@@ -30,8 +30,7 @@ define([
             }];
         },
 
-        // Run the setup in the postCreate event because the startup event is not called for some reason
-        postCreate: function () {
+        startup: function () {
             this.initializeSelectList();
             this.setEventHandlers();
             this.watchDataStore();
