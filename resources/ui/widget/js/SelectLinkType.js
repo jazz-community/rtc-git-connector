@@ -31,6 +31,7 @@ define([
         watchDataStore: function () {
             var self = this;
 
+            // React when the selected repository link type changes in the store
             this.mainDataStore.selectedRepositorySettings.watch("linkType", function (name, oldValue, value) {
                 domStyle.set("rtcGitConnectorSelectLinkTypeContainer", "display", value === null ? "none" : "block");
 
@@ -44,7 +45,7 @@ define([
             var self = this;
 
             query(".rtcGitConnectorSelectLinkType").on(".linkTypeItem:click", function (event) {
-                self.setSelectedLinkType(event.target.getAttribute("data-link-type"));
+                self.mainDataStore.selectedRepositorySettings.set("linkType", event.target.getAttribute("data-link-type"));
             });
         },
 
