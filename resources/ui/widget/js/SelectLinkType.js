@@ -5,12 +5,13 @@ define([
     "dojo/on",
     "dojo/query",
     "./MainDataStore",
+    "./GitRestService",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/SelectLinkType.html"
 ], function (declare, domClass, domStyle, on, query,
-    MainDataStore,
+    MainDataStore, GitRestService,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectLinkType",
@@ -18,9 +19,11 @@ define([
     {
         templateString: template,
         mainDataStore: null,
+        gitRestService: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
+            this.gitRestService = GitRestService.getInstance();
         },
 
         startup: function () {
@@ -33,18 +36,27 @@ define([
 
             // React when the selected repository link type changes in the store
             this.mainDataStore.selectedRepositorySettings.watch("linkType", function (name, oldValue, value) {
+                var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
+                var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
+                var accessToken = self.mainDataStore.selectedRepositorySettings.get("accessToken");
+
                 // Hide the hole widget if the linkType is null
                 domStyle.set("rtcGitConnectorSelectLinkTypeContainer", "display", value === null ? "none" : "block");
 
                 // Set the selected type in the view
                 if (value !== null) {
                     self.setSelectedLinkType(value);
-                    self.setRequestsText(self.mainDataStore.selectedRepositorySettings.get("gitHost"));
+                    self.setRequestsText(gitHost);
                 }
 
                 if (value === "COMMIT" && !self.mainDataStore.selectedRepositorySettings.get("commitsLoaded")) {
                     // load commits from host
                     console.log("load commits from host");
+                    self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken).then(function (commits) {
+                        console.log("got commits: ", commits);
+                    }, function (error) {
+                        console.log("got error: ", error);
+                    });
                 } else if (value === "ISSUE" && !self.mainDataStore.selectedRepositorySettings.get("issuesLoaded")) {
                     // load issues from host
                     console.log("load issues from host");
