@@ -1,9 +1,10 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/url",
+    "dojo/json",
     "dojo/Deferred",
     "dojo/request/xhr"
-], function (declare, url, Deferred, xhr) {
+], function (declare, url, json, Deferred, xhr) {
     var _instance = null;
     var GitRestService = declare(null, {
         gitHubString: "GITHUB",
@@ -37,7 +38,40 @@ define([
         // Get the last 100 commits from the specified repository on GitHub
         getRecentGitHubCommits: function (selectedGitRepository, accessToken) {
             var deferred = new Deferred();
-            deferred.resolve("GitHub");
+            var github = new this.gitHubApi({});
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = repositoryUrl.path.split('/').filter(function (part) {
+                return part;
+            });
+
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                var gitEnding = ".git";
+                var gitEndingIndex = urlParts[1].indexOf(gitEnding, urlParts[1].length - gitEnding.length);
+
+                if (gitEndingIndex !== -1) {
+                    urlParts[1] = urlParts[1].slice(0, gitEndingIndex);
+                }
+
+                github.authenticate({
+                    type: 'token',
+                    token: accessToken
+                });
+                github.repos.getCommits({
+                    owner: urlParts[0],
+                    repo: urlParts[1],
+                    per_page: 100
+                }, function (error, response) {
+                    if (error) {
+                        var errorObj = json.parse(error.message || error);
+                        deferred.reject("Couldn't get commits from GitHub repo. Error: " + ((errorObj && errorObj.message) || error.message || error));
+                    } else {
+                        deferred.resolve(response.data);
+                    }
+                });
+            }
+
             return deferred.promise;
         },
 
@@ -141,9 +175,9 @@ define([
                 github.users.get({}, function (error, response) {
                     if (error) {
                         deferred.resolve(false);
+                    } else {
+                        deferred.resolve(true);
                     }
-
-                    deferred.resolve(true);
                 });
             } else if (gitHost === this.gitLabString) {
                 // Check access token with GitLab

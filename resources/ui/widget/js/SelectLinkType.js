@@ -55,6 +55,7 @@ define([
                     self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken).then(function (commits) {
                         console.log("got commits: ", commits);
                     }, function (error) {
+                        // Probably an incorrect repository configuration. Show an error...
                         console.log("got error: ", error);
                     });
                 } else if (value === "ISSUE" && !self.mainDataStore.selectedRepositorySettings.get("issuesLoaded")) {
