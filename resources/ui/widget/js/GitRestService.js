@@ -36,12 +36,16 @@ define([
 
         // Get the last 100 commits from the specified repository on GitHub
         getRecentGitHubCommits: function (selectedGitRepository, accessToken) {
-
+            var deferred = new Deferred();
+            deferred.resolve("GitHub");
+            return deferred.promise;
         },
 
         // Get the last 100 commits from the specified repository on GitLab
         getRecentGitLabCommits: function (selectedGitRepository, accessToken) {
-
+            var deferred = new Deferred();
+            deferred.resolve("GitLab");
+            return deferred.promise;
         },
 
         // Get the last 100 issues form the specified repository on GitHub or GitLab
