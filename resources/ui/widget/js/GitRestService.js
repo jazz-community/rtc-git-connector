@@ -79,21 +79,33 @@ define([
         getRecentGitLabCommits: function (selectedGitRepository, accessToken) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = repositoryUrl.path.split('/').filter(function (part) {
+                return part;
+            });
             var gitlab = this.gitLabApi({
                 url: this._getOriginFromUrlObject(repositoryUrl),
                 token: accessToken
             });
 
-            gitlab.projects.repository.commits.all("z0039cjb/WISPR", {
-                max_pages: 1,
-                per_page: 100
-            }).then(function (response) {
-                console.log("response: ", response);
-                deferred.resolve(response);
-            }, function (error) {
-                console.log("error: ", error);
-                deferred.resolve(error);
-            });
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                var gitEnding = ".git";
+                var gitEndingIndex = urlParts[1].indexOf(gitEnding, urlParts[1].length - gitEnding.length);
+
+                if (gitEndingIndex !== -1) {
+                    urlParts[1] = urlParts[1].slice(0, gitEndingIndex);
+                }
+
+                gitlab.projects.repository.commits.all(urlParts[0] + "/" + urlParts[1], {
+                    max_pages: 1,
+                    per_page: 100
+                }).then(function (response) {
+                    deferred.resolve(response);
+                }, function (error) {
+                    deferred.reject("Couldn't get commits from GitLab repo. Error: " + (error.error.message || error.error));
+                });
+            }
 
             return deferred.promise;
         },

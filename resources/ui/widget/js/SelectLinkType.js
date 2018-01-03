@@ -53,9 +53,10 @@ define([
                     // load commits from host
                     console.log("load commits from host");
                     self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken).then(function (commits) {
+                        // Set the list in the store and set commitsLoaded to true.
                         console.log("got commits: ", commits);
                     }, function (error) {
-                        // Probably an incorrect repository configuration. Show an error...
+                        // Probably an incorrect repository configuration. Show an error and hide the rest of the view...
                         console.log("got error: ", error);
                     });
                 } else if (value === "ISSUE" && !self.mainDataStore.selectedRepositorySettings.get("issuesLoaded")) {
