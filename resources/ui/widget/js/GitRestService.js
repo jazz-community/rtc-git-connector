@@ -47,12 +47,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                var gitEnding = ".git";
-                var gitEndingIndex = urlParts[1].indexOf(gitEnding, urlParts[1].length - gitEnding.length);
-
-                if (gitEndingIndex !== -1) {
-                    urlParts[1] = urlParts[1].slice(0, gitEndingIndex);
-                }
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
                 github.authenticate({
                     type: 'token',
@@ -90,12 +85,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                var gitEnding = ".git";
-                var gitEndingIndex = urlParts[1].indexOf(gitEnding, urlParts[1].length - gitEnding.length);
-
-                if (gitEndingIndex !== -1) {
-                    urlParts[1] = urlParts[1].slice(0, gitEndingIndex);
-                }
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
                 gitlab.projects.repository.commits.all(urlParts[0] + "/" + urlParts[1], {
                     max_pages: 1,
@@ -227,6 +217,18 @@ define([
 
         _getOriginFromUrlObject: function (url) {
             return url.scheme + "://" + url.host + (url.port ? ":" + url.port : "");
+        },
+
+        // Remove the ".git" suffix from the repository name if present
+        _removeDotGitEnding: function (repositoryName) {
+            var gitEnding = ".git";
+            var gitEndingIndex = repositoryName.indexOf(gitEnding, repositoryName.length - gitEnding.length);
+
+            if (gitEndingIndex !== -1) {
+                return repositoryName.slice(0, gitEndingIndex);
+            } else {
+                return repositoryName;
+            }
         }
     });
 
