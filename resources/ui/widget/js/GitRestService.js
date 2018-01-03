@@ -38,11 +38,11 @@ define([
         // Get the last 100 commits from the specified repository on GitHub
         getRecentGitHubCommits: function (selectedGitRepository, accessToken) {
             var deferred = new Deferred();
-            var github = new this.gitHubApi({});
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = repositoryUrl.path.split('/').filter(function (part) {
                 return part;
             });
+            var github = new this.gitHubApi({});
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
@@ -78,7 +78,23 @@ define([
         // Get the last 100 commits from the specified repository on GitLab
         getRecentGitLabCommits: function (selectedGitRepository, accessToken) {
             var deferred = new Deferred();
-            deferred.resolve("GitLab");
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var gitlab = this.gitLabApi({
+                url: this._getOriginFromUrlObject(repositoryUrl),
+                token: accessToken
+            });
+
+            gitlab.projects.repository.commits.all("z0039cjb/WISPR", {
+                max_pages: 1,
+                per_page: 100
+            }).then(function (response) {
+                console.log("response: ", response);
+                deferred.resolve(response);
+            }, function (error) {
+                console.log("error: ", error);
+                deferred.resolve(error);
+            });
+
             return deferred.promise;
         },
 
