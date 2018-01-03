@@ -23,9 +23,9 @@ define([
         getRecentCommits: function (selectedGitRepository, gitHost, accessToken) {
             // Depending on how the returned objects look like, they may need to be converted
             // first so that the same property names are always used.
-            if (gitHost === gitHubString) {
+            if (gitHost === this.gitHubString) {
                 return this.getRecentGitHubCommits(selectedGitRepository, accessToken);
-            } else if (gitHost === gitLabString) {
+            } else if (gitHost === this.gitLabString) {
                 return this.getRecentGitLabCommits(selectedGitRepository, accessToken);
             } else {
                 var deferred = new Deferred();
