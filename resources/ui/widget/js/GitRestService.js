@@ -39,9 +39,7 @@ define([
         getRecentGitHubCommits: function (selectedGitRepository, accessToken) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
-            var urlParts = repositoryUrl.path.split('/').filter(function (part) {
-                return part;
-            });
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({});
 
             if (urlParts.length < 2) {
@@ -74,9 +72,7 @@ define([
         getRecentGitLabCommits: function (selectedGitRepository, accessToken) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
-            var urlParts = repositoryUrl.path.split('/').filter(function (part) {
-                return part;
-            });
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
                 url: this._getOriginFromUrlObject(repositoryUrl),
                 token: accessToken
@@ -229,6 +225,13 @@ define([
             } else {
                 return repositoryName;
             }
+        },
+
+        // Returns an array of non empty url parts taken from the specified url path
+        _getUrlPartsFromPath: function (urlPath) {
+            return urlPath.split('/').filter(function (part) {
+                return part; // Remove empty parts (initial slash).
+            });
         }
     });
 
