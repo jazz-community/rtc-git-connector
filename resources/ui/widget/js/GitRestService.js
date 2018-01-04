@@ -5,8 +5,10 @@ define([
     "dojo/json",
     "dojo/Deferred",
     "dojo/request/xhr",
-    "./CommitModel"
-], function (declare, url, array, json, Deferred, xhr, CommitModel) {
+    "./CommitModel",
+    "./IssueModel"
+], function (declare, url, array, json, Deferred, xhr,
+    CommitModel, IssueModel) {
     var _instance = null;
     var GitRestService = declare(null, {
         gitHubString: "GITHUB",
