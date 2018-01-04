@@ -150,7 +150,11 @@ define([
                         var errorObj = json.parse(error.message || error);
                         deferred.reject("Couldn't get the issues from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
                     } else {
-                        deferred.resolve(self._removePullRequestsFromIssuesList(response.data));
+                        var convertedIssues = [];
+                        array.forEach(self._removePullRequestsFromIssuesList(response.data), function (issue) {
+                            convertedIssues.push(IssueModel.CreateFromGitHubIssue(issue));
+                        });
+                        deferred.resolve(convertedIssues);
                     }
                 });
             }
