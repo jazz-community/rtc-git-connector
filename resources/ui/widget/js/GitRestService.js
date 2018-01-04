@@ -3,8 +3,9 @@ define([
     "dojo/_base/url",
     "dojo/json",
     "dojo/Deferred",
-    "dojo/request/xhr"
-], function (declare, url, json, Deferred, xhr) {
+    "dojo/request/xhr",
+    "./CommitModel"
+], function (declare, url, json, Deferred, xhr, CommitModel) {
     var _instance = null;
     var GitRestService = declare(null, {
         gitHubString: "GITHUB",
