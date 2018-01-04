@@ -1,5 +1,6 @@
 define([
     "dojo/_base/declare",
+    "dojo/dom",
     "dojo/dom-class",
     "dojo/dom-style",
     "dojo/on",
@@ -10,7 +11,7 @@ define([
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/SelectLinkType.html"
-], function (declare, domClass, domStyle, on, query,
+], function (declare, dom, domClass, domStyle, on, query,
     MainDataStore, GitRestService,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
@@ -43,6 +44,9 @@ define([
                 // Hide the hole widget if the linkType is null
                 domStyle.set("rtcGitConnectorSelectLinkTypeContainer", "display", value === null ? "none" : "block");
 
+                // Hide the error (if any)
+                self.hideLoadingDataError();
+
                 // Set the selected type in the view
                 if (value !== null) {
                     self.setSelectedLinkType(value);
@@ -50,34 +54,31 @@ define([
                 }
 
                 if (value === "COMMIT" && !self.mainDataStore.selectedRepositorySettings.get("commitsLoaded")) {
-                    // load commits from host
-                    console.log("load commits from host");
+                    // Get commits from host if not already loaded
                     self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken).then(function (commits) {
                         // Set the list in the store and set commitsLoaded to true.
                         console.log("got commits: ", commits);
                     }, function (error) {
-                        // Probably an incorrect repository configuration. Show an error and hide the rest of the view...
-                        console.log("got error: ", error);
+                        // Probably an incorrect repository configuration. Show an error and hide the list view.
+                        self.showLoadingDataError(error);
                     });
                 } else if (value === "ISSUE" && !self.mainDataStore.selectedRepositorySettings.get("issuesLoaded")) {
-                    // load issues from host
-                    console.log("load issues from host");
+                    // Get issues from host if not already loaded
                     self.gitRestService.getRecentIssues(selectedRepository, gitHost, accessToken).then(function (issues) {
                         // Set the list in the store and set issuesLoaded to true.
                         console.log("got issues: ", issues);
                     }, function (error) {
-                        // Probably an incorrect repository configuration...
-                        console.log("got error: ", error);
+                        // Probably an incorrect repository configuration. Show an error and hide the list view.
+                        self.showLoadingDataError(error);
                     });
                 } else if (value === "REQUEST" && !self.mainDataStore.selectedRepositorySettings.get("requestsLoaded")) {
-                    // load requests from host
-                    console.log("load requests from host");
+                    // Get requests from host if not already loaded
                     self.gitRestService.getRecentRequests(selectedRepository, gitHost, accessToken).then(function (requests) {
                         // Set the list in the store and set the requestsLoaded to true.
                         console.log("got requests: ", requests);
                     }, function (error) {
-                        // Probably an incorrect repository configuration...
-                        console.log("got error: ", error);
+                        // Probably an incorrect repository configuration. Show an error and hide the list view.
+                        self.showLoadingDataError(error);
                     });
                 }
             });
@@ -115,6 +116,16 @@ define([
 
             // Find the element using the data attribute
             query(".rtcGitConnectorSelectLinkType .linkTypeItem[data-link-type='REQUEST']")[0].innerHTML = requestsText;
+        },
+
+        showLoadingDataError: function (message) {
+            dom.byId("errorLoadingDataFromHostContainer").innerHTML = message;
+            domStyle.set("errorLoadingDataFromHostContainer", "display", "block");
+        },
+
+        hideLoadingDataError: function () {
+            domStyle.set("errorLoadingDataFromHostContainer", "display", "none");
+            dom.byId("errorLoadingDataFromHostContainer").innerHTML = "";
         }
     });
 });
