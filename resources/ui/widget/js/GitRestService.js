@@ -173,7 +173,15 @@ define([
 
         // Get the last 100 requests (pull/merge) from the selected repository on GitHub or GitLab
         getRecentRequests: function (selectedGitRepository, gitHost, accessToken) {
-
+            if (gitHost === this.gitHubString) {
+                return this.getRecentGitHubRequests(selectedGitRepository, accessToken);
+            } else if (gitHost === this.gitLabString) {
+                return this.getRecentGitLabRequests(selectedGitRepository, accessToken);
+            } else {
+                var deferred = new Deferred();
+                deferred.reject("Invalid git host.");
+                return deferred.promise;
+            }
         },
 
         // Get the last 100 pull requests from the selected repository on GitHub
