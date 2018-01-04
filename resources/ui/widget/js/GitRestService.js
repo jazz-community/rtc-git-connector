@@ -146,7 +146,28 @@ define([
         // Get the last 100 issues from the specified repository on GitLab
         getRecentGitLabIssues: function (selectedGitRepository, accessToken) {
             var deferred = new Deferred();
-            deferred.reject("Not Implemented");
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var gitlab = this.gitLabApi({
+                url: this._getOriginFromUrlObject(repositoryUrl),
+                token: accessToken
+            });
+
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+
+                gitlab.projects.issues.all(urlParts[0] + "/" + urlParts[1], {
+                    max_pages: 1,
+                    per_page: 100
+                }).then(function (response) {
+                    deferred.resolve(response);
+                }, function (error) {
+                    deferred.reject("Couldn't get issues from GitLab repo. Error: " + (error.error.message || error.error));
+                });
+            }
+
             return deferred.promise;
         },
 
