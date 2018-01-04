@@ -58,24 +58,32 @@ define([
                     self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken).then(function (commits) {
                         // Set the list in the store and set commitsLoaded to true.
                         console.log("got commits: ", commits);
+                        self.mainDataStore.selectedRepositoryData.commits
+                            .push.apply(self.mainDataStore.selectedRepositoryData.commits, commits);
                         self.mainDataStore.selectedRepositorySettings.set("commitsLoaded", true);
                     }, function (error) {
                         self.showLoadingDataError(error);
                     });
+
                 } else if (value === "ISSUE" && !self.mainDataStore.selectedRepositorySettings.get("issuesLoaded")) {
                     // Get issues from host if not already loaded
                     self.gitRestService.getRecentIssues(selectedRepository, gitHost, accessToken).then(function (issues) {
                         // Set the list in the store and set issuesLoaded to true.
                         console.log("got issues: ", issues);
+                        self.mainDataStore.selectedRepositoryData.issues
+                            .push.apply(self.mainDataStore.selectedRepositoryData.issues, issues);
                         self.mainDataStore.selectedRepositorySettings.set("issuesLoaded", true);
                     }, function (error) {
                         self.showLoadingDataError(error);
                     });
+
                 } else if (value === "REQUEST" && !self.mainDataStore.selectedRepositorySettings.get("requestsLoaded")) {
                     // Get requests from host if not already loaded
                     self.gitRestService.getRecentRequests(selectedRepository, gitHost, accessToken).then(function (requests) {
                         // Set the list in the store and set the requestsLoaded to true.
                         console.log("got requests: ", requests);
+                        self.mainDataStore.selectedRepositoryData.requests
+                            .push.apply(self.mainDataStore.selectedRepositoryData.requests, requests);
                         self.mainDataStore.selectedRepositorySettings.set("requestsLoaded", true);
                     }, function (error) {
                         self.showLoadingDataError(error);
