@@ -4,9 +4,9 @@ define([
     var CommitModel = declare(null, {
         sha: null,              // The full sha of the commit
         message: null,          // The full commit message
-        committerName: null,    // The full name of the committer
-        committerEmail: null,   // The email of the committer
-        committedDate: null     // The date & time when the commit was made
+        authorName: null,       // The full name of the author
+        authorEmail: null,      // The email of the author
+        authoredDate: null      // The date & time when the commit was made
     });
 
     return new function () {
