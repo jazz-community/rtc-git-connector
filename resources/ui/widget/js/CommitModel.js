@@ -12,12 +12,24 @@ define([
     return new function () {
         this.CreateFromGitHubCommit = function (gitHubCommit) {
             console.log("create from git hub commit: ", gitHubCommit);
-            return new CommitModel();
+            var commitModel = new CommitModel();
+            commitModel.sha = gitHubCommit.sha;
+            commitModel.message = gitHubCommit.commit.message;
+            commitModel.authorName = gitHubCommit.commit.author.name;
+            commitModel.authorEmail = gitHubCommit.commit.author.email;
+            commitModel.authoredDate = gitHubCommit.commit.author.date;
+
+            console.log("created model: ", commitModel);
+            return commitModel;
         };
 
         this.CreateFromGitLabCommit = function (gitLabCommit) {
             console.log("create from git lab commit: ", gitLabCommit);
-            return new CommitModel();
+            var commitModel = new CommitModel();
+
+
+            console.log("created model: ", commitModel);
+            return commitModel;
         };
     };
 });
