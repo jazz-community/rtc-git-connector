@@ -59,7 +59,6 @@ define([
                         // Set the list in the store and set commitsLoaded to true.
                         console.log("got commits: ", commits);
                     }, function (error) {
-                        // Probably an incorrect repository configuration. Show an error and hide the list view.
                         self.showLoadingDataError(error);
                     });
                 } else if (value === "ISSUE" && !self.mainDataStore.selectedRepositorySettings.get("issuesLoaded")) {
@@ -68,7 +67,6 @@ define([
                         // Set the list in the store and set issuesLoaded to true.
                         console.log("got issues: ", issues);
                     }, function (error) {
-                        // Probably an incorrect repository configuration. Show an error and hide the list view.
                         self.showLoadingDataError(error);
                     });
                 } else if (value === "REQUEST" && !self.mainDataStore.selectedRepositorySettings.get("requestsLoaded")) {
@@ -77,7 +75,6 @@ define([
                         // Set the list in the store and set the requestsLoaded to true.
                         console.log("got requests: ", requests);
                     }, function (error) {
-                        // Probably an incorrect repository configuration. Show an error and hide the list view.
                         self.showLoadingDataError(error);
                     });
                 }
@@ -118,6 +115,7 @@ define([
             query(".rtcGitConnectorSelectLinkType .linkTypeItem[data-link-type='REQUEST']")[0].innerHTML = requestsText;
         },
 
+        // Probably an incorrect repository configuration. Show an error and hide the list view (all three?).
         showLoadingDataError: function (message) {
             var errorStart = "There was a problem and the data could not be loaded.<br/>" +
                     "This is likely due to an incorrect configuration of the repository in Jazz.<br/>" +
