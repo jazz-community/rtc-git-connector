@@ -181,7 +181,11 @@ define([
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
-                    deferred.resolve(response);
+                    var convertedIssues = [];
+                    array.forEach(response, function (issue) {
+                        convertedIssues.push(IssueModel.CreateFromGitLabIssue(issue));
+                    });
+                    deferred.resolve(convertedIssues);
                 }, function (error) {
                     deferred.reject("Couldn't get the issues from the GitLab repository. Error: " + (error.error.message || error.error));
                 });
