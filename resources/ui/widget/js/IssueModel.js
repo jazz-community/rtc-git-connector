@@ -2,8 +2,12 @@ define([
     "dojo/_base/declare"
 ], function (declare) {
     var IssueModel = declare(null, {
-
-
+        id: null,           // The issue id in the web UI
+        title: null,        // The title of the issue
+        state: null,        // The state of the issue
+        openedBy: null,     // The user that opened the issue (user name or real name)
+        openedDate: null,   // The date & time when the issue was opened
+        webUrl: null        // The web URL to view the issue
     });
 
     // Return an instance so that the functions can be used as if they were static
