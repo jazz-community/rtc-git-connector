@@ -1,11 +1,12 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/url",
+    "dojo/_base/array",
     "dojo/json",
     "dojo/Deferred",
     "dojo/request/xhr",
     "./CommitModel"
-], function (declare, url, json, Deferred, xhr, CommitModel) {
+], function (declare, url, array, json, Deferred, xhr, CommitModel) {
     var _instance = null;
     var GitRestService = declare(null, {
         gitHubString: "GITHUB",
@@ -61,7 +62,11 @@ define([
                         var errorObj = json.parse(error.message || error);
                         deferred.reject("Couldn't get the commits from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
                     } else {
-                        deferred.resolve(response.data);
+                        var convertedCommits = [];
+                        array.forEach(response.data, function (commit) {
+                            convertedCommits.push(CommitModel.CreateFromGitHubCommit(commit));
+                        });
+                        deferred.resolve(convertedCommits);
                     }
                 });
             }
