@@ -6,10 +6,13 @@ define([
         message: null,          // The full commit message
         authorName: null,       // The full name of the author
         authorEmail: null,      // The email of the author
-        authoredDate: null      // The date & time when the commit was made
+        authoredDate: null,     // The date & time when the commit was made
+        webUrl: null            // The web URL to view the commit
     });
 
+    // Return an instance so that the functions can be used as if they were static
     return new function () {
+        // Create a CommitModel object from a GitHub commit object
         this.CreateFromGitHubCommit = function (gitHubCommit) {
             console.log("create from git hub commit: ", gitHubCommit);
             var commitModel = new CommitModel();
@@ -18,11 +21,13 @@ define([
             commitModel.authorName = gitHubCommit.commit.author.name;
             commitModel.authorEmail = gitHubCommit.commit.author.email;
             commitModel.authoredDate = gitHubCommit.commit.author.date;
+            commitModel.webUrl = gitHubCommit.html_url;
 
             console.log("created model: ", commitModel);
             return commitModel;
         };
 
+        // Create a CommitModel object from a GitLab commit object
         this.CreateFromGitLabCommit = function (gitLabCommit) {
             console.log("create from git lab commit: ", gitLabCommit);
             var commitModel = new CommitModel();
