@@ -111,12 +111,42 @@ define([
 
         // Get the last 100 issues from the specified repository on GitHub
         getRecentGitHubIssues: function (selectedGitRepository, accessToken) {
+            var deferred = new Deferred();
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var github = new this.gitHubApi({});
 
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+
+                github.authenticate({
+                    type: 'token',
+                    token: accessToken
+                });
+                github.issues.getForRepo({
+                    owner: urlParts[0],
+                    repo: urlParts[1],
+                    per_page: 100
+                }, function (error, response) {
+                    if (error) {
+                        var errorObj = json.parse(error.message || error);
+                        deferred.reject("Couldn't get issues from GitHub repo. Error: " + ((errorObj && errorObj.message) || error.message || error));
+                    } else {
+                        deferred.resolve(response.data);
+                    }
+                });
+            }
+
+            return deferred.promise;
         },
 
         // Get the last 100 issues from the specified repository on GitLab
         getRecentGitLabIssues: function (selectedGitRepository, accessToken) {
-
+            var deferred = new Deferred();
+            deferred.reject("Not Implemented");
+            return deferred.promise;
         },
 
         // Get the last 100 requests (pull/merge) from the selected repository on GitHub or GitLab
