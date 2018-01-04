@@ -129,6 +129,7 @@ define([
                 github.issues.getForRepo({
                     owner: urlParts[0],
                     repo: urlParts[1],
+                    state: "all",
                     per_page: 100
                 }, function (error, response) {
                     if (error) {
