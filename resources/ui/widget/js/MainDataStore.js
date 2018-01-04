@@ -9,10 +9,10 @@ define([
         projectArea: null,
         registeredGitRepositories: null,
         selectedRepositorySettings: {
-            repository: null, // Object from registeredGitRepositories
-            gitHost: null, // Uppercase "GITHUB", "GITLAB", "OTHER"
-            accessToken: null, // For github or gitlab
-            linkType: null, // Uppercase "COMMIT", "ISSUE", "REQUEST"
+            repository: null,   // Object from registeredGitRepositories
+            gitHost: null,      // Uppercase "GITHUB", "GITLAB", "OTHER"
+            accessToken: null,  // For GitHub or GitLab
+            linkType: null,     // Uppercase "COMMIT", "ISSUE", "REQUEST"
             commitsLoaded: false,
             issuesLoaded: false,
             requestsLoaded: false
