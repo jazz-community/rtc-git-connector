@@ -119,7 +119,11 @@ define([
         },
 
         showLoadingDataError: function (message) {
-            dom.byId("errorLoadingDataFromHostContainer").innerHTML = message;
+            var errorStart = "There was a problem and the data could not be loaded.<br/>" +
+                    "This is likely due to an incorrect configuration of the repository in Jazz.<br/>" +
+                    "Please check that the host is available and that the repository URL is correct." +
+                    "<br/><br/>";
+            dom.byId("errorLoadingDataFromHostContainer").innerHTML = errorStart + message;
             domStyle.set("errorLoadingDataFromHostContainer", "display", "block");
         },
 
