@@ -78,9 +78,10 @@ define([
         getRecentGitLabCommits: function (selectedGitRepository, accessToken) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
+            var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: this._getOriginFromUrlObject(repositoryUrl),
+                url: urlOrigin,
                 token: accessToken
             });
 
@@ -93,7 +94,12 @@ define([
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
-                    deferred.resolve(response);
+                    var commitUrlPath = urlOrigin + "/" + urlParts[0] + "/" + urlParts[1] + "/commit/";
+                    var convertedCommits = [];
+                    array.forEach(response, function (commit) {
+                        convertedCommits.push(CommitModel.CreateFromGitLabCommit(commit, commitUrlPath));
+                    });
+                    deferred.resolve(convertedCommits);
                 }, function (error) {
                     deferred.reject("Couldn't get the commits from the GitLab repository. Error: " + (error.error.message || error.error));
                 });
@@ -338,6 +344,7 @@ define([
             return deferred.promise;
         },
 
+        // Gets the origin without a trailing slash
         _getOriginFromUrlObject: function (url) {
             return url.scheme + "://" + url.host + (url.port ? ":" + url.port : "");
         },
