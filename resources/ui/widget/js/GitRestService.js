@@ -187,7 +187,34 @@ define([
         // Get the last 100 pull requests from the selected repository on GitHub
         getRecentGitHubRequests: function (selectedGitRepository, accessToken) {
             var deferred = new Deferred();
-            deferred.reject("Not Implemented");
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var github = new this.gitHubApi({});
+
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+
+                github.authenticate({
+                    type: 'token',
+                    token: accessToken
+                });
+                github.pullRequests.getAll({
+                    owner: urlParts[0],
+                    repo: urlParts[1],
+                    state: "all",
+                    per_page: 100
+                }, function (error, response) {
+                    if (error) {
+                        var errorObj = json.parse(error.message || error);
+                        deferred.reject("Couldn't get pull requests from GitHub repo. Error: " + ((errorObj && errorObj.message) || error.message || error));
+                    } else {
+                        deferred.resolve(response.data);
+                    }
+                });
+            }
+
             return deferred.promise;
         },
 
