@@ -28,10 +28,15 @@ define([
         };
 
         // Create a CommitModel object from a GitLab commit object
-        this.CreateFromGitLabCommit = function (gitLabCommit) {
+        this.CreateFromGitLabCommit = function (gitLabCommit, commitUrlPath) {
             console.log("create from git lab commit: ", gitLabCommit);
             var commitModel = new CommitModel();
-
+            commitModel.sha = gitLabCommit.id;
+            commitModel.message = gitLabCommit.message;
+            commitModel.authorName = gitLabCommit.author_name;
+            commitModel.authorEmail = gitLabCommit.author_email;
+            commitModel.authoredDate = gitLabCommit.authored_date;
+            commitModel.webUrl = commitUrlPath + commitModel.sha;
 
             console.log("created model: ", commitModel);
             return commitModel;
