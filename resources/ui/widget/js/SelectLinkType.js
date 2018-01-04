@@ -72,6 +72,13 @@ define([
                 } else if (value === "REQUEST" && !self.mainDataStore.selectedRepositorySettings.get("requestsLoaded")) {
                     // load requests from host
                     console.log("load requests from host");
+                    self.gitRestService.getRecentRequests(selectedRepository, gitHost, accessToken).then(function (requests) {
+                        // Set the list in the store and set the requestsLoaded to true.
+                        console.log("got requests: ", requests);
+                    }, function (error) {
+                        // Probably an incorrect repository configuration...
+                        console.log("got error: ", error);
+                    });
                 }
             });
         },

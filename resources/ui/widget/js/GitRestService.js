@@ -186,12 +186,16 @@ define([
 
         // Get the last 100 pull requests from the selected repository on GitHub
         getRecentGitHubRequests: function (selectedGitRepository, accessToken) {
-
+            var deferred = new Deferred();
+            deferred.reject("Not Implemented");
+            return deferred.promise;
         },
 
         // Get the last 100 merge requests from the selected repository on GitLab
         getRecentGitLabRequests: function (selectedGitRepository, accessToken) {
-
+            var deferred = new Deferred();
+            deferred.reject("Not Implemented");
+            return deferred.promise;
         },
 
         determineRepositoryGitHost: function (selectedGitRepository) {
