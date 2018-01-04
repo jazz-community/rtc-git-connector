@@ -8,7 +8,7 @@
         "buffer": "^5.0.7",
         "github": "^13.0.1",
         "gzip-js": "^0.3.2",
-        "node-gitlab-api": "git+https://github.com/MartinBenninger/node-gitlab-api.git#add-options-for-commits"
+        "node-gitlab-api": "git+https://github.com/jdalrymple/node-gitlab-api.git#9b9921c188c917bd1fd44d87b0bb9a91021c09af"
     },
     "devDependencies": {
         "jazz-update-site-webpack-plugin": "^0.4.1",
