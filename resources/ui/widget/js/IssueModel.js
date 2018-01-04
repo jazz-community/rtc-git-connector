@@ -16,7 +16,12 @@ define([
         this.CreateFromGitHubIssue = function (gitHubIssue) {
             console.log("create from git hub issue: ", gitHubIssue);
             var issueModel = new IssueModel();
-
+            issueModel.id = gitHubIssue.number;
+            issueModel.title = gitHubIssue.title;
+            issueModel.state = gitHubIssue.state;
+            issueModel.openedBy = gitHubIssue.user.login;
+            issueModel.openedDate = gitHubIssue.created_at;
+            issueModel.webUrl = gitHubIssue.html_url;
 
             console.log("created model: ", issueModel);
             return issueModel;
