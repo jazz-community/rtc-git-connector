@@ -111,6 +111,7 @@ define([
 
         // Get the last 100 issues from the specified repository on GitHub
         getRecentGitHubIssues: function (selectedGitRepository, accessToken) {
+            var self = this;
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
@@ -134,7 +135,7 @@ define([
                         var errorObj = json.parse(error.message || error);
                         deferred.reject("Couldn't get issues from GitHub repo. Error: " + ((errorObj && errorObj.message) || error.message || error));
                     } else {
-                        deferred.resolve(response.data);
+                        deferred.resolve(self._removePullRequestsFromIssuesList(response.data));
                     }
                 });
             }
@@ -269,6 +270,18 @@ define([
         _getUrlPartsFromPath: function (urlPath) {
             return urlPath.split('/').filter(function (part) {
                 return part; // Remove empty parts (initial slash).
+            });
+        },
+
+        // Remove pull requests from the list of issues provided by the GitHub API.
+        // The GitHub API counts pull requests as issues. This also means that when
+        // requesting 100 issues we actually get less because some of them are pull
+        // requests. This shouldn't be a problem most of the time but may need to be
+        // addressed in the future if there are repositories with a too high pull
+        // requests to issues ratio.
+        _removePullRequestsFromIssuesList: function (issues) {
+            return issues.filter(function (issue) {
+                return !issue.pull_request;
             });
         }
     });
