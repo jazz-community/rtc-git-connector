@@ -62,6 +62,13 @@ define([
                 } else if (value === "ISSUE" && !self.mainDataStore.selectedRepositorySettings.get("issuesLoaded")) {
                     // load issues from host
                     console.log("load issues from host");
+                    self.gitRestService.getRecentIssues(selectedRepository, gitHost, accessToken).then(function (issues) {
+                        // Set the list in the store and set issuesLoaded to true.
+                        console.log("got issues: ", issues);
+                    }, function (error) {
+                        // Probably an incorrect repository configuration...
+                        console.log("got error: ", error);
+                    });
                 } else if (value === "REQUEST" && !self.mainDataStore.selectedRepositorySettings.get("requestsLoaded")) {
                     // load requests from host
                     console.log("load requests from host");
