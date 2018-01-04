@@ -31,7 +31,12 @@ define([
         this.CreateFromGitLabIssue = function (gitLabIssue) {
             console.log("create from git lab issue: ", gitLabIssue);
             var issueModel = new IssueModel();
-
+            issueModel.id = gitLabIssue.iid;
+            issueModel.title = gitLabIssue.title;
+            issueModel.state = gitLabIssue.state;
+            issueModel.openedBy = gitLabIssue.author.name;
+            issueModel.openedDate = gitLabIssue.created_at;
+            issueModel.webUrl = gitLabIssue.web_url;
 
             console.log("created model: ", issueModel);
             return issueModel;
