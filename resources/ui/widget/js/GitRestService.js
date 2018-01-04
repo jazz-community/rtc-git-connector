@@ -58,7 +58,7 @@ define([
                 }, function (error, response) {
                     if (error) {
                         var errorObj = json.parse(error.message || error);
-                        deferred.reject("Couldn't get commits from GitHub repo. Error: " + ((errorObj && errorObj.message) || error.message || error));
+                        deferred.reject("Couldn't get the commits from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
                     } else {
                         deferred.resolve(response.data);
                     }
@@ -89,7 +89,7 @@ define([
                 }).then(function (response) {
                     deferred.resolve(response);
                 }, function (error) {
-                    deferred.reject("Couldn't get commits from GitLab repo. Error: " + (error.error.message || error.error));
+                    deferred.reject("Couldn't get the commits from the GitLab repository. Error: " + (error.error.message || error.error));
                 });
             }
 
@@ -134,7 +134,7 @@ define([
                 }, function (error, response) {
                     if (error) {
                         var errorObj = json.parse(error.message || error);
-                        deferred.reject("Couldn't get issues from GitHub repo. Error: " + ((errorObj && errorObj.message) || error.message || error));
+                        deferred.reject("Couldn't get the issues from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
                     } else {
                         deferred.resolve(self._removePullRequestsFromIssuesList(response.data));
                     }
@@ -165,7 +165,7 @@ define([
                 }).then(function (response) {
                     deferred.resolve(response);
                 }, function (error) {
-                    deferred.reject("Couldn't get issues from GitLab repo. Error: " + (error.error.message || error.error));
+                    deferred.reject("Couldn't get the issues from the GitLab repository. Error: " + (error.error.message || error.error));
                 });
             }
 
@@ -209,7 +209,7 @@ define([
                 }, function (error, response) {
                     if (error) {
                         var errorObj = json.parse(error.message || error);
-                        deferred.reject("Couldn't get pull requests from GitHub repo. Error: " + ((errorObj && errorObj.message) || error.message || error));
+                        deferred.reject("Couldn't get the pull requests from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
                     } else {
                         deferred.resolve(response.data);
                     }
@@ -240,7 +240,7 @@ define([
                 }).then(function (response) {
                     deferred.resolve(response);
                 }, function (error) {
-                    deferred.reject("Couldn't get merge requests from GitLab repo. Error: " + (error.error.message || error.error));
+                    deferred.reject("Couldn't get the merge requests from the GitLab repository. Error: " + (error.error.message || error.error));
                 });
             }
 
