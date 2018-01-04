@@ -98,7 +98,15 @@ define([
 
         // Get the last 100 issues form the specified repository on GitHub or GitLab
         getRecentIssues: function (selectedGitRepository, gitHost, accessToken) {
-
+            if (gitHost === this.gitHubString) {
+                return this.getRecentGitHubIssues(selectedGitRepository, accessToken);
+            } else if (gitHost === this.gitLabString) {
+                return this.getRecentGitLabIssues(selectedGitRepository, accessToken);
+            } else {
+                var deferred = new Deferred();
+                deferred.reject("Invalid git host.");
+                return deferred.promise;
+            }
         },
 
         // Get the last 100 issues from the specified repository on GitHub
