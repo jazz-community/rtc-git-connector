@@ -6,7 +6,7 @@ define([
     "dojo/on",
     "dojo/query",
     "./MainDataStore",
-    "./GitRestService",
+    "./RestServices/GitRestService",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
