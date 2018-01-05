@@ -5,9 +5,9 @@ define([
     "dojo/json",
     "dojo/Deferred",
     "dojo/request/xhr",
-    "./CommitModel",
-    "./IssueModel",
-    "./RequestModel"
+    "./Models/CommitModel",
+    "./Models/IssueModel",
+    "./Models/RequestModel"
 ], function (declare, url, array, json, Deferred, xhr,
     CommitModel, IssueModel, RequestModel) {
     var _instance = null;
