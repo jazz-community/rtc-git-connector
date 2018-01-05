@@ -146,6 +146,7 @@ define([
                     "<br/><br/>";
             dom.byId("errorLoadingDataFromHostContainer").innerHTML = errorStart + message;
             domStyle.set("errorLoadingDataFromHostContainer", "display", "block");
+            this.showViewAndSelectWidget("");
         },
 
         hideLoadingDataError: function () {
