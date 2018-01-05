@@ -5,7 +5,7 @@ define([
     "dojo/dom-style",
     "dojo/on",
     "dojo/keys",
-    "./MainDataStore",
+    "./DataStores/MainDataStore",
     "./RestServices/JazzRestService",
     "./RestServices/GitRestService",
     "./SelectRegisteredGitRepository",

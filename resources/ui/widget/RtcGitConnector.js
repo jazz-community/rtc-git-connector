@@ -3,7 +3,7 @@ define([
     "dojo/dom",
     "dojo/dom-style",
     "./js/MainLayout",
-    "./js/MainDataStore",
+    "./js/DataStores/MainDataStore",
     "./js/RestServices/JazzRestService",
     "./js/RestServices/GitRestService",
     "./_AbstractActionWidget",
