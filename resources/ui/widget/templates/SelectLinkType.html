@@ -10,12 +10,18 @@
 
     <p id="errorLoadingDataFromHostContainer" class="rtcGitConnectorError" style="display: none;"></p>
 
-    <div data-dojo-attach-point="viewAndSelectCommits"
-        data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectCommits"></div>
+    <div class="rtcGitConnectorViewAndSelectContainer" data-link-type="COMMIT" style="display: none;">
+        <div data-dojo-attach-point="viewAndSelectCommits"
+            data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectCommits"></div>
+    </div>
 
-    <div data-dojo-attach-point="viewAndSelectIssues"
-        data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectIssues"></div>
+    <div class="rtcGitConnectorViewAndSelectContainer" data-link-type="ISSUE" style="display: none;">
+        <div data-dojo-attach-point="viewAndSelectIssues"
+            data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectIssues"></div>
+    </div>
 
-    <div data-dojo-attach-point="viewAndSelectRequests"
-        data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectRequests"></div>
+    <div class="rtcGitConnectorViewAndSelectContainer" data-link-type="REQUEST" style="display: none;">
+        <div data-dojo-attach-point="viewAndSelectRequests"
+            data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectRequests"></div>
+    </div>
 </div>

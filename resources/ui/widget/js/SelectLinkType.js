@@ -62,6 +62,9 @@ define([
                     self.setRequestsText(gitHost);
                 }
 
+                // Only show the widget for the selected link type
+                self.showViewAndSelectWidget(value);
+
                 if (value === "COMMIT" && !self.mainDataStore.selectedRepositorySettings.get("commitsLoaded")) {
                     // Get commits from host if not already loaded
                     self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken).then(function (commits) {
@@ -148,6 +151,16 @@ define([
         hideLoadingDataError: function () {
             domStyle.set("errorLoadingDataFromHostContainer", "display", "none");
             dom.byId("errorLoadingDataFromHostContainer").innerHTML = "";
+        },
+
+        showViewAndSelectWidget: function (linkType) {
+            query(".rtcGitConnectorViewAndSelectContainer").forEach(function (node) {
+                var displayValue = (node.getAttribute("data-link-type") === linkType)
+                    ? "block"
+                    : "none";
+
+                domStyle.set(node, "display", displayValue);
+            });
         }
     });
 });
