@@ -14,7 +14,6 @@ define([
     return new function () {
         // Create a CommitModel object from a GitHub commit object
         this.CreateFromGitHubCommit = function (gitHubCommit) {
-            console.log("create from git hub commit: ", gitHubCommit);
             var commitModel = new CommitModel();
             commitModel.sha = gitHubCommit.sha;
             commitModel.message = gitHubCommit.commit.message;
@@ -23,13 +22,11 @@ define([
             commitModel.authoredDate = gitHubCommit.commit.author.date;
             commitModel.webUrl = gitHubCommit.html_url;
 
-            console.log("created model: ", commitModel);
             return commitModel;
         };
 
         // Create a CommitModel object from a GitLab commit object
         this.CreateFromGitLabCommit = function (gitLabCommit, commitUrlPath) {
-            console.log("create from git lab commit: ", gitLabCommit);
             var commitModel = new CommitModel();
             commitModel.sha = gitLabCommit.id;
             commitModel.message = gitLabCommit.message;
@@ -38,7 +35,6 @@ define([
             commitModel.authoredDate = gitLabCommit.authored_date;
             commitModel.webUrl = commitUrlPath + commitModel.sha;
 
-            console.log("created model: ", commitModel);
             return commitModel;
         };
     };

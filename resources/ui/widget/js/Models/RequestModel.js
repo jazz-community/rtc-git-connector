@@ -14,7 +14,6 @@ define([
     return new function () {
         // Create a RequestModel object from a GitHub request object
         this.CreateFromGitHubRequest = function (gitHubRequest) {
-            console.log("create from git hub request: ", gitHubRequest);
             var requestModel = new RequestModel();
             requestModel.id = gitHubRequest.number;
             requestModel.title = gitHubRequest.title;
@@ -23,13 +22,11 @@ define([
             requestModel.openedDate = gitHubRequest.created_at;
             requestModel.webUrl = gitHubRequest.html_url;
 
-            console.log("created model: ", requestModel);
             return requestModel;
         };
 
         // Create a RequestModel object from a GitLab request object
         this.CreateFromGitLabRequest = function (gitLabRequest) {
-            console.log("create from git lab request: ", gitLabRequest);
             var requestModel = new RequestModel();
             requestModel.id = gitLabRequest.iid;
             requestModel.title = gitLabRequest.title;
@@ -38,7 +35,6 @@ define([
             requestModel.openedDate = gitLabRequest.created_at;
             requestModel.webUrl = gitLabRequest.web_url;
 
-            console.log("created model: ", requestModel);
             return requestModel;
         };
     };
