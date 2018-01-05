@@ -28,10 +28,15 @@ define([
         };
 
         // Create a RequestModel object from a GitLab request object
-        this.CreateFromGitLabRequest = function (gitLabRequest, requestUrlPath) {
+        this.CreateFromGitLabRequest = function (gitLabRequest) {
             console.log("create from git lab request: ", gitLabRequest);
             var requestModel = new RequestModel();
-
+            requestModel.id = gitLabRequest.iid;
+            requestModel.title = gitLabRequest.title;
+            requestModel.state = gitLabRequest.state;
+            requestModel.openedBy = gitLabRequest.author.name;
+            requestModel.openedDate = gitLabRequest.created_at;
+            requestModel.webUrl = gitLabRequest.web_url;
 
             console.log("created model: ", requestModel);
             return requestModel;
