@@ -234,7 +234,11 @@ define([
                         var errorObj = json.parse(error.message || error);
                         deferred.reject("Couldn't get the pull requests from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
                     } else {
-                        deferred.resolve(response.data);
+                        var convertedRequests = [];
+                        array.forEach(response.data, function (request) {
+                            convertedRequests.push(RequestModel.CreateFromGitHubRequest(request));
+                        });
+                        deferred.resolve(convertedRequests);
                     }
                 });
             }
