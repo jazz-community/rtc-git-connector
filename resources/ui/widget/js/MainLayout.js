@@ -67,24 +67,8 @@ define([
                 originalAccessTokenDialogShow.apply(self.getAccessTokenDialog);
             };
 
-            on(this.accessTokenInput, "keydown", function (event) {
-                if (event.keyCode === keys.ENTER) {
-                    // Run the submit function when the enter key is pressed
-                    event.preventDefault();
-                    console.log("enter key pressed");
-                }
-
-                // Delay checking the value so that the new value is used
-                window.setTimeout(function () {
-                    if (self.accessTokenInput.displayedValue.trim()) {
-                        self.saveAccessTokenButton.setDisabled(false);
-                    } else {
-                        self.saveAccessTokenButton.setDisabled(true);
-                    }
-                }, 10);
-            });
-
-            this.saveAccessTokenButton.onClick = function (event) {
+            // Function to run when save button is clicked or the enter key is pressed
+            var saveAccessTokenButtonClick = function (event) {
                 var accessTokenInputValue = self.accessTokenInput.value;
                 self.saveAccessTokenButton.setDisabled(true);
 
@@ -97,6 +81,33 @@ define([
                     self.checkAccessTokenForSelectedRepository(accessTokenInputValue);
                 });
             };
+
+            on(this.accessTokenInput, "keydown", function (event) {
+                if (event.keyCode === keys.ENTER) {
+                    // Run the submit function when the enter key is pressed
+                    event.preventDefault();
+
+                    // Delay checking the value so that the new value is used
+                    window.setTimeout(function () {
+                        if (self.accessTokenInput.displayedValue.trim()) {
+                            // Focus the save button so that the input value is updated
+                            document.getElementById('saveAccessTokenButton').focus();
+                            saveAccessTokenButtonClick();
+                        }
+                    }, 10);
+                } else {
+                    // Delay checking the value so that the new value is used
+                    window.setTimeout(function () {
+                        if (self.accessTokenInput.displayedValue.trim()) {
+                            self.saveAccessTokenButton.setDisabled(false);
+                        } else {
+                            self.saveAccessTokenButton.setDisabled(true);
+                        }
+                    }, 10);
+                }
+            });
+
+            this.saveAccessTokenButton.onClick = saveAccessTokenButtonClick;
 
             this.cancelAccessTokenButton.onClick = function (event) {
                 self.getAccessTokenDialog.hide();
