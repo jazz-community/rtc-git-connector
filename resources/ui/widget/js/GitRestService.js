@@ -265,7 +265,11 @@ define([
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
-                    deferred.resolve(response);
+                    var convertedRequests = [];
+                    array.forEach(response, function (request) {
+                        convertedRequests.push(RequestModel.CreateFromGitLabRequest(request));
+                    });
+                    deferred.resolve(convertedRequests);
                 }, function (error) {
                     deferred.reject("Couldn't get the merge requests from the GitLab repository. Error: " + (error.error.message || error.error));
                 });
