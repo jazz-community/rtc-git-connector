@@ -6,7 +6,7 @@ define([
         title: null,        // The title of the request
         state: null,        // The state of the request
         openedBy: null,     // The user that opened the request (user name or real name)
-        openedDate: null,   // The date & time when the issue was opened
+        openedDate: null,   // The date & time when the request was opened
         webUrl: null        // The web URL to view the request
     });
 
