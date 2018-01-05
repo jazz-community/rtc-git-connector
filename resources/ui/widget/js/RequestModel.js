@@ -16,7 +16,12 @@ define([
         this.CreateFromGitHubRequest = function (gitHubRequest) {
             console.log("create from git hub request: ", gitHubRequest);
             var requestModel = new RequestModel();
-
+            requestModel.id = gitHubRequest.number;
+            requestModel.title = gitHubRequest.title;
+            requestModel.state = gitHubRequest.state;
+            requestModel.openedBy = gitHubRequest.user.login;
+            requestModel.openedDate = gitHubRequest.created_at;
+            requestModel.webUrl = gitHubRequest.html_url;
 
             console.log("created model: ", requestModel);
             return requestModel;
