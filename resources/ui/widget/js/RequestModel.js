@@ -2,8 +2,12 @@ define([
     "dojo/_base/declare"
 ], function (declare) {
     var RequestModel = declare(null, {
-
-
+        id: null,           // The request id in the web UI
+        title: null,        // The title of the request
+        state: null,        // The state of the request
+        openedBy: null,     // The user that opened the request (user name or real name)
+        openedDate: null,   // The date & time when the issue was opened
+        webUrl: null        // The web URL to view the request
     });
 
     // Return an instance so that the functions can be used as if they were static
