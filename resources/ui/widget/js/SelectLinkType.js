@@ -9,13 +9,14 @@ define([
     "./RestServices/GitRestService",
     "./ViewAndSelectCommits",
     "./ViewAndSelectIssues",
+    "./ViewAndSelectRequests",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/SelectLinkType.html"
 ], function (declare, dom, domClass, domStyle, on, query,
     MainDataStore, GitRestService,
-    ViewAndSelectCommits, ViewAndSelectIssues,
+    ViewAndSelectCommits, ViewAndSelectIssues, ViewAndSelectRequests,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectLinkType",
@@ -34,6 +35,7 @@ define([
             // Manually call the startup method of custom widgets used in the template
             this.viewAndSelectCommits.startup();
             this.viewAndSelectIssues.startup();
+            this.viewAndSelectRequests.startup();
 
             this.watchDataStore();
             this.setEventHandlers();
