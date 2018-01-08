@@ -95,7 +95,15 @@ define([
                 }, commitsListNode);
 
                 on(commitListItem, "click", function (event) {
-                    self.setSelectedCommitBySha(this.getAttribute("data-commit-sha"));
+                    var commitSha = this.getAttribute("data-commit-sha");
+
+                    if (event.target.classList.contains("rtcGitConnectorViewAndSelectListItemButton")) {
+                        // Add button clicked
+                        console.log("Add button clicked: ", commitSha);
+                    } else {
+                        // Select commit
+                        self.setSelectedCommitBySha(commitSha);
+                    }
                 });
 
                 domConstruct.create("div", {
