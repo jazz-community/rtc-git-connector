@@ -132,17 +132,15 @@
     height: 300px;
     margin-left: 10px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .rtcGitConnectorViewAndSelectDetailsSpan {
     display: block;
     font-size: 1rem;
+    padding-top: .5rem;
     padding-bottom: .5rem;
-}
-
-.rtcGitConnectorViewAndSelectDetailsTitle {
-    font-weight: bold;
-    text-decoration: underline;
+    border-bottom: 1px dashed lightgray;
 }
 
 .rtcGitConnectorViewAndSelectDetailsLabel {

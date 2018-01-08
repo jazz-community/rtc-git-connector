@@ -141,7 +141,7 @@ define([
             domConstruct.empty(commitDetailsNode);
 
             domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsSpan rtcGitConnectorViewAndSelectDetailsTitle",
+                "class": "rtcGitConnectorViewAndSelectDetailsSpan rtcGitConnectorViewAndSelectDetailsLabel",
                 innerHTML: "Commit Details"
             }, commitDetailsNode);
 
@@ -151,7 +151,7 @@ define([
                     innerHTML: "Select a commit to view more details"
                 }, commitDetailsNode);
             } else {
-                this.addToDetailsViewNode(commitDetailsNode, "Message: ", commit.message);
+                this.addToDetailsViewNode(commitDetailsNode, "Message: ", commit.message.replace(/(\r\n|\n|\r)/gm, "<br />"));
                 this.addToDetailsViewNode(commitDetailsNode, "Author: ", commit.authorName);
                 this.addToDetailsViewNode(commitDetailsNode, "Date: ", commit.authoredDate);
                 this.addToDetailsViewNode(commitDetailsNode, "SHA: ", commit.sha);
