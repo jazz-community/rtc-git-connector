@@ -95,3 +95,22 @@
     background-color: #cfe5fa;
     cursor: default;
 }
+
+.rtcGitConnectorViewAndSelectWrapper {
+    display: flex;
+    width: 100%;
+}
+
+.rtcGitConnectorViewAndSelectList {
+    flex-grow: 1;
+    height: 500px;
+    margin-right: 10px;
+    background-color: green;
+}
+
+.rtcGitConnectorViewAndSelectDetails {
+    flex-grow: 1;
+    height: 500px;
+    margin-left: 10px;
+    background-color: blue;
+}
