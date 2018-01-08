@@ -98,8 +98,22 @@ define([
                     var commitSha = this.getAttribute("data-commit-sha");
 
                     if (event.target.classList.contains("rtcGitConnectorViewAndSelectListItemButton")) {
-                        // Add button clicked
-                        console.log("Add button clicked: ", commitSha);
+                        // Remove the commit with the specified sha from the commits list in store and add to the selected list
+                        if (commitSha) {
+                            var selectedCommit = null;
+
+                            for (var i = self.mainDataStore.selectedRepositoryData.commits.length - 1; i >= 0; i--) {
+                                if (self.mainDataStore.selectedRepositoryData.commits[i].sha === commitSha) {
+                                    selectedCommit = self.mainDataStore.selectedRepositoryData.commits.splice(i, 1)[0];
+                                    break;
+                                }
+                            }
+
+                            if (selectedCommit) {
+                                console.log("selectedCommit: ", selectedCommit);
+                                self.mainDataStore.selectedRepositoryData.commitsToLink.push(selectedCommit);
+                            }
+                        }
                     } else {
                         // Select commit
                         self.setSelectedCommitBySha(commitSha);
