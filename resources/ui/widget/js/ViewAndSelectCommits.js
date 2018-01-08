@@ -24,6 +24,8 @@ define([
         },
 
         watchDataStore: function () {
+            var self = this;
+
             // Watch the store to know when the commits finished loading
             this.mainDataStore.selectedRepositorySettings.watch("commitsLoaded", function (name, oldValue, value) {
                 if (value) {
@@ -32,6 +34,15 @@ define([
                 } else {
                     // Commits are not loaded, reinitialize the view (loading...)
                     console.log("commits not loaded");
+                }
+            });
+
+            // Watch the store to react when the list of commits changes (add / remove from commits to link list)
+            this.mainDataStore.selectedRepositoryData.commits.watchElements(function () {
+                // Only react if the commits have finished loading
+                if (self.mainDataStore.selectedRepositorySettings.get("commitsLoaded")) {
+                    // Update the local list of commits...
+                    console.log("commits list changed");
                 }
             });
         }
