@@ -98,22 +98,31 @@ define([
                     self.setSelectedCommitBySha(this.getAttribute("data-commit-sha"));
                 });
 
+                domConstruct.create("div", {
+                    "class": "rtcGitConnectorViewAndSelectListItemButton",
+                    innerHTML: "+"
+                }, commitListItem);
+
+                var commitListItemContent = domConstruct.create("div", {
+                    "class": "rtcGitConnectorViewAndSelectListItemContent"
+                }, commitListItem);
+
                 domConstruct.create("span", {
                     "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
                     innerHTML: commit.message.split(/\r?\n/g)[0]
-                }, commitListItem);
+                }, commitListItemContent);
 
                 if (commit.authoredDate) {
                     var commitDate = new Date(commit.authoredDate);
                     domConstruct.create("span", {
                         "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
                         innerHTML: commit.authorName + " committed on " + commitDate.toDateString() + " at " + commitDate.getHours() + ":" + commitDate.getMinutes()
-                    }, commitListItem);
+                    }, commitListItemContent);
                 } else {
                     domConstruct.create("span", {
                         "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
                         innerHTML: "&nbsp;"
-                    }, commitListItem);
+                    }, commitListItemContent);
                 }
             });
         },
