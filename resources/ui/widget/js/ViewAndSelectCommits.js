@@ -155,11 +155,28 @@ define([
                 this.addToDetailsViewNode(commitDetailsNode, "Author: ", commit.authorName + " (" + commit.authorEmail + ")");
                 this.addToDetailsViewNode(commitDetailsNode, "Date: ", new Date(commit.authoredDate).toString());
                 this.addToDetailsViewNode(commitDetailsNode, "SHA: ", commit.sha);
-                this.addToDetailsViewNode(commitDetailsNode, "Web Link: ", commit.webUrl);
+                var linkNode = domConstruct.create("a", {
+                    innerHTML: "Open this commit in a new tab",
+                    href: commit.webUrl,
+                    target: "_blank"
+                });
+                this.addLinkToDetailsViewNode(commitDetailsNode, "Web Link: ", linkNode);
             }
         },
 
         addToDetailsViewNode: function (detailsViewNode, label, value) {
+            var commitMessageNode = this.createDetailsViewSpan(detailsViewNode, label);
+            domConstruct.create("span", {
+                innerHTML: value
+            }, commitMessageNode);
+        },
+
+        addLinkToDetailsViewNode: function (detailsViewNode, label, linkNode) {
+            var commitMessageNode = this.createDetailsViewSpan(detailsViewNode, label);
+            domConstruct.place(linkNode, commitMessageNode);
+        },
+
+        createDetailsViewSpan: function (detailsViewNode, label) {
             var commitMessageNode = domConstruct.create("span", {
                 "class": "rtcGitConnectorViewAndSelectDetailsSpan"
             }, detailsViewNode);
@@ -167,9 +184,8 @@ define([
                 "class": "rtcGitConnectorViewAndSelectDetailsLabel",
                 innerHTML: label
             }, commitMessageNode);
-            domConstruct.create("span", {
-                innerHTML: value
-            }, commitMessageNode);
+
+            return commitMessageNode;
         }
     });
 });
