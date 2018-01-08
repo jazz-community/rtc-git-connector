@@ -7,7 +7,8 @@ define([
         authorName: null,       // The full name of the author
         authorEmail: null,      // The email of the author
         authoredDate: null,     // The date & time when the commit was made
-        webUrl: null            // The web URL to view the commit
+        webUrl: null,           // The web URL to view the commit
+        alreadyLinked: null     // True if already linked to the current work item
     });
 
     // Return an instance so that the functions can be used as if they were static
@@ -21,6 +22,7 @@ define([
             commitModel.authorEmail = gitHubCommit.commit.author.email;
             commitModel.authoredDate = gitHubCommit.commit.author.date;
             commitModel.webUrl = gitHubCommit.html_url;
+            commitModel.alreadyLinked = false; // Need to check this...
 
             return commitModel;
         };
@@ -34,6 +36,7 @@ define([
             commitModel.authorEmail = gitLabCommit.author_email;
             commitModel.authoredDate = gitLabCommit.authored_date;
             commitModel.webUrl = commitUrlPath + commitModel.sha;
+            commitModel.alreadyLinked = false; // Need to check this...
 
             return commitModel;
         };
