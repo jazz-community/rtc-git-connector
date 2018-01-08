@@ -107,6 +107,7 @@
     height: 500px;
     margin-right: 10px;
     border: 1px solid gray;
+    overflow-y: auto;
 }
 
 .rtcGitConnectorViewAndSelectDetails {
