@@ -152,7 +152,7 @@ define([
                 }, commitDetailsNode);
             } else {
                 this.addToDetailsViewNode(commitDetailsNode, "Message: ", commit.message.replace(/(\r\n|\n|\r)/gm, "<br />"));
-                this.addToDetailsViewNode(commitDetailsNode, "Author: ", commit.authorName);
+                this.addToDetailsViewNode(commitDetailsNode, "Author: ", commit.authorName + " (" + commit.authorEmail + ")");
                 this.addToDetailsViewNode(commitDetailsNode, "Date: ", new Date(commit.authoredDate).toString());
                 this.addToDetailsViewNode(commitDetailsNode, "SHA: ", commit.sha);
                 this.addToDetailsViewNode(commitDetailsNode, "Web Link: ", commit.webUrl);
