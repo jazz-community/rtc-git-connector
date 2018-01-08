@@ -49,9 +49,9 @@ define([
             this.selectedRepositoryData.commits.length = 0;
             this.selectedRepositoryData.issues.length = 0;
             this.selectedRepositoryData.requests.length = 0;
-            this.selectedRepositoryData.commitsToLink.length = 0;
-            this.selectedRepositoryData.issuesToLink.length = 0;
-            this.selectedRepositoryData.requestsToLink.length = 0;
+            this.selectedRepositoryData.commitsToLink.splice(0, this.selectedRepositoryData.commitsToLink.length);
+            this.selectedRepositoryData.issuesToLink.splice(0, this.selectedRepositoryData.issuesToLink.length);
+            this.selectedRepositoryData.requestsToLink.splice(0, this.selectedRepositoryData.requestsToLink.length);
         }
     });
 
