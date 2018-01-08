@@ -116,7 +116,7 @@ define([
                     var commitDate = new Date(commit.authoredDate);
                     domConstruct.create("span", {
                         "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: commit.authorName + " committed on " + commitDate.toDateString() + " at " + commitDate.getHours() + ":" + commitDate.getMinutes()
+                        innerHTML: commit.authorName + " committed on " + commitDate.toDateString() + " at " + ("00" + commitDate.getHours()).slice(-2) + ":" + ("00" + commitDate.getMinutes()).slice(-2)
                     }, commitListItemContent);
                 } else {
                     domConstruct.create("span", {
