@@ -110,14 +110,6 @@
     overflow-y: auto;
 }
 
-.rtcGitConnectorViewAndSelectDetails {
-    flex-grow: 1;
-    width: 100%;
-    height: 300px;
-    margin-left: 10px;
-    background-color: lightgray;
-}
-
 .rtcGitConnectorViewAndSelectListItem {
     border-bottom: 1px solid lightgray;
     padding: .2rem;
@@ -132,4 +124,27 @@
 .rtcGitConnectorViewAndSelectListItem.selected {
     background-color: #cfe5fa;
     cursor: default;
+}
+
+.rtcGitConnectorViewAndSelectDetails {
+    flex-grow: 1;
+    width: 100%;
+    height: 300px;
+    margin-left: 10px;
+    overflow-y: auto;
+}
+
+.rtcGitConnectorViewAndSelectDetailsSpan {
+    display: block;
+    font-size: 1rem;
+    padding-bottom: .5rem;
+}
+
+.rtcGitConnectorViewAndSelectDetailsTitle {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.rtcGitConnectorViewAndSelectDetailsLabel {
+    font-weight: bold;
 }
