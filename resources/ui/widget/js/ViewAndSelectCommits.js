@@ -120,10 +120,17 @@ define([
                     }
                 });
 
-                domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemButton",
-                    innerHTML: "+"
-                }, commitListItem);
+                if (commit.alreadyLinked) {
+                    domConstruct.create("div", {
+                        "class": "rtcGitConnectorViewAndSelectListItemEmptyButton",
+                        innerHTML: "&nbsp;"
+                    }, commitListItem);
+                } else {
+                    domConstruct.create("div", {
+                        "class": "rtcGitConnectorViewAndSelectListItemButton",
+                        innerHTML: "+"
+                    }, commitListItem);
+                }
 
                 var commitListItemContent = domConstruct.create("div", {
                     "class": "rtcGitConnectorViewAndSelectListItemContent"

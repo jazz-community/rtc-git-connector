@@ -141,6 +141,12 @@
     cursor: pointer;
 }
 
+.rtcGitConnectorViewAndSelectListItemEmptyButton {
+    width: 2.5rem;
+    height: 100%;
+    margin: auto .3rem;
+}
+
 .rtcGitConnectorViewAndSelectListItemContent {
     width: 100%;
     height: 100%;
