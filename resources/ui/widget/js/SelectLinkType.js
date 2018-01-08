@@ -12,6 +12,7 @@ define([
     "./ViewAndSelectRequests",
     "./ViewCommitsToLink",
     "./ViewIssuesToLink",
+    "./ViewRequestsToLink",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
@@ -19,7 +20,7 @@ define([
 ], function (declare, dom, domClass, domStyle, on, query,
     MainDataStore, GitRestService,
     ViewAndSelectCommits, ViewAndSelectIssues, ViewAndSelectRequests,
-    ViewCommitsToLink, ViewIssuesToLink,
+    ViewCommitsToLink, ViewIssuesToLink, ViewRequestsToLink,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectLinkType",
@@ -41,6 +42,7 @@ define([
             this.viewAndSelectRequests.startup();
             this.viewCommitsToLink.startup();
             this.viewIssuesToLink.startup();
+            this.viewRequestsToLink.startup();
 
             this.watchDataStore();
             this.setEventHandlers();
