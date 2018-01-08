@@ -2,12 +2,14 @@ define([
     "dojo/_base/declare",
     "dojo/_base/array",
     "dojo/_base/lang",
+    "dojo/dom-construct",
+    "dojo/query",
     "./DataStores/MainDataStore",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewAndSelectCommits.html"
-], function (declare, array, lang,
+], function (declare, array, lang, domConstruct, query,
     MainDataStore,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
@@ -33,12 +35,10 @@ define([
             // Watch the store to know when the commits finished loading
             this.mainDataStore.selectedRepositorySettings.watch("commitsLoaded", function (name, oldValue, value) {
                 if (value) {
-                    // Commits finished loading, update the view...
-                    console.log("commits finished loading");
+                    // Commits finished loading, update the view
                     self.setViewCommitsListFromStore();
                 } else {
                     // Commits are not loaded, reinitialize the view (loading...)
-                    console.log("commits not loaded");
                     self.initializeViewCommitsList();
                 }
             });
@@ -47,8 +47,7 @@ define([
             this.mainDataStore.selectedRepositoryData.commits.watchElements(function () {
                 // Only react if the commits have finished loading
                 if (self.mainDataStore.selectedRepositorySettings.get("commitsLoaded")) {
-                    // Update the local list of commits...
-                    console.log("commits list changed");
+                    // Update the local list of commits (and the view)
                     self.setViewCommitsListFromStore();
                 }
             });
@@ -60,8 +59,8 @@ define([
                 disabled: true
             }];
 
-            // Draw view...
-            console.log("draw view commits ", this.viewCommits);
+            // Draw the commits list in the view
+            this.drawViewCommits();
         },
 
         setViewCommitsListFromStore: function () {
@@ -80,8 +79,36 @@ define([
                 });
             }
 
-            // Draw view...
-            console.log("draw view commits ", this.viewCommits);
+            // Draw the commits list in the view
+            this.drawViewCommits();
+        },
+
+        drawViewCommits: function () {
+            var commitsListNode = query("#viewAndSelectCommitsWrapper .rtcGitConnectorViewAndSelectList")[0];
+            domConstruct.empty(commitsListNode);
+
+            array.forEach(this.viewCommits, function (commit) {
+                var commitListItem = domConstruct.create("div", {
+                    "class": "rtcGitConnectorViewAndSelectListItem"
+                }, commitsListNode);
+                domConstruct.create("span", {
+                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
+                    innerHTML: commit.message.split(/\r?\n/g)[0]
+                }, commitListItem);
+
+                if (commit.authoredDate) {
+                    var commitDate = new Date(commit.authoredDate);
+                    domConstruct.create("span", {
+                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
+                        innerHTML: commit.authorName + " committed on " + commitDate.toDateString() + " at " + commitDate.getHours() + ":" + commitDate.getMinutes()
+                    }, commitListItem);
+                } else {
+                    domConstruct.create("span", {
+                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
+                        innerHTML: "&nbsp;"
+                    }, commitListItem);
+                }
+            });
         }
     });
 });
