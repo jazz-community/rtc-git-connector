@@ -2,14 +2,16 @@ define([
     "dojo/_base/declare",
     "dojo/_base/array",
     "dojo/_base/lang",
+    "dojo/dom-class",
     "dojo/dom-construct",
+    "dojo/on",
     "dojo/query",
     "./DataStores/MainDataStore",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewAndSelectCommits.html"
-], function (declare, array, lang, domConstruct, query,
+], function (declare, array, lang, domClass, domConstruct, on, query,
     MainDataStore,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
@@ -56,7 +58,7 @@ define([
         initializeViewCommitsList: function () {
             this.viewCommits = [{
                 message: "Loading...",
-                disabled: true
+                alreadyLinked: true
             }];
 
             // Draw the commits list in the view
@@ -70,13 +72,8 @@ define([
             if (this.viewCommits.length < 1) {
                 this.viewCommits = [{
                     message: "No commits found",
-                    disabled: true
+                    alreadyLinked: true
                 }];
-            } else {
-                array.forEach(this.viewCommits, function (commit) {
-                    commit.selected = false;
-                    commit.disabled = commit.alreadyLinked;
-                });
             }
 
             // Draw the commits list in the view
@@ -84,13 +81,20 @@ define([
         },
 
         drawViewCommits: function () {
+            var self = this;
             var commitsListNode = query("#viewAndSelectCommitsWrapper .rtcGitConnectorViewAndSelectList")[0];
             domConstruct.empty(commitsListNode);
 
             array.forEach(this.viewCommits, function (commit) {
                 var commitListItem = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItem"
+                    "class": "rtcGitConnectorViewAndSelectListItem",
+                    "data-commit-sha": commit.sha
                 }, commitsListNode);
+
+                on(commitListItem, "click", function (event) {
+                    self.setSelectedCommitBySha(this.getAttribute("data-commit-sha"));
+                });
+
                 domConstruct.create("span", {
                     "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
                     innerHTML: commit.message.split(/\r?\n/g)[0]
@@ -107,6 +111,22 @@ define([
                         "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
                         innerHTML: "&nbsp;"
                     }, commitListItem);
+                }
+            });
+        },
+
+        setSelectedCommitBySha: function (commitSha) {
+            query("#viewAndSelectCommitsWrapper .rtcGitConnectorViewAndSelectList .rtcGitConnectorViewAndSelectListItem").forEach(function (node) {
+                if (node.getAttribute("data-commit-sha") === commitSha) {
+                    domClass.add(node, "selected");
+                } else {
+                    domClass.remove(node, "selected");
+                }
+            });
+
+            array.forEach(this.viewCommits, function (commit) {
+                if (commit.sha === commitSha) {
+                    console.log("commit to select (show details): ", commit);
                 }
             });
         }
