@@ -118,6 +118,10 @@
     cursor: pointer;
 }
 
+.rtcGitConnectorViewAndSelectListItem.itemToLink {
+    cursor: default;
+}
+
 .rtcGitConnectorViewAndSelectListItem:hover {
     background-color: lightgray;
 }
@@ -139,6 +143,12 @@
     color: green;
     text-align: center;
     cursor: pointer;
+}
+
+.rtcGitConnectorViewAndSelectListItemButton.removeButton {
+    background-color: lightcoral;
+    border-color: red;
+    color: red;
 }
 
 .rtcGitConnectorViewAndSelectListItemEmptyButton {
@@ -171,4 +181,9 @@
 
 .rtcGitConnectorViewAndSelectDetailsLabel {
     font-weight: bold;
+}
+
+.rtcGitConnectorViewItemsToLinkList {
+    width: 100%;
+    border: 1px solid gray;
 }
