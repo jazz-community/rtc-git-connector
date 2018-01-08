@@ -82,6 +82,7 @@ define([
             this.drawDetailsView();
         },
 
+        // Draw the commits list from the view commits
         drawViewCommits: function () {
             var self = this;
             var commitsListNode = query("#viewAndSelectCommitsWrapper .rtcGitConnectorViewAndSelectList")[0];
@@ -117,6 +118,7 @@ define([
             });
         },
 
+        // Set the selected commit in the view using the commit sha
         setSelectedCommitBySha: function (commitSha) {
             var self = this;
 
@@ -130,12 +132,12 @@ define([
 
             array.forEach(this.viewCommits, function (commit) {
                 if (commit.sha === commitSha) {
-                    console.log("commit to select (show details): ", commit);
                     self.drawDetailsView(commit);
                 }
             });
         },
 
+        // Draw the details view for the selected commit
         drawDetailsView: function (commit) {
             var commitDetailsNode = query("#viewAndSelectCommitsWrapper .rtcGitConnectorViewAndSelectDetails")[0];
             domConstruct.empty(commitDetailsNode);
