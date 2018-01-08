@@ -63,6 +63,7 @@ define([
 
             // Draw the commits list in the view
             this.drawViewCommits();
+            this.drawDetailsView();
         },
 
         setViewCommitsListFromStore: function () {
@@ -78,6 +79,7 @@ define([
 
             // Draw the commits list in the view
             this.drawViewCommits();
+            this.drawDetailsView();
         },
 
         drawViewCommits: function () {
@@ -116,6 +118,8 @@ define([
         },
 
         setSelectedCommitBySha: function (commitSha) {
+            var self = this;
+
             query("#viewAndSelectCommitsWrapper .rtcGitConnectorViewAndSelectList .rtcGitConnectorViewAndSelectListItem").forEach(function (node) {
                 if (node.getAttribute("data-commit-sha") === commitSha) {
                     domClass.add(node, "selected");
@@ -127,8 +131,45 @@ define([
             array.forEach(this.viewCommits, function (commit) {
                 if (commit.sha === commitSha) {
                     console.log("commit to select (show details): ", commit);
+                    self.drawDetailsView(commit);
                 }
             });
+        },
+
+        drawDetailsView: function (commit) {
+            var commitDetailsNode = query("#viewAndSelectCommitsWrapper .rtcGitConnectorViewAndSelectDetails")[0];
+            domConstruct.empty(commitDetailsNode);
+
+            domConstruct.create("span", {
+                "class": "rtcGitConnectorViewAndSelectDetailsSpan rtcGitConnectorViewAndSelectDetailsTitle",
+                innerHTML: "Commit Details"
+            }, commitDetailsNode);
+
+            if (!commit) {
+                domConstruct.create("span", {
+                    "class": "rtcGitConnectorViewAndSelectDetailsSpan",
+                    innerHTML: "Select a commit to view more details"
+                }, commitDetailsNode);
+            } else {
+                this.addToDetailsViewNode(commitDetailsNode, "Message: ", commit.message);
+                this.addToDetailsViewNode(commitDetailsNode, "Author: ", commit.authorName);
+                this.addToDetailsViewNode(commitDetailsNode, "Date: ", commit.authoredDate);
+                this.addToDetailsViewNode(commitDetailsNode, "SHA: ", commit.sha);
+                this.addToDetailsViewNode(commitDetailsNode, "Web Link: ", commit.webUrl);
+            }
+        },
+
+        addToDetailsViewNode: function (detailsViewNode, label, value) {
+            var commitMessageNode = domConstruct.create("span", {
+                "class": "rtcGitConnectorViewAndSelectDetailsSpan"
+            }, detailsViewNode);
+            domConstruct.create("span", {
+                "class": "rtcGitConnectorViewAndSelectDetailsLabel",
+                innerHTML: label
+            }, commitMessageNode);
+            domConstruct.create("span", {
+                innerHTML: value
+            }, commitMessageNode);
         }
     });
 });
