@@ -103,14 +103,22 @@
 
 .rtcGitConnectorViewAndSelectList {
     flex-grow: 1;
+    width: 100%;
     height: 500px;
     margin-right: 10px;
-    background-color: green;
+    border: 1px solid gray;
 }
 
 .rtcGitConnectorViewAndSelectDetails {
     flex-grow: 1;
+    width: 100%;
     height: 500px;
     margin-left: 10px;
-    background-color: blue;
+    background-color: lightgray;
+}
+
+.rtcGitConnectorViewAndSelectListItem {
+    border: 1px solid gray;
+    padding: .2rem;
+    font-size: 1rem;
 }
