@@ -76,6 +76,9 @@ define([
                     // Get commits from host if not already loaded
                     self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken).then(function (commits) {
                         // Set the list in the store and set commitsLoaded to true.
+                        // Clear the list first just incase the function is run multiple times due to slow loading
+                        self.mainDataStore.selectedRepositoryData.commits
+                            .splice(0, self.mainDataStore.selectedRepositoryData.commits.length);
                         self.mainDataStore.selectedRepositoryData.commits
                             .push.apply(self.mainDataStore.selectedRepositoryData.commits, commits);
                         self.mainDataStore.selectedRepositorySettings.set("commitsLoaded", true);
@@ -87,6 +90,9 @@ define([
                     // Get issues from host if not already loaded
                     self.gitRestService.getRecentIssues(selectedRepository, gitHost, accessToken).then(function (issues) {
                         // Set the list in the store and set issuesLoaded to true.
+                        // Clear the list first just incase the function is run multiple times due to slow loading
+                        self.mainDataStore.selectedRepositoryData.issues
+                            .splice(0, self.mainDataStore.selectedRepositoryData.issues.length);
                         self.mainDataStore.selectedRepositoryData.issues
                             .push.apply(self.mainDataStore.selectedRepositoryData.issues, issues);
                         self.mainDataStore.selectedRepositorySettings.set("issuesLoaded", true);
@@ -98,6 +104,9 @@ define([
                     // Get requests from host if not already loaded
                     self.gitRestService.getRecentRequests(selectedRepository, gitHost, accessToken).then(function (requests) {
                         // Set the list in the store and set the requestsLoaded to true.
+                        // Clear the list first just incase the function is run multiple times due to slow loading
+                        self.mainDataStore.selectedRepositoryData.requests
+                            .splice(0, self.mainDataStore.selectedRepositoryData.requests.length);
                         self.mainDataStore.selectedRepositoryData.requests
                             .push.apply(self.mainDataStore.selectedRepositoryData.requests, requests);
                         self.mainDataStore.selectedRepositorySettings.set("requestsLoaded", true);
