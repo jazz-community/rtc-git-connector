@@ -94,7 +94,7 @@ define([
                     innerHTML: issue.title
                 }, issueListItemContent);
 
-                var issueDate = new Date(issue.authoredDate);
+                var issueDate = new Date(issue.openedDate);
                 domConstruct.create("span", {
                     "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
                     innerHTML: "#" + issue.id + " opened by " + issue.openedBy + " on " + issueDate.toDateString() + " at " + ("00" + issueDate.getHours()).slice(-2) + ":" + ("00" + issueDate.getMinutes()).slice(-2)

@@ -94,7 +94,7 @@ define([
                     innerHTML: request.title
                 }, requestListItemContent);
 
-                var requestDate = new Date(request.authoredDate);
+                var requestDate = new Date(request.openedDate);
                 domConstruct.create("span", {
                     "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
                     innerHTML: "#" + request.id + " opened by " + request.openedBy + " on " + requestDate.toDateString() + " at " + ("00" + requestDate.getHours()).slice(-2) + ":" + ("00" + requestDate.getMinutes()).slice(-2)
