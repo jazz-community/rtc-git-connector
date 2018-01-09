@@ -24,7 +24,7 @@
     box-sizing: border-box;
     width: 80vw;
     min-width: 800px;
-    height: 80vh;
+    min-height: 80vh;
     margin: 1rem;
 }
 

@@ -6,13 +6,14 @@ define([
     "dojo/on",
     "dojo/query",
     "./DataStores/MainDataStore",
+    "dijit/registry",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewCommitsToLink.html"
 ], function (declare, array, domConstruct, domStyle, on, query,
     MainDataStore,
-    _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
+    registry, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewCommitsToLink",
         [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],
@@ -73,7 +74,6 @@ define([
                             }
 
                             if (selectedCommit) {
-                                console.log("selectedCommit to remove: ", selectedCommit);
                                 self.mainDataStore.selectedRepositoryData.commits.push(selectedCommit);
                             }
                         }
@@ -100,6 +100,11 @@ define([
                     innerHTML: commit.authorName + " committed on " + commitDate.toDateString() + " at " + ("00" + commitDate.getHours()).slice(-2) + ":" + ("00" + commitDate.getMinutes()).slice(-2)
                 }, commitListItemContent);
             });
+
+            // Get the mainDialog and resize to fit the new content
+            var mainDialog = registry.byId("connectWithGitMainDialog");
+            mainDialog.resize();
+            mainDialog.resize();
         }
     });
 });

@@ -113,7 +113,6 @@ define([
                             }
 
                             if (selectedCommit) {
-                                console.log("selectedCommit: ", selectedCommit);
                                 self.mainDataStore.selectedRepositoryData.commitsToLink.push(selectedCommit);
                             }
                         }
