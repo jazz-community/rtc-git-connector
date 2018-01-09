@@ -75,6 +75,9 @@ define([
                     message: "No commits found",
                     alreadyLinked: true
                 }];
+            } else {
+                // Need to sort the viewCommits here (by date created -> newest on top)
+                // Later also filter here
             }
 
             // Draw the commits list in the view
