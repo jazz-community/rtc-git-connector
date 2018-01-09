@@ -77,6 +77,8 @@ define([
                 }];
             } else {
                 // Need to sort the viewCommits here (by date created -> newest on top)
+                this.sortViewCommitsByDate();
+
                 // Later also filter here
             }
 
@@ -228,6 +230,32 @@ define([
             }, commitMessageNode);
 
             return commitMessageNode;
+        },
+
+        // Sort the view commits by the authoredDate
+        sortViewCommitsByDate: function () {
+            var self = this;
+
+            // Create a temp array so that the date objects are only created once
+            var tempArray = this.viewCommits.map(function (el, i) {
+                return {
+                    index: i,
+                    value: new Date(el.authoredDate).getTime()
+                };
+            });
+
+            // Sort the temp array
+            tempArray.sort(function (a, b) {
+                return b.value - a.value;
+            });
+
+            // Get a sorted version of the original array
+            var sortedArray = tempArray.map(function (el) {
+                return self.viewCommits[el.index];
+            });
+
+            // Use the sorted array
+            this.viewCommits = sortedArray;
         }
     });
 });
