@@ -112,6 +112,14 @@ define([
             this.cancelAccessTokenButton.onClick = function (event) {
                 self.getAccessTokenDialog.hide();
             };
+
+            on(dom.byId("rtcGitConnectorSaveButton"), "click", function (event) {
+                console.log("save event", event);
+            });
+
+            on(dom.byId("rtcGitConnectorCancelButton"), "click", function (event) {
+                console.log("cancel event", event);
+            });
         },
 
         getInitialData: function () {
