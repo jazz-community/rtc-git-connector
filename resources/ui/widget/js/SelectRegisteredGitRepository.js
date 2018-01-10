@@ -62,12 +62,28 @@ define([
                     this.removeOption(this.options[0]);
                 }
 
-                // Update the data store. If the selected option is not found in the data store,
-                // the selected repository in the data store will be set to null
-                self.mainDataStore.selectedRepositorySettings.set("repository", self.mainDataStore.registeredGitRepositories.find(function (element) {
-                    return element.key === value;
-                }));
-            }
+                var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
+
+                // Do nothing if the correct repository is already set in the store
+                if (!selectedRepository || selectedRepository.key !== value) {
+                    // Check if there are changes
+                    if (self.mainDataStore.selectedRepositoryData.commitsToLink.length > 0 ||
+                            self.mainDataStore.selectedRepositoryData.issuesToLink.length > 0 ||
+                            self.mainDataStore.selectedRepositoryData.requestsToLink.length > 0) {
+                        // Ask the user if they want to lose their changes
+                        if (confirm("Changing the repository will result in losing your unsaved changes. Are you sure you want to discard your changes?")) {
+                            // Change the repository if the user wants to lose their changes
+                            self._setSelectedRepositoryByKey(value);
+                        } else {
+                            // Set the selected repository back to it's previous value if the user doesn't want to lose their changes
+                            self.selectRegisteredGitRepository.set("value", selectedRepository.key);
+                        }
+                    } else {
+                        // Change the repository if there are no changes
+                        self._setSelectedRepositoryByKey(value);
+                    }
+                }
+            };
         },
 
         // Need to run the startup method on the select list after setting a new options list.
@@ -114,6 +130,14 @@ define([
             // No repository should be selected right after the list has changed
             this.mainDataStore.selectedRepositorySettings.set("repository", null);
             this.setOptionsList();
+        },
+
+        // Update the data store. If the selected option is not found in the data store,
+        // the selected repository in the data store will be set to null
+        _setSelectedRepositoryByKey: function (key) {
+            this.mainDataStore.selectedRepositorySettings.set("repository", this.mainDataStore.registeredGitRepositories.find(function (element) {
+                return element.key === key;
+            }));
         }
     });
 });
