@@ -72,7 +72,12 @@ define([
                 // Only show the widget for the selected link type
                 self.showViewAndSelectWidget(value);
 
-                if (value === "COMMIT" && !self.mainDataStore.selectedRepositorySettings.get("commitsLoaded")) {
+                if (value === "COMMIT" &&
+                        !self.mainDataStore.selectedRepositorySettings.get("commitsLoaded") &&
+                        !self.mainDataStore.selectedRepositorySettings.get("commitsLoading")) {
+                    // Set the commitsLoading to true to prevent multiple requests
+                    self.mainDataStore.selectedRepositorySettings.set("commitsLoading", true);
+
                     // Get commits from host if not already loaded
                     self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken).then(function (commits) {
                         // Set the list in the store and set commitsLoaded to true.
@@ -82,11 +87,17 @@ define([
                         self.mainDataStore.selectedRepositoryData.commits
                             .push.apply(self.mainDataStore.selectedRepositoryData.commits, commits);
                         self.mainDataStore.selectedRepositorySettings.set("commitsLoaded", true);
+                        self.mainDataStore.selectedRepositorySettings.set("commitsLoading", false);
                     }, function (error) {
                         self.showLoadingDataError(error);
                     });
 
-                } else if (value === "ISSUE" && !self.mainDataStore.selectedRepositorySettings.get("issuesLoaded")) {
+                } else if (value === "ISSUE" &&
+                        !self.mainDataStore.selectedRepositorySettings.get("issuesLoaded") &&
+                        !self.mainDataStore.selectedRepositorySettings.get("issuesLoading")) {
+                    // Set the issuesLoading to true to prevent multiple requests
+                    self.mainDataStore.selectedRepositorySettings.set("issuesLoading", true);
+
                     // Get issues from host if not already loaded
                     self.gitRestService.getRecentIssues(selectedRepository, gitHost, accessToken).then(function (issues) {
                         // Set the list in the store and set issuesLoaded to true.
@@ -96,11 +107,17 @@ define([
                         self.mainDataStore.selectedRepositoryData.issues
                             .push.apply(self.mainDataStore.selectedRepositoryData.issues, issues);
                         self.mainDataStore.selectedRepositorySettings.set("issuesLoaded", true);
+                        self.mainDataStore.selectedRepositorySettings.set("issuesLoading", false);
                     }, function (error) {
                         self.showLoadingDataError(error);
                     });
 
-                } else if (value === "REQUEST" && !self.mainDataStore.selectedRepositorySettings.get("requestsLoaded")) {
+                } else if (value === "REQUEST" &&
+                        !self.mainDataStore.selectedRepositorySettings.get("requestsLoaded") &&
+                        !self.mainDataStore.selectedRepositorySettings.get("requestsLoading")) {
+                    // Set the requestsLoading to true to prevent multiple requests
+                    self.mainDataStore.selectedRepositorySettings.set("requestsLoading", true);
+
                     // Get requests from host if not already loaded
                     self.gitRestService.getRecentRequests(selectedRepository, gitHost, accessToken).then(function (requests) {
                         // Set the list in the store and set the requestsLoaded to true.
@@ -110,6 +127,7 @@ define([
                         self.mainDataStore.selectedRepositoryData.requests
                             .push.apply(self.mainDataStore.selectedRepositoryData.requests, requests);
                         self.mainDataStore.selectedRepositorySettings.set("requestsLoaded", true);
+                        self.mainDataStore.selectedRepositorySettings.set("requestsLoading", false);
                     }, function (error) {
                         self.showLoadingDataError(error);
                     });

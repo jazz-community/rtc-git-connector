@@ -15,7 +15,10 @@ define([
             linkType: null,     // Uppercase "COMMIT", "ISSUE", "REQUEST"
             commitsLoaded: false,
             issuesLoaded: false,
-            requestsLoaded: false
+            requestsLoaded: false,
+            commitsLoading: false,
+            issuesLoading: false,
+            requestsLoading: false
         },
         selectedRepositoryData: {
             commits: null,
@@ -46,6 +49,9 @@ define([
             this.selectedRepositorySettings.set("commitsLoaded", false);
             this.selectedRepositorySettings.set("issuesLoaded", false);
             this.selectedRepositorySettings.set("requestsLoaded", false);
+            this.selectedRepositorySettings.set("commitsLoading", false);
+            this.selectedRepositorySettings.set("issuesLoading", false);
+            this.selectedRepositorySettings.set("requestsLoading", false);
             this.selectedRepositoryData.commits.length = 0;
             this.selectedRepositoryData.issues.length = 0;
             this.selectedRepositoryData.requests.length = 0;
