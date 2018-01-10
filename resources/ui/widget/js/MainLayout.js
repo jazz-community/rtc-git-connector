@@ -13,6 +13,7 @@ define([
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
+    "dijit/registry",
     "dijit/Dialog",
     "dijit/form/TextBox",
     "dijit/form/Button",
@@ -21,7 +22,7 @@ define([
     MainDataStore, JazzRestService, GitRestService,
     SelectRegisteredGitRepository, SelectLinkType,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
-    Dialog, TextBox, Button, template) {
+    registry, Dialog, TextBox, Button, template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.mainLayout",
         [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],
     {
@@ -118,7 +119,8 @@ define([
             });
 
             on(dom.byId("rtcGitConnectorCancelButton"), "click", function (event) {
-                console.log("cancel event", event);
+                var mainDialog = registry.byId("connectWithGitMainDialog");
+                mainDialog.hide();
             });
         },
 
