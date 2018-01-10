@@ -26,6 +26,14 @@
     min-width: 800px;
     min-height: 80vh;
     margin: 1rem;
+    position: relative;
+    padding-bottom: 2rem;
+}
+
+.rtcGitConnectorActionButtons {
+    position: absolute;
+    bottom: 0;
+    right: 1rem;
 }
 
 .rtcGitConnectorError {
