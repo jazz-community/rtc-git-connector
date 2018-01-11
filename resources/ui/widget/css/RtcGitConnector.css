@@ -166,7 +166,7 @@
 }
 
 .rtcGitConnectorViewAndSelectListItemEmptyButton {
-    width: 2.5rem;
+    width: 3rem;
     height: 100%;
     margin: auto .3rem;
 }
@@ -200,6 +200,10 @@
 .rtcGitConnectorViewItemsToLinkList {
     width: 100%;
     border: 1px solid gray;
+}
+
+.rtcGitConnectorHighlightText {
+    background-color: yellowgreen;
 }
 
 #rtcGitConnectorFullPageLoadingOverlay {

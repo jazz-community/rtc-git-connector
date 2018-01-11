@@ -289,6 +289,26 @@ define([
                     commit.authorName.toLowerCase().indexOf(filterText) > -1 ||
                     commit.authorEmail.toLowerCase().indexOf(filterText) > -1;
             });
-        }
+            this._highlightFilterText(filterText, ["sha", "message", "authorName", "authorEmail"], this.viewCommits);
+        },
+
+        _highlightFilterText: function(filterText, filterBy, filterResult){
+            for(var i=0; i < filterResult.length; i++){
+                for(var j=0; j < filterBy.length; j++){
+                    filterResult[i][filterBy[j]] = this._highlightTextInString(filterText, filterResult[i][filterBy[j]]);
+                }
+            }
+        },
+
+        _highlightTextInString: function(searchText, fullText){
+            var startIndex;
+            if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1){
+                var beforeFound = fullText.slice(0, startIndex);
+                var found = fullText.slice(startIndex, startIndex + searchText.length);
+                var afterFound = this._highlightTextInString(searchText, fullText.slice(startIndex + searchText.length));
+                fullText = beforeFound + "<b class='rtcGitConnectorHighlightText'>" + found + "</b>" + afterFound;
+            }
+            return fullText;
+        },
     });
 });
