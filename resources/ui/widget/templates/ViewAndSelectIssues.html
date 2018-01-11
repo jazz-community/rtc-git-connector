@@ -1,12 +1,28 @@
 <div>
     <label class="rtcGitConnectorLabelText">Recent issues</label>
     <br />
+    <input id="viewAndSelectIssuesSearchInput"
+        class="viewAndSelectSearchInput"
+        placeholder="Search issues by id..."
+        data-dojo-type="dijit/form/TextBox"
+        data-dojo-attach-point="issuesSearchInput"
+        data-dojo-props="trim:true">
+    <button id="viewAndSelectIssuesSearchButton"
+            class="viewAndSelectSearchButton"
+            type="button">Search</button>
+    <button id="viewAndSelectIssuesSearchClearButton"
+            class="viewAndSelectSearchButton viewAndSelectSearchClearButton"
+            type="button">Clear</button>
+    <br />
     <input id="viewAndSelectIssuesFilterInput"
         class="viewAndSelectFilterInput"
-        placeholder="Filter issues by title or author..."
+        placeholder="Filter issues by title, author, id..."
         data-dojo-type="dijit/form/TextBox"
         data-dojo-attach-point="issuesFilterInput"
         data-dojo-props="trim:true, intermediateChanges:true">
+    <button id="viewAndSelectIssuesFilterClearButton"
+        class="viewAndSelectSearchButton viewAndSelectSearchClearButton"
+        type="button">Clear</button>
     <div class="rtcGitConnectorViewAndSelectWrapper" id="viewAndSelectIssuesWrapper">
         <div class="rtcGitConnectorViewAndSelectList"></div>
         <div class="rtcGitConnectorViewAndSelectDetails"></div>

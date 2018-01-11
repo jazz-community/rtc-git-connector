@@ -227,7 +227,6 @@ define([
             this.mainDataStore.selectedRepositorySettings.watch("gitHost", function (name, oldValue, value) {
                 var valueIsValid = (value === "GITHUB" || value === "GITLAB");
                 domStyle.set("invalidGitRepositoryTypeContainer", "display", (valueIsValid || value === null) ? "none" : "block");
-                dom.byId("selectedRegisteredGitRepositoryContainer").innerHTML = value; // remove this later
 
                 // Get the access token if the host type is valid
                 if (valueIsValid) {

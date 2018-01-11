@@ -2,6 +2,7 @@ define([
     "dojo/_base/declare",
     "dojo/_base/array",
     "dojo/_base/lang",
+    "dojo/dom",
     "dojo/dom-class",
     "dojo/dom-construct",
     "dojo/on",
@@ -11,7 +12,7 @@ define([
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewAndSelectIssues.html"
-], function (declare, array, lang, domClass, domConstruct, on, query,
+], function (declare, array, lang, dom, domClass, domConstruct, on, query,
     MainDataStore,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
@@ -37,6 +38,10 @@ define([
 
             on(this.issuesFilterInput, "change", function (value) {
                 self.setViewIssuesListFromStore(value);
+            });
+
+            on(dom.byId("viewAndSelectIssuesFilterClearButton"), "click", function (event) {
+                self.issuesFilterInput.setValue("");
             });
         },
 
