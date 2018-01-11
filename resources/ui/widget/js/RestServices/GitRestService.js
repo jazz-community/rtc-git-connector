@@ -43,10 +43,35 @@ define([
         },
 
         addBackLinksToGitHub: function (params) {
+            var self = this;
             var deferredArray = [];
+            var repositoryUrl = new url(params.selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var github = new this.gitHubApi({});
+            var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
+                    "(" + params.workItem.object.locationUri + ")" +
+                    " on behalf of " + params.currentUser;
+            var commitCommentBody = "This commit " + commentBody;
+            var issuesCommentBody = "This issue " + commentBody;
+            var requestCommentBody = "This pull request " + commentBody;
 
-            if (params.commitsToLink && params.commitsToLink.length > 0) {
-                deferredArray = deferredArray.concat(this.addBackLinksToGitHubCommits(params));
+            if (urlParts.length < 2) {
+                var deferred = new Deferred();
+                deferred.reject("Invalid repository URL.");
+                deferredArray.push(deferred);
+            } else {
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+
+                github.authenticate({
+                    type: 'token',
+                    token: params.accessToken
+                });
+
+                if (params.commitsToLink && params.commitsToLink.length > 0) {
+                    array.forEach(params.commitsToLink, function (commit) {
+                        deferredArray.push(self.addBackLinksToGitHubCommits(github, urlParts[0], urlParts[1], commit.sha, commitCommentBody));
+                    });
+                }
             }
 
             if (params.issuesToLink && params.issuesToLink.length > 0) {
@@ -60,50 +85,24 @@ define([
             return new DeferredList(deferredArray);
         },
 
-        addBackLinksToGitHubCommits: function (params) {
-            var self = this;
-            var deferredArray = [];
-            var repositoryUrl = new url(params.selectedGitRepository.url);
-            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
-            var commentBody = "This commit was linked by [RTC Work Item " + params.workItem.object.id + "]" +
-                    "(" + params.workItem.object.locationUri + ")" +
-                    " on behalf of " + params.currentUser;
+        addBackLinksToGitHubCommits: function (github, owner, repo, sha, commentBody) {
+            var deferred = new Deferred();
 
-            if (urlParts.length < 2) {
-                var deferred = new Deferred();
-                deferred.reject("Invalid repository URL.");
-                deferredArray.push(deferred);
-            } else {
-                urlParts[1] = self._removeDotGitEnding(urlParts[1]);
+            github.repos.createCommitComment({
+                owner: owner,
+                repo: repo,
+                sha: sha,
+                body: commentBody
+            }, function (error, response) {
+                if (error) {
+                    var errorObj = json.parse(error.message || error);
+                    deferred.reject("Couldn't add a comment to the GitHub commit. Error: " + ((errorObj && errorObj.message) || error.message || error));
+                } else {
+                    deferred.resolve(response.data);
+                }
+            });
 
-                github.authenticate({
-                    type: 'token',
-                    token: params.accessToken
-                });
-
-                array.forEach(params.commitsToLink, function (commit) {
-                    var deferred = new Deferred();
-
-                    github.repos.createCommitComment({
-                        owner: urlParts[0],
-                        repo: urlParts[1],
-                        sha: commit.sha,
-                        body: commentBody
-                    }, function (error, response) {
-                        if (error) {
-                            var errorObj = json.parse(error.message || error);
-                            deferred.reject("Couldn't add a comment to the GitHub commit. Error: " + ((errorObj && errorObj.message) || error.message || error));
-                        } else {
-                            deferred.resolve(response.data);
-                        }
-                    });
-
-                    deferredArray.push(deferred);
-                });
-            }
-
-            return deferredArray;
+            return deferred;
         },
 
         addBackLinksToGitHubIssues: function (params) {
@@ -145,15 +144,21 @@ define([
         },
 
         addBackLinksToGitLabCommits: function (params) {
+            var deferredArray = [];
 
+            return deferredArray;
         },
 
         addBackLinksToGitLabIssues: function (params) {
+            var deferredArray = [];
 
+            return deferredArray;
         },
 
         addBackLinksToGitLabRequests: function (params) {
+            var deferredArray = [];
 
+            return deferredArray;
         },
 
         // Get the last 100 commits from the specified repository on GitHub or GitLab
