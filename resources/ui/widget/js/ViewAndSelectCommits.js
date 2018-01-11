@@ -43,6 +43,14 @@ define([
             on(dom.byId("viewAndSelectCommitsFilterClearButton"), "click", function (event) {
                 self.commitsFilterInput.setValue("");
             });
+
+            on(dom.byId("viewAndSelectCommitsSearchButton"), "click", function (event) {
+                self.commitsSearchInput.setValue("");
+            });
+
+            on(dom.byId("viewAndSelectCommitsSearchClearButton"), "click", function (event) {
+                self.commitsSearchInput.setValue("");
+            });
         },
 
         watchDataStore: function () {

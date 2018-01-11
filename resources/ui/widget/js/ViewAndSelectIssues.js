@@ -43,6 +43,14 @@ define([
             on(dom.byId("viewAndSelectIssuesFilterClearButton"), "click", function (event) {
                 self.issuesFilterInput.setValue("");
             });
+
+            on(dom.byId("viewAndSelectIssuesSearchButton"), "click", function (event) {
+                self.issuesSearchInput.setValue("");
+            });
+
+            on(dom.byId("viewAndSelectIssuesSearchClearButton"), "click", function (event) {
+                self.issuesSearchInput.setValue("");
+            });
         },
 
         watchDataStore: function () {
