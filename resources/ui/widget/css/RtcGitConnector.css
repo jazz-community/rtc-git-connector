@@ -105,6 +105,11 @@
     cursor: default;
 }
 
+.viewAndSelectFilterInput {
+    width: calc(50% - 11px);
+    margin-bottom: .5rem;
+}
+
 .rtcGitConnectorViewAndSelectWrapper {
     display: flex;
     width: 100%;

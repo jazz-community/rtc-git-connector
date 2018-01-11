@@ -29,6 +29,15 @@ define([
         startup: function () {
             this.initializeViewCommitsList();
             this.watchDataStore();
+            this.setEventHandlers();
+        },
+
+        setEventHandlers: function () {
+            var self = this;
+
+            on(this.commitsFilterInput, "change", function (value) {
+                self.setViewCommitsListFromStore(value);
+            });
         },
 
         watchDataStore: function () {
@@ -61,12 +70,15 @@ define([
                 alreadyLinked: true
             }];
 
+            // Clear the filter input
+            this.commitsFilterInput.setValue("");
+
             // Draw the commits list in the view
             this.drawViewCommits();
             this.drawDetailsView();
         },
 
-        setViewCommitsListFromStore: function () {
+        setViewCommitsListFromStore: function (filterValue) {
             // Clone the store array
             this.viewCommits = lang.clone(this.mainDataStore.selectedRepositoryData.commits);
 
@@ -79,7 +91,15 @@ define([
                 // Need to sort the viewCommits here (by date created -> newest on top)
                 this.sortViewCommitsByDate();
 
-                // Later also filter here
+                if (!filterValue) {
+                    // Take the filter from the input if it wasn't passed in
+                    filterValue = this.commitsFilterInput.value;
+                }
+
+                // Filter the view commits using the filter input text
+                if (filterValue) {
+                    this.filterViewCommitsByText(filterValue);
+                }
             }
 
             // Draw the commits list in the view
@@ -256,6 +276,19 @@ define([
 
             // Use the sorted array
             this.viewCommits = sortedArray;
+        },
+
+        // Filter the view commits using the filter text.
+        // Only keep commits that contain the filter text either
+        // in the commit message or commit author name or sha or email
+        filterViewCommitsByText: function (filterText) {
+            filterText = filterText.toLowerCase();
+            this.viewCommits = this.viewCommits.filter(function (commit) {
+                return commit.sha.toLowerCase().indexOf(filterText) > -1 ||
+                    commit.message.toLowerCase().indexOf(filterText) > -1 ||
+                    commit.authorName.toLowerCase().indexOf(filterText) > -1 ||
+                    commit.authorEmail.toLowerCase().indexOf(filterText) > -1;
+            });
         }
     });
 });
