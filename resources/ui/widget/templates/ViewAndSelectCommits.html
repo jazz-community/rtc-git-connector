@@ -1,9 +1,19 @@
 <div>
     <label class="rtcGitConnectorLabelText">Recent commits</label>
     <br />
+    <input id="viewAndSelectCommitsSearchInput"
+        class="viewAndSelectSearchInput"
+        placeholder="Search commits by SHA1..."
+        data-dojo-type="dijit/form/TextBox"
+        data-dojo-attach-point="commitsSearchInput"
+        data-dojo-props="trim:true">
+        <button id="viewAndSelectCommitsSearchButton"
+            class="viewAndSelectSearchButton"
+            type="button">Search</button>
+    <br />
     <input id="viewAndSelectCommitsFilterInput"
         class="viewAndSelectFilterInput"
-        placeholder="Filter commits by message or author..."
+        placeholder="Filter commits by message, author, SHA1..."
         data-dojo-type="dijit/form/TextBox"
         data-dojo-attach-point="commitsFilterInput"
         data-dojo-props="trim:true, intermediateChanges:true">

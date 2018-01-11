@@ -105,7 +105,6 @@ define([
                         self.mainDataStore.selectedRepositorySettings.set("commitsLoadError", error || "Unknown Error");
                         self.showLoadingDataError(error);
                     });
-
                 }
 
                 if (!self.mainDataStore.selectedRepositorySettings.get("issuesLoaded") &&
@@ -128,7 +127,6 @@ define([
                         self.mainDataStore.selectedRepositorySettings.set("issuesLoadError", error || "Unknown Error");
                         self.showLoadingDataError(error);
                     });
-
                 }
 
                 if (!self.mainDataStore.selectedRepositorySettings.get("requestsLoaded") &&
