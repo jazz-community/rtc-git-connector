@@ -14,7 +14,7 @@ define([
     // Return an instance so that the functions can be used as if they were static
     return new function () {
         // Create a CommitModel object from a GitHub commit object
-        this.CreateFromGitHubCommit = function (gitHubCommit) {
+        this.CreateFromGitHubCommit = function (gitHubCommit, alreadyLinkedUrls) {
             var commitModel = new CommitModel();
             commitModel.sha = gitHubCommit.sha;
             commitModel.message = gitHubCommit.commit.message;
@@ -22,13 +22,13 @@ define([
             commitModel.authorEmail = gitHubCommit.commit.author.email;
             commitModel.authoredDate = gitHubCommit.commit.author.date;
             commitModel.webUrl = gitHubCommit.html_url;
-            commitModel.alreadyLinked = false; // Need to check this...
+            commitModel.alreadyLinked = alreadyLinkedUrls.indexOf(commitModel.webUrl) > -1;
 
             return commitModel;
         };
 
         // Create a CommitModel object from a GitLab commit object
-        this.CreateFromGitLabCommit = function (gitLabCommit, commitUrlPath) {
+        this.CreateFromGitLabCommit = function (gitLabCommit, commitUrlPath, alreadyLinkedUrls) {
             var commitModel = new CommitModel();
             commitModel.sha = gitLabCommit.id;
             commitModel.message = gitLabCommit.message;
@@ -36,7 +36,7 @@ define([
             commitModel.authorEmail = gitLabCommit.author_email;
             commitModel.authoredDate = gitLabCommit.authored_date;
             commitModel.webUrl = commitUrlPath + commitModel.sha;
-            commitModel.alreadyLinked = false; // Need to check this...
+            commitModel.alreadyLinked = alreadyLinkedUrls.indexOf(commitModel.webUrl) > -1;
 
             return commitModel;
         };

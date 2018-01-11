@@ -141,6 +141,29 @@ define([
             workItem.removeListener(listener);
         },
 
+        getGitCommitLinksFromWorkItem: function (workItem) {
+            var self = this;
+            var linkedCommitUrls = [];
+            var commitLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                return linkType.id === self.gitCommitLinkTypeId;
+            });
+
+            if (commitLinkTypeContainer) {
+                array.forEach(commitLinkTypeContainer.linkDTOs, function (commitLink) {
+                    var searchTerm = "/commit?value=";
+                    var lastIndex = commitLink.url.lastIndexOf(searchTerm);
+
+                    if (lastIndex != -1) {
+                        var encodedCommit = commitLink.url.slice(lastIndex + searchTerm.length);
+                        var linkCommit = json.parse(self.commitLinkEncoder.decode(encodedCommit));
+                        linkedCommitUrls.push(linkCommit.u);
+                    }
+                });
+            }
+
+            return linkedCommitUrls;
+        },
+
         // Get the access token for the user and host
         getAccessTokenByHost: function (hostUrl) {
             var deferred = new Deferred();

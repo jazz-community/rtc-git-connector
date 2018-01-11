@@ -26,13 +26,13 @@ define([
         },
 
         // Get the last 100 commits from the specified repository on GitHub or GitLab
-        getRecentCommits: function (selectedGitRepository, gitHost, accessToken) {
+        getRecentCommits: function (selectedGitRepository, gitHost, accessToken, alreadyLinkedUrls) {
             // Depending on how the returned objects look like, they may need to be converted
             // first so that the same property names are always used.
             if (gitHost === this.gitHubString) {
-                return this.getRecentGitHubCommits(selectedGitRepository, accessToken);
+                return this.getRecentGitHubCommits(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else if (gitHost === this.gitLabString) {
-                return this.getRecentGitLabCommits(selectedGitRepository, accessToken);
+                return this.getRecentGitLabCommits(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else {
                 var deferred = new Deferred();
                 deferred.reject("Invalid git host.");
@@ -41,7 +41,7 @@ define([
         },
 
         // Get the last 100 commits from the specified repository on GitHub
-        getRecentGitHubCommits: function (selectedGitRepository, accessToken) {
+        getRecentGitHubCommits: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
@@ -67,7 +67,7 @@ define([
                     } else {
                         var convertedCommits = [];
                         array.forEach(response.data, function (commit) {
-                            convertedCommits.push(CommitModel.CreateFromGitHubCommit(commit));
+                            convertedCommits.push(CommitModel.CreateFromGitHubCommit(commit, alreadyLinkedUrls));
                         });
                         deferred.resolve(convertedCommits);
                     }
@@ -78,7 +78,7 @@ define([
         },
 
         // Get the last 100 commits from the specified repository on GitLab
-        getRecentGitLabCommits: function (selectedGitRepository, accessToken) {
+        getRecentGitLabCommits: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
@@ -100,7 +100,7 @@ define([
                     var commitUrlPath = urlOrigin + "/" + urlParts[0] + "/" + urlParts[1] + "/commit/";
                     var convertedCommits = [];
                     array.forEach(response, function (commit) {
-                        convertedCommits.push(CommitModel.CreateFromGitLabCommit(commit, commitUrlPath));
+                        convertedCommits.push(CommitModel.CreateFromGitLabCommit(commit, commitUrlPath, alreadyLinkedUrls));
                     });
                     deferred.resolve(convertedCommits);
                 }, function (error) {

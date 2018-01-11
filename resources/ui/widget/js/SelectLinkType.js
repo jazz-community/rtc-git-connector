@@ -6,6 +6,7 @@ define([
     "dojo/on",
     "dojo/query",
     "./DataStores/MainDataStore",
+    "./RestServices/JazzRestService",
     "./RestServices/GitRestService",
     "./ViewAndSelectCommits",
     "./ViewAndSelectIssues",
@@ -18,7 +19,7 @@ define([
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/SelectLinkType.html"
 ], function (declare, dom, domClass, domStyle, on, query,
-    MainDataStore, GitRestService,
+    MainDataStore, JazzRestService, GitRestService,
     ViewAndSelectCommits, ViewAndSelectIssues, ViewAndSelectRequests,
     ViewCommitsToLink, ViewIssuesToLink, ViewRequestsToLink,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
@@ -32,6 +33,7 @@ define([
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
+            this.jazzRestService = JazzRestService.getInstance();
             this.gitRestService = GitRestService.getInstance();
         },
 
@@ -79,7 +81,8 @@ define([
                     self.mainDataStore.selectedRepositorySettings.set("commitsLoading", true);
 
                     // Get commits from host if not already loaded
-                    self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken).then(function (commits) {
+                    self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken,
+                        self.jazzRestService.getGitCommitLinksFromWorkItem(self.mainDataStore.workItem)).then(function (commits) {
                         // Set the list in the store and set commitsLoaded to true.
                         // Clear the list first just incase the function is run multiple times due to slow loading
                         self.mainDataStore.selectedRepositoryData.commits
