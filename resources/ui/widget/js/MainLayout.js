@@ -114,36 +114,48 @@ define([
                 self.getAccessTokenDialog.hide();
             };
 
-            on(dom.byId("rtcGitConnectorSaveButton"), "click", function (event) {
+            var saveButtonClick = function (event) {
                 // Check if there is anything to save
                 if (self.mainDataStore.selectedRepositoryData.commitsToLink.length > 0 ||
                     self.mainDataStore.selectedRepositoryData.issuesToLink.length > 0 ||
                     self.mainDataStore.selectedRepositoryData.requestsToLink.length > 0) {
+                    var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
 
                     // Show a loading overlay to disable the view until the save is complete
                     domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
 
                     // Save the links
                     self.jazzRestService.addLinksToWorkItem(self.mainDataStore.workItem,
-                        self.mainDataStore.selectedRepositorySettings.get("repository"),
-                        self.mainDataStore.selectedRepositoryData.commitsToLink,
-                        self.mainDataStore.selectedRepositoryData.issuesToLink,
-                        self.mainDataStore.selectedRepositoryData.requestsToLink,
-                        function () {
-                            console.log("test from add back links function");
+                            selectedRepository,
+                            self.mainDataStore.selectedRepositoryData.commitsToLink,
+                            self.mainDataStore.selectedRepositoryData.issuesToLink,
+                            self.mainDataStore.selectedRepositoryData.requestsToLink,
+                            function () {
+                        console.log("test from add back links function");
 
-                            // Hide the loading overlay
-                            domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
+                        // Hide the loading overlay
+                        domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
 
-                            var mainDialog = registry.byId("connectWithGitMainDialog");
-                            mainDialog.hide();
-                        });
+                        if (event.target.id === "rtcGitConnectorSaveAndCloseButton") {
+                            // Hide the widget
+                            self._hideMainDialog();
+                        } else {
+                            // Set the selected repository to it's current value to trigger a change event.
+                            // This reloads the view so that the user can keep on working without reopening the widget
+                            self.mainDataStore.selectedRepositorySettings.set("repository", selectedRepository);
+                        }
+                    });
+                } else if (event.target.id === "rtcGitConnectorSaveAndCloseButton") {
+                    // Hide the widget
+                    self._hideMainDialog();
                 }
-            });
+            };
+
+            on(dom.byId("rtcGitConnectorSaveButton"), "click", saveButtonClick);
+            on(dom.byId("rtcGitConnectorSaveAndCloseButton"), "click", saveButtonClick);
 
             on(dom.byId("rtcGitConnectorCancelButton"), "click", function (event) {
-                var mainDialog = registry.byId("connectWithGitMainDialog");
-                mainDialog.hide();
+                self._hideMainDialog();
             });
         },
 
@@ -284,6 +296,12 @@ define([
             objectsWithNames.sort(function (a, b) {
                 return a.name.localeCompare(b.name);
             });
+        },
+
+        _hideMainDialog: function () {
+            // Get the mainDialog by it's dom id
+            var mainDialog = registry.byId("connectWithGitMainDialog");
+            mainDialog.hide();
         }
     });
 });
