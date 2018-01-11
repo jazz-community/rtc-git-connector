@@ -29,6 +29,7 @@ define([
     {
         templateString: template,
         mainDataStore: null,
+        jazzRestService: null,
         gitRestService: null,
 
         constructor: function () {

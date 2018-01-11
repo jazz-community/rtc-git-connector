@@ -213,6 +213,58 @@ define([
             return deferred;
         },
 
+        // Try to get a commit by it's SHA
+        getCommitById: function (selectedGitRepository, gitHost, accessToken, commitSha, alreadyLinkedUrls) {
+            if (gitHost === this.gitHubString) {
+                return this.getGitHubCommitById(selectedGitRepository, accessToken, commitSha, alreadyLinkedUrls);
+            } else if (gitHost === this.gitLabString) {
+                return this.getGitLabCommitById(selectedGitRepository, accessToken, commitSha, alreadyLinkedUrls);
+            } else {
+                var deferred = new Deferred();
+                deferred.reject("Invalid git host.");
+                return deferred.promise;
+            }
+        },
+
+        // Get a commit from GitHub using it's SHA
+        getGitHubCommitById: function (selectedGitRepository, accessToken, commitSha, alreadyLinkedUrls) {
+            var deferred = new Deferred();
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var github = new this.gitHubApi({});
+
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+
+                github.authenticate({
+                    type: 'token',
+                    token: accessToken
+                });
+                github.repos.getCommit({
+                    owner: urlParts[0],
+                    repo: urlParts[1],
+                    sha: commitSha
+                }, function (error, response) {
+                    if (error) {
+                        // Just resolve with an empty array if not found
+                        deferred.resolve([]);
+                    } else {
+                        var convertedCommits = [];
+                        convertedCommits.push(CommitModel.CreateFromGitHubCommit(response.data, alreadyLinkedUrls));
+                        deferred.resolve(convertedCommits);
+                    }
+                });
+            }
+
+            return deferred.promise;
+        },
+
+        getGitLabCommitById: function (selectedGitRepository, accessToken, commitSha, alreadyLinkedUrls) {
+
+        },
+
         // Get the last 100 commits from the specified repository on GitHub or GitLab
         getRecentCommits: function (selectedGitRepository, gitHost, accessToken, alreadyLinkedUrls) {
             // Depending on how the returned objects look like, they may need to be converted

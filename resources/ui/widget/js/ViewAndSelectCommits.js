@@ -8,12 +8,14 @@ define([
     "dojo/on",
     "dojo/query",
     "./DataStores/MainDataStore",
+    "./RestServices/JazzRestService",
+    "./RestServices/GitRestService",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewAndSelectCommits.html"
 ], function (declare, array, lang, dom, domClass, domConstruct, on, query,
-    MainDataStore,
+    MainDataStore, JazzRestService, GitRestService,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectCommits",
@@ -21,10 +23,14 @@ define([
     {
         templateString: template,
         mainDataStore: null,
+        jazzRestService: null,
+        gitRestService: null,
         viewCommits: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
+            this.jazzRestService = JazzRestService.getInstance();
+            this.gitRestService = GitRestService.getInstance();
         },
 
         startup: function () {
@@ -35,6 +41,39 @@ define([
 
         setEventHandlers: function () {
             var self = this;
+            var commitsLoadedFunc = function (commits) {
+                self.mainDataStore.selectedRepositoryData.commits
+                    .splice(0, self.mainDataStore.selectedRepositoryData.commits.length);
+                self.mainDataStore.selectedRepositoryData.commits
+                    .push.apply(self.mainDataStore.selectedRepositoryData.commits, commits);
+                self.mainDataStore.selectedRepositorySettings.set("commitsLoaded", true);
+                self.mainDataStore.selectedRepositorySettings.set("commitsLoading", false);
+            };
+            var commitsLoadErrorFunc = function (error) {
+                self.mainDataStore.selectedRepositorySettings.set("commitsLoadError", error || "Unknown Error");
+            };
+            var searchButtonClickFunc = function (event) {
+                var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
+                var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
+                var accessToken = self.mainDataStore.selectedRepositorySettings.get("accessToken");
+                var commitSha = self.commitsSearchInput.value;
+                var alreadyLinkedUrls = self.jazzRestService.getGitCommitLinksFromWorkItem(self.mainDataStore.workItem);
+
+                if (!self.mainDataStore.selectedRepositorySettings.get("commitsLoading")) {
+                    // Set the commitsLoading to true to prevent multiple requests
+                    self.mainDataStore.selectedRepositorySettings.set("commitsLoading", true);
+
+                    if (commitSha) {
+                        // Try to get the commit with the specified SHA
+                        self.gitRestService.getCommitById(selectedRepository, gitHost, accessToken, commitSha, alreadyLinkedUrls)
+                            .then(commitsLoadedFunc, commitsLoadErrorFunc);
+                    } else {
+                        // Get all commits if there is no SHA
+                        self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken, alreadyLinkedUrls)
+                            .then(commitsLoadedFunc, commitsLoadErrorFunc);
+                    }
+                }
+            };
 
             on(this.commitsFilterInput, "change", function (value) {
                 self.setViewCommitsListFromStore(value);
@@ -44,12 +83,11 @@ define([
                 self.commitsFilterInput.setValue("");
             });
 
-            on(dom.byId("viewAndSelectCommitsSearchButton"), "click", function (event) {
-                self.commitsSearchInput.setValue("");
-            });
+            on(dom.byId("viewAndSelectCommitsSearchButton"), "click", searchButtonClickFunc);
 
             on(dom.byId("viewAndSelectCommitsSearchClearButton"), "click", function (event) {
                 self.commitsSearchInput.setValue("");
+                searchButtonClickFunc();
             });
         },
 
