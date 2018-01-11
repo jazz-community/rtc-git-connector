@@ -58,24 +58,34 @@ define([
                 var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
                 var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
                 var accessToken = self.mainDataStore.selectedRepositorySettings.get("accessToken");
-
-                // Hide the hole widget if the linkType is null
-                domStyle.set("rtcGitConnectorSelectLinkTypeContainer", "display", value === null ? "none" : "block");
+                var loadingError = null;
 
                 // Hide the error (if any)
                 self.hideLoadingDataError();
 
-                // Set the selected type in the view
-                if (value !== null) {
-                    self.setSelectedLinkType(value);
-                    self.setRequestsText(gitHost);
+                if (value === null) {
+                    domStyle.set("rtcGitConnectorSelectLinkTypeContainer", "display", "none");
+                    self.showViewAndSelectWidget("");
+                    return;
                 }
 
-                // Only show the widget for the selected link type
-                self.showViewAndSelectWidget(value);
+                // Hide the hole widget if the linkType is null
+                domStyle.set("rtcGitConnectorSelectLinkTypeContainer", "display", "block");
 
-                if (value === "COMMIT" &&
-                        !self.mainDataStore.selectedRepositorySettings.get("commitsLoaded") &&
+                loadingError = self.mainDataStore.selectedRepositorySettings.get(value.toLowerCase() + "sLoadError");
+
+                // Set the selected type in the view
+                self.setSelectedLinkType(value);
+                self.setRequestsText(gitHost);
+
+                if (loadingError) {
+                    self.showLoadingDataError(loadingError);
+                } else {
+                    // Only show the widget for the selected link type
+                    self.showViewAndSelectWidget(value);
+                }
+
+                if (!self.mainDataStore.selectedRepositorySettings.get("commitsLoaded") &&
                         !self.mainDataStore.selectedRepositorySettings.get("commitsLoading")) {
                     // Set the commitsLoading to true to prevent multiple requests
                     self.mainDataStore.selectedRepositorySettings.set("commitsLoading", true);
@@ -92,11 +102,13 @@ define([
                         self.mainDataStore.selectedRepositorySettings.set("commitsLoaded", true);
                         self.mainDataStore.selectedRepositorySettings.set("commitsLoading", false);
                     }, function (error) {
+                        self.mainDataStore.selectedRepositorySettings.set("commitsLoadError", error || "Unknown Error");
                         self.showLoadingDataError(error);
                     });
 
-                } else if (value === "ISSUE" &&
-                        !self.mainDataStore.selectedRepositorySettings.get("issuesLoaded") &&
+                }
+
+                if (!self.mainDataStore.selectedRepositorySettings.get("issuesLoaded") &&
                         !self.mainDataStore.selectedRepositorySettings.get("issuesLoading")) {
                     // Set the issuesLoading to true to prevent multiple requests
                     self.mainDataStore.selectedRepositorySettings.set("issuesLoading", true);
@@ -113,11 +125,13 @@ define([
                         self.mainDataStore.selectedRepositorySettings.set("issuesLoaded", true);
                         self.mainDataStore.selectedRepositorySettings.set("issuesLoading", false);
                     }, function (error) {
+                        self.mainDataStore.selectedRepositorySettings.set("issuesLoadError", error || "Unknown Error");
                         self.showLoadingDataError(error);
                     });
 
-                } else if (value === "REQUEST" &&
-                        !self.mainDataStore.selectedRepositorySettings.get("requestsLoaded") &&
+                }
+
+                if (!self.mainDataStore.selectedRepositorySettings.get("requestsLoaded") &&
                         !self.mainDataStore.selectedRepositorySettings.get("requestsLoading")) {
                     // Set the requestsLoading to true to prevent multiple requests
                     self.mainDataStore.selectedRepositorySettings.set("requestsLoading", true);
@@ -134,6 +148,7 @@ define([
                         self.mainDataStore.selectedRepositorySettings.set("requestsLoaded", true);
                         self.mainDataStore.selectedRepositorySettings.set("requestsLoading", false);
                     }, function (error) {
+                        self.mainDataStore.selectedRepositorySettings.set("requestsLoadError", error || "Unknown Error");
                         self.showLoadingDataError(error);
                     });
                 }

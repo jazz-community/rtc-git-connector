@@ -14,11 +14,14 @@ define([
             accessToken: null,  // For GitHub or GitLab
             linkType: null,     // Uppercase "COMMIT", "ISSUE", "REQUEST"
             commitsLoaded: false,
-            issuesLoaded: false,
-            requestsLoaded: false,
             commitsLoading: false,
+            commitsLoadError: null,
+            issuesLoaded: false,
             issuesLoading: false,
-            requestsLoading: false
+            issuesLoadError: null,
+            requestsLoaded: false,
+            requestsLoading: false,
+            requestsLoadError: null
         },
         selectedRepositoryData: {
             commits: null,
@@ -47,11 +50,14 @@ define([
             this.selectedRepositorySettings.set("accessToken", null);
             this.selectedRepositorySettings.set("linkType", null);
             this.selectedRepositorySettings.set("commitsLoaded", false);
-            this.selectedRepositorySettings.set("issuesLoaded", false);
-            this.selectedRepositorySettings.set("requestsLoaded", false);
             this.selectedRepositorySettings.set("commitsLoading", false);
+            this.selectedRepositorySettings.set("commitsLoadError", null);
+            this.selectedRepositorySettings.set("issuesLoaded", false);
             this.selectedRepositorySettings.set("issuesLoading", false);
+            this.selectedRepositorySettings.set("issuesLoadError", null);
+            this.selectedRepositorySettings.set("requestsLoaded", false);
             this.selectedRepositorySettings.set("requestsLoading", false);
+            this.selectedRepositorySettings.set("requestsLoadError", null);
             this.selectedRepositoryData.commits.length = 0;
             this.selectedRepositoryData.issues.length = 0;
             this.selectedRepositoryData.requests.length = 0;
