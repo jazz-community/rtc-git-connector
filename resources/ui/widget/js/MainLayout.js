@@ -142,8 +142,6 @@ define([
                             issuesToLink: self.mainDataStore.selectedRepositoryData.issuesToLink,
                             requestsToLink: self.mainDataStore.selectedRepositoryData.requestsToLink
                         };
-                        console.log("test from add back links function");
-
                         self.gitRestService.addBackLinksToGitHost(addBackLinksToGitHostParams).then(function (result) {
                             // Hide the loading overlay
                             domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");

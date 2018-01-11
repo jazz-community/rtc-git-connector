@@ -128,39 +128,89 @@ define([
         },
 
         addBackLinksToGitLab: function (params) {
+            var self = this;
             var deferredArray = [];
+            var repositoryUrl = new url(params.selectedGitRepository.url);
+            var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var gitlab = this.gitLabApi({
+                url: urlOrigin,
+                token: params.accessToken
+            });
+            var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
+                    "(" + params.workItem.object.locationUri + ")" +
+                    " on behalf of " + params.currentUser;
+            var commitCommentBody = "This commit " + commentBody;
+            var issueCommentBody = "This issue " + commentBody;
+            var requestCommentBody = "This merge request " + commentBody;
 
-            if (params.commitsToLink && params.commitsToLink.length > 0) {
-                deferredArray = deferredArray.concat(this.addBackLinksToGitLabCommits(params));
-            }
+            if (urlParts.length < 2) {
+                var deferred = new Deferred();
+                deferred.reject("Invalid repository URL.");
+                deferredArray.push(deferred);
+            } else {
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-            if (params.issuesToLink && params.issuesToLink.length > 0) {
-                deferredArray = deferredArray.concat(this.addBackLinksToGitLabIssues(params));
-            }
+                if (params.commitsToLink && params.commitsToLink.length > 0) {
+                    array.forEach(params.commitsToLink, function (commit) {
+                        deferredArray.push(self.addBackLinksToGitLabCommits(gitlab, urlParts[0], urlParts[1], commit.sha, commitCommentBody));
+                    });
+                }
 
-            if (params.requestsToLink && params.requestsToLink.length > 0) {
-                deferredArray = deferredArray.concat(this.addBackLinksToGitLabRequests(params));
+                if (params.issuesToLink && params.issuesToLink.length > 0) {
+                    array.forEach(params.issuesToLink, function (issue) {
+                        deferredArray.push(self.addBackLinksToGitLabIssues(gitlab, urlParts[0], urlParts[1], issue.id, issueCommentBody));
+                    });
+                }
+
+                if (params.requestsToLink && params.requestsToLink.length > 0) {
+                    array.forEach(params.requestsToLink, function (request) {
+                        deferredArray.push(self.addBackLinksToGitLabRequests(gitlab, urlParts[0], urlParts[1], request.id, requestCommentBody));
+                    });
+                }
             }
 
             return new DeferredList(deferredArray);
         },
 
-        addBackLinksToGitLabCommits: function (params) {
-            var deferredArray = [];
+        addBackLinksToGitLabCommits: function (gitlab, owner, repo, sha, commentBody) {
+            var deferred = new Deferred();
 
-            return deferredArray;
+            gitlab.projects.repository.commits.comments.create(owner + "/" + repo, sha, commentBody).then(function (response) {
+                deferred.resolve(response);
+            }, function (error) {
+                deferred.reject("Couldn't add a comment to the GitLab commit. Error: " + (error.error.message || error.error));
+            });
+
+            return deferred;
         },
 
-        addBackLinksToGitLabIssues: function (params) {
-            var deferredArray = [];
+        addBackLinksToGitLabIssues: function (gitlab, owner, repo, id, commentBody) {
+            var deferred = new Deferred();
 
-            return deferredArray;
+            gitlab.projects.issues.notes.create(owner + "/" + repo, id, {
+                body: commentBody
+            }).then(function (response) {
+                deferred.resolve(response);
+            }, function (error) {
+                deferred.reject("Couldn't add a comment to the GitLab issue. Error: " + (error.error.message || error.error));
+            });
+
+            return deferred;
         },
 
-        addBackLinksToGitLabRequests: function (params) {
-            var deferredArray = [];
+        addBackLinksToGitLabRequests: function (gitlab, owner, repo, id, commentBody) {
+            var deferred = new Deferred();
 
-            return deferredArray;
+            gitlab.projects.mergeRequests.notes.create(owner + "/" + repo, id, {
+                body: commentBody
+            }).then(function (response) {
+                deferred.resolve(response);
+            }, function (error) {
+                deferred.reject("Couldn't add a comment to the GitLab merge request. Error: " + (error.error.message || error.error));
+            });
+
+            return deferred;
         },
 
         // Get the last 100 commits from the specified repository on GitHub or GitLab
