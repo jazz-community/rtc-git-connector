@@ -203,7 +203,9 @@ define([
                                 }
                             }
 
-                            if (selectedCommit) {
+                            if (selectedCommit && !self.mainDataStore.selectedRepositoryData.commitsToLink.find(function (commit) {
+                                return commit.sha === selectedCommit.sha;
+                            })) {
                                 self.mainDataStore.selectedRepositoryData.commitsToLink.push(selectedCommit);
                             }
                         }

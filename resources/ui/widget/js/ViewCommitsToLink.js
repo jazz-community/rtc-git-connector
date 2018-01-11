@@ -73,7 +73,9 @@ define([
                                 }
                             }
 
-                            if (selectedCommit) {
+                            if (selectedCommit && !self.mainDataStore.selectedRepositoryData.commits.find(function (commit) {
+                                return commit.sha === selectedCommit.sha;
+                            })) {
                                 self.mainDataStore.selectedRepositoryData.commits.push(selectedCommit);
                             }
                         }
