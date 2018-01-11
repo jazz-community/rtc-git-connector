@@ -52,7 +52,7 @@ define([
                     "(" + params.workItem.object.locationUri + ")" +
                     " on behalf of " + params.currentUser;
             var commitCommentBody = "This commit " + commentBody;
-            var issuesCommentBody = "This issue " + commentBody;
+            var issueCommentBody = "This issue " + commentBody;
             var requestCommentBody = "This pull request " + commentBody;
 
             if (urlParts.length < 2) {
@@ -69,23 +69,27 @@ define([
 
                 if (params.commitsToLink && params.commitsToLink.length > 0) {
                     array.forEach(params.commitsToLink, function (commit) {
-                        deferredArray.push(self.addBackLinksToGitHubCommits(github, urlParts[0], urlParts[1], commit.sha, commitCommentBody));
+                        deferredArray.push(self.addBackLinksToGitHubCommit(github, urlParts[0], urlParts[1], commit.sha, commitCommentBody));
                     });
                 }
-            }
 
-            if (params.issuesToLink && params.issuesToLink.length > 0) {
-                deferredArray = deferredArray.concat(this.addBackLinksToGitHubIssues(params));
-            }
+                if (params.issuesToLink && params.issuesToLink.length > 0) {
+                    array.forEach(params.issuesToLink, function (issue) {
+                        deferredArray.push(self.addBackLinksToGitHubIssueOrRequest(github, urlParts[0], urlParts[1], issue.id, issueCommentBody));
+                    });
+                }
 
-            if (params.requestsToLink && params.requestsToLink.length > 0) {
-                deferredArray = deferredArray.concat(this.addBackLinksToGitHubRequests(params));
+                if (params.requestsToLink && params.requestsToLink.length > 0) {
+                    array.forEach(params.requestsToLink, function (request) {
+                        deferredArray.push(self.addBackLinksToGitHubIssueOrRequest(github, urlParts[0], urlParts[1], request.id, requestCommentBody));
+                    });
+                }
             }
 
             return new DeferredList(deferredArray);
         },
 
-        addBackLinksToGitHubCommits: function (github, owner, repo, sha, commentBody) {
+        addBackLinksToGitHubCommit: function (github, owner, repo, sha, commentBody) {
             var deferred = new Deferred();
 
             github.repos.createCommitComment({
@@ -95,8 +99,7 @@ define([
                 body: commentBody
             }, function (error, response) {
                 if (error) {
-                    var errorObj = json.parse(error.message || error);
-                    deferred.reject("Couldn't add a comment to the GitHub commit. Error: " + ((errorObj && errorObj.message) || error.message || error));
+                    deferred.reject("Couldn't add a comment to the GitHub commit. Error: " + (error.message || error));
                 } else {
                     deferred.resolve(response.data);
                 }
@@ -105,24 +108,23 @@ define([
             return deferred;
         },
 
-        addBackLinksToGitHubIssues: function (params) {
-            var deferredArray = [];
+        addBackLinksToGitHubIssueOrRequest: function (github, owner, repo, id, commentBody) {
+            var deferred = new Deferred();
 
-            array.forEach(params.issuesToLink, function (issue) {
-
+            github.issues.createComment({
+                owner: owner,
+                repo: repo,
+                number: id,
+                body: commentBody
+            }, function (error, response) {
+                if (error) {
+                    deferred.reject("Couldn't add a comment to the GitHub issue or pull request. Error: " + (error.message || error));
+                } else {
+                    deferred.resolve(response.data);
+                }
             });
 
-            return deferredArray;
-        },
-
-        addBackLinksToGitHubRequests: function (params) {
-            var deferredArray = [];
-
-            array.forEach(params.requestsToLink, function (request) {
-
-            });
-
-            return deferredArray;
+            return deferred;
         },
 
         addBackLinksToGitLab: function (params) {
