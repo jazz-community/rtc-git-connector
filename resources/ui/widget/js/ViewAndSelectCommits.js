@@ -62,6 +62,7 @@ define([
                 if (!self.mainDataStore.selectedRepositorySettings.get("commitsLoading")) {
                     // Set the commitsLoading to true to prevent multiple requests
                     self.mainDataStore.selectedRepositorySettings.set("commitsLoading", true);
+                    self.mainDataStore.selectedRepositorySettings.set("commitsLoaded", false);
 
                     if (commitSha) {
                         // Try to get the commit with the specified SHA

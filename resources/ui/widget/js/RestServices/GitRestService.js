@@ -261,8 +261,34 @@ define([
             return deferred.promise;
         },
 
+        // Get a commit from GitLab using it's SHA
         getGitLabCommitById: function (selectedGitRepository, accessToken, commitSha, alreadyLinkedUrls) {
+            var deferred = new Deferred();
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var gitlab = this.gitLabApi({
+                url: urlOrigin,
+                token: accessToken
+            });
 
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+
+                gitlab.projects.repository.commits.show(urlParts[0] + "/" + urlParts[1], commitSha).then(function (response) {
+                    var commitUrlPath = urlOrigin + "/" + urlParts[0] + "/" + urlParts[1] + "/commit/";
+                    var convertedCommits = [];
+                    convertedCommits.push(CommitModel.CreateFromGitLabCommit(response.body, commitUrlPath, alreadyLinkedUrls));
+                    deferred.resolve(convertedCommits);
+                }, function (error) {
+                    // Just resolve with an empty array if not found
+                    deferred.resolve([]);
+                });
+            }
+
+            return deferred.promise;
         },
 
         // Get the last 100 commits from the specified repository on GitHub or GitLab
