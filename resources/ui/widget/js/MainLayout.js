@@ -131,19 +131,44 @@ define([
                             self.mainDataStore.selectedRepositoryData.issuesToLink,
                             self.mainDataStore.selectedRepositoryData.requestsToLink,
                             function () {
+                        // This function runs after the work item was successfully saved
+                        var addBackLinksToGitHostParams = {
+                            selectedGitRepository: selectedRepository,
+                            gitHost: self.mainDataStore.selectedRepositorySettings.get("gitHost"),
+                            accessToken: self.mainDataStore.selectedRepositorySettings.get("accessToken"),
+                            currentUser: self.mainDataStore.currentUserId,
+                            workItem: self.mainDataStore.workItem,
+                            commitsToLink: self.mainDataStore.selectedRepositoryData.commitsToLink,
+                            issuesToLink: self.mainDataStore.selectedRepositoryData.issuesToLink,
+                            requestsToLink: self.mainDataStore.selectedRepositoryData.requestsToLink
+                        };
                         console.log("test from add back links function");
 
-                        // Hide the loading overlay
-                        domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
+                        self.gitRestService.addBackLinksToGitHost(addBackLinksToGitHostParams).then(function (result) {
+                            // Hide the loading overlay
+                            domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
 
-                        if (event.target.id === "rtcGitConnectorSaveAndCloseButton") {
-                            // Hide the widget
-                            self._hideMainDialog();
-                        } else {
-                            // Set the selected repository to it's current value to trigger a change event.
-                            // This reloads the view so that the user can keep on working without reopening the widget
-                            self.mainDataStore.selectedRepositorySettings.set("repository", selectedRepository);
-                        }
+                            if (event.target.id === "rtcGitConnectorSaveAndCloseButton") {
+                                // Hide the widget
+                                self._hideMainDialog();
+                            } else {
+                                // Set the selected repository to it's current value to trigger a change event.
+                                // This reloads the view so that the user can keep on working without reopening the widget
+                                self.mainDataStore.selectedRepositorySettings.set("repository", selectedRepository);
+                            }
+                        }, function (error) {
+                            domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
+
+                            if (event.target.id === "rtcGitConnectorSaveAndCloseButton") {
+                                self._hideMainDialog();
+                            } else {
+                                self.mainDataStore.selectedRepositorySettings.set("repository", selectedRepository);
+                            }
+
+                            console.log("Error adding back links: ", error);
+                        });
+
+
                     });
                 } else if (event.target.id === "rtcGitConnectorSaveAndCloseButton") {
                     // Hide the widget

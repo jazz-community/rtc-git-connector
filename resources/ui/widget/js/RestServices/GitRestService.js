@@ -4,11 +4,12 @@ define([
     "dojo/_base/array",
     "dojo/json",
     "dojo/Deferred",
+    "dojo/DeferredList",
     "dojo/request/xhr",
     "../Models/CommitModel",
     "../Models/IssueModel",
     "../Models/RequestModel"
-], function (declare, url, array, json, Deferred, xhr,
+], function (declare, url, array, json, Deferred, DeferredList, xhr,
     CommitModel, IssueModel, RequestModel) {
     var _instance = null;
     var GitRestService = declare(null, {
@@ -23,6 +24,136 @@ define([
                 this.gitHubApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitHubApi;
                 this.gitLabApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitLabApi;
             }
+        },
+
+        addBackLinksToGitHost: function (params) {
+            var deferredList = null;
+
+            if (params.gitHost === this.gitHubString) {
+                deferredList = this.addBackLinksToGitHub(params);
+            } else if (params.gitHost === this.gitLabString) {
+                deferredList = this.addBackLinksToGitLab(params);
+            } else {
+                var deferred = new Deferred();
+                deferred.reject("Invalid git host.");
+                deferredList = new DeferredList([deferred]);
+            }
+
+            return deferredList;
+        },
+
+        addBackLinksToGitHub: function (params) {
+            var deferredArray = [];
+
+            if (params.commitsToLink && params.commitsToLink.length > 0) {
+                deferredArray = deferredArray.concat(this.addBackLinksToGitHubCommits(params));
+            }
+
+            if (params.issuesToLink && params.issuesToLink.length > 0) {
+                deferredArray = deferredArray.concat(this.addBackLinksToGitHubIssues(params));
+            }
+
+            if (params.requestsToLink && params.requestsToLink.length > 0) {
+                deferredArray = deferredArray.concat(this.addBackLinksToGitHubRequests(params));
+            }
+
+            return new DeferredList(deferredArray);
+        },
+
+        addBackLinksToGitHubCommits: function (params) {
+            var self = this;
+            var deferredArray = [];
+            var repositoryUrl = new url(params.selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var github = new this.gitHubApi({});
+            var commentBody = "This commit was linked by [RTC Work Item " + params.workItem.object.id + "]" +
+                    "(" + params.workItem.object.locationUri + ")" +
+                    " on behalf of " + params.currentUser;
+
+            if (urlParts.length < 2) {
+                var deferred = new Deferred();
+                deferred.reject("Invalid repository URL.");
+                deferredArray.push(deferred);
+            } else {
+                urlParts[1] = self._removeDotGitEnding(urlParts[1]);
+
+                github.authenticate({
+                    type: 'token',
+                    token: params.accessToken
+                });
+
+                array.forEach(params.commitsToLink, function (commit) {
+                    var deferred = new Deferred();
+
+                    github.repos.createCommitComment({
+                        owner: urlParts[0],
+                        repo: urlParts[1],
+                        sha: commit.sha,
+                        body: commentBody
+                    }, function (error, response) {
+                        if (error) {
+                            var errorObj = json.parse(error.message || error);
+                            deferred.reject("Couldn't add a comment to the GitHub commit. Error: " + ((errorObj && errorObj.message) || error.message || error));
+                        } else {
+                            deferred.resolve(response.data);
+                        }
+                    });
+
+                    deferredArray.push(deferred);
+                });
+            }
+
+            return deferredArray;
+        },
+
+        addBackLinksToGitHubIssues: function (params) {
+            var deferredArray = [];
+
+            array.forEach(params.issuesToLink, function (issue) {
+
+            });
+
+            return deferredArray;
+        },
+
+        addBackLinksToGitHubRequests: function (params) {
+            var deferredArray = [];
+
+            array.forEach(params.requestsToLink, function (request) {
+
+            });
+
+            return deferredArray;
+        },
+
+        addBackLinksToGitLab: function (params) {
+            var deferredArray = [];
+
+            if (params.commitsToLink && params.commitsToLink.length > 0) {
+                deferredArray = deferredArray.concat(this.addBackLinksToGitLabCommits(params));
+            }
+
+            if (params.issuesToLink && params.issuesToLink.length > 0) {
+                deferredArray = deferredArray.concat(this.addBackLinksToGitLabIssues(params));
+            }
+
+            if (params.requestsToLink && params.requestsToLink.length > 0) {
+                deferredArray = deferredArray.concat(this.addBackLinksToGitLabRequests(params));
+            }
+
+            return new DeferredList(deferredArray);
+        },
+
+        addBackLinksToGitLabCommits: function (params) {
+
+        },
+
+        addBackLinksToGitLabIssues: function (params) {
+
+        },
+
+        addBackLinksToGitLabRequests: function (params) {
+
         },
 
         // Get the last 100 commits from the specified repository on GitHub or GitLab
