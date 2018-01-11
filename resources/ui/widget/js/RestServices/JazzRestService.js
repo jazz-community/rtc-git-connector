@@ -1,9 +1,10 @@
 define([
     "dojo/_base/declare",
+    "dojo/_base/array",
     "dojo/request/xhr",
     "dojo/json",
     "dojo/Deferred"
-], function (declare, xhr, json, Deferred) {
+], function (declare, array, xhr, json, Deferred) {
     var _instance = null;
     var JazzRestService = declare(null, {
         commitLinkEncoder: null,
@@ -11,6 +12,9 @@ define([
         allRegisteredGitRepositoriesUrl: null,
         currentUserUrl: null,
         personalTokenServiceUrl: null,
+        gitCommitServiceUrl: null,
+        gitCommitLinkTypeId: "com.ibm.team.git.workitem.linktype.gitCommit",
+        relatedArtifactLinkTypeId: "com.ibm.team.workitem.linktype.relatedartifact",
 
         constructor: function () {
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
@@ -26,6 +30,115 @@ define([
             this.personalTokenServiceUrl =
                 this.ajaxContextRoot +
                 "/service/com.siemens.bt.jazz.services.PersonalTokenService.IPersonalTokenService/tokenStore";
+            this.gitCommitServiceUrl =
+                this.ajaxContextRoot +
+                "/com.ibm.team.git.internal.resources.IGitResourceRestService/commit";
+        },
+
+        // Adds links to the workItem object and saves them
+        // The addBackLinksFunction is run on success without any parameters
+        addLinksToWorkItem: function (workItem, registeredGitRepository, commitsToLink, issuesToLink, requestsToLink, addBackLinksFunction) {
+            var self = this;
+            var onChangeFunc = {
+                // Create a function to run after the linkType change
+                changeFunc: function (event) {
+                    // Remove the event listener so that this function is only called once
+                    workItem.removeListener(listener);
+
+                    // Save the changes
+                    workItem.storeWorkItem({
+                        operationMsg: 'Saving',
+                        applyDelta: true,
+                        onSuccess: function(params) {
+                            console.log("Save Success");
+                            addBackLinksFunction();
+                        },
+                        onError: function(error) {
+                            console.log("Save Error: ", error);
+                        }
+                    });
+                }
+            };
+
+            // Create a listener for changes to the linkTypes
+            var listener = {
+                path: ["linkTypes"],
+                event: "onchange",
+                listener: onChangeFunc,
+                functionName: "changeFunc"
+            };
+
+            // Add the listener to the work item
+            workItem.addListener(listener);
+
+            // Add links to commits
+            if (commitsToLink && commitsToLink.length > 0) {
+                // Get the commit link type container from the work item
+                var commitLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                    return linkType.id === self.gitCommitLinkTypeId;
+                });
+
+                // Create and add an empty commit link type container if the work item doesn't already have one
+                if (!commitLinkTypeContainer) {
+                    commitLinkTypeContainer = this._getEmptyCommitLinkTypeContainer();
+                    workItem.object.linkTypes.push(commitLinkTypeContainer);
+                }
+
+                // Add all commits to link to the link type container
+                array.forEach(commitsToLink, function (commit) {
+                    commitLinkTypeContainer.linkDTOs.push({
+                        _isNew: true,
+                        comment: commit.message.split(/\r?\n/g)[0] + " [@" + commit.sha + "]",
+                        url: self._createCommitLinkUrl(commit, registeredGitRepository)
+                    });
+                });
+            }
+
+            // Add links to issues and requests
+            if ((issuesToLink && issuesToLink.length > 0) || (requestsToLink && requestsToLink.length > 0)) {
+                // Get the artifact link type container from the work item
+                var artifactLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                    return linkType.id === self.relatedArtifactLinkTypeId;
+                });
+
+                // Create and add an empty artifact link type container if the work item doesn't already have one
+                if (!artifactLinkTypeContainer) {
+                    artifactLinkTypeContainer = this._getEmptyRelatedArtifactLinkTypeContainer();
+                    workItem.object.linkTypes.push(artifactLinkTypeContainer);
+                }
+
+                // Add all issues to link to the link type container
+                if (issuesToLink && issuesToLink.length > 0) {
+                    array.forEach(issuesToLink, function (issue) {
+                        artifactLinkTypeContainer.linkDTOs.push({
+                            _isNew: true,
+                            comment: issue.title,
+                            url: issue.webUrl
+                        });
+                    });
+                }
+
+                // Add all requests to link to the link type container
+                if (requestsToLink && requestsToLink.length > 0) {
+                    array.forEach(requestsToLink, function (request) {
+                        artifactLinkTypeContainer.linkDTOs.push({
+                            _isNew: true,
+                            comment: request.title,
+                            url: request.webUrl
+                        });
+                    });
+                }
+            }
+
+            // Set the linkTypes value on the work item.
+            // This will also trigger the save
+            workItem.setValue({
+                path: ["linkTypes"],
+                value: workItem.object.linkTypes
+            });
+
+            // Remove the listener again just incase it wasn't removed before (the event wasn't fired?)
+            workItem.removeListener(listener);
         },
 
         // Get the access token for the user and host
@@ -125,6 +238,43 @@ define([
             }
 
             return gitRepositories;
+        },
+
+        // Creates a new empty commit link type container object
+        _getEmptyCommitLinkTypeContainer: function () {
+            return {
+                displayName: "Git Commits",
+                endpointId: "gitcommit",
+                id: this.gitCommitLinkTypeId,
+                isSource: false,
+                linkDTOs: []
+            };
+        },
+
+        // Creates a new empty related artifact link type container object
+        _getEmptyRelatedArtifactLinkTypeContainer: function () {
+            return {
+                displayName: "Related Artifacts",
+                endpointId: "relatedArtifact",
+                id: this.relatedArtifactLinkTypeId,
+                isSource: false,
+                linkDTOs: []
+            };
+        },
+
+        // Creates the url to the internal git service including the commit as a encoded value.
+        // This is needed for the rich hover to work
+        _createCommitLinkUrl: function (commit, registeredGitRepository) {
+            var jsonString = json.stringify({
+                c: commit.message,
+                d: commit.authoredDate,
+                e: commit.authorEmail,
+                k: registeredGitRepository.key,
+                n: commit.authorName,
+                s: commit.sha,
+                u: commit.webUrl
+            });
+            return this.gitCommitServiceUrl + "?value=" + this.commitLinkEncoder.encode(jsonString);
         }
     });
 

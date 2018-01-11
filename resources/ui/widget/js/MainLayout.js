@@ -115,7 +115,23 @@ define([
             };
 
             on(dom.byId("rtcGitConnectorSaveButton"), "click", function (event) {
-                console.log("save event", event);
+                // Check if there is anything to save
+                if (self.mainDataStore.selectedRepositoryData.commitsToLink.length > 0 ||
+                    self.mainDataStore.selectedRepositoryData.issuesToLink.length > 0 ||
+                    self.mainDataStore.selectedRepositoryData.requestsToLink.length > 0) {
+
+                    // Save the links
+                    self.jazzRestService.addLinksToWorkItem(self.mainDataStore.workItem,
+                        self.mainDataStore.selectedRepositorySettings.get("repository"),
+                        self.mainDataStore.selectedRepositoryData.commitsToLink,
+                        self.mainDataStore.selectedRepositoryData.issuesToLink,
+                        self.mainDataStore.selectedRepositoryData.requestsToLink,
+                        function () {
+                            console.log("test from add back links function");
+                            var mainDialog = registry.byId("connectWithGitMainDialog");
+                            mainDialog.hide();
+                        });
+                }
             });
 
             on(dom.byId("rtcGitConnectorCancelButton"), "click", function (event) {
