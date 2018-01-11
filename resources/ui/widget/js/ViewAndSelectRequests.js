@@ -29,6 +29,15 @@ define([
         startup: function () {
             this.initializeViewRequestsList();
             this.watchDataStore();
+            this.setEventHandlers();
+        },
+
+        setEventHandlers: function () {
+            var self = this;
+
+            on(this.requestsFilterInput, "change", function (value) {
+                self.setViewRequestsListFromStore(value);
+            });
         },
 
         watchDataStore: function () {
@@ -61,12 +70,15 @@ define([
                 alreadyLinked: true
             }];
 
+            // Clear the filter input
+            this.requestsFilterInput.setValue("");
+
             // Draw the requests list in the view
             this.drawViewRequests();
             this.drawDetailsView();
         },
 
-        setViewRequestsListFromStore: function () {
+        setViewRequestsListFromStore: function (filterValue) {
             // Clone the store array
             this.viewRequests = lang.clone(this.mainDataStore.selectedRepositoryData.requests);
 
@@ -79,7 +91,15 @@ define([
                 // Need to sort the viewRequests here (by date created -> newest on top)
                 this.sortViewRequestsByDate();
 
-                // Later also filter here
+                if (!filterValue) {
+                    // Take the filter from the input if it wasn't passed in
+                    filterValue = this.requestsFilterInput.value;
+                }
+
+                // Filter the view requests using the filter input text
+                if (filterValue) {
+                    this.filterViewRequestsByText(filterValue);
+                }
             }
 
             // Draw the requests list in the view
@@ -257,6 +277,40 @@ define([
 
             // Use the sorted array
             this.viewRequests = sortedArray;
+        },
+
+        // Filter the view requests using the filter text.
+        // Only keep requests that contain the filter text either
+        // in the request title or request author name or id or email
+        filterViewRequestsByText: function (filterText) {
+            filterText = filterText.toLowerCase();
+            this.viewRequests = this.viewRequests.filter(function (request) {
+                request.id = request.id.toString();
+                return request.id.toLowerCase().indexOf(filterText) > -1 ||
+                    request.title.toLowerCase().indexOf(filterText) > -1 ||
+                    request.state.toLowerCase().indexOf(filterText) > -1 ||
+                    request.openedBy.toLowerCase().indexOf(filterText) > -1;
+            });
+            this._highlightFilterText(filterText, ["id", "title", "state", "openedBy"], this.viewRequests);
+        },
+
+        _highlightFilterText: function(filterText, filterBy, filterResult){
+            for(var i=0; i < filterResult.length; i++){
+                for(var j=0; j < filterBy.length; j++){
+                    filterResult[i][filterBy[j]] = this._highlightTextInString(filterText, filterResult[i][filterBy[j]]);
+                }
+            }
+        },
+
+        _highlightTextInString: function(searchText, fullText){
+            var startIndex;
+            if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1){
+                var beforeFound = fullText.slice(0, startIndex);
+                var found = fullText.slice(startIndex, startIndex + searchText.length);
+                var afterFound = this._highlightTextInString(searchText, fullText.slice(startIndex + searchText.length));
+                fullText = beforeFound + "<b class='rtcGitConnectorHighlightText'>" + found + "</b>" + afterFound;
+            }
+            return fullText;
         }
     });
 });

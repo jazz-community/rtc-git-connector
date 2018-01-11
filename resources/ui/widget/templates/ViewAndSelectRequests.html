@@ -1,5 +1,12 @@
 <div>
     <label class="rtcGitConnectorLabelText">Recent requests</label>
+    <br />
+    <input id="viewAndSelectRequestsFilterInput"
+        class="viewAndSelectFilterInput"
+        placeholder="Filter requests by title or author..."
+        data-dojo-type="dijit/form/TextBox"
+        data-dojo-attach-point="requestsFilterInput"
+        data-dojo-props="trim:true, intermediateChanges:true">
     <div class="rtcGitConnectorViewAndSelectWrapper" id="viewAndSelectRequestsWrapper">
         <div class="rtcGitConnectorViewAndSelectList"></div>
         <div class="rtcGitConnectorViewAndSelectDetails"></div>

@@ -311,6 +311,6 @@ define([
                 fullText = beforeFound + "<b class='rtcGitConnectorHighlightText'>" + found + "</b>" + afterFound;
             }
             return fullText;
-        },
+        }
     });
 });
