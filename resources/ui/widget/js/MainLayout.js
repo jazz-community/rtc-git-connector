@@ -120,6 +120,9 @@ define([
                     self.mainDataStore.selectedRepositoryData.issuesToLink.length > 0 ||
                     self.mainDataStore.selectedRepositoryData.requestsToLink.length > 0) {
 
+                    // Show a loading overlay to disable the view until the save is complete
+                    domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
+
                     // Save the links
                     self.jazzRestService.addLinksToWorkItem(self.mainDataStore.workItem,
                         self.mainDataStore.selectedRepositorySettings.get("repository"),
@@ -128,6 +131,10 @@ define([
                         self.mainDataStore.selectedRepositoryData.requestsToLink,
                         function () {
                             console.log("test from add back links function");
+
+                            // Hide the loading overlay
+                            domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
+
                             var mainDialog = registry.byId("connectWithGitMainDialog");
                             mainDialog.hide();
                         });

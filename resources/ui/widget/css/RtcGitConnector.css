@@ -196,3 +196,16 @@
     width: 100%;
     border: 1px solid gray;
 }
+
+#rtcGitConnectorFullPageLoadingOverlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    z-index: 10000;
+    text-align: center;
+    line-height: 80vh;
+    font-size: 5rem;
+}
