@@ -133,7 +133,7 @@ define([
                             console.log("test from add back links function");
 
                             // Hide the loading overlay
-                            domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
+                            domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
 
                             var mainDialog = registry.byId("connectWithGitMainDialog");
                             mainDialog.hide();
