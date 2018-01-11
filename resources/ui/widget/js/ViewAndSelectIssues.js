@@ -82,6 +82,10 @@ define([
             // Clone the store array
             this.viewIssues = lang.clone(this.mainDataStore.selectedRepositoryData.issues);
 
+            array.forEach(this.viewIssues, function (issue) {
+                issue.originalId = issue.id;
+            });
+
             if (this.viewIssues.length < 1) {
                 this.viewIssues = [{
                     title: "No issues found",
@@ -116,7 +120,7 @@ define([
             array.forEach(this.viewIssues, function (issue) {
                 var issueListItem = domConstruct.create("div", {
                     "class": "rtcGitConnectorViewAndSelectListItem",
-                    "data-issue-id": issue.id
+                    "data-issue-id": issue.originalId
                 }, issuesListNode);
 
                 on(issueListItem, "click", function (event) {
@@ -193,7 +197,7 @@ define([
             });
 
             array.forEach(this.viewIssues, function (issue) {
-                if (issue.id == issueId) {
+                if (issue.originalId == issueId) {
                     self.drawDetailsView(issue);
                 }
             });

@@ -82,6 +82,10 @@ define([
             // Clone the store array
             this.viewCommits = lang.clone(this.mainDataStore.selectedRepositoryData.commits);
 
+            array.forEach(this.viewCommits, function (commit) {
+                commit.originalSha = commit.sha;
+            });
+
             if (this.viewCommits.length < 1) {
                 this.viewCommits = [{
                     message: "No commits found",
@@ -116,7 +120,7 @@ define([
             array.forEach(this.viewCommits, function (commit) {
                 var commitListItem = domConstruct.create("div", {
                     "class": "rtcGitConnectorViewAndSelectListItem",
-                    "data-commit-sha": commit.sha
+                    "data-commit-sha": commit.originalSha
                 }, commitsListNode);
 
                 on(commitListItem, "click", function (event) {
@@ -193,7 +197,7 @@ define([
             });
 
             array.forEach(this.viewCommits, function (commit) {
-                if (commit.sha === commitSha) {
+                if (commit.originalSha === commitSha) {
                     self.drawDetailsView(commit);
                 }
             });

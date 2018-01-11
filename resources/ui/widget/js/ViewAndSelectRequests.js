@@ -82,6 +82,10 @@ define([
             // Clone the store array
             this.viewRequests = lang.clone(this.mainDataStore.selectedRepositoryData.requests);
 
+            array.forEach(this.viewRequests, function (request) {
+                request.originalId = request.id;
+            });
+
             if (this.viewRequests.length < 1) {
                 this.viewRequests = [{
                     title: "No requests found",
@@ -116,7 +120,7 @@ define([
             array.forEach(this.viewRequests, function (request) {
                 var requestListItem = domConstruct.create("div", {
                     "class": "rtcGitConnectorViewAndSelectListItem",
-                    "data-request-id": request.id
+                    "data-request-id": request.originalId
                 }, requestsListNode);
 
                 on(requestListItem, "click", function (event) {
@@ -193,7 +197,7 @@ define([
             });
 
             array.forEach(this.viewRequests, function (request) {
-                if (request.id == requestId) {
+                if (request.originalId == requestId) {
                     self.drawDetailsView(request);
                 }
             });
