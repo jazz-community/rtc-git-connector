@@ -112,11 +112,11 @@ define([
         },
 
         // Get the last 100 issues form the specified repository on GitHub or GitLab
-        getRecentIssues: function (selectedGitRepository, gitHost, accessToken) {
+        getRecentIssues: function (selectedGitRepository, gitHost, accessToken, alreadyLinkedUrls) {
             if (gitHost === this.gitHubString) {
-                return this.getRecentGitHubIssues(selectedGitRepository, accessToken);
+                return this.getRecentGitHubIssues(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else if (gitHost === this.gitLabString) {
-                return this.getRecentGitLabIssues(selectedGitRepository, accessToken);
+                return this.getRecentGitLabIssues(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else {
                 var deferred = new Deferred();
                 deferred.reject("Invalid git host.");
@@ -125,7 +125,7 @@ define([
         },
 
         // Get the last 100 issues from the specified repository on GitHub
-        getRecentGitHubIssues: function (selectedGitRepository, accessToken) {
+        getRecentGitHubIssues: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
             var self = this;
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
@@ -153,7 +153,7 @@ define([
                     } else {
                         var convertedIssues = [];
                         array.forEach(self._removePullRequestsFromIssuesList(response.data), function (issue) {
-                            convertedIssues.push(IssueModel.CreateFromGitHubIssue(issue));
+                            convertedIssues.push(IssueModel.CreateFromGitHubIssue(issue, alreadyLinkedUrls));
                         });
                         deferred.resolve(convertedIssues);
                     }
@@ -164,7 +164,7 @@ define([
         },
 
         // Get the last 100 issues from the specified repository on GitLab
-        getRecentGitLabIssues: function (selectedGitRepository, accessToken) {
+        getRecentGitLabIssues: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
@@ -184,7 +184,7 @@ define([
                 }).then(function (response) {
                     var convertedIssues = [];
                     array.forEach(response, function (issue) {
-                        convertedIssues.push(IssueModel.CreateFromGitLabIssue(issue));
+                        convertedIssues.push(IssueModel.CreateFromGitLabIssue(issue, alreadyLinkedUrls));
                     });
                     deferred.resolve(convertedIssues);
                 }, function (error) {
@@ -196,11 +196,11 @@ define([
         },
 
         // Get the last 100 requests (pull/merge) from the selected repository on GitHub or GitLab
-        getRecentRequests: function (selectedGitRepository, gitHost, accessToken) {
+        getRecentRequests: function (selectedGitRepository, gitHost, accessToken, alreadyLinkedUrls) {
             if (gitHost === this.gitHubString) {
-                return this.getRecentGitHubRequests(selectedGitRepository, accessToken);
+                return this.getRecentGitHubRequests(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else if (gitHost === this.gitLabString) {
-                return this.getRecentGitLabRequests(selectedGitRepository, accessToken);
+                return this.getRecentGitLabRequests(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else {
                 var deferred = new Deferred();
                 deferred.reject("Invalid git host.");
@@ -209,7 +209,7 @@ define([
         },
 
         // Get the last 100 pull requests from the selected repository on GitHub
-        getRecentGitHubRequests: function (selectedGitRepository, accessToken) {
+        getRecentGitHubRequests: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
@@ -236,7 +236,7 @@ define([
                     } else {
                         var convertedRequests = [];
                         array.forEach(response.data, function (request) {
-                            convertedRequests.push(RequestModel.CreateFromGitHubRequest(request));
+                            convertedRequests.push(RequestModel.CreateFromGitHubRequest(request, alreadyLinkedUrls));
                         });
                         deferred.resolve(convertedRequests);
                     }
@@ -247,7 +247,7 @@ define([
         },
 
         // Get the last 100 merge requests from the selected repository on GitLab
-        getRecentGitLabRequests: function (selectedGitRepository, accessToken) {
+        getRecentGitLabRequests: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
@@ -267,7 +267,7 @@ define([
                 }).then(function (response) {
                     var convertedRequests = [];
                     array.forEach(response, function (request) {
-                        convertedRequests.push(RequestModel.CreateFromGitLabRequest(request));
+                        convertedRequests.push(RequestModel.CreateFromGitLabRequest(request, alreadyLinkedUrls));
                     });
                     deferred.resolve(convertedRequests);
                 }, function (error) {

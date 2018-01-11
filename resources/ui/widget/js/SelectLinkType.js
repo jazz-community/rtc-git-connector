@@ -102,7 +102,8 @@ define([
                     self.mainDataStore.selectedRepositorySettings.set("issuesLoading", true);
 
                     // Get issues from host if not already loaded
-                    self.gitRestService.getRecentIssues(selectedRepository, gitHost, accessToken).then(function (issues) {
+                    self.gitRestService.getRecentIssues(selectedRepository, gitHost, accessToken,
+                        self.jazzRestService.getRelatedArtifactLinksFromWorkItem(self.mainDataStore.workItem)).then(function (issues) {
                         // Set the list in the store and set issuesLoaded to true.
                         // Clear the list first just incase the function is run multiple times due to slow loading
                         self.mainDataStore.selectedRepositoryData.issues
@@ -122,7 +123,8 @@ define([
                     self.mainDataStore.selectedRepositorySettings.set("requestsLoading", true);
 
                     // Get requests from host if not already loaded
-                    self.gitRestService.getRecentRequests(selectedRepository, gitHost, accessToken).then(function (requests) {
+                    self.gitRestService.getRecentRequests(selectedRepository, gitHost, accessToken,
+                        self.jazzRestService.getRelatedArtifactLinksFromWorkItem(self.mainDataStore.workItem)).then(function (requests) {
                         // Set the list in the store and set the requestsLoaded to true.
                         // Clear the list first just incase the function is run multiple times due to slow loading
                         self.mainDataStore.selectedRepositoryData.requests

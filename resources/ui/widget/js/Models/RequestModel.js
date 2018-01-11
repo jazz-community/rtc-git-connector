@@ -14,7 +14,7 @@ define([
     // Return an instance so that the functions can be used as if they were static
     return new function () {
         // Create a RequestModel object from a GitHub request object
-        this.CreateFromGitHubRequest = function (gitHubRequest) {
+        this.CreateFromGitHubRequest = function (gitHubRequest, alreadyLinkedUrls) {
             var requestModel = new RequestModel();
             requestModel.id = gitHubRequest.number;
             requestModel.title = gitHubRequest.title;
@@ -22,13 +22,13 @@ define([
             requestModel.openedBy = gitHubRequest.user.login;
             requestModel.openedDate = gitHubRequest.created_at;
             requestModel.webUrl = gitHubRequest.html_url;
-            requestModel.alreadyLinked = false; // Need to check this...
+            requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl) > -1;
 
             return requestModel;
         };
 
         // Create a RequestModel object from a GitLab request object
-        this.CreateFromGitLabRequest = function (gitLabRequest) {
+        this.CreateFromGitLabRequest = function (gitLabRequest, alreadyLinkedUrls) {
             var requestModel = new RequestModel();
             requestModel.id = gitLabRequest.iid;
             requestModel.title = gitLabRequest.title;
@@ -36,7 +36,7 @@ define([
             requestModel.openedBy = gitLabRequest.author.name;
             requestModel.openedDate = gitLabRequest.created_at;
             requestModel.webUrl = gitLabRequest.web_url;
-            requestModel.alreadyLinked = false; // Need to check this...
+            requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl) > -1;
 
             return requestModel;
         };

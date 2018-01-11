@@ -164,6 +164,22 @@ define([
             return linkedCommitUrls;
         },
 
+        getRelatedArtifactLinksFromWorkItem: function (workItem) {
+            var self = this;
+            var linkedUrls = [];
+            var artifactLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                return linkType.id === self.relatedArtifactLinkTypeId;
+            });
+
+            if (artifactLinkTypeContainer) {
+                array.forEach(artifactLinkTypeContainer.linkDTOs, function (artifactLink) {
+                    linkedUrls.push(artifactLink.url);
+                });
+            }
+
+            return linkedUrls;
+        },
+
         // Get the access token for the user and host
         getAccessTokenByHost: function (hostUrl) {
             var deferred = new Deferred();

@@ -14,7 +14,7 @@ define([
     // Return an instance so that the functions can be used as if they were static
     return new function () {
         // Create an IssueModel object from a GitHub issue object
-        this.CreateFromGitHubIssue = function (gitHubIssue) {
+        this.CreateFromGitHubIssue = function (gitHubIssue, alreadyLinkedUrls) {
             var issueModel = new IssueModel();
             issueModel.id = gitHubIssue.number;
             issueModel.title = gitHubIssue.title;
@@ -22,13 +22,13 @@ define([
             issueModel.openedBy = gitHubIssue.user.login;
             issueModel.openedDate = gitHubIssue.created_at;
             issueModel.webUrl = gitHubIssue.html_url;
-            issueModel.alreadyLinked = false; // Need to check this...
+            issueModel.alreadyLinked = alreadyLinkedUrls.indexOf(issueModel.webUrl) > -1;
 
             return issueModel;
         };
 
         // Create an IssueModel object from a GitLab issue object
-        this.CreateFromGitLabIssue = function (gitLabIssue) {
+        this.CreateFromGitLabIssue = function (gitLabIssue, alreadyLinkedUrls) {
             var issueModel = new IssueModel();
             issueModel.id = gitLabIssue.iid;
             issueModel.title = gitLabIssue.title;
@@ -36,7 +36,7 @@ define([
             issueModel.openedBy = gitLabIssue.author.name;
             issueModel.openedDate = gitLabIssue.created_at;
             issueModel.webUrl = gitLabIssue.web_url;
-            issueModel.alreadyLinked = false; // Need to check this...
+            issueModel.alreadyLinked = alreadyLinkedUrls.indexOf(issueModel.webUrl) > -1;
 
             return issueModel;
         };
