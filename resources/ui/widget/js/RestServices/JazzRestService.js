@@ -156,7 +156,7 @@ define([
                     if (lastIndex != -1) {
                         var encodedCommit = commitLink.url.slice(lastIndex + searchTerm.length);
                         var linkCommit = json.parse(self.commitLinkEncoder.decode(encodedCommit));
-                        linkedCommitUrls.push(linkCommit.u);
+                        linkedCommitUrls.push(linkCommit.u.toLowerCase());
                     }
                 });
             }
@@ -173,7 +173,7 @@ define([
 
             if (artifactLinkTypeContainer) {
                 array.forEach(artifactLinkTypeContainer.linkDTOs, function (artifactLink) {
-                    linkedUrls.push(artifactLink.url);
+                    linkedUrls.push(artifactLink.url.toLowerCase());
                 });
             }
 

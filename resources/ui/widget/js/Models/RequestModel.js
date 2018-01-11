@@ -22,7 +22,7 @@ define([
             requestModel.openedBy = gitHubRequest.user.login;
             requestModel.openedDate = gitHubRequest.created_at;
             requestModel.webUrl = gitHubRequest.html_url;
-            requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl) > -1;
+            requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
 
             return requestModel;
         };
@@ -36,7 +36,7 @@ define([
             requestModel.openedBy = gitLabRequest.author.name;
             requestModel.openedDate = gitLabRequest.created_at;
             requestModel.webUrl = gitLabRequest.web_url;
-            requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl) > -1;
+            requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
 
             return requestModel;
         };

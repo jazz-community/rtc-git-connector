@@ -22,7 +22,7 @@ define([
             commitModel.authorEmail = gitHubCommit.commit.author.email;
             commitModel.authoredDate = gitHubCommit.commit.author.date;
             commitModel.webUrl = gitHubCommit.html_url;
-            commitModel.alreadyLinked = alreadyLinkedUrls.indexOf(commitModel.webUrl) > -1;
+            commitModel.alreadyLinked = alreadyLinkedUrls.indexOf(commitModel.webUrl.toLowerCase()) > -1;
 
             return commitModel;
         };
@@ -36,7 +36,7 @@ define([
             commitModel.authorEmail = gitLabCommit.author_email;
             commitModel.authoredDate = gitLabCommit.authored_date;
             commitModel.webUrl = commitUrlPath + commitModel.sha;
-            commitModel.alreadyLinked = alreadyLinkedUrls.indexOf(commitModel.webUrl) > -1;
+            commitModel.alreadyLinked = alreadyLinkedUrls.indexOf(commitModel.webUrl.toLowerCase()) > -1;
 
             return commitModel;
         };
