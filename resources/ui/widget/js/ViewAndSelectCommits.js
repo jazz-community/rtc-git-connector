@@ -48,18 +48,31 @@ define([
                     .push.apply(self.mainDataStore.selectedRepositoryData.commits, commits);
                 self.mainDataStore.selectedRepositorySettings.set("commitsLoaded", true);
                 self.mainDataStore.selectedRepositorySettings.set("commitsLoading", false);
+
+                // Enable the search and clear buttons after loading
+                dom.byId("viewAndSelectCommitsSearchButton").removeAttribute("disabled");
+                dom.byId("viewAndSelectCommitsSearchClearButton").removeAttribute("disabled");
             };
             var commitsLoadErrorFunc = function (error) {
                 self.mainDataStore.selectedRepositorySettings.set("commitsLoadError", error || "Unknown Error");
+
+                // Enable the search and clear buttons after loading
+                dom.byId("viewAndSelectCommitsSearchButton").removeAttribute("disabled");
+                dom.byId("viewAndSelectCommitsSearchClearButton").removeAttribute("disabled");
             };
             var searchButtonClickFunc = function (event) {
-                var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
-                var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
-                var accessToken = self.mainDataStore.selectedRepositorySettings.get("accessToken");
-                var commitSha = self.commitsSearchInput.value;
-                var alreadyLinkedUrls = self.jazzRestService.getGitCommitLinksFromWorkItem(self.mainDataStore.workItem);
-
+                // Don't do anything if commits are already being loaded
                 if (!self.mainDataStore.selectedRepositorySettings.get("commitsLoading")) {
+                    var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
+                    var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
+                    var accessToken = self.mainDataStore.selectedRepositorySettings.get("accessToken");
+                    var commitSha = self.commitsSearchInput.value;
+                    var alreadyLinkedUrls = self.jazzRestService.getGitCommitLinksFromWorkItem(self.mainDataStore.workItem);
+
+                    // Disable the search and clear buttons while loading
+                    dom.byId("viewAndSelectCommitsSearchButton").setAttribute("disabled", "disabled");
+                    dom.byId("viewAndSelectCommitsSearchClearButton").setAttribute("disabled", "disabled");
+
                     // Set the commitsLoading to true to prevent multiple requests
                     self.mainDataStore.selectedRepositorySettings.set("commitsLoading", true);
                     self.mainDataStore.selectedRepositorySettings.set("commitsLoaded", false);

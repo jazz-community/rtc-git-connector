@@ -130,6 +130,11 @@
     color: #333;
 }
 
+button.viewAndSelectSearchButton[disabled] {
+    opacity: 0.6;
+    cursor: default;
+}
+
 .viewAndSelectFilterInput {
     width: calc(50% - 74px);
     margin-bottom: .5rem;
