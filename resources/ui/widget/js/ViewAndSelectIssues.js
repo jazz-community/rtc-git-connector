@@ -29,6 +29,15 @@ define([
         startup: function () {
             this.initializeViewIssuesList();
             this.watchDataStore();
+            this.setEventHandlers();
+        },
+
+        setEventHandlers: function () {
+            var self = this;
+
+            on(this.issuesFilterInput, "change", function (value) {
+                self.setViewIssuesListFromStore(value);
+            });
         },
 
         watchDataStore: function () {
@@ -61,12 +70,15 @@ define([
                 alreadyLinked: true
             }];
 
+            // Clear the filter input
+            this.issuesFilterInput.setValue("");
+
             // Draw the issues list in the view
             this.drawViewIssues();
             this.drawDetailsView();
         },
 
-        setViewIssuesListFromStore: function () {
+        setViewIssuesListFromStore: function (filterValue) {
             // Clone the store array
             this.viewIssues = lang.clone(this.mainDataStore.selectedRepositoryData.issues);
 
@@ -79,7 +91,15 @@ define([
                 // Need to sort the viewIssues here (by date created -> newest on top)
                 this.sortViewIssuesByDate();
 
-                // Later also filter here
+                if (!filterValue) {
+                    // Take the filter from the input if it wasn't passed in
+                    filterValue = this.issuesFilterInput.value;
+                }
+
+                // Filter the view issues using the filter input text
+                if (filterValue) {
+                    this.filterViewIssuesByText(filterValue);
+                }
             }
 
             // Draw the issues list in the view
@@ -257,6 +277,40 @@ define([
 
             // Use the sorted array
             this.viewIssues = sortedArray;
-        }
+        },
+
+        // Filter the view issues using the filter text.
+        // Only keep issues that contain the filter text either
+        // in the issue title or issue author name or id or email
+        filterViewIssuesByText: function (filterText) {
+            filterText = filterText.toLowerCase();
+            this.viewIssues = this.viewIssues.filter(function (issue) {
+                issue.id = issue.id.toString();
+                return issue.id.toLowerCase().indexOf(filterText) > -1 ||
+                    issue.title.toLowerCase().indexOf(filterText) > -1 ||
+                    issue.state.toLowerCase().indexOf(filterText) > -1 ||
+                    issue.openedBy.toLowerCase().indexOf(filterText) > -1;
+            });
+            this._highlightFilterText(filterText, ["id", "title", "state", "openedBy"], this.viewIssues);
+        },
+
+        _highlightFilterText: function(filterText, filterBy, filterResult){
+            for(var i=0; i < filterResult.length; i++){
+                for(var j=0; j < filterBy.length; j++){
+                    filterResult[i][filterBy[j]] = this._highlightTextInString(filterText, filterResult[i][filterBy[j]]);
+                }
+            }
+        },
+
+        _highlightTextInString: function(searchText, fullText){
+            var startIndex;
+            if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1){
+                var beforeFound = fullText.slice(0, startIndex);
+                var found = fullText.slice(startIndex, startIndex + searchText.length);
+                var afterFound = this._highlightTextInString(searchText, fullText.slice(startIndex + searchText.length));
+                fullText = beforeFound + "<b class='rtcGitConnectorHighlightText'>" + found + "</b>" + afterFound;
+            }
+            return fullText;
+        },
     });
 });

@@ -1,5 +1,12 @@
 <div>
     <label class="rtcGitConnectorLabelText">Recent issues</label>
+    <br />
+    <input id="viewAndSelectIssuesFilterInput"
+        class="viewAndSelectFilterInput"
+        placeholder="Filter issues by message or author..."
+        data-dojo-type="dijit/form/TextBox"
+        data-dojo-attach-point="issuesFilterInput"
+        data-dojo-props="trim:true, intermediateChanges:true">
     <div class="rtcGitConnectorViewAndSelectWrapper" id="viewAndSelectIssuesWrapper">
         <div class="rtcGitConnectorViewAndSelectList"></div>
         <div class="rtcGitConnectorViewAndSelectDetails"></div>
