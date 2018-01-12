@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+- 8
+script:
+- npm run build
+deploy:
+  provider: releases
+  api_key:
+    secure: wAX6SYIx3/sQd1pzPJvNG0rlIfuBKbAQKSuMgLGR1j3+8lBGB4YmNF2BgYEtJf2mopmiBDv4SWpRQ7zZAk2Fs2lokTjHjg0eQqvkAwBgREeWW+q9EK2uMiZPI4Os/cLRiYfVIH9a3ybc4/6VEVKwROkASCT02e1ok7nYEV09KVctqYjt/1on9Cs/PKAtK9H0jAA1QrerK1quIy//5csTJb4AYNtGkpCKHtt5dvEeF5KEA+p3mpNasPtN7xicZ6q2wJg/1KMJR3dhREmbLC9kI9OghYqslU8iSCqdK/YvXuhn+2RrYGvranTa+NqsTJlO1koXWs227zFr31xlI5jqxfWpIxYDN5taaa/79YQLjBDXO5nhBWvO3sJPaurBblzE7YJsQcSo9E830Of+nPWfmrX5+x+HpQx7PtkoCzHR66xi8PxGdW1ILoM3gFLOVMEvDtaoUtBlyDL7J33Ywn3HbKyWDwmMQVu5+ftb2bSNtoQZsvsbcvWRvR0svI3Gac+JvFHZ71I55bILGio7Cu3knZz/EKziW6qh/sJoerUccLuYfvzXkgg5FdN1gwBm8VAPXlN6+F5eak5QwxUlQWcC4FiJvrCtZYvB8I72t28SEpbifqGN1fz2Yz9SBby2VtVXwyw4zAfAO0jUyE55XLR4IY83P3pj5rCeXeJ0Qsu0yl0=
+  file: com.siemens.bt.jazz.workitemeditor.rtcGitConnector*.zip
+  file_glob: true
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: MartinBenninger/rtc-git-connector
