@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/MartinBenninger/rtc-git-connector.svg?branch=master)](https://travis-ci.org/MartinBenninger/rtc-git-connector)
+[![Build Status](https://travis-ci.org/jazz-community/rtc-git-connector.svg?branch=master)](https://travis-ci.org/jazz-community/rtc-git-connector)
 
 # RTC Git Connector
 Connect your RTC work items with git commits, issues, and pull/merge requests.
