@@ -291,6 +291,83 @@ define([
             return deferred.promise;
         },
 
+        // Try to get an issue by it's id
+        getIssueById: function (selectedGitRepository, gitHost, accessToken, issueId, alreadyLinkedUrls) {
+            if (gitHost === this.gitHubString) {
+                return this.getGitHubIssueById(selectedGitRepository, accessToken, issueId, alreadyLinkedUrls);
+            } else if (gitHost === this.gitLabString) {
+                return this.getGitLabIssueById(selectedGitRepository, accessToken, issueId, alreadyLinkedUrls);
+            } else {
+                var deferred = new Deferred();
+                deferred.reject("Invalid git host.");
+                return deferred.promise;
+            }
+        },
+
+        getGitHubIssueById: function (selectedGitRepository, accessToken, issueId, alreadyLinkedUrls) {
+            var self = this;
+            var deferred = new Deferred();
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var github = new this.gitHubApi({});
+
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+
+                github.authenticate({
+                    type: 'token',
+                    token: accessToken
+                });
+                github.issues.get({
+                    owner: urlParts[0],
+                    repo: urlParts[1],
+                    number: issueId
+                }, function (error, response) {
+                    if (error) {
+                        // Just resolve with an empty array if not found
+                        deferred.resolve([]);
+                    } else {
+                        var convertedIssues = [];
+                        if (!response.data.pull_request) {
+                            convertedIssues.push(IssueModel.CreateFromGitHubIssue(response.data, alreadyLinkedUrls));
+                        }
+                        deferred.resolve(convertedIssues);
+                    }
+                });
+            }
+
+            return deferred.promise;
+        },
+
+        getGitLabIssueById: function (selectedGitRepository, accessToken, issueId, alreadyLinkedUrls) {
+            var deferred = new Deferred();
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var gitlab = this.gitLabApi({
+                url: this._getOriginFromUrlObject(repositoryUrl),
+                token: accessToken
+            });
+
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+
+                gitlab.projects.issues.show(urlParts[0] + "/" + urlParts[1], issueId).then(function (response) {
+                    var convertedIssues = [];
+                    convertedIssues.push(IssueModel.CreateFromGitLabIssue(response.body, alreadyLinkedUrls));
+                    deferred.resolve(convertedIssues);
+                }, function (error) {
+                    // Just resolve with an empty array if not found
+                    deferred.resolve([]);
+                });
+            }
+
+            return deferred.promise;
+        },
+
         // Get the last 100 commits from the specified repository on GitHub or GitLab
         getRecentCommits: function (selectedGitRepository, gitHost, accessToken, alreadyLinkedUrls) {
             // Depending on how the returned objects look like, they may need to be converted

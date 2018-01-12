@@ -8,12 +8,14 @@ define([
     "dojo/on",
     "dojo/query",
     "./DataStores/MainDataStore",
+    "./RestServices/JazzRestService",
+    "./RestServices/GitRestService",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewAndSelectIssues.html"
 ], function (declare, array, lang, dom, domClass, domConstruct, on, query,
-    MainDataStore,
+    MainDataStore, JazzRestService, GitRestService,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectIssues",
@@ -21,10 +23,14 @@ define([
     {
         templateString: template,
         mainDataStore: null,
+        jazzRestService: null,
+        gitRestService: null,
         viewIssues: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
+            this.jazzRestService = JazzRestService.getInstance();
+            this.gitRestService = GitRestService.getInstance();
         },
 
         startup: function () {
@@ -35,6 +41,53 @@ define([
 
         setEventHandlers: function () {
             var self = this;
+            var issuesLoadedFunc = function (issues) {
+                self.mainDataStore.selectedRepositoryData.issues
+                    .splice(0, self.mainDataStore.selectedRepositoryData.issues.length);
+                self.mainDataStore.selectedRepositoryData.issues
+                    .push.apply(self.mainDataStore.selectedRepositoryData.issues, issues);
+                self.mainDataStore.selectedRepositorySettings.set("issuesLoaded", true);
+                self.mainDataStore.selectedRepositorySettings.set("issuesLoading", false);
+
+                // Enable the search and clear buttons after loading
+                dom.byId("viewAndSelectIssuesSearchButton").removeAttribute("disabled");
+                dom.byId("viewAndSelectIssuesSearchClearButton").removeAttribute("disabled");
+            };
+            var issuesLoadErrorFunc = function (error) {
+                self.mainDataStore.selectedRepositorySettings.set("issuesLoadError", error || "Unknown Error");
+
+                // Enable the search and clear buttons after loading
+                dom.byId("viewAndSelectIssuesSearchButton").removeAttribute("disabled");
+                dom.byId("viewAndSelectIssuesSearchClearButton").removeAttribute("disabled");
+            };
+            var searchButtonClickFunc = function (event) {
+                // Don't do anything if issues are already being loaded
+                if (!self.mainDataStore.selectedRepositorySettings.get("issuesLoading")) {
+                    var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
+                    var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
+                    var accessToken = self.mainDataStore.selectedRepositorySettings.get("accessToken");
+                    var issueId = self.issuesSearchInput.value;
+                    var alreadyLinkedUrls = self.jazzRestService.getRelatedArtifactLinksFromWorkItem(self.mainDataStore.workItem);
+
+                    // Disable the search and clear buttons while loading
+                    dom.byId("viewAndSelectIssuesSearchButton").setAttribute("disabled", "disabled");
+                    dom.byId("viewAndSelectIssuesSearchClearButton").setAttribute("disabled", "disabled");
+
+                    // Set the issuesLoading to true to prevent multiple requests
+                    self.mainDataStore.selectedRepositorySettings.set("issuesLoading", true);
+                    self.mainDataStore.selectedRepositorySettings.set("issuesLoaded", false);
+
+                    if (issueId) {
+                        // Try to get the issue with the specified id
+                        self.gitRestService.getIssueById(selectedRepository, gitHost, accessToken, issueId, alreadyLinkedUrls)
+                            .then(issuesLoadedFunc, issuesLoadErrorFunc);
+                    } else {
+                        // Get all issues if there is no id
+                        self.gitRestService.getRecentIssues(selectedRepository, gitHost, accessToken, alreadyLinkedUrls)
+                            .then(issuesLoadedFunc, issuesLoadErrorFunc);
+                    }
+                }
+            };
 
             on(this.issuesFilterInput, "change", function (value) {
                 self.setViewIssuesListFromStore(value);
@@ -44,12 +97,11 @@ define([
                 self.issuesFilterInput.setValue("");
             });
 
-            on(dom.byId("viewAndSelectIssuesSearchButton"), "click", function (event) {
-                self.issuesSearchInput.setValue("");
-            });
+            on(dom.byId("viewAndSelectIssuesSearchButton"), "click", searchButtonClickFunc);
 
             on(dom.byId("viewAndSelectIssuesSearchClearButton"), "click", function (event) {
                 self.issuesSearchInput.setValue("");
+                searchButtonClickFunc();
             });
         },
 
@@ -151,7 +203,9 @@ define([
                                 }
                             }
 
-                            if (selectedIssue) {
+                            if (selectedIssue && !self.mainDataStore.selectedRepositoryData.issuesToLink.find(function (issue) {
+                                return issue.id == selectedIssue.id;
+                            })) {
                                 self.mainDataStore.selectedRepositoryData.issuesToLink.push(selectedIssue);
                             }
                         }

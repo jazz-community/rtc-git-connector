@@ -73,7 +73,9 @@ define([
                                 }
                             }
 
-                            if (selectedIssue) {
+                            if (selectedIssue && !self.mainDataStore.selectedRepositoryData.issues.find(function (issue) {
+                                return issue.id == selectedIssue.id;
+                            })) {
                                 self.mainDataStore.selectedRepositoryData.issues.push(selectedIssue);
                             }
                         }
