@@ -8,12 +8,14 @@ define([
     "dojo/on",
     "dojo/query",
     "./DataStores/MainDataStore",
+    "./RestServices/JazzRestService",
+    "./RestServices/GitRestService",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewAndSelectRequests.html"
 ], function (declare, array, lang, dom, domClass, domConstruct, on, query,
-    MainDataStore,
+    MainDataStore, JazzRestService, GitRestService,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectRequests",
@@ -21,10 +23,14 @@ define([
     {
         templateString: template,
         mainDataStore: null,
+        jazzRestService: null,
+        gitRestService: null,
         viewRequests: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
+            this.jazzRestService = JazzRestService.getInstance();
+            this.gitRestService = GitRestService.getInstance();
         },
 
         startup: function () {
@@ -35,6 +41,53 @@ define([
 
         setEventHandlers: function () {
             var self = this;
+            var requestsLoadedFunc = function (requests) {
+                self.mainDataStore.selectedRepositoryData.requests
+                    .splice(0, self.mainDataStore.selectedRepositoryData.requests.length);
+                self.mainDataStore.selectedRepositoryData.requests
+                    .push.apply(self.mainDataStore.selectedRepositoryData.requests, requests);
+                self.mainDataStore.selectedRepositorySettings.set("requestsLoaded", true);
+                self.mainDataStore.selectedRepositorySettings.set("requestsLoading", false);
+
+                // Enable the search and clear buttons after loading
+                dom.byId("viewAndSelectRequestsSearchButton").removeAttribute("disabled");
+                dom.byId("viewAndSelectRequestsSearchClearButton").removeAttribute("disabled");
+            };
+            var requestsLoadErrorFunc = function (error) {
+                self.mainDataStore.selectedRepositorySettings.set("requestsLoadError", error || "Unknown Error");
+
+                // Enable the search and clear buttons after loading
+                dom.byId("viewAndSelectRequestsSearchButton").removeAttribute("disabled");
+                dom.byId("viewAndSelectRequestsSearchClearButton").removeAttribute("disabled");
+            };
+            var searchButtonClickFunc = function (event) {
+                // Don't do anything if requests are already being loaded
+                if (!self.mainDataStore.selectedRepositorySettings.get("requestsLoading")) {
+                    var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
+                    var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
+                    var accessToken = self.mainDataStore.selectedRepositorySettings.get("accessToken");
+                    var requestId = self.requestsSearchInput.value;
+                    var alreadyLinkedUrls = self.jazzRestService.getRelatedArtifactLinksFromWorkItem(self.mainDataStore.workItem);
+
+                    // Disable the search and clear buttons while loading
+                    dom.byId("viewAndSelectRequestsSearchButton").setAttribute("disabled", "disabled");
+                    dom.byId("viewAndSelectRequestsSearchClearButton").setAttribute("disabled", "disabled");
+
+                    // Set the requestsLoading to true to prevent multiple requests
+                    self.mainDataStore.selectedRepositorySettings.set("requestsLoading", true);
+                    self.mainDataStore.selectedRepositorySettings.set("requestsLoaded", false);
+
+                    if (requestId) {
+                        // Try to get the request with the specified id
+                        self.gitRestService.getRequestById(selectedRepository, gitHost, accessToken, requestId, alreadyLinkedUrls)
+                            .then(requestsLoadedFunc, requestsLoadErrorFunc);
+                    } else {
+                        // Get all requests if there is no id
+                        self.gitRestService.getRecentRequests(selectedRepository, gitHost, accessToken, alreadyLinkedUrls)
+                            .then(requestsLoadedFunc, requestsLoadErrorFunc);
+                    }
+                }
+            };
 
             on(this.requestsFilterInput, "change", function (value) {
                 self.setViewRequestsListFromStore(value);
@@ -44,12 +97,11 @@ define([
                 self.requestsFilterInput.setValue("");
             });
 
-            on(dom.byId("viewAndSelectRequestsSearchButton"), "click", function (event) {
-                self.requestsSearchInput.setValue("");
-            });
+            on(dom.byId("viewAndSelectRequestsSearchButton"), "click", searchButtonClickFunc);
 
             on(dom.byId("viewAndSelectRequestsSearchClearButton"), "click", function (event) {
                 self.requestsSearchInput.setValue("");
+                searchButtonClickFunc();
             });
         },
 
@@ -151,7 +203,9 @@ define([
                                 }
                             }
 
-                            if (selectedRequest) {
+                            if (selectedRequest && !self.mainDataStore.selectedRepositoryData.requestsToLink.find(function (request) {
+                                return request.id == selectedRequest.id;
+                            })) {
                                 self.mainDataStore.selectedRepositoryData.requestsToLink.push(selectedRequest);
                             }
                         }

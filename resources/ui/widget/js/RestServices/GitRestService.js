@@ -304,6 +304,7 @@ define([
             }
         },
 
+        // Get a GitHub issue by it's id (only if it's an issue, not a pull request)
         getGitHubIssueById: function (selectedGitRepository, accessToken, issueId, alreadyLinkedUrls) {
             var self = this;
             var deferred = new Deferred();
@@ -341,6 +342,7 @@ define([
             return deferred.promise;
         },
 
+        // Get a GitLab issue by it's id
         getGitLabIssueById: function (selectedGitRepository, accessToken, issueId, alreadyLinkedUrls) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
@@ -359,6 +361,81 @@ define([
                     var convertedIssues = [];
                     convertedIssues.push(IssueModel.CreateFromGitLabIssue(response.body, alreadyLinkedUrls));
                     deferred.resolve(convertedIssues);
+                }, function (error) {
+                    // Just resolve with an empty array if not found
+                    deferred.resolve([]);
+                });
+            }
+
+            return deferred.promise;
+        },
+
+        // Try to get a request by it's id
+        getRequestById: function (selectedGitRepository, gitHost, accessToken, requestId, alreadyLinkedUrls) {
+            if (gitHost === this.gitHubString) {
+                return this.getGitHubRequestById(selectedGitRepository, accessToken, requestId, alreadyLinkedUrls);
+            } else if (gitHost === this.gitLabString) {
+                return this.getGitLabRequestById(selectedGitRepository, accessToken, requestId, alreadyLinkedUrls);
+            } else {
+                var deferred = new Deferred();
+                deferred.reject("Invalid git host.");
+                return deferred.promise;
+            }
+        },
+
+        getGitHubRequestById: function (selectedGitRepository, accessToken, requestId, alreadyLinkedUrls) {
+            var self = this;
+            var deferred = new Deferred();
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var github = new this.gitHubApi({});
+
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+
+                github.authenticate({
+                    type: 'token',
+                    token: accessToken
+                });
+                github.pullRequests.get({
+                    owner: urlParts[0],
+                    repo: urlParts[1],
+                    number: requestId
+                }, function (error, response) {
+                    if (error) {
+                        // Just resolve with an empty array if not found
+                        deferred.resolve([]);
+                    } else {
+                        var convertedRequests = [];
+                        convertedRequests.push(RequestModel.CreateFromGitHubRequest(response.data, alreadyLinkedUrls));
+                        deferred.resolve(convertedRequests);
+                    }
+                });
+            }
+
+            return deferred.promise;
+        },
+
+        getGitLabRequestById: function (selectedGitRepository, accessToken, requestId, alreadyLinkedUrls) {
+            var deferred = new Deferred();
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var gitlab = this.gitLabApi({
+                url: this._getOriginFromUrlObject(repositoryUrl),
+                token: accessToken
+            });
+
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+
+                gitlab.projects.mergeRequests.show(urlParts[0] + "/" + urlParts[1], requestId).then(function (response) {
+                    var convertedRequests = [];
+                    convertedRequests.push(RequestModel.CreateFromGitLabRequest(response.body, alreadyLinkedUrls));
+                    deferred.resolve(convertedRequests);
                 }, function (error) {
                     // Just resolve with an empty array if not found
                     deferred.resolve([]);

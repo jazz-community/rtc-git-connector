@@ -73,7 +73,9 @@ define([
                                 }
                             }
 
-                            if (selectedRequest) {
+                            if (selectedRequest && !self.mainDataStore.selectedRepositoryData.requests.find(function (request) {
+                                return request.id == selectedRequest.id;
+                            })) {
                                 self.mainDataStore.selectedRepositoryData.requests.push(selectedRequest);
                             }
                         }
