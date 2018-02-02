@@ -17,7 +17,7 @@
     },
     "scripts": {
         "postinstall": "cd ./node_modules/node-gitlab-api && npm install && npm run build",
-        "build": "webpack"
+        "build": "node ./node_modules/webpack/bin/webpack.js"
     },
     "repository": {
         "type": "git",
