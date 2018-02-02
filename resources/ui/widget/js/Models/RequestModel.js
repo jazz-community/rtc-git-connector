@@ -29,6 +29,7 @@ define([
 
         // Create a RequestModel object from a GitLab request object
         this.CreateFromGitLabRequest = function (gitLabRequest, alreadyLinkedUrls) {
+            console.log(gitLabRequest);
             var requestModel = new RequestModel();
             requestModel.id = gitLabRequest.iid;
             requestModel.title = gitLabRequest.title;
