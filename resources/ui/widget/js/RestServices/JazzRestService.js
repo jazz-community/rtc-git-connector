@@ -36,7 +36,7 @@ define([
                 "/com.ibm.team.git.internal.resources.IGitResourceRestService/commit";
             this.richHoverServiceUrl = 
                 this.ajaxContextRoot + 
-                "/service/com.siemens.bt.jazz.services.PersonalTokenService.IPersonalTokenService"
+                "/service/org.jazzcommunity.RichHoverService.IRichHoverService"
         },
 
         // Adds links to the workItem object and saves them
