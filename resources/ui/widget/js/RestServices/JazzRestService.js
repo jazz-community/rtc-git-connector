@@ -118,7 +118,7 @@ define([
                         artifactLinkTypeContainer.linkDTOs.push({
                             _isNew: true,
                             comment: issue.title,
-                            url: this._createRichHoverUrl(issue)
+                            url: self._createRichHoverUrl(issue)
                         });
                     });
                 }
@@ -328,7 +328,7 @@ define([
         // as well, so we can differentiate on the server side... Not 100% sure about this
         // yet though, there might be a more elegant way of doing so.
         _createRichHoverUrl: function(issue) {
-            return this.richHoverServiceUrl + "/issue/link?url=" + issue.webUrl;
+            return this.richHoverServiceUrl + "/issue/link?url=" + encodeURIComponent(issue.webUrl);
         }
     });
 
