@@ -357,9 +357,12 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
+                console.log('GitRestService::360 urlparts: ', urlParts);
+
                 gitlab.projects.issues.show(urlParts[0] + "/" + urlParts[1], issueId).then(function (response) {
                     var convertedIssues = [];
                     convertedIssues.push(IssueModel.CreateFromGitLabIssue(response.body, alreadyLinkedUrls));
+                    console.log('GitRestService::365 convertedIssues: ', convertedIssues);
                     deferred.resolve(convertedIssues);
                 }, function (error) {
                     // Just resolve with an empty array if not found
@@ -597,11 +600,15 @@ define([
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                var issuesUrl = urlParts[0] + "/" + urlParts[1];
 
-                gitlab.projects.issues.all(urlParts[0] + "/" + urlParts[1], {
+                console.log('GitRestService::605', issuesUrl);
+
+                gitlab.projects.issues.all(issuesUrl, {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
+                    console.log('GitRestService::608, response: ', response);
                     var convertedIssues = [];
                     array.forEach(response, function (issue) {
                         convertedIssues.push(IssueModel.CreateFromGitLabIssue(issue, alreadyLinkedUrls));

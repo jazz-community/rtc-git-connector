@@ -13,6 +13,7 @@ define([
         currentUserUrl: null,
         personalTokenServiceUrl: null,
         gitCommitServiceUrl: null,
+        richHoverServiceUrl: null,
         gitCommitLinkTypeId: "com.ibm.team.git.workitem.linktype.gitCommit",
         relatedArtifactLinkTypeId: "com.ibm.team.workitem.linktype.relatedartifact",
 
@@ -33,6 +34,9 @@ define([
             this.gitCommitServiceUrl =
                 this.ajaxContextRoot +
                 "/com.ibm.team.git.internal.resources.IGitResourceRestService/commit";
+            this.richHoverServiceUrl = 
+                this.ajaxContextRoot + 
+                "/com.siemens.bt.jazz.services.PersonalTokenService.IPersonalTokenService"
         },
 
         // Adds links to the workItem object and saves them
@@ -110,10 +114,11 @@ define([
                 // Add all issues to link to the link type container
                 if (issuesToLink && issuesToLink.length > 0) {
                     array.forEach(issuesToLink, function (issue) {
+                        console.log('JazzRestService::113, issue: ', issue);
                         artifactLinkTypeContainer.linkDTOs.push({
                             _isNew: true,
                             comment: issue.title,
-                            url: issue.webUrl
+                            url: this._createRichHoverUrl(issue)
                         });
                     });
                 }
@@ -314,6 +319,16 @@ define([
                 u: commit.webUrl
             });
             return this.gitCommitServiceUrl + "?value=" + this.commitLinkEncoder.encode(jsonString);
+        },
+
+        // Create a link to our custom rich hover service, showing issue and merge/pull request
+        // data.
+        // Will currently only work for issues...
+        // And only for one service. I think github or gitlab will need to be a parameter
+        // as well, so we can differentiate on the server side... Not 100% sure about this
+        // yet though, there might be a more elegant way of doing so.
+        _createRichHoverUrl: function(issue) {
+            return this.richHoverServiceUrl + "/issue/link?url=" + issue.webUrl;
         }
     });
 
