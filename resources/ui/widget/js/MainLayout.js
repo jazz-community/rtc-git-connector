@@ -293,6 +293,8 @@ define([
             var repositoryUrl = new url(selectedRepository.url);
             var gitHost = this.mainDataStore.selectedRepositorySettings.get("gitHost");
 
+            console.log("MainLayout::296", repositoryUrl, gitHost, accessToken);
+
             this.gitRestService.checkAccessToken(repositoryUrl, gitHost, accessToken)
                 .then(function (isTokenValid) {
                     if (isTokenValid) {

@@ -187,6 +187,7 @@ define([
 
         // Get the access token for the user and host
         getAccessTokenByHost: function (hostUrl) {
+            console.log("JazzRestService::190 hosturl:", hostUrl);
             var deferred = new Deferred();
             xhr.get(this.personalTokenServiceUrl, {
                 query: {
@@ -327,6 +328,7 @@ define([
         // And only for one service. I think github or gitlab will need to be a parameter
         // as well, so we can differentiate on the server side... Not 100% sure about this
         // yet though, there might be a more elegant way of doing so.
+        // TODO: Find out how to handle api url here
         _createRichHoverUrl: function(issue) {
             return this.richHoverServiceUrl + "/issue/link?url=" + encodeURIComponent(issue.webUrl);
         }
