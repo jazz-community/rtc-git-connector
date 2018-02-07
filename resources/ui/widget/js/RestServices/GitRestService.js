@@ -670,6 +670,8 @@ define([
                         var errorObj = json.parse(error.message || error);
                         deferred.reject("Couldn't get the pull requests from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
                     } else {
+                        // TODO: this is where I need to adjust for the additional api url
+                        console.log('GitRestService::673 response', response);
                         var convertedRequests = [];
                         array.forEach(response.data, function (request) {
                             convertedRequests.push(RequestModel.CreateFromGitHubRequest(request, alreadyLinkedUrls));
