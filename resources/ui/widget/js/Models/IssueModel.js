@@ -8,6 +8,7 @@ define([
         openedBy: null,     // The user that opened the issue (user name or real name)
         openedDate: null,   // The date & time when the issue was opened
         webUrl: null,       // The web URL to view the issue
+        apiUrl: null,       // The api URL to view the issue
         alreadyLinked: null // True if already linked to the current work item
     });
 
@@ -22,6 +23,8 @@ define([
             issueModel.openedBy = gitHubIssue.user.login;
             issueModel.openedDate = gitHubIssue.created_at;
             issueModel.webUrl = gitHubIssue.html_url;
+            issueModel.apiUrl = gitHubIssue.url;
+            // TODO: this needs to be adjusted here and everywhere else to properly find the duplicates
             issueModel.alreadyLinked = alreadyLinkedUrls.indexOf(issueModel.webUrl.toLowerCase()) > -1;
 
             return issueModel;

@@ -291,6 +291,7 @@ define([
             return deferred.promise;
         },
 
+        // TODO: create the weburl, apiurl etc. here.
         // Try to get an issue by it's id
         getIssueById: function (selectedGitRepository, gitHost, accessToken, issueId, alreadyLinkedUrls) {
             if (gitHost === this.gitHubString) {
@@ -312,6 +313,8 @@ define([
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({});
 
+            console.log('GitRestService::316', repositoryUrl, urlParts);
+
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
@@ -322,6 +325,7 @@ define([
                     token: accessToken
                 });
                 github.issues.get({
+                    // TODO: This information would suffice to create the api url manually
                     owner: urlParts[0],
                     repo: urlParts[1],
                     number: issueId
@@ -330,6 +334,7 @@ define([
                         // Just resolve with an empty array if not found
                         deferred.resolve([]);
                     } else {
+                        console.log('GitRestService::337', response);
                         var convertedIssues = [];
                         if (!response.data.pull_request) {
                             convertedIssues.push(IssueModel.CreateFromGitHubIssue(response.data, alreadyLinkedUrls));
@@ -534,6 +539,7 @@ define([
             return deferred.promise;
         },
 
+        // TODO: create the weburl, apiurl etc. here.
         // Get the last 100 issues form the specified repository on GitHub or GitLab
         getRecentIssues: function (selectedGitRepository, gitHost, accessToken, alreadyLinkedUrls) {
             if (gitHost === this.gitHubString) {
@@ -555,6 +561,8 @@ define([
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({});
 
+            console.log('GitRestService::564', repositoryUrl, urlParts);
+
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
@@ -570,6 +578,7 @@ define([
                     state: "all",
                     per_page: 100
                 }, function (error, response) {
+                    console.log('GitRestService.js::579', response);
                     if (error) {
                         var errorObj = json.parse(error.message || error);
                         deferred.reject("Couldn't get the issues from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
