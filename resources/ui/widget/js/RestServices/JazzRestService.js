@@ -328,12 +328,13 @@ define([
         // And only for one service. I think github or gitlab will need to be a parameter
         // as well, so we can differentiate on the server side... Not 100% sure about this
         // yet though, there might be a more elegant way of doing so.
-        // TODO: Find out how to handle api url here
         // TODO: find out a better way to solve this... It would be best to just delete
         // TODO: this function again and use a link created elsewhere.
         _createRichHoverUrl: function(issue) {
-            return this.richHoverServiceUrl + "/" + issue.service + "/issue/link?weburl=" + encodeURIComponent(issue.webUrl)
-                +"&apiurl=" + encodeURIComponent(issue.apiUrl);
+            return this.richHoverServiceUrl + "/" + issue.service +
+                "/" + issue.type +
+                "/link?weburl=" + encodeURIComponent(issue.webUrl) +
+                "&apiurl=" + encodeURIComponent(issue.apiUrl);
         }
     });
 

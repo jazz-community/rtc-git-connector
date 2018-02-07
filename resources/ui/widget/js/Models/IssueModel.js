@@ -10,7 +10,9 @@ define([
         webUrl: null,       // The web URL to view the issue
         apiUrl: null,       // The api URL to view the issue
         alreadyLinked: null,// True if already linked to the current work item
-        service: null       // Required for building the work item link urls TODO: find a nicer way to solve this...
+        service: null,       // Required for building the work item link urls TODO: find a nicer way to solve this...
+        // TODO: Add type to other models where necessary for making correct links
+        type: "issue"
     });
 
     // Return an instance so that the functions can be used as if they were static
