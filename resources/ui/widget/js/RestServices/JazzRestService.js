@@ -129,7 +129,7 @@ define([
                         artifactLinkTypeContainer.linkDTOs.push({
                             _isNew: true,
                             comment: request.title,
-                            url: request.webUrl
+                            url: self._createRichHoverUrl(request)
                         });
                     });
                 }

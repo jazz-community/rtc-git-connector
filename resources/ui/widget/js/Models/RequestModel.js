@@ -10,6 +10,7 @@ define([
         webUrl: null,       // The web URL to view the request
         apiUrl: null,       // The api URL to view the request
         alreadyLinked: null, // True if already linked to the current work item
+        service: null,
         type: "request"
     });
 
@@ -24,6 +25,8 @@ define([
             requestModel.openedBy = gitHubRequest.user.login;
             requestModel.openedDate = gitHubRequest.created_at;
             requestModel.webUrl = gitHubRequest.html_url;
+            requestModel.apiUrl = gitHubRequest.url;
+            requestModel.service = "github",
             // TODO: find out api url
             requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
 
@@ -40,6 +43,7 @@ define([
             requestModel.openedBy = gitLabRequest.author.name;
             requestModel.openedDate = gitLabRequest.created_at;
             requestModel.webUrl = gitLabRequest.web_url;
+            requestModel.service = "gitlab",
             // TODO: find out api url
             requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
 
