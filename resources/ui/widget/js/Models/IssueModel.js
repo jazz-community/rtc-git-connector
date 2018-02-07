@@ -9,7 +9,8 @@ define([
         openedDate: null,   // The date & time when the issue was opened
         webUrl: null,       // The web URL to view the issue
         apiUrl: null,       // The api URL to view the issue
-        alreadyLinked: null // True if already linked to the current work item
+        alreadyLinked: null,// True if already linked to the current work item
+        service: null       // Required for building the work item link urls TODO: find a nicer way to solve this...
     });
 
     // Return an instance so that the functions can be used as if they were static
@@ -26,6 +27,7 @@ define([
             issueModel.apiUrl = gitHubIssue.url;
             // TODO: this needs to be adjusted here and everywhere else to properly find the duplicates
             issueModel.alreadyLinked = alreadyLinkedUrls.indexOf(issueModel.webUrl.toLowerCase()) > -1;
+            issueModel.service = 'github';
 
             return issueModel;
         };
@@ -41,6 +43,8 @@ define([
             issueModel.openedDate = gitLabIssue.created_at;
             issueModel.webUrl = gitLabIssue.web_url;
             issueModel.alreadyLinked = alreadyLinkedUrls.indexOf(issueModel.webUrl.toLowerCase()) > -1;
+            // TODO: add api url here as well
+            issueModel.service = 'gitlab';
 
             return issueModel;
         };

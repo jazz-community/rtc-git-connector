@@ -332,7 +332,7 @@ define([
         // TODO: find out a better way to solve this... It would be best to just delete
         // TODO: this function again and use a link created elsewhere.
         _createRichHoverUrl: function(issue) {
-            return this.richHoverServiceUrl + "/issue/link?weburl=" + encodeURIComponent(issue.webUrl)
+            return this.richHoverServiceUrl + "/" + issue.service + "/issue/link?weburl=" + encodeURIComponent(issue.webUrl)
                 +"&apiurl=" + encodeURIComponent(issue.apiUrl);
         }
     });
