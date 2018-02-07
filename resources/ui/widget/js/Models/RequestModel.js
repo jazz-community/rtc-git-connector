@@ -8,7 +8,9 @@ define([
         openedBy: null,     // The user that opened the request (user name or real name)
         openedDate: null,   // The date & time when the request was opened
         webUrl: null,       // The web URL to view the request
-        alreadyLinked: null // True if already linked to the current work item
+        apiUrl: null,       // The api URL to view the request
+        alreadyLinked: null, // True if already linked to the current work item
+        type: "request"
     });
 
     // Return an instance so that the functions can be used as if they were static
@@ -22,6 +24,7 @@ define([
             requestModel.openedBy = gitHubRequest.user.login;
             requestModel.openedDate = gitHubRequest.created_at;
             requestModel.webUrl = gitHubRequest.html_url;
+            // TODO: find out api url
             requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
 
             return requestModel;
@@ -37,6 +40,7 @@ define([
             requestModel.openedBy = gitLabRequest.author.name;
             requestModel.openedDate = gitLabRequest.created_at;
             requestModel.webUrl = gitLabRequest.web_url;
+            // TODO: find out api url
             requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
 
             return requestModel;
