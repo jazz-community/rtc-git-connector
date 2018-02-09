@@ -291,7 +291,6 @@ define([
             return deferred.promise;
         },
 
-        // Try to get an issue by it's id
         getIssueById: function (selectedGitRepository, gitHost, accessToken, issueId, alreadyLinkedUrls) {
             if (gitHost === this.gitHubString) {
                 return this.getGitHubIssueById(selectedGitRepository, accessToken, issueId, alreadyLinkedUrls);
@@ -597,8 +596,9 @@ define([
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                var issuesUrl = urlParts[0] + "/" + urlParts[1];
 
-                gitlab.projects.issues.all(urlParts[0] + "/" + urlParts[1], {
+                gitlab.projects.issues.all(issuesUrl, {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {

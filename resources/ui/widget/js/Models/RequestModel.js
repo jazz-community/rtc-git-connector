@@ -8,7 +8,12 @@ define([
         openedBy: null,     // The user that opened the request (user name or real name)
         openedDate: null,   // The date & time when the request was opened
         webUrl: null,       // The web URL to view the request
-        alreadyLinked: null // True if already linked to the current work item
+        apiUrl: null,       // The api URL to view the request
+        alreadyLinked: null, // True if already linked to the current work item
+        service: null,
+        type: null,
+        projectId: null,
+        iid: null
     });
 
     // Return an instance so that the functions can be used as if they were static
@@ -22,6 +27,8 @@ define([
             requestModel.openedBy = gitHubRequest.user.login;
             requestModel.openedDate = gitHubRequest.created_at;
             requestModel.webUrl = gitHubRequest.html_url;
+            requestModel.apiUrl = gitHubRequest.url;
+            requestModel.service = "github",
             requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
 
             return requestModel;
@@ -36,7 +43,11 @@ define([
             requestModel.openedBy = gitLabRequest.author.name;
             requestModel.openedDate = gitLabRequest.created_at;
             requestModel.webUrl = gitLabRequest.web_url;
+            requestModel.service = "gitlab",
             requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
+            requestModel.type = "merge-request";
+            requestModel.projectId = gitLabRequest.project_id;
+            requestModel.iid = gitLabRequest.iid;
 
             return requestModel;
         };

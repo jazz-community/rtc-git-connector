@@ -13,6 +13,7 @@ define([
         currentUserUrl: null,
         personalTokenServiceUrl: null,
         gitCommitServiceUrl: null,
+        richHoverServiceUrl: null,
         gitCommitLinkTypeId: "com.ibm.team.git.workitem.linktype.gitCommit",
         relatedArtifactLinkTypeId: "com.ibm.team.workitem.linktype.relatedartifact",
 
@@ -33,6 +34,9 @@ define([
             this.gitCommitServiceUrl =
                 this.ajaxContextRoot +
                 "/com.ibm.team.git.internal.resources.IGitResourceRestService/commit";
+            this.richHoverServiceUrl = 
+                this.ajaxContextRoot + 
+                "/service/org.jazzcommunity.GitConnectorService.IGitConnectorService"
         },
 
         // Adds links to the workItem object and saves them
@@ -110,22 +114,45 @@ define([
                 // Add all issues to link to the link type container
                 if (issuesToLink && issuesToLink.length > 0) {
                     array.forEach(issuesToLink, function (issue) {
-                        artifactLinkTypeContainer.linkDTOs.push({
-                            _isNew: true,
-                            comment: issue.title,
-                            url: issue.webUrl
-                        });
+                        // TODO: differentiate between github and lab here. This will change later.
+                        var url = new URL(issue.webUrl);
+                        if (url.hostname.indexOf('github') === -1) {
+                            // has to be a gitlab request
+                            artifactLinkTypeContainer.linkDTOs.push({
+                                _isNew: true,
+                                comment: issue.title,
+                                url: self._createRichHoverUrl(issue)
+                            });
+                        } else {
+                            artifactLinkTypeContainer.linkDTOs.push({
+                                _isNew: true,
+                                comment: issue.title,
+                                url: issue.webUrl
+                            });
+                        }
+
                     });
                 }
 
                 // Add all requests to link to the link type container
                 if (requestsToLink && requestsToLink.length > 0) {
                     array.forEach(requestsToLink, function (request) {
-                        artifactLinkTypeContainer.linkDTOs.push({
-                            _isNew: true,
-                            comment: request.title,
-                            url: request.webUrl
-                        });
+                        // TODO: differentiate between github and lab here. This will change later.
+                        var url = new URL(request.webUrl);
+                        if (url.hostname.indexOf('github') === -1) {
+                            // has to be a gitlab request
+                            artifactLinkTypeContainer.linkDTOs.push({
+                                _isNew: true,
+                                comment: request.title,
+                                url: self._createRichHoverUrl(request)
+                            });
+                        } else {
+                            artifactLinkTypeContainer.linkDTOs.push({
+                                _isNew: true,
+                                comment: request.title,
+                                url: request.webUrl
+                            });
+                        }
                     });
                 }
             }
@@ -314,6 +341,15 @@ define([
                 u: commit.webUrl
             });
             return this.gitCommitServiceUrl + "?value=" + this.commitLinkEncoder.encode(jsonString);
+        },
+
+        // TODO: This needs some cleaning up...
+        _createRichHoverUrl: function(artifact) {
+            return this.richHoverServiceUrl + "/" + artifact.service +
+                "/" + new URL(artifact.webUrl).hostname +
+                "/project/" + artifact.projectId +
+                "/" + artifact.type + "/" + artifact.iid +
+                "/link";
         }
     });
 
