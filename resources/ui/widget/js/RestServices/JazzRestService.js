@@ -98,6 +98,10 @@ define([
                 });
             }
 
+            // TODO: for now, differentiate between github and gitlab here,
+            // TODO: and only create richhover links for gitlab
+
+            // TODO: Also, add type (Issue, mergerequest) to link text
             // Add links to issues and requests
             if ((issuesToLink && issuesToLink.length > 0) || (requestsToLink && requestsToLink.length > 0)) {
                 // Get the artifact link type container from the work item

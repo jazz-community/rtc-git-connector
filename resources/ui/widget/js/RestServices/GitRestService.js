@@ -291,8 +291,6 @@ define([
             return deferred.promise;
         },
 
-        // TODO: create the weburl, apiurl etc. here.
-        // Try to get an issue by it's id
         getIssueById: function (selectedGitRepository, gitHost, accessToken, issueId, alreadyLinkedUrls) {
             if (gitHost === this.gitHubString) {
                 return this.getGitHubIssueById(selectedGitRepository, accessToken, issueId, alreadyLinkedUrls);

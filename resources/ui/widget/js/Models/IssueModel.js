@@ -12,7 +12,10 @@ define([
         alreadyLinked: null,// True if already linked to the current work item
         service: null,       // Required for building the work item link urls TODO: find a nicer way to solve this...
         // TODO: Add type to other models where necessary for making correct links
-        type: "issue"
+        type: "issue",
+        // TODO: Add these to request
+        projectid: null,
+        iid: null,
     });
 
     // Return an instance so that the functions can be used as if they were static
@@ -47,6 +50,8 @@ define([
             issueModel.alreadyLinked = alreadyLinkedUrls.indexOf(issueModel.webUrl.toLowerCase()) > -1;
             // TODO: add api url here as well
             issueModel.service = 'gitlab';
+            issueModel.projectid = gitLabIssue.project_id;
+            issueModel.iid = gitLabIssue.iid;
 
             return issueModel;
         };
