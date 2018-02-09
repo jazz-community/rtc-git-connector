@@ -311,8 +311,6 @@ define([
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({});
 
-            console.log('GitRestService::316', repositoryUrl, urlParts);
-
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
@@ -332,7 +330,6 @@ define([
                         // Just resolve with an empty array if not found
                         deferred.resolve([]);
                     } else {
-                        console.log('GitRestService::337', response);
                         var convertedIssues = [];
                         if (!response.data.pull_request) {
                             convertedIssues.push(IssueModel.CreateFromGitHubIssue(response.data, alreadyLinkedUrls));
@@ -360,12 +357,9 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                console.log('GitRestService::360 urlparts: ', urlParts);
-
                 gitlab.projects.issues.show(urlParts[0] + "/" + urlParts[1], issueId).then(function (response) {
                     var convertedIssues = [];
                     convertedIssues.push(IssueModel.CreateFromGitLabIssue(response.body, alreadyLinkedUrls));
-                    console.log('GitRestService::365 convertedIssues: ', convertedIssues);
                     deferred.resolve(convertedIssues);
                 }, function (error) {
                     // Just resolve with an empty array if not found
@@ -559,8 +553,6 @@ define([
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({});
 
-            console.log('GitRestService::564', repositoryUrl, urlParts);
-
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
@@ -576,7 +568,6 @@ define([
                     state: "all",
                     per_page: 100
                 }, function (error, response) {
-                    console.log('GitRestService.js::579', response);
                     if (error) {
                         var errorObj = json.parse(error.message || error);
                         deferred.reject("Couldn't get the issues from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
@@ -609,13 +600,10 @@ define([
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
                 var issuesUrl = urlParts[0] + "/" + urlParts[1];
 
-                console.log('GitRestService::612', issuesUrl);
-
                 gitlab.projects.issues.all(issuesUrl, {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
-                    console.log('GitRestService::618, response: ', response);
                     var convertedIssues = [];
                     array.forEach(response, function (issue) {
                         convertedIssues.push(IssueModel.CreateFromGitLabIssue(issue, alreadyLinkedUrls));
@@ -668,8 +656,6 @@ define([
                         var errorObj = json.parse(error.message || error);
                         deferred.reject("Couldn't get the pull requests from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
                     } else {
-                        // TODO: this is where I need to adjust for the additional api url
-                        console.log('GitRestService::673 response', response);
                         var convertedRequests = [];
                         array.forEach(response.data, function (request) {
                             convertedRequests.push(RequestModel.CreateFromGitHubRequest(request, alreadyLinkedUrls));

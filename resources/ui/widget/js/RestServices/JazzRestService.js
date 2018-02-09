@@ -213,7 +213,6 @@ define([
 
         // Get the access token for the user and host
         getAccessTokenByHost: function (hostUrl) {
-            console.log("JazzRestService::190 hosturl:", hostUrl);
             var deferred = new Deferred();
             xhr.get(this.personalTokenServiceUrl, {
                 query: {

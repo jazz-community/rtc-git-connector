@@ -39,7 +39,6 @@ define([
 
         // Create an IssueModel object from a GitLab issue object
         this.CreateFromGitLabIssue = function (gitLabIssue, alreadyLinkedUrls) {
-            console.log(gitLabIssue);
             var issueModel = new IssueModel();
             issueModel.id = gitLabIssue.iid;
             issueModel.title = gitLabIssue.title;
