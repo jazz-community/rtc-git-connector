@@ -50,7 +50,7 @@ define([
             issueModel.alreadyLinked = alreadyLinkedUrls.indexOf(issueModel.webUrl.toLowerCase()) > -1;
             // TODO: add api url here as well
             issueModel.service = 'gitlab';
-            issueModel.projectid = gitLabIssue.project_id;
+            issueModel.projectId = gitLabIssue.project_id;
             issueModel.iid = gitLabIssue.iid;
 
             return issueModel;

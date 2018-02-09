@@ -36,7 +36,7 @@ define([
                 "/com.ibm.team.git.internal.resources.IGitResourceRestService/commit";
             this.richHoverServiceUrl = 
                 this.ajaxContextRoot + 
-                "/service/org.jazzcommunity.RichHoverService.IRichHoverService"
+                "/service/org.jazzcommunity.GitConnectorService.IGitConnectorService"
         },
 
         // Adds links to the workItem object and saves them
@@ -118,18 +118,31 @@ define([
                 // Add all issues to link to the link type container
                 if (issuesToLink && issuesToLink.length > 0) {
                     array.forEach(issuesToLink, function (issue) {
+                        // TODO: differentiate between github and lab here. This will change later.
                         console.log('JazzRestService::113, issue: ', issue);
-                        artifactLinkTypeContainer.linkDTOs.push({
-                            _isNew: true,
-                            comment: issue.title,
-                            url: self._createRichHoverUrl(issue)
-                        });
+                        var url = new URL(issue.webUrl);
+                        if (url.hostname.indexOf('github') === -1) {
+                            // has to be a gitlab request
+                            artifactLinkTypeContainer.linkDTOs.push({
+                                _isNew: true,
+                                comment: issue.title,
+                                url: self._createRichHoverUrl(issue)
+                            });
+                        } else {
+                            artifactLinkTypeContainer.linkDTOs.push({
+                                _isNew: true,
+                                comment: issue.title,
+                                url: issue.webUrl
+                            });
+                        }
+
                     });
                 }
 
                 // Add all requests to link to the link type container
                 if (requestsToLink && requestsToLink.length > 0) {
                     array.forEach(requestsToLink, function (request) {
+                        // TODO: differentiate between github and lab here. This will change later.
                         artifactLinkTypeContainer.linkDTOs.push({
                             _isNew: true,
                             comment: request.title,
@@ -336,9 +349,10 @@ define([
         // TODO: this function again and use a link created elsewhere.
         _createRichHoverUrl: function(issue) {
             return this.richHoverServiceUrl + "/" + issue.service +
-                "/" + issue.type +
-                "/link?weburl=" + encodeURIComponent(issue.webUrl) +
-                "&apiurl=" + encodeURIComponent(issue.apiUrl);
+                "/" + new URL(issue.webUrl).hostname +
+                "/project/" + issue.projectId +
+                "/" + issue.type + "/" + issue.iid +
+                "/link";
         }
     });
 

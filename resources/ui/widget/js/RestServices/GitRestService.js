@@ -609,13 +609,13 @@ define([
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
                 var issuesUrl = urlParts[0] + "/" + urlParts[1];
 
-                console.log('GitRestService::605', issuesUrl);
+                console.log('GitRestService::612', issuesUrl);
 
                 gitlab.projects.issues.all(issuesUrl, {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
-                    console.log('GitRestService::608, response: ', response);
+                    console.log('GitRestService::618, response: ', response);
                     var convertedIssues = [];
                     array.forEach(response, function (issue) {
                         convertedIssues.push(IssueModel.CreateFromGitLabIssue(issue, alreadyLinkedUrls));
