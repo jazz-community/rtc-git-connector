@@ -6,3 +6,5 @@ node_modules/
 resources/dist/
 .idea/
 *.iml
+jbe-build-wrapper.xml
+deployment-properties.ini
