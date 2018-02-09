@@ -119,7 +119,6 @@ define([
                 if (issuesToLink && issuesToLink.length > 0) {
                     array.forEach(issuesToLink, function (issue) {
                         // TODO: differentiate between github and lab here. This will change later.
-                        console.log('JazzRestService::113, issue: ', issue);
                         var url = new URL(issue.webUrl);
                         if (url.hostname.indexOf('github') === -1) {
                             // has to be a gitlab request
@@ -143,11 +142,21 @@ define([
                 if (requestsToLink && requestsToLink.length > 0) {
                     array.forEach(requestsToLink, function (request) {
                         // TODO: differentiate between github and lab here. This will change later.
-                        artifactLinkTypeContainer.linkDTOs.push({
-                            _isNew: true,
-                            comment: request.title,
-                            url: self._createRichHoverUrl(request)
-                        });
+                        var url = new URL(request.webUrl);
+                        if (url.hostname.indexOf('github') === -1) {
+                            // has to be a gitlab request
+                            artifactLinkTypeContainer.linkDTOs.push({
+                                _isNew: true,
+                                comment: request.title,
+                                url: self._createRichHoverUrl(request)
+                            });
+                        } else {
+                            artifactLinkTypeContainer.linkDTOs.push({
+                                _isNew: true,
+                                comment: request.title,
+                                url: request.webUrl
+                            });
+                        }
                     });
                 }
             }
@@ -347,11 +356,11 @@ define([
         // yet though, there might be a more elegant way of doing so.
         // TODO: find out a better way to solve this... It would be best to just delete
         // TODO: this function again and use a link created elsewhere.
-        _createRichHoverUrl: function(issue) {
-            return this.richHoverServiceUrl + "/" + issue.service +
-                "/" + new URL(issue.webUrl).hostname +
-                "/project/" + issue.projectId +
-                "/" + issue.type + "/" + issue.iid +
+        _createRichHoverUrl: function(artifact) {
+            return this.richHoverServiceUrl + "/" + artifact.service +
+                "/" + new URL(artifact.webUrl).hostname +
+                "/project/" + artifact.projectId +
+                "/" + artifact.type + "/" + artifact.iid +
                 "/link";
         }
     });

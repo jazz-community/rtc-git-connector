@@ -14,7 +14,7 @@ define([
         // TODO: Add type to other models where necessary for making correct links
         type: "issue",
         // TODO: Add these to request
-        projectid: null,
+        projectId: null,
         iid: null,
     });
 

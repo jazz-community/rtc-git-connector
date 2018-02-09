@@ -11,7 +11,9 @@ define([
         apiUrl: null,       // The api URL to view the request
         alreadyLinked: null, // True if already linked to the current work item
         service: null,
-        type: "request"
+        type: null,
+        projectId: null,
+        iid: null
     });
 
     // Return an instance so that the functions can be used as if they were static
@@ -46,6 +48,9 @@ define([
             requestModel.service = "gitlab",
             // TODO: find out api url
             requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
+            requestModel.type = "merge-request";
+            requestModel.projectId = gitLabRequest.project_id;
+            requestModel.iid = gitLabRequest.iid;
 
             return requestModel;
         };
