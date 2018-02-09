@@ -98,10 +98,6 @@ define([
                 });
             }
 
-            // TODO: for now, differentiate between github and gitlab here,
-            // TODO: and only create richhover links for gitlab
-
-            // TODO: Also, add type (Issue, mergerequest) to link text
             // Add links to issues and requests
             if ((issuesToLink && issuesToLink.length > 0) || (requestsToLink && requestsToLink.length > 0)) {
                 // Get the artifact link type container from the work item
@@ -347,14 +343,7 @@ define([
             return this.gitCommitServiceUrl + "?value=" + this.commitLinkEncoder.encode(jsonString);
         },
 
-        // Create a link to our custom rich hover service, showing issue and merge/pull request
-        // data.
-        // Will currently only work for issues...
-        // And only for one service. I think github or gitlab will need to be a parameter
-        // as well, so we can differentiate on the server side... Not 100% sure about this
-        // yet though, there might be a more elegant way of doing so.
-        // TODO: find out a better way to solve this... It would be best to just delete
-        // TODO: this function again and use a link created elsewhere.
+        // TODO: This needs some cleaning up...
         _createRichHoverUrl: function(artifact) {
             return this.richHoverServiceUrl + "/" + artifact.service +
                 "/" + new URL(artifact.webUrl).hostname +

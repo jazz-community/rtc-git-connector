@@ -321,7 +321,6 @@ define([
                     token: accessToken
                 });
                 github.issues.get({
-                    // TODO: This information would suffice to create the api url manually
                     owner: urlParts[0],
                     repo: urlParts[1],
                     number: issueId
@@ -531,7 +530,6 @@ define([
             return deferred.promise;
         },
 
-        // TODO: create the weburl, apiurl etc. here.
         // Get the last 100 issues form the specified repository on GitHub or GitLab
         getRecentIssues: function (selectedGitRepository, gitHost, accessToken, alreadyLinkedUrls) {
             if (gitHost === this.gitHubString) {

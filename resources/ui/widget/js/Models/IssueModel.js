@@ -11,9 +11,7 @@ define([
         apiUrl: null,       // The api URL to view the issue
         alreadyLinked: null,// True if already linked to the current work item
         service: null,       // Required for building the work item link urls TODO: find a nicer way to solve this...
-        // TODO: Add type to other models where necessary for making correct links
         type: "issue",
-        // TODO: Add these to request
         projectId: null,
         iid: null,
     });
@@ -47,7 +45,6 @@ define([
             issueModel.openedDate = gitLabIssue.created_at;
             issueModel.webUrl = gitLabIssue.web_url;
             issueModel.alreadyLinked = alreadyLinkedUrls.indexOf(issueModel.webUrl.toLowerCase()) > -1;
-            // TODO: add api url here as well
             issueModel.service = 'gitlab';
             issueModel.projectId = gitLabIssue.project_id;
             issueModel.iid = gitLabIssue.iid;
