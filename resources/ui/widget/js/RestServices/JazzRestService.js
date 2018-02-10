@@ -90,11 +90,20 @@ define([
 
                 // Add all commits to link to the link type container
                 array.forEach(commitsToLink, function (commit) {
-                    commitLinkTypeContainer.linkDTOs.push({
-                        _isNew: true,
-                        comment: commit.message.split(/\r?\n/g)[0] + " [@" + commit.sha + "]",
-                        url: self._createCommitLinkUrl(commit, registeredGitRepository)
-                    });
+                    var url = new URL(commit.webUrl);
+                    if (url.hostname.indexOf('github') === -1) {
+                        commitLinkTypeContainer.linkDTOs.push({
+                            _isNew: true,
+                            comment: commit.message.split(/\r?\n/g)[0] + " [@" + commit.sha + "]",
+                            url: self._createGitLabCommitLinkUrl(commit, registeredGitRepository)
+                        });
+                    } else {
+                        commitLinkTypeContainer.linkDTOs.push({
+                            _isNew: true,
+                            comment: commit.message.split(/\r?\n/g)[0] + " [@" + commit.sha + "]",
+                            url: self._createCommitLinkUrl(commit, registeredGitRepository)
+                        });
+                    }
                 });
             }
 
@@ -341,6 +350,13 @@ define([
                 u: commit.webUrl
             });
             return this.gitCommitServiceUrl + "?value=" + this.commitLinkEncoder.encode(jsonString);
+        },
+
+        _createGitLabCommitLinkUrl: function(commit) {
+            return this.richHoverServiceUrl + "/" + commit.service +
+                "/" + new URL(commit.webUrl).hostname +
+                "/project/" + commit.projectId +
+                "/" + commit.type + "/" + commit.sha + "/link";
         },
 
         // TODO: This needs some cleaning up...
