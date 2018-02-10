@@ -356,7 +356,7 @@ define([
             return this.richHoverServiceUrl + "/" + commit.service +
                 "/" + new URL(commit.webUrl).hostname +
                 "/project/" + commit.projectId +
-                "/" + commit.type + "/" + commit.sha;
+                "/" + commit.type + "/" + commit.sha + "/link";
         },
 
         // TODO: This needs some cleaning up...
