@@ -8,10 +8,7 @@ define([
         authorEmail: null,      // The email of the author
         authoredDate: null,     // The date & time when the commit was made
         webUrl: null,           // The web URL to view the commit
-        alreadyLinked: null,     // True if already linked to the current work item
-        service: null,
-        type: "commit",
-        projectId: null
+        alreadyLinked: null     // True if already linked to the current work item
     });
 
     // Return an instance so that the functions can be used as if they were static
@@ -26,13 +23,12 @@ define([
             commitModel.authoredDate = gitHubCommit.commit.author.date;
             commitModel.webUrl = gitHubCommit.html_url;
             commitModel.alreadyLinked = alreadyLinkedUrls.indexOf(commitModel.webUrl.toLowerCase()) > -1;
-            commitModel.service = 'github';
 
             return commitModel;
         };
 
         // Create a CommitModel object from a GitLab commit object
-        this.CreateFromGitLabCommit = function (gitLabCommit, commitUrlPath, projectId, alreadyLinkedUrls) {
+        this.CreateFromGitLabCommit = function (gitLabCommit, commitUrlPath, alreadyLinkedUrls) {
             var commitModel = new CommitModel();
             commitModel.sha = gitLabCommit.id;
             commitModel.message = gitLabCommit.message;
@@ -41,8 +37,6 @@ define([
             commitModel.authoredDate = gitLabCommit.authored_date;
             commitModel.webUrl = commitUrlPath + commitModel.sha;
             commitModel.alreadyLinked = alreadyLinkedUrls.indexOf(commitModel.webUrl.toLowerCase()) > -1;
-            commitModel.service = 'gitlab';
-            commitModel.projectId = projectId;
 
             return commitModel;
         };
