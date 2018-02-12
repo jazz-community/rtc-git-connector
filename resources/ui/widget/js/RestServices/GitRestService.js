@@ -512,8 +512,11 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.show(urlParts[0] + "/" + urlParts[1]).then(function (project) {
-                    var projectId = project.body.id;
+                gitlab.projects.search(urlParts[1]).then(function (results) {
+                    var project = array.filter(results, function(x) { 
+                            return x.path_with_namespace === urlParts.join('/') 
+                        })[0];
+
                     gitlab.projects.repository.commits.all(urlParts[0] + "/" + urlParts[1], {
                         max_pages: 1,
                         per_page: 100
@@ -521,7 +524,7 @@ define([
                         var commitUrlPath = urlOrigin + "/" + urlParts[0] + "/" + urlParts[1] + "/commit/";
                         var convertedCommits = [];
                         array.forEach(response, function (commit) {
-                            convertedCommits.push(CommitModel.CreateFromGitLabCommit(commit, commitUrlPath, projectId, alreadyLinkedUrls));
+                            convertedCommits.push(CommitModel.CreateFromGitLabCommit(commit, commitUrlPath, project.id, alreadyLinkedUrls));
                         });
                         deferred.resolve(convertedCommits);
                     }, function (error) {
