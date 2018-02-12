@@ -90,20 +90,11 @@ define([
 
                 // Add all commits to link to the link type container
                 array.forEach(commitsToLink, function (commit) {
-                    var url = new URL(commit.webUrl);
-                    if (url.hostname.indexOf('github') === -1) {
-                        commitLinkTypeContainer.linkDTOs.push({
-                            _isNew: true,
-                            comment: commit.message.split(/\r?\n/g)[0] + " [@" + commit.sha + "]",
-                            url: self._createGitLabCommitLinkUrl(commit, registeredGitRepository)
-                        });
-                    } else {
-                        commitLinkTypeContainer.linkDTOs.push({
-                            _isNew: true,
-                            comment: commit.message.split(/\r?\n/g)[0] + " [@" + commit.sha + "]",
-                            url: self._createCommitLinkUrl(commit, registeredGitRepository)
-                        });
-                    }
+                    commitLinkTypeContainer.linkDTOs.push({
+                        _isNew: true,
+                        comment: commit.message.split(/\r?\n/g)[0] + " [@" + commit.sha + "]",
+                        url: self._createCommitLinkUrl(commit, registeredGitRepository)
+                    });
                 });
             }
 
