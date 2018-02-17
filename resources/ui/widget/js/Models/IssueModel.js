@@ -14,6 +14,7 @@ define([
         type: "issue",
         projectId: null,
         iid: null,
+        linkUrl: null       // URL generated for custom hover view and information service
     });
 
     // Return an instance so that the functions can be used as if they were static
@@ -45,9 +46,15 @@ define([
             issueModel.openedDate = gitLabIssue.created_at;
             issueModel.webUrl = gitLabIssue.web_url;
             issueModel.alreadyLinked = alreadyLinkedUrls.indexOf(issueModel.webUrl.toLowerCase()) > -1;
-            issueModel.service = 'gitlab';
             issueModel.projectId = gitLabIssue.project_id;
             issueModel.iid = gitLabIssue.iid;
+            issueModel.linkUrl = net.jazz.ajax._contextRoot +
+                "/service/org.jazzcommunity.GitConnectorService.IGitConnectorService" + "/" + 'gitlab' +
+                "/" + new URL(issueModel.webUrl).hostname +
+                "/project/" + issueModel.projectId +
+                "/" + issueModel.type + "/" + issueModel.iid +
+                "/link";
+
 
             return issueModel;
         };
