@@ -45,7 +45,6 @@ define([
             requestModel.openedDate = gitLabRequest.created_at;
             requestModel.webUrl = gitLabRequest.web_url;
             requestModel.service = "gitlab",
-            requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
             requestModel.type = "merge-request";
             requestModel.projectId = gitLabRequest.project_id;
             requestModel.iid = gitLabRequest.iid;
@@ -55,6 +54,7 @@ define([
                 "/project/" + requestModel.projectId +
                 "/" + requestModel.type + "/" + requestModel.iid +
                 "/link";
+            requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.linkUrl.toLowerCase()) > -1;
 
             return requestModel;
         };
