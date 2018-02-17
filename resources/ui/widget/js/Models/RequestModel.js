@@ -13,7 +13,8 @@ define([
         service: null,
         type: null,
         projectId: null,
-        iid: null
+        iid: null,
+        linkUrl: null
     });
 
     // Return an instance so that the functions can be used as if they were static
@@ -44,10 +45,16 @@ define([
             requestModel.openedDate = gitLabRequest.created_at;
             requestModel.webUrl = gitLabRequest.web_url;
             requestModel.service = "gitlab",
-            requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
             requestModel.type = "merge-request";
             requestModel.projectId = gitLabRequest.project_id;
             requestModel.iid = gitLabRequest.iid;
+            requestModel.linkUrl = net.jazz.ajax._contextRoot +
+                "/service/org.jazzcommunity.GitConnectorService.IGitConnectorService" + "/" + 'gitlab' +
+                "/" + new URL(requestModel.webUrl).hostname +
+                "/project/" + requestModel.projectId +
+                "/" + requestModel.type + "/" + requestModel.iid +
+                "/link";
+            requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.linkUrl.toLowerCase()) > -1;
 
             return requestModel;
         };

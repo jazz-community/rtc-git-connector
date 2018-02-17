@@ -121,7 +121,7 @@ define([
                             artifactLinkTypeContainer.linkDTOs.push({
                                 _isNew: true,
                                 comment: issue.title,
-                                url: self._createRichHoverUrl(issue)
+                                url: issue.linkUrl
                             });
                         } else {
                             artifactLinkTypeContainer.linkDTOs.push({
