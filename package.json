@@ -4,6 +4,7 @@
     "description": "Connect RTC work items with various Git hosting systems",
     "main": "./resources/ui/RunConnector.js",
     "dependencies": {
+        "@fortawesome/fontawesome-free-webfonts": "^1.0.3",
         "base64-js": "^1.2.1",
         "buffer": "^5.0.7",
         "github": "^13.0.1",
@@ -16,7 +17,7 @@
         "webpack": "^3.6.0"
     },
     "scripts": {
-        "postinstall": "cd ./node_modules/node-gitlab-api && npm install && npm run build",
+        "postinstall": "cp -r node_modules/@fortawesome/fontawesome-free-webfonts/css ./resources/fontawesome && cd ./node_modules/node-gitlab-api && npm install && npm run build",
         "build": "node ./node_modules/webpack/bin/webpack.js"
     },
     "repository": {

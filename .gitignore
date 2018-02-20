@@ -4,6 +4,7 @@ node_modules/
 *.log
 /com.siemens.bt.jazz.workitemeditor.rtcGitConnector*.zip
 resources/dist/
+resources/fontawesome
 .idea/
 *.iml
 jbe-build-wrapper.xml
