@@ -12,12 +12,15 @@
         "node-gitlab-api": "^2.2.3"
     },
     "devDependencies": {
+        "copyfiles": "^1.2.0",
         "jazz-update-site-webpack-plugin": "^0.4.1",
         "uglifyjs-webpack-plugin": "^1.1.4",
         "webpack": "^3.6.0"
     },
     "scripts": {
-        "postinstall": "cp -r node_modules/@fortawesome/fontawesome-free-webfonts/css ./resources/fontawesome && cd ./node_modules/node-gitlab-api && npm install && npm run build",
+        "postinstall": "npm run -s build-gitlab-api && npm run -s copy-fonts",
+        "build-gitlab-api": "cd ./node_modules/node-gitlab-api && npm install && npm run build",
+        "copy-fonts": "node ./node_modules/copyfiles/copyfiles -f ./node_modules/@fortawesome/fontawesome-free-webfonts/css/* ./resources/fontawesome",
         "build": "node ./node_modules/webpack/bin/webpack.js"
     },
     "repository": {
