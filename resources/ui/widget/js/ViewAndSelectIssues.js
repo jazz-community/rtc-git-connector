@@ -223,7 +223,7 @@ define([
                 if (issue.alreadyLinked) {
                     domConstruct.create("div", {
                         "class": "rtcGitConnectorViewAndSelectListItemEmptyButton",
-                        innerHTML: "&nbsp;"
+                        innerHTML: check.html[0]
                     }, issueListItem);
                 } else {
                     domConstruct.create("div", {
