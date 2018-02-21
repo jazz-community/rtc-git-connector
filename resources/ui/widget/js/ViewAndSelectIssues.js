@@ -217,9 +217,8 @@ define([
 
                 // okay, this works...
                 var fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-                var faFlag = com_siemens_bt_jazz_rtcgitconnector_modules.FaFlag;
-                var flag = fontAwesome.icon({prefix: "fas", iconName: "flag"});
-                console.log(flag);
+                var faCheck = com_siemens_bt_jazz_rtcgitconnector_modules.FaCheck;
+                fontAwesome.library.add(faCheck);
 
                 if (issue.alreadyLinked) {
                     domConstruct.create("div", {
