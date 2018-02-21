@@ -196,9 +196,16 @@ button.viewAndSelectSearchButton[disabled] {
 }
 
 .rtcGitConnectorViewAndSelectListItemEmptyButton {
-    width: 3rem;
+    width: 2.5rem;
     height: 100%;
+    background-color: #ccc;
+    border: 0.2rem solid #555;
+    border-radius: .5rem;
     margin: auto .3rem;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #555;
+    text-align: center;
 }
 
 .rtcGitConnectorViewAndSelectListItemContent {
