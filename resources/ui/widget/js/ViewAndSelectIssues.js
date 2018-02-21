@@ -215,11 +215,7 @@ define([
                     }
                 });
 
-                // okay, this works...
                 var fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-                var faCheck = com_siemens_bt_jazz_rtcgitconnector_modules.FaCheck;
-                fontAwesome.library.add(faCheck);
-
                 var check = fontAwesome.icon({prefix: 'fas', iconName: 'check'});
                 console.log(check);
                 console.log(check.html[0]);

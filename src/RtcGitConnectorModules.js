@@ -50,3 +50,7 @@ export const FontAwesome = require('@fortawesome/fontawesome');
 export const FaCheck = require('@fortawesome/fontawesome-free-solid/faCheck');
 export const FaFlag = require('@fortawesome/fontawesome-free-solid/faFlag');
 
+// Adding the entire solid library doesn't seem to work in the frontend.
+// So we have no other choice than adding them one by one.
+FontAwesome.library.add(FaCheck);
+
