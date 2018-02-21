@@ -44,3 +44,11 @@ export const GitHubApi = require('github');
 
 // GitLab API client library
 export const GitLabApi = require('node-gitlab-api');
+
+// Fontawesome fonts
+export const FontAwesome = require('@fortawesome/fontawesome');
+const solid = require('@fortawesome/fontawesome-free-solid');
+export const FaCheck = require('@fortawesome/fontawesome-free-solid/faCheck');
+export const FaFlag = require('@fortawesome/fontawesome-free-solid/faFlag');
+
+FontAwesome.library.add(solid)
