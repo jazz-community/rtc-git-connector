@@ -217,8 +217,6 @@ define([
 
                 var fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
                 var check = fontAwesome.icon({prefix: 'fas', iconName: 'check'});
-                console.log(check);
-                console.log(check.html[0]);
 
                 if (issue.alreadyLinked) {
                     domConstruct.create("div", {
