@@ -224,6 +224,7 @@ define([
 
                 if (issue.alreadyLinked) {
                     var check = self.fontAwesome.icon({prefix: 'fas', iconName: 'check'});
+                    domClass.add(issueListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
                     domConstruct.create("div", {
                         "class": "rtcGitConnectorViewAndSelectListItemEmptyButton",
                         innerHTML: check.html[0]
