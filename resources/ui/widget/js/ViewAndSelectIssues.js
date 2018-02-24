@@ -26,11 +26,16 @@ define([
         jazzRestService: null,
         gitRestService: null,
         viewIssues: null,
+        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
             this.jazzRestService = JazzRestService.getInstance();
             this.gitRestService = GitRestService.getInstance();
+
+            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
+                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
+            }
         },
 
         startup: function () {
@@ -183,6 +188,7 @@ define([
             domConstruct.empty(issuesListNode);
 
             array.forEach(this.viewIssues, function (issue) {
+                // TODO: This is where I need to add a class with lower alpha
                 var issueListItem = domConstruct.create("div", {
                     "class": "rtcGitConnectorViewAndSelectListItem",
                     "data-issue-id": issue.originalId
@@ -215,10 +221,13 @@ define([
                     }
                 });
 
+
                 if (issue.alreadyLinked) {
+                    var check = self.fontAwesome.icon({prefix: 'fas', iconName: 'check'});
+                    domClass.add(issueListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
                     domConstruct.create("div", {
                         "class": "rtcGitConnectorViewAndSelectListItemEmptyButton",
-                        innerHTML: "&nbsp;"
+                        innerHTML: check.html[0]
                     }, issueListItem);
                 } else {
                     domConstruct.create("div", {

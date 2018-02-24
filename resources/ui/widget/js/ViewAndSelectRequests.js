@@ -31,6 +31,10 @@ define([
             this.mainDataStore = MainDataStore.getInstance();
             this.jazzRestService = JazzRestService.getInstance();
             this.gitRestService = GitRestService.getInstance();
+
+            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
+                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
+            }
         },
 
         startup: function () {
@@ -216,9 +220,11 @@ define([
                 });
 
                 if (request.alreadyLinked) {
+                    var check = self.fontAwesome.icon({prefix: 'fas', iconName: 'check'});
+                    domClass.add(requestListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
                     domConstruct.create("div", {
                         "class": "rtcGitConnectorViewAndSelectListItemEmptyButton",
-                        innerHTML: "&nbsp;"
+                        innerHTML: check.html[0]
                     }, requestListItem);
                 } else {
                     domConstruct.create("div", {
