@@ -431,9 +431,10 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.mergeRequests.show(urlParts[0] + "/" + urlParts[1], requestId).then(function (response) {
+                gitlab.projects.mergeRequests.show(encodeURIComponent(urlParts[0] + "/" + urlParts[1]), requestId).then(function (response) {
                     var convertedRequests = [];
-                    convertedRequests.push(RequestModel.CreateFromGitLabRequest(response.body, alreadyLinkedUrls));
+                    console.log("getGitLabRequestById::420", response);
+                    convertedRequests.push(RequestModel.CreateFromGitLabRequest(response, alreadyLinkedUrls));
                     deferred.resolve(convertedRequests);
                 }, function (error) {
                     // Just resolve with an empty array if not found
