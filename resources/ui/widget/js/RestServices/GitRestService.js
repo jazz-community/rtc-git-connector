@@ -176,7 +176,7 @@ define([
         addBackLinksToGitLabCommits: function (gitlab, owner, repo, sha, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.repository.commits.comments.create(owner + "/" + repo, sha, commentBody).then(function (response) {
+            gitlab.projects.repository.commits.comments.create(encodeURIComponent(owner + "/" + repo), sha, commentBody).then(function (response) {
                 deferred.resolve(response);
             }, function (error) {
                 deferred.reject("Couldn't add a comment to the GitLab commit. Error: " + (error.error.message || error.error));
@@ -188,7 +188,7 @@ define([
         addBackLinksToGitLabIssues: function (gitlab, owner, repo, id, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.issues.notes.create(owner + "/" + repo, id, {
+            gitlab.projects.issues.notes.create(encodeURIComponent(owner + "/" + repo), id, {
                 body: commentBody
             }).then(function (response) {
                 deferred.resolve(response);
@@ -202,7 +202,7 @@ define([
         addBackLinksToGitLabRequests: function (gitlab, owner, repo, id, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.mergeRequests.notes.create(owner + "/" + repo, id, {
+            gitlab.projects.mergeRequests.notes.create(encodeURIComponent(owner + "/" + repo), id, {
                 body: commentBody
             }).then(function (response) {
                 deferred.resolve(response);
@@ -277,7 +277,10 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.repository.commits.show(urlParts[0] + "/" + urlParts[1], commitSha).then(function (response) {
+                console.log("getGitLabCommitById::280");
+
+                gitlab.projects.repository.commits.show(encodeURIComponent(urlParts[0] + "/" + urlParts[1]), commitSha).then(function (response) {
+                    console.log("getGitLabCommitById::283", response);
                     var commitUrlPath = urlOrigin + "/" + urlParts[0] + "/" + urlParts[1] + "/commit/";
                     var convertedCommits = [];
                     convertedCommits.push(CommitModel.CreateFromGitLabCommit(response.body, commitUrlPath, alreadyLinkedUrls));
@@ -733,8 +736,10 @@ define([
 
         // Make a request for a single public project from the gitlab api.
         // Return true if the request was successful, otherwise false.
+        // TODO: This should also go through proxy
         isGitLabRepository: function (gitRepositoryUrl) {
-            return xhr.get(this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects", {
+            var url = this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects";
+            return xhr.get(this._formatUrlWithProxy(url) , {
                 query: {
                     per_page: "1"
                 },
@@ -750,6 +755,7 @@ define([
         },
 
         // Check if the access token works for the specified host type
+        // TODO: This should also go through proxy
         checkAccessToken: function (gitRepositoryUrl, gitHost, accessToken) {
             var deferred = new Deferred();
 
