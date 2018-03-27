@@ -600,7 +600,7 @@ define([
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
                 var issuesUrl = urlParts[0] + "/" + urlParts[1];
 
-                gitlab.projects.issues.all(issuesUrl, {
+                gitlab.projects.issues.all(encodeURIComponent(issuesUrl), {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
@@ -683,7 +683,7 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.mergeRequests.all(urlParts[0] + "/" + urlParts[1], {
+                gitlab.projects.mergeRequests.all(encodeURIComponent(urlParts[0] + "/" + urlParts[1]), {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
