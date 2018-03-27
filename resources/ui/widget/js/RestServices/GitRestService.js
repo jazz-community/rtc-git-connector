@@ -356,9 +356,9 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.issues.show(urlParts[0] + "/" + urlParts[1], issueId).then(function (response) {
+                gitlab.projects.issues.show(encodeURIComponent(urlParts[0] + "/" + urlParts[1]), issueId).then(function (response) {
                     var convertedIssues = [];
-                    convertedIssues.push(IssueModel.CreateFromGitLabIssue(response.body, alreadyLinkedUrls));
+                    convertedIssues.push(IssueModel.CreateFromGitLabIssue(response, alreadyLinkedUrls));
                     deferred.resolve(convertedIssues);
                 }, function (error) {
                     // Just resolve with an empty array if not found
