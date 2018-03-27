@@ -497,25 +497,33 @@ define([
         },
 
         // Get the last 100 commits from the specified repository on GitLab
+        // TODO: Start debugging here
         getRecentGitLabCommits: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
+            urlOrigin = "https://localhost:7443/jazz/proxy?uri=" + encodeURIComponent(urlOrigin);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            // instead of passing the origin url, I need to add the jazz proxy
             var gitlab = this.gitLabApi({
                 url: urlOrigin,
                 token: accessToken
             });
+
+            // works up to here, but I have the feeling something fails later...
+            console.log(gitlab);
+            console.log(urlParts);
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.repository.commits.all(urlParts[0] + "/" + urlParts[1], {
+                gitlab.projects.repository.commits.all(encodeURIComponent(urlParts[0] + "/" + urlParts[1]), {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
+                    console.log(response);
                     var commitUrlPath = urlOrigin + "/" + urlParts[0] + "/" + urlParts[1] + "/commit/";
                     var convertedCommits = [];
                     array.forEach(response, function (commit) {
