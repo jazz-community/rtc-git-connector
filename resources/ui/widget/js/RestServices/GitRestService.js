@@ -134,7 +134,7 @@ define([
             var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: urlOrigin,
+                url: this._formatUrlWithProxy(urlOrigin),
                 token: params.accessToken
             });
             var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
@@ -268,7 +268,7 @@ define([
             var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: urlOrigin,
+                url: this._formatUrlWithProxy(urlOrigin),
                 token: accessToken
             });
 
@@ -347,7 +347,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: this._getOriginFromUrlObject(repositoryUrl),
+                url: this._formatUrlWithProxy(this._getOriginFromUrlObject(repositoryUrl)),
                 token: accessToken
             });
 
@@ -422,7 +422,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: this._getOriginFromUrlObject(repositoryUrl),
+                url: this._formatUrlWithProxy(this._getOriginFromUrlObject(repositoryUrl)),
                 token: accessToken
             });
 
@@ -502,11 +502,10 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
-            urlOrigin = this._formatProxyUrl(urlOrigin);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             // instead of passing the origin url, I need to add the jazz proxy
             var gitlab = this.gitLabApi({
-                url: urlOrigin,
+                url: this._formatUrlWithProxy(urlOrigin),
                 token: accessToken
             });
 
@@ -519,7 +518,6 @@ define([
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
-                    console.log(response);
                     var commitUrlPath = urlOrigin + "/" + urlParts[0] + "/" + urlParts[1] + "/commit/";
                     var convertedCommits = [];
                     array.forEach(response, function (commit) {
@@ -592,7 +590,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: this._getOriginFromUrlObject(repositoryUrl),
+                url: this._formatUrlWithProxy(this._getOriginFromUrlObject(repositoryUrl)),
                 token: accessToken
             });
 
@@ -676,7 +674,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: this._getOriginFromUrlObject(repositoryUrl),
+                url: this._formatUrlWithProxy(this._getOriginFromUrlObject(repositoryUrl)),
                 token: accessToken
             });
 
@@ -772,7 +770,7 @@ define([
             } else if (gitHost === this.gitLabString) {
                 // Check access token with GitLab
                 var gitlab = this.gitLabApi({
-                    url: this._getOriginFromUrlObject(gitRepositoryUrl),
+                    url: this._formatUrlWithProxy(this._getOriginFromUrlObject(gitRepositoryUrl)),
                     token: accessToken
                 });
                 gitlab.users.current().then(function (response) {
@@ -793,7 +791,7 @@ define([
         },
 
         // Format url with jazz proxy for properly authenticated access to remote host
-        _formatProxyUrl: function (url) {
+        _formatUrlWithProxy: function (url) {
             var proxyUrl = new URL(net.jazz.ajax._contextRoot + "/proxy?uri=", window.location.origin);
             return proxyUrl.href + encodeURIComponent(url);
         },
