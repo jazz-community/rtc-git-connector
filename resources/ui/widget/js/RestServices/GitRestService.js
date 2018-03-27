@@ -433,7 +433,6 @@ define([
 
                 gitlab.projects.mergeRequests.show(encodeURIComponent(urlParts[0] + "/" + urlParts[1]), requestId).then(function (response) {
                     var convertedRequests = [];
-                    console.log("getGitLabRequestById::420", response);
                     convertedRequests.push(RequestModel.CreateFromGitLabRequest(response, alreadyLinkedUrls));
                     deferred.resolve(convertedRequests);
                 }, function (error) {
