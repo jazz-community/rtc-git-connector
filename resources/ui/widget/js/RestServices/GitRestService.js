@@ -277,13 +277,10 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                console.log("getGitLabCommitById::280");
-
                 gitlab.projects.repository.commits.show(encodeURIComponent(urlParts[0] + "/" + urlParts[1]), commitSha).then(function (response) {
-                    console.log("getGitLabCommitById::283", response);
                     var commitUrlPath = urlOrigin + "/" + urlParts[0] + "/" + urlParts[1] + "/commit/";
                     var convertedCommits = [];
-                    convertedCommits.push(CommitModel.CreateFromGitLabCommit(response.body, commitUrlPath, alreadyLinkedUrls));
+                    convertedCommits.push(CommitModel.CreateFromGitLabCommit(response, commitUrlPath, alreadyLinkedUrls));
                     deferred.resolve(convertedCommits);
                 }, function (error) {
                     // Just resolve with an empty array if not found
