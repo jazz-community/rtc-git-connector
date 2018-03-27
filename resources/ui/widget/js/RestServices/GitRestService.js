@@ -502,17 +502,13 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
-            urlOrigin = "https://localhost:7443/jazz/proxy?uri=" + encodeURIComponent(urlOrigin);
+            urlOrigin = this._formatProxyUrl(urlOrigin);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             // instead of passing the origin url, I need to add the jazz proxy
             var gitlab = this.gitLabApi({
                 url: urlOrigin,
                 token: accessToken
             });
-
-            // works up to here, but I have the feeling something fails later...
-            console.log(gitlab);
-            console.log(urlParts);
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
@@ -794,6 +790,12 @@ define([
         // Gets the origin without a trailing slash
         _getOriginFromUrlObject: function (url) {
             return url.scheme + "://" + url.host + (url.port ? ":" + url.port : "");
+        },
+
+        // Format url with jazz proxy for properly authenticated access to remote host
+        _formatProxyUrl: function (url) {
+            var proxyUrl = new URL(net.jazz.ajax._contextRoot + "/proxy?uri=", window.location.origin);
+            return proxyUrl.href + encodeURIComponent(url);
         },
 
         // Remove the ".git" suffix from the repository name if present
