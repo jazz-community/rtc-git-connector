@@ -210,15 +210,15 @@ define([
         // Get the access token for the user and host
         getAccessTokenByHost: function (hostUrl) {
             var deferred = new Deferred();
-            xhr.get(this.personalTokenServiceUrl, {
-                query: {
-                    key: hostUrl
-                },
+
+            jazz.client.xhrGet({
+                url: this.personalTokenServiceUrl + "?key=" + hostUrl,
                 handleAs: "json",
-                headers : {
-                    "Accept" : "application/json"
+                headers: {
+                    "accept": "application/json"
                 }
             }).then(function (response) {
+                console.log(response);
                 deferred.resolve(response.token ? response.token : null);
             }, function (error) {
                 // return null if the service didn't find a token
