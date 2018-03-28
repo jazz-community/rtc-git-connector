@@ -732,11 +732,9 @@ define([
 
         // Make a request for a single public project from the gitlab api.
         // Return true if the request was successful, otherwise false.
-        // TODO: Use jazz.xhr.client
         isGitLabRepository: function (gitRepositoryUrl) {
             var url = this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects";
 
-            // jazz xhr client
             return jazz.client.xhrGet({
                 url: url,
                 query: {
