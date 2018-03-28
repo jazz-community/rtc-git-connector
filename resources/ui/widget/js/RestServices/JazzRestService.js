@@ -208,6 +208,7 @@ define([
         },
 
         // Get the access token for the user and host
+        // TODO: Use jazz.xhr.client
         getAccessTokenByHost: function (hostUrl) {
             var deferred = new Deferred();
             xhr.get(this.personalTokenServiceUrl, {
@@ -248,6 +249,7 @@ define([
 
         // Gets the Jazz user id. This is usually the email address.
         // Returns null if not found or on error.
+        // TODO: Use jazz.xhr.client
         getCurrentUserId: function () {
             return xhr.get(this.currentUserUrl, {
                 handleAs: "json",
@@ -265,6 +267,7 @@ define([
         // with the first parameter of the function passed to "then" being the list
         // of registered git repositories from the specified project area. The list
         // will be empty if there was an error.
+        // TODO: Use jazz.xhr.client
         getAllRegisteredGitRepositoriesForProjectArea: function (projectAreaId) {
             var self = this;
 

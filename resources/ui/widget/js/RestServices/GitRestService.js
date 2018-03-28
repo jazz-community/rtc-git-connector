@@ -497,13 +497,12 @@ define([
         },
 
         // Get the last 100 commits from the specified repository on GitLab
-        // TODO: Start debugging here
         getRecentGitLabCommits: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            // instead of passing the origin url, I need to add the jazz proxy
+            
             var gitlab = this.gitLabApi({
                 url: this._formatUrlWithProxy(urlOrigin),
                 token: accessToken
@@ -733,12 +732,15 @@ define([
 
         // Make a request for a single public project from the gitlab api.
         // Return true if the request was successful, otherwise false.
-        // TODO: This should also go through proxy
+        // TODO: Use jazz.xhr.client
         isGitLabRepository: function (gitRepositoryUrl) {
             var url = this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects";
-            return xhr.get(this._formatUrlWithProxy(url) , {
+
+            // jazz xhr client
+            return jazz.client.xhrGet({
+                url: url,
                 query: {
-                    per_page: "1"
+                    per_page: 1
                 },
                 handleAs: "json",
                 headers: {
@@ -752,7 +754,6 @@ define([
         },
 
         // Check if the access token works for the specified host type
-        // TODO: This should also go through proxy
         checkAccessToken: function (gitRepositoryUrl, gitHost, accessToken) {
             var deferred = new Deferred();
 
