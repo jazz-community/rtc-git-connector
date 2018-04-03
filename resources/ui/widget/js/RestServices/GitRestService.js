@@ -776,6 +776,8 @@ define([
                     token: accessToken
                 });
                 gitlab.users.current().then(function (response) {
+                    if (response) deferred.resolve(true);
+                    else deferred.resolve(false);
                     deferred.resolve(true);
                 }, function (error) {
                     deferred.resolve(false);
