@@ -260,17 +260,6 @@ define([
             }, function (error){
                 return null;
             });
-
-//            return xhr.get(this.currentUserUrl, {
-//                handleAs: "json",
-//                headers: {
-//                    "Accept" : "application/json"
-//                }
-//            }).then(function (response) {
-//                return response.userId ? response.userId : null;
-//            }, function (error) {
-//                return null;
-//            });
         },
 
         // Gets the registered git repositories from the service. Returns a promise
@@ -280,12 +269,13 @@ define([
         getAllRegisteredGitRepositoriesForProjectArea: function (projectAreaId) {
             var self = this;
 
-            return xhr.get(this.allRegisteredGitRepositoriesUrl, {
-                query: {
-                    findRecursively: "true",
-                    ownerItemIds: projectAreaId,
-                    populateProcessOwner: "false"
-                },
+            var url = this.allRegisteredGitRepositoriesUrl
+                + "?=findRecursively=true"
+                + "&ownerItemIds=" + projectAreaId
+                + "&populateProcessOwner=false";
+
+            return jazz.client.xhrGet({
+                url: url,
                 handleAs: "json",
                 headers: {
                     "Accept": "text/json"
