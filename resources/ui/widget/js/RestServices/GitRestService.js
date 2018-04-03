@@ -512,11 +512,12 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.repository.commits.all(encodeURIComponent(urlParts[0] + "/" + urlParts[1]), {
+                var joined = urlParts.join("/");
+                gitlab.projects.repository.commits.all(encodeURIComponent(joined), {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
-                    var commitUrlPath = urlOrigin + "/" + urlParts[0] + "/" + urlParts[1] + "/commit/";
+                    var commitUrlPath = [urlOrigin, joined, "commit/"].join("/");
                     var convertedCommits = [];
                     array.forEach(response, function (commit) {
                         convertedCommits.push(CommitModel.CreateFromGitLabCommit(commit, commitUrlPath, alreadyLinkedUrls));
@@ -596,7 +597,8 @@ define([
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
-                var issuesUrl = urlParts[0] + "/" + urlParts[1];
+                //var issuesUrl = urlParts[0] + "/" + urlParts[1];
+                var issuesUrl = urlParts.join("/");
 
                 gitlab.projects.issues.all(encodeURIComponent(issuesUrl), {
                     max_pages: 1,
@@ -681,7 +683,9 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.mergeRequests.all(encodeURIComponent(urlParts[0] + "/" + urlParts[1]), {
+                var joined = urlParts.join("/");
+
+                gitlab.projects.mergeRequests.all(encodeURIComponent(joined), {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
