@@ -745,7 +745,6 @@ define([
                     "Accept": "application/json"
                 }
             }).then(function (response) {
-                console.log("isGitLabRepository", response);
                 return true;
             }, function (error) {
                 return false;

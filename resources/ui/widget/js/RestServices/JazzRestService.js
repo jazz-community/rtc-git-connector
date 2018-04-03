@@ -249,16 +249,28 @@ define([
         // Gets the Jazz user id. This is usually the email address.
         // Returns null if not found or on error.
         getCurrentUserId: function () {
-            return xhr.get(this.currentUserUrl, {
+            return jazz.client.xhrGet({
+                url: this.currentUserUrl,
                 handleAs: "json",
                 headers: {
-                    "Accept" : "application/json"
+                    "Accept": "application/json"
                 }
             }).then(function (response) {
                 return response.userId ? response.userId : null;
-            }, function (error) {
+            }, function (error){
                 return null;
             });
+
+//            return xhr.get(this.currentUserUrl, {
+//                handleAs: "json",
+//                headers: {
+//                    "Accept" : "application/json"
+//                }
+//            }).then(function (response) {
+//                return response.userId ? response.userId : null;
+//            }, function (error) {
+//                return null;
+//            });
         },
 
         // Gets the registered git repositories from the service. Returns a promise
