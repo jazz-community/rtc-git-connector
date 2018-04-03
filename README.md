@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/jazz-community/rtc-git-connector.svg?branch=master)](https://travis-ci.org/jazz-community/rtc-git-connector)
 
+ :fire: **Folks, STAY TUNED! - A greatly improved version is on its way!**  :fire:
+
 # RTC Git Connector
 Connect your RTC work items with git commits, issues, and pull/merge requests.
 Works with GitHub and GitLab (starting with v9.0)
