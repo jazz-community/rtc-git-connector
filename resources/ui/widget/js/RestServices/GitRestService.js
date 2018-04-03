@@ -150,21 +150,23 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
+                var path = urlParts.join("/");
+
                 if (params.commitsToLink && params.commitsToLink.length > 0) {
                     array.forEach(params.commitsToLink, function (commit) {
-                        deferredArray.push(self.addBackLinksToGitLabCommits(gitlab, urlParts[0], urlParts[1], commit.sha, commitCommentBody));
+                        deferredArray.push(self.addBackLinksToGitLabCommits(gitlab, path, commit.sha, commitCommentBody));
                     });
                 }
 
                 if (params.issuesToLink && params.issuesToLink.length > 0) {
                     array.forEach(params.issuesToLink, function (issue) {
-                        deferredArray.push(self.addBackLinksToGitLabIssues(gitlab, urlParts[0], urlParts[1], issue.id, issueCommentBody));
+                        deferredArray.push(self.addBackLinksToGitLabIssues(gitlab, path, issue.id, issueCommentBody));
                     });
                 }
 
                 if (params.requestsToLink && params.requestsToLink.length > 0) {
                     array.forEach(params.requestsToLink, function (request) {
-                        deferredArray.push(self.addBackLinksToGitLabRequests(gitlab, urlParts[0], urlParts[1], request.id, requestCommentBody));
+                        deferredArray.push(self.addBackLinksToGitLabRequests(gitlab, path, request.id, requestCommentBody));
                     });
                 }
             }
@@ -172,10 +174,10 @@ define([
             return new DeferredList(deferredArray);
         },
 
-        addBackLinksToGitLabCommits: function (gitlab, owner, repo, sha, commentBody) {
+        addBackLinksToGitLabCommits: function (gitlab, path, sha, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.repository.commits.comments.create(encodeURIComponent(owner + "/" + repo), sha, commentBody).then(function (response) {
+            gitlab.projects.repository.commits.comments.create(encodeURIComponent(path), sha, commentBody).then(function (response) {
                 deferred.resolve(response);
             }, function (error) {
                 deferred.reject("Couldn't add a comment to the GitLab commit. Error: " + (error.error.message || error.error));
@@ -184,10 +186,10 @@ define([
             return deferred;
         },
 
-        addBackLinksToGitLabIssues: function (gitlab, owner, repo, id, commentBody) {
+        addBackLinksToGitLabIssues: function (gitlab, path, id, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.issues.notes.create(encodeURIComponent(owner + "/" + repo), id, {
+            gitlab.projects.issues.notes.create(encodeURIComponent(path), id, {
                 body: commentBody
             }).then(function (response) {
                 deferred.resolve(response);
@@ -198,10 +200,10 @@ define([
             return deferred;
         },
 
-        addBackLinksToGitLabRequests: function (gitlab, owner, repo, id, commentBody) {
+        addBackLinksToGitLabRequests: function (gitlab, path, id, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.mergeRequests.notes.create(encodeURIComponent(owner + "/" + repo), id, {
+            gitlab.projects.mergeRequests.notes.create(encodeURIComponent(path), id, {
                 body: commentBody
             }).then(function (response) {
                 deferred.resolve(response);
