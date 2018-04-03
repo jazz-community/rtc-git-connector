@@ -5,11 +5,10 @@ define([
     "dojo/json",
     "dojo/Deferred",
     "dojo/DeferredList",
-    "dojo/request/xhr",
     "../Models/CommitModel",
     "../Models/IssueModel",
     "../Models/RequestModel"
-], function (declare, url, array, json, Deferred, DeferredList, xhr,
+], function (declare, url, array, json, Deferred, DeferredList,
     CommitModel, IssueModel, RequestModel) {
     var _instance = null;
     var GitRestService = declare(null, {
@@ -134,7 +133,7 @@ define([
             var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: urlOrigin,
+                url: this._formatUrlWithProxy(urlOrigin),
                 token: params.accessToken
             });
             var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
@@ -151,21 +150,23 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
+                var path = urlParts.join("/");
+
                 if (params.commitsToLink && params.commitsToLink.length > 0) {
                     array.forEach(params.commitsToLink, function (commit) {
-                        deferredArray.push(self.addBackLinksToGitLabCommits(gitlab, urlParts[0], urlParts[1], commit.sha, commitCommentBody));
+                        deferredArray.push(self.addBackLinksToGitLabCommits(gitlab, path, commit.sha, commitCommentBody));
                     });
                 }
 
                 if (params.issuesToLink && params.issuesToLink.length > 0) {
                     array.forEach(params.issuesToLink, function (issue) {
-                        deferredArray.push(self.addBackLinksToGitLabIssues(gitlab, urlParts[0], urlParts[1], issue.id, issueCommentBody));
+                        deferredArray.push(self.addBackLinksToGitLabIssues(gitlab, path, issue.id, issueCommentBody));
                     });
                 }
 
                 if (params.requestsToLink && params.requestsToLink.length > 0) {
                     array.forEach(params.requestsToLink, function (request) {
-                        deferredArray.push(self.addBackLinksToGitLabRequests(gitlab, urlParts[0], urlParts[1], request.id, requestCommentBody));
+                        deferredArray.push(self.addBackLinksToGitLabRequests(gitlab, path, request.id, requestCommentBody));
                     });
                 }
             }
@@ -173,10 +174,10 @@ define([
             return new DeferredList(deferredArray);
         },
 
-        addBackLinksToGitLabCommits: function (gitlab, owner, repo, sha, commentBody) {
+        addBackLinksToGitLabCommits: function (gitlab, path, sha, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.repository.commits.comments.create(owner + "/" + repo, sha, commentBody).then(function (response) {
+            gitlab.projects.repository.commits.comments.create(encodeURIComponent(path), sha, commentBody).then(function (response) {
                 deferred.resolve(response);
             }, function (error) {
                 deferred.reject("Couldn't add a comment to the GitLab commit. Error: " + (error.error.message || error.error));
@@ -185,10 +186,10 @@ define([
             return deferred;
         },
 
-        addBackLinksToGitLabIssues: function (gitlab, owner, repo, id, commentBody) {
+        addBackLinksToGitLabIssues: function (gitlab, path, id, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.issues.notes.create(owner + "/" + repo, id, {
+            gitlab.projects.issues.notes.create(encodeURIComponent(path), id, {
                 body: commentBody
             }).then(function (response) {
                 deferred.resolve(response);
@@ -199,10 +200,10 @@ define([
             return deferred;
         },
 
-        addBackLinksToGitLabRequests: function (gitlab, owner, repo, id, commentBody) {
+        addBackLinksToGitLabRequests: function (gitlab, path, id, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.mergeRequests.notes.create(owner + "/" + repo, id, {
+            gitlab.projects.mergeRequests.notes.create(encodeURIComponent(path), id, {
                 body: commentBody
             }).then(function (response) {
                 deferred.resolve(response);
@@ -268,7 +269,7 @@ define([
             var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: urlOrigin,
+                url: this._formatUrlWithProxy(urlOrigin),
                 token: accessToken
             });
 
@@ -277,10 +278,12 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.repository.commits.show(urlParts[0] + "/" + urlParts[1], commitSha).then(function (response) {
-                    var commitUrlPath = urlOrigin + "/" + urlParts[0] + "/" + urlParts[1] + "/commit/";
+                var joined = urlParts.join("/");
+
+                gitlab.projects.repository.commits.show(encodeURIComponent(joined), commitSha).then(function (response) {
+                    var commitUrlPath = [urlOrigin, joined, "commit/"].join("/");
                     var convertedCommits = [];
-                    convertedCommits.push(CommitModel.CreateFromGitLabCommit(response.body, commitUrlPath, alreadyLinkedUrls));
+                    convertedCommits.push(CommitModel.CreateFromGitLabCommit(response, commitUrlPath, alreadyLinkedUrls));
                     deferred.resolve(convertedCommits);
                 }, function (error) {
                     // Just resolve with an empty array if not found
@@ -347,7 +350,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: this._getOriginFromUrlObject(repositoryUrl),
+                url: this._formatUrlWithProxy(this._getOriginFromUrlObject(repositoryUrl)),
                 token: accessToken
             });
 
@@ -356,9 +359,11 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.issues.show(urlParts[0] + "/" + urlParts[1], issueId).then(function (response) {
+                var joined = urlParts.join("/");
+
+                gitlab.projects.issues.show(encodeURIComponent(joined), issueId).then(function (response) {
                     var convertedIssues = [];
-                    convertedIssues.push(IssueModel.CreateFromGitLabIssue(response.body, alreadyLinkedUrls));
+                    convertedIssues.push(IssueModel.CreateFromGitLabIssue(response, alreadyLinkedUrls));
                     deferred.resolve(convertedIssues);
                 }, function (error) {
                     // Just resolve with an empty array if not found
@@ -422,7 +427,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: this._getOriginFromUrlObject(repositoryUrl),
+                url: this._formatUrlWithProxy(this._getOriginFromUrlObject(repositoryUrl)),
                 token: accessToken
             });
 
@@ -431,9 +436,11 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.mergeRequests.show(urlParts[0] + "/" + urlParts[1], requestId).then(function (response) {
+                var joined = urlParts.join("/");
+
+                gitlab.projects.mergeRequests.show(encodeURIComponent(joined), requestId).then(function (response) {
                     var convertedRequests = [];
-                    convertedRequests.push(RequestModel.CreateFromGitLabRequest(response.body, alreadyLinkedUrls));
+                    convertedRequests.push(RequestModel.CreateFromGitLabRequest(response, alreadyLinkedUrls));
                     deferred.resolve(convertedRequests);
                 }, function (error) {
                     // Just resolve with an empty array if not found
@@ -502,8 +509,9 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            
             var gitlab = this.gitLabApi({
-                url: urlOrigin,
+                url: this._formatUrlWithProxy(urlOrigin),
                 token: accessToken
             });
 
@@ -512,11 +520,12 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.repository.commits.all(urlParts[0] + "/" + urlParts[1], {
+                var joined = urlParts.join("/");
+                gitlab.projects.repository.commits.all(encodeURIComponent(joined), {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
-                    var commitUrlPath = urlOrigin + "/" + urlParts[0] + "/" + urlParts[1] + "/commit/";
+                    var commitUrlPath = [urlOrigin, joined, "commit/"].join("/");
                     var convertedCommits = [];
                     array.forEach(response, function (commit) {
                         convertedCommits.push(CommitModel.CreateFromGitLabCommit(commit, commitUrlPath, alreadyLinkedUrls));
@@ -588,7 +597,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: this._getOriginFromUrlObject(repositoryUrl),
+                url: this._formatUrlWithProxy(this._getOriginFromUrlObject(repositoryUrl)),
                 token: accessToken
             });
 
@@ -596,9 +605,9 @@ define([
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
-                var issuesUrl = urlParts[0] + "/" + urlParts[1];
+                var issuesUrl = urlParts.join("/");
 
-                gitlab.projects.issues.all(issuesUrl, {
+                gitlab.projects.issues.all(encodeURIComponent(issuesUrl), {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
@@ -672,7 +681,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var gitlab = this.gitLabApi({
-                url: this._getOriginFromUrlObject(repositoryUrl),
+                url: this._formatUrlWithProxy(this._getOriginFromUrlObject(repositoryUrl)),
                 token: accessToken
             });
 
@@ -681,7 +690,9 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.mergeRequests.all(urlParts[0] + "/" + urlParts[1], {
+                var joined = urlParts.join("/");
+
+                gitlab.projects.mergeRequests.all(encodeURIComponent(joined), {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
@@ -732,9 +743,12 @@ define([
         // Make a request for a single public project from the gitlab api.
         // Return true if the request was successful, otherwise false.
         isGitLabRepository: function (gitRepositoryUrl) {
-            return xhr.get(this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects", {
+            var url = this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects?per_page=1";
+
+            return jazz.client.xhrGet({
+                url: url,
                 query: {
-                    per_page: "1"
+                    per_page: 1
                 },
                 handleAs: "json",
                 headers: {
@@ -768,11 +782,12 @@ define([
             } else if (gitHost === this.gitLabString) {
                 // Check access token with GitLab
                 var gitlab = this.gitLabApi({
-                    url: this._getOriginFromUrlObject(gitRepositoryUrl),
+                    url: this._formatUrlWithProxy(this._getOriginFromUrlObject(gitRepositoryUrl)),
                     token: accessToken
                 });
                 gitlab.users.current().then(function (response) {
-                    deferred.resolve(true);
+                    if (response) deferred.resolve(true);
+                    else deferred.resolve(false);
                 }, function (error) {
                     deferred.resolve(false);
                 });
@@ -786,6 +801,12 @@ define([
         // Gets the origin without a trailing slash
         _getOriginFromUrlObject: function (url) {
             return url.scheme + "://" + url.host + (url.port ? ":" + url.port : "");
+        },
+
+        // Format url with jazz proxy for properly authenticated access to remote host
+        _formatUrlWithProxy: function (url) {
+            var proxyUrl = new URL(net.jazz.ajax._contextRoot + "/proxy?uri=", window.location.origin);
+            return proxyUrl.href + encodeURIComponent(url);
         },
 
         // Remove the ".git" suffix from the repository name if present

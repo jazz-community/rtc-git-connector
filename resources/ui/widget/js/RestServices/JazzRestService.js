@@ -1,10 +1,9 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/array",
-    "dojo/request/xhr",
     "dojo/json",
     "dojo/Deferred"
-], function (declare, array, xhr, json, Deferred) {
+], function (declare, array, json, Deferred) {
     var _instance = null;
     var JazzRestService = declare(null, {
         commitLinkEncoder: null,
@@ -114,7 +113,7 @@ define([
                 // Add all issues to link to the link type container
                 if (issuesToLink && issuesToLink.length > 0) {
                     array.forEach(issuesToLink, function (issue) {
-                        // TODO: differentiate between github and lab here. This will change later.
+                        // TODO: Remove diff again
                         var url = new URL(issue.webUrl);
                         if (url.hostname.indexOf('github') === -1) {
                             // has to be a gitlab request
@@ -137,7 +136,7 @@ define([
                 // Add all requests to link to the link type container
                 if (requestsToLink && requestsToLink.length > 0) {
                     array.forEach(requestsToLink, function (request) {
-                        // TODO: differentiate between github and lab here. This will change later.
+                        // TODO: Remove diff again
                         var url = new URL(request.webUrl);
                         if (url.hostname.indexOf('github') === -1) {
                             // has to be a gitlab request
@@ -210,13 +209,12 @@ define([
         // Get the access token for the user and host
         getAccessTokenByHost: function (hostUrl) {
             var deferred = new Deferred();
-            xhr.get(this.personalTokenServiceUrl, {
-                query: {
-                    key: hostUrl
-                },
+
+            jazz.client.xhrGet({
+                url: this.personalTokenServiceUrl + "?key=" + hostUrl,
                 handleAs: "json",
-                headers : {
-                    "Accept" : "application/json"
+                headers: {
+                    "accept": "application/json"
                 }
             }).then(function (response) {
                 deferred.resolve(response.token ? response.token : null);
@@ -235,13 +233,14 @@ define([
 
         // Saves the specified access token using the specified host
         saveAccessTokenByHost: function (hostUrl, accessToken) {
-            return xhr.post(this.personalTokenServiceUrl, {
-                data: json.stringify({
+            return jazz.client.xhrPost({
+                url: this.personalTokenServiceUrl,
+                postData: json.stringify({
                     key: hostUrl,
                     token: accessToken
                 }),
                 headers: {
-                    "Content-Type" : "application/json"
+                    "Content-Type": "application/json"
                 }
             });
         },
@@ -249,14 +248,15 @@ define([
         // Gets the Jazz user id. This is usually the email address.
         // Returns null if not found or on error.
         getCurrentUserId: function () {
-            return xhr.get(this.currentUserUrl, {
+            return jazz.client.xhrGet({
+                url: this.currentUserUrl,
                 handleAs: "json",
                 headers: {
-                    "Accept" : "application/json"
+                    "Accept": "application/json"
                 }
             }).then(function (response) {
                 return response.userId ? response.userId : null;
-            }, function (error) {
+            }, function (error){
                 return null;
             });
         },
@@ -268,12 +268,13 @@ define([
         getAllRegisteredGitRepositoriesForProjectArea: function (projectAreaId) {
             var self = this;
 
-            return xhr.get(this.allRegisteredGitRepositoriesUrl, {
-                query: {
-                    findRecursively: "true",
-                    ownerItemIds: projectAreaId,
-                    populateProcessOwner: "false"
-                },
+            var url = this.allRegisteredGitRepositoriesUrl
+                + "?=findRecursively=true"
+                + "&ownerItemIds=" + projectAreaId
+                + "&populateProcessOwner=false";
+
+            return jazz.client.xhrGet({
+                url: url,
                 handleAs: "json",
                 headers: {
                     "Accept": "text/json"
