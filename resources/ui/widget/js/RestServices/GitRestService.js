@@ -5,11 +5,10 @@ define([
     "dojo/json",
     "dojo/Deferred",
     "dojo/DeferredList",
-    "dojo/request/xhr",
     "../Models/CommitModel",
     "../Models/IssueModel",
     "../Models/RequestModel"
-], function (declare, url, array, json, Deferred, DeferredList, xhr,
+], function (declare, url, array, json, Deferred, DeferredList,
     CommitModel, IssueModel, RequestModel) {
     var _instance = null;
     var GitRestService = declare(null, {

@@ -1,10 +1,9 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/array",
-    "dojo/request/xhr",
     "dojo/json",
     "dojo/Deferred"
-], function (declare, array, xhr, json, Deferred) {
+], function (declare, array, json, Deferred) {
     var _instance = null;
     var JazzRestService = declare(null, {
         commitLinkEncoder: null,
