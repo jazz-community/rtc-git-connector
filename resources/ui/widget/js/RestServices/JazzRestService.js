@@ -218,7 +218,6 @@ define([
                     "accept": "application/json"
                 }
             }).then(function (response) {
-                console.log(response);
                 deferred.resolve(response.token ? response.token : null);
             }, function (error) {
                 // return null if the service didn't find a token
@@ -235,13 +234,14 @@ define([
 
         // Saves the specified access token using the specified host
         saveAccessTokenByHost: function (hostUrl, accessToken) {
-            return xhr.post(this.personalTokenServiceUrl, {
-                data: json.stringify({
+            return jazz.client.xhrPost({
+                url: this.personalTokenServiceUrl,
+                postData: json.stringify({
                     key: hostUrl,
                     token: accessToken
                 }),
                 headers: {
-                    "Content-Type" : "application/json"
+                    "Content-Type": "application/json"
                 }
             });
         },
