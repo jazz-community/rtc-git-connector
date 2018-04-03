@@ -278,8 +278,10 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.repository.commits.show(encodeURIComponent(urlParts[0] + "/" + urlParts[1]), commitSha).then(function (response) {
-                    var commitUrlPath = urlOrigin + "/" + urlParts[0] + "/" + urlParts[1] + "/commit/";
+                var joined = urlParts.join("/");
+
+                gitlab.projects.repository.commits.show(encodeURIComponent(joined), commitSha).then(function (response) {
+                    var commitUrlPath = [urlOrigin, joined, "commit/"].join("/");
                     var convertedCommits = [];
                     convertedCommits.push(CommitModel.CreateFromGitLabCommit(response, commitUrlPath, alreadyLinkedUrls));
                     deferred.resolve(convertedCommits);
@@ -357,7 +359,9 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.issues.show(encodeURIComponent(urlParts[0] + "/" + urlParts[1]), issueId).then(function (response) {
+                var joined = urlParts.join("/");
+
+                gitlab.projects.issues.show(encodeURIComponent(joined), issueId).then(function (response) {
                     var convertedIssues = [];
                     convertedIssues.push(IssueModel.CreateFromGitLabIssue(response, alreadyLinkedUrls));
                     deferred.resolve(convertedIssues);
@@ -432,7 +436,9 @@ define([
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
 
-                gitlab.projects.mergeRequests.show(encodeURIComponent(urlParts[0] + "/" + urlParts[1]), requestId).then(function (response) {
+                var joined = urlParts.join("/");
+
+                gitlab.projects.mergeRequests.show(encodeURIComponent(joined), requestId).then(function (response) {
                     var convertedRequests = [];
                     convertedRequests.push(RequestModel.CreateFromGitLabRequest(response, alreadyLinkedUrls));
                     deferred.resolve(convertedRequests);
@@ -599,7 +605,6 @@ define([
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[1] = this._removeDotGitEnding(urlParts[1]);
-                //var issuesUrl = urlParts[0] + "/" + urlParts[1];
                 var issuesUrl = urlParts.join("/");
 
                 gitlab.projects.issues.all(encodeURIComponent(issuesUrl), {
