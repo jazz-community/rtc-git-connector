@@ -8,3 +8,4 @@ resources/dist/
 *.iml
 jbe-build-wrapper.xml
 deployment-properties.ini
+*.swp

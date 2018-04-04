@@ -40,7 +40,7 @@ export function encoder () {
 }
 
 // GitHub API client library
-export const GitHubApi = require('github');
+export const GitHubApi = require('@octokit/rest');
 
 // GitLab API client library
 export const GitLabApi = require('node-gitlab-api');
