@@ -519,6 +519,7 @@ define([
                 origin: origin,
                 sanitized: sanitized,
                 parts: parts,
+                joined: parts.join("/"),
                 repo: origin + sanitized
             }
         },
@@ -536,14 +537,11 @@ define([
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                giturl.parts[giturl.parts.length - 1] = this._removeDotGitEnding(giturl.parts[giturl.parts.length - 1]);
-
-                var joined = giturl.parts.join("/");
-                gitlab.projects.repository.commits.all(encodeURIComponent(joined), {
+                gitlab.projects.repository.commits.all(encodeURIComponent(giturl.joined), {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
-                    var commitUrlPath = [giturl.origin, joined, "commit/"].join("/");
+                    var commitUrlPath = giturl.repo + "/commit/";
                     var convertedCommits = [];
                     array.forEach(response, function (commit) {
                         convertedCommits.push(CommitModel.CreateFromGitLabCommit(commit, commitUrlPath, alreadyLinkedUrls));
