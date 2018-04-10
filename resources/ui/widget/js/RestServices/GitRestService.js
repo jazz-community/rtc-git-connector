@@ -126,6 +126,25 @@ define([
             return deferred;
         },
 
+        // this should really be extracted to a separate class
+        _createUrlInformation: function(param) {
+            var original = new url(param);
+            var origin = this._getOriginFromUrlObject(original);
+            // this should then call the revamped removegitending function
+            var sanitized = this._removeDotGitEnding(original.path)
+            var parts = this._getUrlPartsFromPath(sanitized);
+            // as mentioned below, this should be a member function
+            // or maybe not even... not quite sure yet about this one
+            //var proxy = this._formatUrlWithProxy()
+            
+            return {
+                original : original,
+                origin: origin,
+                sanitized: sanitized,
+                parts: parts,
+            }
+        },
+
         addBackLinksToGitLab: function (params) {
             var self = this;
             var deferredArray = [];
@@ -804,6 +823,7 @@ define([
         },
 
         // Format url with jazz proxy for properly authenticated access to remote host
+        // This should be a member function of a future "giturl" class
         _formatUrlWithProxy: function (url) {
             var proxyUrl = new URL(net.jazz.ajax._contextRoot + "/proxy?uri=", window.location.origin);
             return proxyUrl.href + encodeURIComponent(url);
