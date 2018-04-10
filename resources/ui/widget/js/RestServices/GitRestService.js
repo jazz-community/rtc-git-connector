@@ -519,35 +519,31 @@ define([
                 origin: origin,
                 sanitized: sanitized,
                 parts: parts,
+                repo: origin + sanitized
             }
         },
 
         // Get the last 100 commits from the specified repository on GitLab
         getRecentGitLabCommits: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
-            console.log("getRecentGitLabCommits::531", selectedGitRepository);
-            var test = this._createUrlInformation(selectedGitRepository.url);
-            console.log("getRecentGitLabCommits::533", test);
+            var giturl = this._createUrlInformation(selectedGitRepository.url);
             var deferred = new Deferred();
-            var repositoryUrl = new url(selectedGitRepository.url);
-            var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
-            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(urlOrigin),
+                url: this._formatUrlWithProxy(giturl.origin),
                 token: accessToken
             });
 
-            if (urlParts.length < 2) {
+            if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
+                giturl.parts[giturl.parts.length - 1] = this._removeDotGitEnding(giturl.parts[giturl.parts.length - 1]);
 
-                var joined = urlParts.join("/");
+                var joined = giturl.parts.join("/");
                 gitlab.projects.repository.commits.all(encodeURIComponent(joined), {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
-                    var commitUrlPath = [urlOrigin, joined, "commit/"].join("/");
+                    var commitUrlPath = [giturl.origin, joined, "commit/"].join("/");
                     var convertedCommits = [];
                     array.forEach(response, function (commit) {
                         convertedCommits.push(CommitModel.CreateFromGitLabCommit(commit, commitUrlPath, alreadyLinkedUrls));
