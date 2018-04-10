@@ -617,6 +617,8 @@ define([
                 token: accessToken
             });
 
+            // instead of checking for validity with the length of a path, it would be nice to
+            // extract this check to the giturl object and return early.
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
@@ -690,22 +692,18 @@ define([
 
         // Get the last 100 merge requests from the selected repository on GitLab
         getRecentGitLabRequests: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
+            var giturl = this._createUrlInformation(selectedGitRepository.url);
             var deferred = new Deferred();
-            var repositoryUrl = new url(selectedGitRepository.url);
-            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(this._getOriginFromUrlObject(repositoryUrl)),
+                url: this._formatUrlWithProxy(giturl.origin),
                 token: accessToken
             });
 
-            if (urlParts.length < 2) {
+            if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
-
-                var joined = urlParts.join("/");
-
-                gitlab.projects.mergeRequests.all(encodeURIComponent(joined), {
+                gitlab.projects.mergeRequests.all(encodeURIComponent(giturl.joined), {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
