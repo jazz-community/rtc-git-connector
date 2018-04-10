@@ -126,25 +126,6 @@ define([
             return deferred;
         },
 
-        // this should really be extracted to a separate class
-        _createUrlInformation: function(param) {
-            var original = new url(param);
-            var origin = this._getOriginFromUrlObject(original);
-            // this should then call the revamped removegitending function
-            var sanitized = this._removeDotGitEnding(original.path)
-            var parts = this._getUrlPartsFromPath(sanitized);
-            // as mentioned below, this should be a member function
-            // or maybe not even... not quite sure yet about this one
-            //var proxy = this._formatUrlWithProxy()
-            
-            return {
-                original : original,
-                origin: origin,
-                sanitized: sanitized,
-                parts: parts,
-            }
-        },
-
         addBackLinksToGitLab: function (params) {
             var self = this;
             var deferredArray = [];
@@ -522,8 +503,30 @@ define([
             return deferred.promise;
         },
 
+        // this should really be extracted to a separate class
+        _createUrlInformation: function(param) {
+            var original = new url(param);
+            var origin = this._getOriginFromUrlObject(original);
+            // this should then call the revamped removegitending function
+            var sanitized = this._removeDotGitEnding(original.path)
+            var parts = this._getUrlPartsFromPath(sanitized);
+            // as mentioned below, this should be a member function
+            // or maybe not even... not quite sure yet about this one
+            //var proxy = this._formatUrlWithProxy()
+            
+            return {
+                original : original,
+                origin: origin,
+                sanitized: sanitized,
+                parts: parts,
+            }
+        },
+
         // Get the last 100 commits from the specified repository on GitLab
         getRecentGitLabCommits: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
+            console.log("getRecentGitLabCommits::531", selectedGitRepository);
+            var test = this._createUrlInformation(selectedGitRepository.url);
+            console.log("getRecentGitLabCommits::533", test);
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
