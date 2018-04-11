@@ -59,7 +59,7 @@ define([
                 deferred.reject("Invalid repository URL.");
                 deferredArray.push(deferred);
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 github.authenticate({
                     type: 'token',
@@ -148,7 +148,7 @@ define([
                 deferred.reject("Invalid repository URL.");
                 deferredArray.push(deferred);
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 var path = urlParts.join("/");
 
@@ -237,7 +237,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 github.authenticate({
                     type: 'token',
@@ -276,7 +276,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 var joined = urlParts.join("/");
 
@@ -317,7 +317,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 github.authenticate({
                     type: 'token',
@@ -357,7 +357,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 var joined = urlParts.join("/");
 
@@ -397,7 +397,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 github.authenticate({
                     type: 'token',
@@ -434,7 +434,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 var joined = urlParts.join("/");
 
@@ -476,7 +476,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 github.authenticate({
                     type: 'token',
@@ -518,7 +518,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 var joined = urlParts.join("/");
                 gitlab.projects.repository.commits.all(encodeURIComponent(joined), {
@@ -563,7 +563,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 github.authenticate({
                     type: 'token',
@@ -604,7 +604,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
                 var issuesUrl = urlParts.join("/");
 
                 gitlab.projects.issues.all(encodeURIComponent(issuesUrl), {
@@ -647,7 +647,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 github.authenticate({
                     type: 'token',
@@ -688,7 +688,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[1] = this._removeDotGitEnding(urlParts[1]);
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 var joined = urlParts.join("/");
 
