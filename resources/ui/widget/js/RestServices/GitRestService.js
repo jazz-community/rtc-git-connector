@@ -129,13 +129,13 @@ define([
         addBackLinksToGitLab: function (params) {
             var self = this;
             var deferredArray = [];
-            var repositoryUrl = new url(params.selectedGitRepository.url);
-            var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
-            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var giturl = this._createUrlInformation(params.selectedGitRepository.url);
+
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(urlOrigin),
+                url: this._formatUrlWithProxy(giturl.origin),
                 token: params.accessToken
             });
+
             var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
                     "(" + params.workItem.object.locationUri + ")" +
                     " on behalf of " + params.currentUser;
@@ -143,30 +143,26 @@ define([
             var issueCommentBody = "This issue " + commentBody;
             var requestCommentBody = "This merge request " + commentBody;
 
-            if (urlParts.length < 2) {
+            if (giturl.parts.length < 2) {
                 var deferred = new Deferred();
                 deferred.reject("Invalid repository URL.");
                 deferredArray.push(deferred);
             } else {
-                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
-
-                var path = urlParts.join("/");
-
                 if (params.commitsToLink && params.commitsToLink.length > 0) {
                     array.forEach(params.commitsToLink, function (commit) {
-                        deferredArray.push(self.addBackLinksToGitLabCommits(gitlab, path, commit.sha, commitCommentBody));
+                        deferredArray.push(self.addBackLinksToGitLabCommits(gitlab, giturl.joined, commit.sha, commitCommentBody));
                     });
                 }
 
                 if (params.issuesToLink && params.issuesToLink.length > 0) {
                     array.forEach(params.issuesToLink, function (issue) {
-                        deferredArray.push(self.addBackLinksToGitLabIssues(gitlab, path, issue.id, issueCommentBody));
+                        deferredArray.push(self.addBackLinksToGitLabIssues(gitlab, giturl.joined, issue.id, issueCommentBody));
                     });
                 }
 
                 if (params.requestsToLink && params.requestsToLink.length > 0) {
                     array.forEach(params.requestsToLink, function (request) {
-                        deferredArray.push(self.addBackLinksToGitLabRequests(gitlab, path, request.id, requestCommentBody));
+                        deferredArray.push(self.addBackLinksToGitLabRequests(gitlab, giturl.joined, request.id, requestCommentBody));
                     });
                 }
             }
