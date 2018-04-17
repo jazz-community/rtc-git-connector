@@ -338,21 +338,17 @@ define([
         // Get a GitLab issue by it's id
         getGitLabIssueById: function (selectedGitRepository, accessToken, issueId, alreadyLinkedUrls) {
             var deferred = new Deferred();
-            var repositoryUrl = new url(selectedGitRepository.url);
-            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var giturl = this._createUrlInformation(selectedGitRepository.url);
+
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(this._getOriginFromUrlObject(repositoryUrl)),
+                url: this._formatUrlWithProxy(giturl.origin),
                 token: accessToken
             });
 
-            if (urlParts.length < 2) {
+            if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
-
-                var joined = urlParts.join("/");
-
-                gitlab.projects.issues.show(encodeURIComponent(joined), issueId).then(function (response) {
+                gitlab.projects.issues.show(encodeURIComponent(giturl.joined), issueId).then(function (response) {
                     var convertedIssues = [];
                     convertedIssues.push(IssueModel.CreateFromGitLabIssue(response, alreadyLinkedUrls));
                     deferred.resolve(convertedIssues);
