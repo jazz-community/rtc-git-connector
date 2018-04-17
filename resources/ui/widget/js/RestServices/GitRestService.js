@@ -261,23 +261,18 @@ define([
         // Get a commit from GitLab using it's SHA
         getGitLabCommitById: function (selectedGitRepository, accessToken, commitSha, alreadyLinkedUrls) {
             var deferred = new Deferred();
-            var repositoryUrl = new url(selectedGitRepository.url);
-            var urlOrigin = this._getOriginFromUrlObject(repositoryUrl);
-            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var giturl = this._createUrlInformation(selectedGitRepository.url);
+
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(urlOrigin),
+                url: this._formatUrlWithProxy(giturl.origin),
                 token: accessToken
             });
 
-            if (urlParts.length < 2) {
+            if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
-
-                var joined = urlParts.join("/");
-
-                gitlab.projects.repository.commits.show(encodeURIComponent(joined), commitSha).then(function (response) {
-                    var commitUrlPath = [urlOrigin, joined, "commit/"].join("/");
+                gitlab.projects.repository.commits.show(encodeURIComponent(giturl.joined), commitSha).then(function (response) {
+                    var commitUrlPath = giturl.repo + "/commit/";
                     var convertedCommits = [];
                     convertedCommits.push(CommitModel.CreateFromGitLabCommit(response, commitUrlPath, alreadyLinkedUrls));
                     deferred.resolve(convertedCommits);
