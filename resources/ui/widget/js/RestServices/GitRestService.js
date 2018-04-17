@@ -823,14 +823,7 @@ define([
 
         // Remove the ".git" suffix from the repository name if present
         _removeDotGitEnding: function (repositoryName) {
-            var gitEnding = ".git";
-            var gitEndingIndex = repositoryName.indexOf(gitEnding, repositoryName.length - gitEnding.length);
-
-            if (gitEndingIndex !== -1) {
-                return repositoryName.slice(0, gitEndingIndex);
-            } else {
-                return repositoryName;
-            }
+            return repositoryName.replace(/\.git$/, '');
         },
 
         // Returns an array of non empty url parts taken from the specified url path
