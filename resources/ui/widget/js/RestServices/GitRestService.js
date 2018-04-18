@@ -466,8 +466,6 @@ define([
                     token: accessToken
                 });
 
-                console.log("I actually get here, maybe the mistake isn't with the url after all...", auth);
-
                 github.repos.getCommits({
                     owner: urlParts[0],
                     repo: urlParts[1],
@@ -477,7 +475,6 @@ define([
                         var errorObj = json.parse(error.message || error);
                         deferred.reject("Couldn't get the commits from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
                     } else {
-                        console.log("So what about in here...?", response);
                         var convertedCommits = [];
                         array.forEach(response.data, function (commit) {
                             convertedCommits.push(CommitModel.CreateFromGitHubCommit(commit, alreadyLinkedUrls));
