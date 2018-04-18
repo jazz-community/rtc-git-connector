@@ -454,12 +454,7 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var baseUrl = this._formatUrlWithProxy('https://api.github.com');
-            console.log(baseUrl);
-            var github = new this.gitHubApi({
-                baseUrl: url
-            });
-            console.log(github);
+            var github = new this.gitHubApi({});
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
