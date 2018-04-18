@@ -2,9 +2,8 @@ define([
     "dojo/_base/declare",
     "dojo/_base/array",
     "dojo/json",
-    "dojo/Deferred",
-    "dojo/_base/url"
-], function (declare, array, json, Deferred, Url) {
+    "dojo/Deferred"
+], function (declare, array, json, Deferred) {
     var _instance = null;
     var JazzRestService = declare(null, {
         commitLinkEncoder: null,
@@ -269,10 +268,13 @@ define([
         getAllRegisteredGitRepositoriesForProjectArea: function (projectAreaId) {
             var self = this;
 
-            var url = this.allRegisteredGitRepositoriesUrl
-                + "?findRecursively=true"
-                + "&ownerItemIds=" + projectAreaId
-                + "&populateProcessOwner=false";
+            var parameters = new URLSearchParams();
+            parameters.append("findRecursively", true);
+            parameters.append("ownerItemIds", projectAreaId);
+            parameters.append("populateProcessOwner", false);
+
+            var url = this.allRegisteredGitRepositoriesUrl + "?" + parameters.toString();
+            console.log(url);
 
             return jazz.client.xhrGet({
                 url: url,
