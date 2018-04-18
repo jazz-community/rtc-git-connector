@@ -2,8 +2,9 @@ define([
     "dojo/_base/declare",
     "dojo/_base/array",
     "dojo/json",
-    "dojo/Deferred"
-], function (declare, array, json, Deferred) {
+    "dojo/Deferred",
+    "dojo/_base/url"
+], function (declare, array, json, Deferred, Url) {
     var _instance = null;
     var JazzRestService = declare(null, {
         commitLinkEncoder: null,
@@ -269,7 +270,7 @@ define([
             var self = this;
 
             var url = this.allRegisteredGitRepositoriesUrl
-                + "?=findRecursively=true"
+                + "?findRecursively=true"
                 + "&ownerItemIds=" + projectAreaId
                 + "&populateProcessOwner=false";
 
