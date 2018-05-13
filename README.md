@@ -3,6 +3,20 @@
 # RTC Git Connector
 Connect your RTC work items with git commits, issues, and pull/merge requests. Currently, only Gitlab is fully supported.
 
+# Table of Contents
+-   [RTC Git Connector](#rtc-git-connector)
+-   [Introduction](#introduction)
+-   [Common Usage](#common-usage)
+    -   [Limitations](#limitations)
+-   [Installation and Setup](#installation-and-setup)
+    -   [Dependencies](#dependencies)
+    -   [Plugin installation](#plugin-installation)
+    -   [Adding external resources to the white list](#adding-external-resources-to-the-white-list)
+    -   [Registering git repositories](#registering-git-repositories)
+    -   [Adding access tokens](#adding-access-tokens)
+    -   [Contributing](#contributing)
+    -   [Licensing](#licensing)
+
 # Introduction
 RTC Git Connector allows tracking your work across different organizational platforms, by including other SCM systems in your team's RTC workflow.
 
