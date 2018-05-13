@@ -38,14 +38,26 @@ Only versions of Gitlab above v9.0 are supported.
 
 # Installation and Setup
 ## Dependencies
-RTC Git Connector requires that both [RTC Git Connector Service](https://github.com/jazz-community/rtc-git-connector-service) and [Secure User Property Store for RTC](https://github.com/jazz-community/rtc-secure-user-property-store) have been installed and properly configured. These are hard dependencies and RTC Git Connector will not work at all without them being available.
+RTC Git Connector requires that both [RTC Git Connector Service](https://github.com/jazz-community/rtc-git-connector-service) and [Secure User Property Store for RTC](https://github.com/jazz-community/rtc-secure-user-property-store) have been **installed** and **properly configured**. These are hard dependencies and RTC Git Connector will not work at all without them being available.
 
 RTC Git Connector has been developed, tested and deployed on RTC versions above 6.0.3.
 
 ## Plugin installation
-## Registering git repository
+-> LINK TO CURRENT RELEASE <-
+
+RTC Git Connector can be installed like any other plugin provided as an update-site. For detailed instructions, please refer to [this installation section](https://github.com/jazz-community/rtc-create-child-item-plugin#installation).
+
+## Adding external resources to the white list
+In order to connect to external services, they have to be added to the white list of the Jazz instance by an administrator.
+![White list](https://github.com/jazz-community/rtc-git-connector/blob/master/documentation/whitelist.png)
+
+## Registering git repositories
+Git repositories that you want to interact with have to be registered with the RTC instance that you are using. IBM provides [detailed instructions](https://jazz.net/help-dev/clm/index.jsp?topic=%2Fcom.ibm.team.connector.cq.doc%2Ftopics%2Ft_git_reg_repo.html) how this can be achieved. All registered repositories will then be visible in the scope they have been registered with.
+
 ## Adding access tokens
-## Linking artifacts
+When a user tries to access a remote repository for the first time, they will be requested to save an access token to enable all interactions with the remote service. Multiple access tokens can be stored per user, for different base urls of external services. Should an access token be revoked, the user will be prompted to save a new, valid, access token the next time they try to access the repository through the RTC Git Connector.
+![Access token prompt](https://github.com/jazz-community/rtc-git-connector/blob/master/documentation/access_token.png)
+
 # Contributing
 # License
 
