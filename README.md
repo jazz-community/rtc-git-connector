@@ -57,7 +57,7 @@ RTC Git Connector requires that both [RTC Git Connector Service](https://github.
 RTC Git Connector has been developed, tested and deployed on RTC versions above 6.0.3.
 
 ## Plugin installation
--> LINK TO CURRENT RELEASE <-
+The current stable release can be downloaded from the [releases section](https://github.com/jazz-community/rtc-git-connector/releases/tag/v2.0.0).
 
 RTC Git Connector can be installed like any other plugin provided as an update-site. For detailed instructions, please refer to [this installation section](https://github.com/jazz-community/rtc-create-child-item-plugin#installation).
 
