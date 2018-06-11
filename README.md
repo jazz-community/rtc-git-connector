@@ -78,7 +78,7 @@ Git repositories that you want to interact with have to be registered with the R
 
 ## Adding access tokens
 When a user tries to access a remote repository for the first time, they will be requested to save an access token to enable all interactions with the remote service. Multiple access tokens can be stored per user, for different base urls of external services. Should an access token be revoked, the user will be prompted to save a new, valid, access token the next time they try to access the repository through the RTC Git Connector.
-0
+
 ![Access token prompt](https://github.com/jazz-community/rtc-git-connector/blob/master/documentation/access_token.png)
 
 ## Contributing
