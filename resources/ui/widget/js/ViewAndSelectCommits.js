@@ -26,6 +26,7 @@ define([
         jazzRestService: null,
         gitRestService: null,
         viewCommits: null,
+        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
