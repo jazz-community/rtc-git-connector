@@ -228,10 +228,10 @@ define([
                         innerHTML: check.html[0]
                     }, requestListItem);
                 } else {
-                    var plus = self.fontAwesome.icon({prefix: 'fas', iconName: 'plus'});
+                    var link = self.fontAwesome.icon({prefix: 'fas', iconName: 'link'});
                     domConstruct.create("div", {
                         "class": "rtcGitConnectorViewAndSelectListItemButton",
-                        innerHTML: plus.html[0]
+                        innerHTML: link.html[0]
                     }, requestListItem);
                 }
 
