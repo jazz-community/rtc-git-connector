@@ -20,9 +20,14 @@ define([
     {
         templateString: template,
         mainDataStore: null,
+        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
+
+            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
+                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
+            }
         },
 
         startup: function () {
@@ -82,9 +87,10 @@ define([
                     }
                 });
 
+                var minus = self.fontAwesome.icon({prefix: 'fas', iconName: 'minus'});
                 domConstruct.create("div", {
                     "class": "rtcGitConnectorViewAndSelectListItemButton removeButton",
-                    innerHTML: "-"
+                    innerHTML: minus.html[0]
                 }, issueListItem);
 
                 var issueListItemContent = domConstruct.create("div", {
