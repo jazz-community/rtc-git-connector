@@ -196,7 +196,7 @@ define([
                 on(commitListItem, "click", function (event) {
                     var commitSha = this.getAttribute("data-commit-sha");
 
-                    if (event.target.classList.contains("rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the commit with the specified sha from the commits list in store and add to the selected list
                         if (commitSha) {
                             var selectedCommit = null;
@@ -228,9 +228,10 @@ define([
                         innerHTML: check.html[0]
                     }, commitListItem);
                 } else {
+                    var plus = self.fontAwesome.icon({prefix: 'fas', iconName: 'plus'});
                     domConstruct.create("div", {
                         "class": "rtcGitConnectorViewAndSelectListItemButton",
-                        innerHTML: "+"
+                        innerHTML: plus.html[0]
                     }, commitListItem);
                 }
 
@@ -370,23 +371,36 @@ define([
             this._highlightFilterText(filterText, ["sha", "message", "authorName", "authorEmail"], this.viewCommits);
         },
 
-        _highlightFilterText: function(filterText, filterBy, filterResult){
-            for(var i=0; i < filterResult.length; i++){
-                for(var j=0; j < filterBy.length; j++){
+        _highlightFilterText: function (filterText, filterBy, filterResult) {
+            for (var i=0; i < filterResult.length; i++) {
+                for (var j=0; j < filterBy.length; j++) {
                     filterResult[i][filterBy[j]] = this._highlightTextInString(filterText, filterResult[i][filterBy[j]]);
                 }
             }
         },
 
-        _highlightTextInString: function(searchText, fullText){
+        _highlightTextInString: function (searchText, fullText) {
             var startIndex;
-            if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1){
+            if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1) {
                 var beforeFound = fullText.slice(0, startIndex);
                 var found = fullText.slice(startIndex, startIndex + searchText.length);
                 var afterFound = this._highlightTextInString(searchText, fullText.slice(startIndex + searchText.length));
                 fullText = beforeFound + "<b class='rtcGitConnectorHighlightText'>" + found + "</b>" + afterFound;
             }
             return fullText;
+        },
+
+        // Checks if the node or any of it's parents have the class name
+        isNodeInClass: function (node, className) {
+            if (node.classList && node.classList.contains(className)) {
+                return true;
+            }
+
+            if (node.parentNode) {
+                return this.isNodeInClass(node.parentNode, className);
+            }
+
+            return false;
         }
     });
 });
