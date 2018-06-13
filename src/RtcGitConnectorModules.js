@@ -51,6 +51,7 @@ const FaCheck = require('@fortawesome/fontawesome-free-solid/faCheck');
 const FaPlus = require('@fortawesome/fontawesome-free-solid/faPlus');
 const FaMinus = require('@fortawesome/fontawesome-free-solid/faMinus');
 const FaLink = require('@fortawesome/fontawesome-free-solid/faLink');
+const FaTrash = require('@fortawesome/fontawesome-free-solid/faTrash');
 
 // Adding the entire solid library doesn't seem to work in the frontend.
 // So we have no other choice than adding them one by one.
@@ -58,3 +59,4 @@ FontAwesome.library.add(FaCheck);
 FontAwesome.library.add(FaPlus);
 FontAwesome.library.add(FaMinus);
 FontAwesome.library.add(FaLink);
+FontAwesome.library.add(FaTrash);

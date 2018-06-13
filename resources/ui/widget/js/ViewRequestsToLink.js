@@ -87,10 +87,10 @@ define([
                     }
                 });
 
-                var minus = self.fontAwesome.icon({prefix: 'fas', iconName: 'minus'});
+                var trash = self.fontAwesome.icon({prefix: 'fas', iconName: 'trash'});
                 domConstruct.create("div", {
                     "class": "rtcGitConnectorViewAndSelectListItemButton removeButton",
-                    innerHTML: minus.html[0]
+                    innerHTML: trash.html[0]
                 }, requestListItem);
 
                 var requestListItemContent = domConstruct.create("div", {
