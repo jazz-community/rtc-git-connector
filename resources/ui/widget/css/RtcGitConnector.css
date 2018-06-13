@@ -174,15 +174,15 @@ button.viewAndSelectSearchButton[disabled] {
 }
 
 .rtcGitConnectorViewAndSelectListItemButton {
-    width: 2.5rem;
+    width: 1rem;
     height: 100%;
-    background-color: lightgreen;
-    border: 0.2rem solid green;
+    background-color: lightblue;
+    border: 0.2rem solid blue;
     border-radius: .5rem;
     margin: auto .3rem;
-    font-size: 2rem;
-    font-weight: bold;
-    color: green;
+    padding: .5rem;
+    font-size: 1rem;
+    color: blue;
     text-align: center;
     cursor: pointer;
 }
