@@ -196,7 +196,7 @@ define([
                 on(requestListItem, "click", function (event) {
                     var requestId = this.getAttribute("data-request-id");
 
-                    if (self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (!request.alreadyLinked && self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the request with the specified id from the requests list in store and add to the selected list
                         if (requestId) {
                             var selectedRequest = null;

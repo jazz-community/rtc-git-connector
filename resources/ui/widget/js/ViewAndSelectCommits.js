@@ -196,7 +196,7 @@ define([
                 on(commitListItem, "click", function (event) {
                     var commitSha = this.getAttribute("data-commit-sha");
 
-                    if (self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (!commit.alreadyLinked && self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the commit with the specified sha from the commits list in store and add to the selected list
                         if (commitSha) {
                             var selectedCommit = null;

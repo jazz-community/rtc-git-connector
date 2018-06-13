@@ -197,7 +197,7 @@ define([
                 on(issueListItem, "click", function (event) {
                     var issueId = this.getAttribute("data-issue-id");
 
-                    if (self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (!issue.alreadyLinked && self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the issue with the specified id from the issues list in store and add to the selected list
                         if (issueId) {
                             var selectedIssue = null;

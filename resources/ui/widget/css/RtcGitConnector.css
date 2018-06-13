@@ -197,6 +197,7 @@ button.viewAndSelectSearchButton[disabled] {
     background-color: #ccc;
     border-color: #555;
     color: #555;
+    cursor: default;
 }
 
 .rtcGitConnectorViewAndSelectListItemAlreadyLinked {
