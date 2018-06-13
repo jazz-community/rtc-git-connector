@@ -274,7 +274,6 @@ define([
             parameters.append("populateProcessOwner", false);
 
             var url = this.allRegisteredGitRepositoriesUrl + "?" + parameters.toString();
-            console.log(url);
 
             return jazz.client.xhrGet({
                 url: url,
