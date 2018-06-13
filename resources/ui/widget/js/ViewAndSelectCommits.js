@@ -224,7 +224,7 @@ define([
                     var check = self.fontAwesome.icon({prefix: 'fas', iconName: 'check'});
                     domClass.add(commitListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
                     domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemEmptyButton",
+                        "class": "rtcGitConnectorViewAndSelectListItemButton emptyButton",
                         innerHTML: check.html[0]
                     }, commitListItem);
                 } else {
