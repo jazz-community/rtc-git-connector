@@ -116,6 +116,16 @@ define([
                     // Get issues from host if not already loaded
                     self.gitRestService.getRecentIssues(selectedRepository, gitHost, accessToken,
                         self.jazzRestService.getRelatedArtifactLinksFromWorkItem(self.mainDataStore.workItem)).then(function (issues) {
+                        // Add a fake issue used to create a new issue in GitLab
+                        if (gitHost === "GITLAB") {
+                            issues.push({
+                                id: -1,
+                                title: "Create a new issue in GitLab",
+                                alreadyLinked: false,
+                                openedDate: 4684608000000 // Magic number! Should work for about 100 years though...
+                            });
+                        }
+
                         // Set the list in the store and set issuesLoaded to true.
                         // Clear the list first just incase the function is run multiple times due to slow loading
                         self.mainDataStore.selectedRepositoryData.issues
