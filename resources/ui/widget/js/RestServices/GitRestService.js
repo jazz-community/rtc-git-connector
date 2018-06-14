@@ -25,6 +25,49 @@ define([
             }
         },
 
+        createNewIssue: function (selectedGitRepository, gitHost, accessToken, title, description) {
+            if (gitHost === this.gitHubString) {
+                return this.createNewGitHubIssue(selectedGitRepository, accessToken, title, description);
+            } else if (gitHost === this.gitLabString) {
+                return this.createNewGitLabIssue(selectedGitRepository, accessToken, title, description);
+            } else {
+                var deferred = new Deferred();
+                deferred.reject("Invalid git host.");
+                return deferred.promise;
+            }
+        },
+
+        createNewGitHubIssue: function (selectedGitRepository, accessToken, title, description) {
+            var deferred = new Deferred();
+            deferred.reject("Issue creation has not yet been implemented for GitHub.");
+            return deferred.promise;
+        },
+
+        createNewGitLabIssue: function (selectedGitRepository, accessToken, title, description) {
+            var deferred = new Deferred();
+            var giturl = this._createUrlInformation(selectedGitRepository.url);
+
+            var gitlab = this.gitLabApi({
+                url: this._formatUrlWithProxy(giturl.origin),
+                token: accessToken
+            });
+
+            if (giturl.parts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                gitlab.projects.issues.create(encodeURIComponent(giturl.joined), {
+                    title: title,
+                    description: description
+                }).then(function (response) {
+                    deferred.resolve(IssueModel.CreateFromGitLabIssue(response, []));
+                }, function (error) {
+                    deferred.reject("Couldn't create an issue in the GitLab repository. Error: " + (error.error.message || error.error));
+                });
+            }
+
+            return deferred.promise;
+        },
+
         addBackLinksToGitHost: function (params) {
             var deferredList = null;
 

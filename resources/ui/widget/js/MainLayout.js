@@ -120,54 +120,84 @@ define([
                     self.mainDataStore.selectedRepositoryData.issuesToLink.length > 0 ||
                     self.mainDataStore.selectedRepositoryData.requestsToLink.length > 0) {
                     var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
+                    var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
+                    var accessToken = self.mainDataStore.selectedRepositorySettings.get("accessToken");
 
                     // Show a loading overlay to disable the view until the save is complete
                     domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
 
-                    // Save the links
-                    self.jazzRestService.addLinksToWorkItem(self.mainDataStore.workItem,
+                    var saveTheLinks = function () {
+                        // Save the links
+                        self.jazzRestService.addLinksToWorkItem(self.mainDataStore.workItem,
                             selectedRepository,
                             self.mainDataStore.selectedRepositoryData.commitsToLink,
                             self.mainDataStore.selectedRepositoryData.issuesToLink,
                             self.mainDataStore.selectedRepositoryData.requestsToLink,
                             function () {
-                        // This function runs after the work item was successfully saved
-                        var addBackLinksToGitHostParams = {
-                            selectedGitRepository: selectedRepository,
-                            gitHost: self.mainDataStore.selectedRepositorySettings.get("gitHost"),
-                            accessToken: self.mainDataStore.selectedRepositorySettings.get("accessToken"),
-                            currentUser: self.mainDataStore.currentUserId,
-                            workItem: self.mainDataStore.workItem,
-                            commitsToLink: self.mainDataStore.selectedRepositoryData.commitsToLink,
-                            issuesToLink: self.mainDataStore.selectedRepositoryData.issuesToLink,
-                            requestsToLink: self.mainDataStore.selectedRepositoryData.requestsToLink
-                        };
-                        self.gitRestService.addBackLinksToGitHost(addBackLinksToGitHostParams).then(function (result) {
-                            // Hide the loading overlay
-                            domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
+                            // This function runs after the work item was successfully saved
+                            var addBackLinksToGitHostParams = {
+                                selectedGitRepository: selectedRepository,
+                                gitHost: gitHost,
+                                accessToken: accessToken,
+                                currentUser: self.mainDataStore.currentUserId,
+                                workItem: self.mainDataStore.workItem,
+                                commitsToLink: self.mainDataStore.selectedRepositoryData.commitsToLink,
+                                issuesToLink: self.mainDataStore.selectedRepositoryData.issuesToLink,
+                                requestsToLink: self.mainDataStore.selectedRepositoryData.requestsToLink
+                            };
+                            self.gitRestService.addBackLinksToGitHost(addBackLinksToGitHostParams).then(function (result) {
+                                // Hide the loading overlay
+                                domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
 
-                            if (event.target.id === "rtcGitConnectorSaveAndCloseButton") {
-                                // Hide the widget
-                                self._hideMainDialog();
-                            } else {
-                                // Set the selected repository to it's current value to trigger a change event.
-                                // This reloads the view so that the user can keep on working without reopening the widget
-                                self.mainDataStore.selectedRepositorySettings.set("repository", selectedRepository);
-                            }
-                        }, function (error) {
-                            domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
+                                if (event.target.id === "rtcGitConnectorSaveAndCloseButton") {
+                                    // Hide the widget
+                                    self._hideMainDialog();
+                                } else {
+                                    // Set the selected repository to it's current value to trigger a change event.
+                                    // This reloads the view so that the user can keep on working without reopening the widget
+                                    self.mainDataStore.selectedRepositorySettings.set("repository", selectedRepository);
+                                }
+                            }, function (error) {
+                                domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
 
-                            if (event.target.id === "rtcGitConnectorSaveAndCloseButton") {
-                                self._hideMainDialog();
-                            } else {
-                                self.mainDataStore.selectedRepositorySettings.set("repository", selectedRepository);
-                            }
+                                if (event.target.id === "rtcGitConnectorSaveAndCloseButton") {
+                                    self._hideMainDialog();
+                                } else {
+                                    self.mainDataStore.selectedRepositorySettings.set("repository", selectedRepository);
+                                }
 
-                            console.log("Error adding back links: ", error);
+                                console.log("Error adding back links: ", error);
+                            });
                         });
-
-
+                    };
+                    
+                    // Check if a new issue should be created
+                    var newIssueIndex = self.mainDataStore.selectedRepositoryData.issuesToLink.findIndex(function (issue) {
+                        return issue.id < 0;
                     });
+
+                    if (newIssueIndex >= 0) {
+                        // Remove the fake new issue from the issues to link
+                        self.mainDataStore.selectedRepositoryData.issuesToLink.splice(newIssueIndex, 1)[0];
+
+                        // Create the issue with the title and description of the work item
+                        self.gitRestService.createNewIssue(selectedRepository, gitHost, accessToken,
+                            self.mainDataStore.workItem.object.attributes.summary.content,
+                            self.mainDataStore.workItem.object.attributes.description.content)
+                            .then(function (result) {
+                            // Get the new issue and add it to the list of issues to link
+                            self.mainDataStore.selectedRepositoryData.issuesToLink.push(result);
+
+                            // Continue with the normal saving.
+                            saveTheLinks();
+                        }, function (error) {
+                            console.log("Sorry! We could not create a new issue. " +
+                                "We'll still try to create any other links. Error message: " + error);
+                            saveTheLinks();
+                        });
+                    } else {
+                        saveTheLinks();
+                    }
                 } else if (event.target.id === "rtcGitConnectorSaveAndCloseButton") {
                     // Hide the widget
                     self._hideMainDialog();
