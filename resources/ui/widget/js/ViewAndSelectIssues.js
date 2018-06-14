@@ -184,6 +184,7 @@ define([
         // Draw the issues list from the view issues
         drawViewIssues: function () {
             var self = this;
+            var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
             var issuesListNode = query("#viewAndSelectIssuesWrapper .rtcGitConnectorViewAndSelectList")[0];
             domConstruct.empty(issuesListNode);
 
@@ -254,7 +255,7 @@ define([
                 if (issue.id < 0) {
                     domConstruct.create("span", {
                         "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "This will create a new issue in GitLab using the information from the current work item"
+                        innerHTML: "This will create a new issue in " + gitHost + " using the information from the current work item"
                     }, issueListItemContent);
                 } else if (issue.openedDate) {
                     var issueDate = new Date(issue.openedDate);
@@ -292,6 +293,7 @@ define([
 
         // Draw the details view for the selected issue
         drawDetailsView: function (issue) {
+            var gitHost = this.mainDataStore.selectedRepositorySettings.get("gitHost");
             var issueDetailsNode = query("#viewAndSelectIssuesWrapper .rtcGitConnectorViewAndSelectDetails")[0];
             domConstruct.empty(issueDetailsNode);
 
@@ -308,7 +310,7 @@ define([
             } else if (issue.id < 0) {
                 domConstruct.create("span", {
                     "class": "rtcGitConnectorViewAndSelectDetailsSpan",
-                    innerHTML: "This will create a new issue in the selected GitLab repository and fill it with the information from this work item. " +
+                    innerHTML: "This will create a new issue in the selected " + gitHost + " repository and fill it with the information from this work item. " +
                         "The new issue will also be added as a link."
                 }, issueDetailsNode);
             } else {

@@ -54,6 +54,7 @@ define([
         // Draw the issues to link list in the view
         drawIssuesToLink: function (issuesToLink) {
             var self = this;
+            var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
             var issuesListNode = query("#viewIssuesToLinkContainer .rtcGitConnectorViewItemsToLinkList")[0];
             domConstruct.empty(issuesListNode);
 
@@ -113,7 +114,7 @@ define([
                 if (issue.id < 0) {
                     domConstruct.create("span", {
                         "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "This will create a new issue in GitLab using the information from the current work item"
+                        innerHTML: "This will create a new issue in " + gitHost + " using the information from the current work item"
                     }, issueListItemContent);
                 } else {
                     var issueDate = new Date(issue.openedDate);
