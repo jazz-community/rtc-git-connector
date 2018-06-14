@@ -39,7 +39,33 @@ define([
 
         createNewGitHubIssue: function (selectedGitRepository, accessToken, title, description) {
             var deferred = new Deferred();
-            deferred.reject("Issue creation has not yet been implemented for GitHub.");
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var github = new this.gitHubApi({});
+
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
+
+                github.authenticate({
+                    type: 'token',
+                    token: accessToken
+                });
+                github.issues.create({
+                    owner: urlParts[0],
+                    repo: urlParts[1],
+                    title: title,
+                    body: description
+                }, function (error, response) {
+                    if (error) {
+                        deferred.reject("Couldn't create an issue in the GitHub repository. Error: " + (error.message || error));
+                    } else {
+                        deferred.resolve(IssueModel.CreateFromGitHubIssue(response.data, []));
+                    }
+                });
+            }
+
             return deferred.promise;
         },
 
