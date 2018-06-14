@@ -34,7 +34,9 @@
         <button id="rtcGitConnectorCancelButton" class="secondary-button" type="button">Cancel</button>
     </div>
 
-    <div id="rtcGitConnectorFullPageLoadingOverlay" style="display: none;">Saving...</div>
+    <div id="rtcGitConnectorFullPageLoadingOverlay" style="display: none;">
+        <div style="position: fixed; width: 80vw;">Saving...</div>
+    </div>
 
     <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="getAccessTokenDialog" title="Save access token" id="getAndSaveAccessTokenDialog">
         <p id="getGitHubAccessTokenContainer" style="display: none;">Please enter your GitHub access token below.<br />
