@@ -50,6 +50,7 @@ export const FontAwesome = require('@fortawesome/fontawesome');
 const FaCheck = require('@fortawesome/fontawesome-free-solid/faCheck');
 const FaPlus = require('@fortawesome/fontawesome-free-solid/faPlus');
 const FaMinus = require('@fortawesome/fontawesome-free-solid/faMinus');
+const FaTimes = require('@fortawesome/fontawesome-free-solid/faTimes');
 const FaLink = require('@fortawesome/fontawesome-free-solid/faLink');
 const FaTrash = require('@fortawesome/fontawesome-free-solid/faTrash');
 
@@ -58,5 +59,6 @@ const FaTrash = require('@fortawesome/fontawesome-free-solid/faTrash');
 FontAwesome.library.add(FaCheck);
 FontAwesome.library.add(FaPlus);
 FontAwesome.library.add(FaMinus);
+FontAwesome.library.add(FaTimes);
 FontAwesome.library.add(FaLink);
 FontAwesome.library.add(FaTrash);

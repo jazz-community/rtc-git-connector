@@ -195,6 +195,12 @@ button.viewAndSelectSearchButton[disabled] {
 }
 
 .rtcGitConnectorViewAndSelectListItemButton.removeButton {
+    color: darkorange;
+
+    /* border-color: darkorange; */
+}
+
+.rtcGitConnectorViewAndSelectListItemButton.deleteButton {
     color: #CC2200;
 
     /* border-color: #CC2200; */

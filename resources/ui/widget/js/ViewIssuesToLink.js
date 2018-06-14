@@ -87,11 +87,19 @@ define([
                     }
                 });
 
-                var trash = self.fontAwesome.icon({prefix: 'fas', iconName: 'trash'});
-                domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemButton removeButton",
-                    innerHTML: trash.html[0]
-                }, issueListItem);
+                if (issue.id < 0) {
+                    var trash = self.fontAwesome.icon({prefix: 'fas', iconName: 'times'});
+                    domConstruct.create("div", {
+                        "class": "rtcGitConnectorViewAndSelectListItemButton deleteButton",
+                        innerHTML: trash.html[0]
+                    }, issueListItem);
+                } else {
+                    var trash = self.fontAwesome.icon({prefix: 'fas', iconName: 'trash'});
+                    domConstruct.create("div", {
+                        "class": "rtcGitConnectorViewAndSelectListItemButton removeButton",
+                        innerHTML: trash.html[0]
+                    }, issueListItem);
+                }
 
                 var issueListItemContent = domConstruct.create("div", {
                     "class": "rtcGitConnectorViewAndSelectListItemContent"
