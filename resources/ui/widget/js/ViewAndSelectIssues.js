@@ -221,8 +221,13 @@ define([
                     }
                 });
 
-
-                if (issue.alreadyLinked) {
+                if (issue.id < 0) {
+                    var plus = self.fontAwesome.icon({prefix: 'fas', iconName: 'plus'});
+                    domConstruct.create("div", {
+                        "class": "rtcGitConnectorViewAndSelectListItemButton addButton",
+                        innerHTML: plus.html[0]
+                    }, issueListItem);
+                } else if (issue.alreadyLinked) {
                     var check = self.fontAwesome.icon({prefix: 'fas', iconName: 'check'});
                     domClass.add(issueListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
                     domConstruct.create("div", {

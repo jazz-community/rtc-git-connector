@@ -188,6 +188,12 @@ button.viewAndSelectSearchButton[disabled] {
     padding: .5rem; */
 }
 
+.rtcGitConnectorViewAndSelectListItemButton.addButton {
+    color: green;
+
+    /* border-color: green; */
+}
+
 .rtcGitConnectorViewAndSelectListItemButton.removeButton {
     color: #CC2200;
 
