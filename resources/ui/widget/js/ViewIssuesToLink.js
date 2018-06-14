@@ -110,11 +110,18 @@ define([
                     innerHTML: issue.title
                 }, issueListItemContent);
 
-                var issueDate = new Date(issue.openedDate);
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                    innerHTML: "#" + issue.id + " opened by " + issue.openedBy + " on " + issueDate.toDateString() + " at " + ("00" + issueDate.getHours()).slice(-2) + ":" + ("00" + issueDate.getMinutes()).slice(-2)
-                }, issueListItemContent);
+                if (issue.id < 0) {
+                    domConstruct.create("span", {
+                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
+                        innerHTML: "This will create a new issue in GitLab using the information from the current work item"
+                    }, issueListItemContent);
+                } else {
+                    var issueDate = new Date(issue.openedDate);
+                    domConstruct.create("span", {
+                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
+                        innerHTML: "#" + issue.id + " opened by " + issue.openedBy + " on " + issueDate.toDateString() + " at " + ("00" + issueDate.getHours()).slice(-2) + ":" + ("00" + issueDate.getMinutes()).slice(-2)
+                    }, issueListItemContent);
+                }
             });
 
             // Get the mainDialog and resize to fit the new content

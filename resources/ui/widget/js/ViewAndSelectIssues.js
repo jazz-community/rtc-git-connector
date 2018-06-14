@@ -251,7 +251,12 @@ define([
                     innerHTML: issue.title
                 }, issueListItemContent);
 
-                if (issue.openedDate) {
+                if (issue.id < 0) {
+                    domConstruct.create("span", {
+                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
+                        innerHTML: "This will create a new issue in GitLab using the information from the current work item"
+                    }, issueListItemContent);
+                } else if (issue.openedDate) {
                     var issueDate = new Date(issue.openedDate);
                     domConstruct.create("span", {
                         "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
