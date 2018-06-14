@@ -295,6 +295,12 @@ define([
                     "class": "rtcGitConnectorViewAndSelectDetailsSpan",
                     innerHTML: "Select an issue to view more details"
                 }, issueDetailsNode);
+            } else if (issue.id < 0) {
+                domConstruct.create("span", {
+                    "class": "rtcGitConnectorViewAndSelectDetailsSpan",
+                    innerHTML: "This will create a new issue in the selected GitLab repository and fill it with the information from this work item. " +
+                        "The new issue will also be added as a link."
+                }, issueDetailsNode);
             } else {
                 this.addToDetailsViewNode(issueDetailsNode, "Title: ", issue.title);
                 this.addToDetailsViewNode(issueDetailsNode, "State: ", issue.state);
