@@ -10,12 +10,13 @@ define([
     "./DataStores/MainDataStore",
     "./RestServices/JazzRestService",
     "./RestServices/GitRestService",
+    "./ViewHelper",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewAndSelectCommits.html"
 ], function (declare, array, lang, dom, domClass, domConstruct, on, query,
-    MainDataStore, JazzRestService, GitRestService,
+    MainDataStore, JazzRestService, GitRestService, ViewHelper,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectCommits",
@@ -36,6 +37,8 @@ define([
             if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
                 this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
             }
+
+            ViewHelper.TestFunction("test from other file");
         },
 
         startup: function () {
