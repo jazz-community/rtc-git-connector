@@ -5,10 +5,6 @@ define([
     return new function () {
         var self = this;
 
-        this.TestFunction = function (testString) {
-            console.log(testString);
-        };
-
         this.HighlightTextInString = function (searchText, fullText) {
             var startIndex;
             if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1) {

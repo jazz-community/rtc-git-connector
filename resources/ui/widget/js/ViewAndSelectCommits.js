@@ -37,8 +37,6 @@ define([
             if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
                 this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
             }
-
-            ViewHelper.TestFunction("test from other file");
         },
 
         startup: function () {
