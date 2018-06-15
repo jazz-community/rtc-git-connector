@@ -121,6 +121,8 @@ define([
                             id: -1,
                             title: "Create a new issue in " + gitHost,
                             alreadyLinked: false,
+                            state: "",
+                            openedBy: "",
                             openedDate: 4684608000000 // Magic number! Should work for about 100 years though...
                         });
 
