@@ -5,6 +5,14 @@ define([
     return new function () {
         var self = this;
 
+        this.HighlightFilterText = function (filterText, filterBy, filterResult) {
+            for (var i=0; i < filterResult.length; i++) {
+                for (var j=0; j < filterBy.length; j++) {
+                    filterResult[i][filterBy[j]] = self.HighlightTextInString(filterText, filterResult[i][filterBy[j]]);
+                }
+            }
+        };
+
         this.HighlightTextInString = function (searchText, fullText) {
             var startIndex;
             if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1) {

@@ -369,15 +369,7 @@ define([
                     commit.authorName.toLowerCase().indexOf(filterText) > -1 ||
                     commit.authorEmail.toLowerCase().indexOf(filterText) > -1;
             });
-            this._highlightFilterText(filterText, ["sha", "message", "authorName", "authorEmail"], this.viewCommits);
-        },
-
-        _highlightFilterText: function (filterText, filterBy, filterResult) {
-            for (var i=0; i < filterResult.length; i++) {
-                for (var j=0; j < filterBy.length; j++) {
-                    filterResult[i][filterBy[j]] = ViewHelper.HighlightTextInString(filterText, filterResult[i][filterBy[j]]);
-                }
-            }
+            ViewHelper.HighlightFilterText(filterText, ["sha", "message", "authorName", "authorEmail"], this.viewCommits);
         },
 
         // Checks if the node or any of it's parents have the class name
