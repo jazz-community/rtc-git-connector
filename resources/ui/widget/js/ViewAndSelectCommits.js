@@ -362,7 +362,9 @@ define([
         // Only keep commits that contain the filter text either
         // in the commit message or commit author name or sha or email
         filterViewCommitsByText: function (filterText) {
-            this.viewCommits = ViewHelper.FilterListDataByText(filterText, ["sha", "message", "authorName", "authorEmail"], this.viewCommits);
+            this.viewCommits = ViewHelper.FilterListDataByText(filterText,
+                ["sha", "message", "authorName", "authorEmail"],
+                this.viewCommits);
         }
     });
 });

@@ -9,31 +9,21 @@ define([
         // highlight the text where found.
         this.FilterListDataByText = function (filterText, filterBy, filterResult) {
             filterText = filterText.toLowerCase();
-            filterResult = filterResult.filter(function (item) {
+            return filterResult.filter(function (item) {
                 for (var i = 0; i < filterBy.length; i++) {
-                    if (item[filterBy[i]].toString().toLowerCase().indexOf(filterText) > -1) {
+                    var lowerCaseString = item[filterBy[i]].toString().toLowerCase();
+                    if (lowerCaseString.indexOf(filterText) > -1) {
+                        item[filterBy[i]] = self.HighlightTextInString(filterText, lowerCaseString);
                         return true;
                     }
                 }
-
                 return false;
             });
-            self.HighlightFilterText(filterText, filterBy, filterResult);
-
-            return filterResult;
-        };
-
-        this.HighlightFilterText = function (filterText, filterBy, filterResult) {
-            for (var i = 0; i < filterResult.length; i++) {
-                for (var j = 0; j < filterBy.length; j++) {
-                    filterResult[i][filterBy[j]] = self.HighlightTextInString(filterText, filterResult[i][filterBy[j]]);
-                }
-            }
         };
 
         this.HighlightTextInString = function (searchText, fullText) {
             var startIndex;
-            if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1) {
+            if (searchText && (startIndex = fullText.indexOf(searchText)) > -1) {
                 var beforeFound = fullText.slice(0, startIndex);
                 var found = fullText.slice(startIndex, startIndex + searchText.length);
                 var afterFound = self.HighlightTextInString(searchText, fullText.slice(startIndex + searchText.length));
