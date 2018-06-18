@@ -7,14 +7,13 @@ define([
     "dojo/query",
     "./DataStores/MainDataStore",
     "./ViewHelper",
-    "dijit/registry",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewRequestsToLink.html"
 ], function (declare, array, domConstruct, domStyle, on, query,
     MainDataStore, ViewHelper,
-    registry, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
+    _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewRequestsToLink",
         [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],
