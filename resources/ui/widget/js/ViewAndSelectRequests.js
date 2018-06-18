@@ -295,42 +295,18 @@ define([
                     innerHTML: "Select a request to view more details"
                 }, requestDetailsNode);
             } else {
-                this.addToDetailsViewNode(requestDetailsNode, "Title: ", request.title);
-                this.addToDetailsViewNode(requestDetailsNode, "State: ", request.state);
-                this.addToDetailsViewNode(requestDetailsNode, "Opened by: ", request.openedBy);
-                this.addToDetailsViewNode(requestDetailsNode, "Date opened: ", new Date(request.openedDate).toString());
-                this.addToDetailsViewNode(requestDetailsNode, "Request id: ", "#" + request.id);
+                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Title: ", request.title);
+                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "State: ", request.state);
+                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Opened by: ", request.openedBy);
+                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Date opened: ", new Date(request.openedDate).toString());
+                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Request id: ", "#" + request.id);
                 var linkNode = domConstruct.create("a", {
                     innerHTML: "Open this request in a new tab",
                     href: request.webUrl,
                     target: "_blank"
                 });
-                this.addLinkToDetailsViewNode(requestDetailsNode, "Web Link: ", linkNode);
+                ViewHelper.AddLinkToDetailsViewNode(requestDetailsNode, "Web Link: ", linkNode);
             }
-        },
-
-        addToDetailsViewNode: function (detailsViewNode, label, value) {
-            var requestTitleNode = this.createDetailsViewSpan(detailsViewNode, label);
-            domConstruct.create("span", {
-                innerHTML: value
-            }, requestTitleNode);
-        },
-
-        addLinkToDetailsViewNode: function (detailsViewNode, label, linkNode) {
-            var requestTitleNode = this.createDetailsViewSpan(detailsViewNode, label);
-            domConstruct.place(linkNode, requestTitleNode);
-        },
-
-        createDetailsViewSpan: function (detailsViewNode, label) {
-            var requestTitleNode = domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsSpan"
-            }, detailsViewNode);
-            domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsLabel",
-                innerHTML: label
-            }, requestTitleNode);
-
-            return requestTitleNode;
         },
 
         // Sort the view requests by the openedDate
