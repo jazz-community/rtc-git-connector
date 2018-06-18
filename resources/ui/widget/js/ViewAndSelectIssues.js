@@ -198,7 +198,7 @@ define([
                 on(issueListItem, "click", function (event) {
                     var issueId = this.getAttribute("data-issue-id");
 
-                    if (!issue.alreadyLinked && self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (!issue.alreadyLinked && ViewHelper.IsNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the issue with the specified id from the issues list in store and add to the selected list
                         if (issueId) {
                             var selectedIssue = null;
@@ -410,19 +410,6 @@ define([
                 fullText = beforeFound + "<b class='rtcGitConnectorHighlightText'>" + found + "</b>" + afterFound;
             }
             return fullText;
-        },
-
-        // Checks if the node or any of it's parents have the class name
-        isNodeInClass: function (node, className) {
-            if (node.classList && node.classList.contains(className)) {
-                return true;
-            }
-
-            if (node.parentNode) {
-                return this.isNodeInClass(node.parentNode, className);
-            }
-
-            return false;
         }
     });
 });

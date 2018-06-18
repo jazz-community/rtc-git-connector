@@ -67,7 +67,7 @@ define([
                 on(commitListItem, "click", function (event) {
                     var commitSha = this.getAttribute("data-commit-sha");
 
-                    if (self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (ViewHelper.IsNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the commit with the specified sha from the commits to link list in store and add to the commits list
                         if (commitSha) {
                             var selectedCommit = null;
@@ -117,19 +117,6 @@ define([
             mainDialog.resize();
             mainDialog.resize();
             paneContentNode.scrollTo(0, originalScrollTop);
-        },
-
-        // Checks if the node or any of it's parents have the class name
-        isNodeInClass: function (node, className) {
-            if (node.classList && node.classList.contains(className)) {
-                return true;
-            }
-
-            if (node.parentNode) {
-                return this.isNodeInClass(node.parentNode, className);
-            }
-
-            return false;
         }
     });
 });

@@ -197,7 +197,7 @@ define([
                 on(requestListItem, "click", function (event) {
                     var requestId = this.getAttribute("data-request-id");
 
-                    if (!request.alreadyLinked && self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (!request.alreadyLinked && ViewHelper.IsNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the request with the specified id from the requests list in store and add to the selected list
                         if (requestId) {
                             var selectedRequest = null;
@@ -391,19 +391,6 @@ define([
                 fullText = beforeFound + "<b class='rtcGitConnectorHighlightText'>" + found + "</b>" + afterFound;
             }
             return fullText;
-        },
-
-        // Checks if the node or any of it's parents have the class name
-        isNodeInClass: function (node, className) {
-            if (node.classList && node.classList.contains(className)) {
-                return true;
-            }
-
-            if (node.parentNode) {
-                return this.isNodeInClass(node.parentNode, className);
-            }
-
-            return false;
         }
     });
 });
