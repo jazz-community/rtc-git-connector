@@ -361,36 +361,11 @@ define([
 
         // Filter the view requests using the filter text.
         // Only keep requests that contain the filter text either
-        // in the request title or request author name or id or email
+        // in the request title or request author name or id or state
         filterViewRequestsByText: function (filterText) {
-            filterText = filterText.toLowerCase();
-            this.viewRequests = this.viewRequests.filter(function (request) {
-                request.id = request.id.toString();
-                return request.id.toLowerCase().indexOf(filterText) > -1 ||
-                    request.title.toLowerCase().indexOf(filterText) > -1 ||
-                    request.state.toLowerCase().indexOf(filterText) > -1 ||
-                    request.openedBy.toLowerCase().indexOf(filterText) > -1;
-            });
-            this._highlightFilterText(filterText, ["id", "title", "state", "openedBy"], this.viewRequests);
-        },
-
-        _highlightFilterText: function (filterText, filterBy, filterResult) {
-            for (var i=0; i < filterResult.length; i++) {
-                for (var j=0; j < filterBy.length; j++) {
-                    filterResult[i][filterBy[j]] = this._highlightTextInString(filterText, filterResult[i][filterBy[j]]);
-                }
-            }
-        },
-
-        _highlightTextInString: function (searchText, fullText) {
-            var startIndex;
-            if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1) {
-                var beforeFound = fullText.slice(0, startIndex);
-                var found = fullText.slice(startIndex, startIndex + searchText.length);
-                var afterFound = this._highlightTextInString(searchText, fullText.slice(startIndex + searchText.length));
-                fullText = beforeFound + "<b class='rtcGitConnectorHighlightText'>" + found + "</b>" + afterFound;
-            }
-            return fullText;
+            this.viewRequests = ViewHelper.FilterListDataByText(filterText,
+                ["id", "title", "state", "openedBy"],
+                this.viewRequests);
         }
     });
 });
