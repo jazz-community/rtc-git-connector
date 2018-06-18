@@ -111,12 +111,7 @@ define([
             });
 
             // Get the mainDialog and resize to fit the new content
-            var mainDialog = registry.byId("connectWithGitMainDialog");
-            var paneContentNode = query(".dijitDialogPaneContent", mainDialog.domNode)[0];
-            var originalScrollTop = paneContentNode.scrollTop;
-            mainDialog.resize();
-            mainDialog.resize();
-            paneContentNode.scrollTo(0, originalScrollTop);
+            ViewHelper.ResizeMainDialog();
         }
     });
 });

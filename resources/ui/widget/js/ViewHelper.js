@@ -1,6 +1,8 @@
 define([
-    "dojo/_base/declare"
-], function (declare) {
+    "dojo/_base/declare",
+    "dojo/query",
+    "dijit/registry"
+], function (declare, query, registry) {
     // Return an instance so that the functions can be used as if they were static
     return new function () {
         var self = this;
@@ -67,6 +69,18 @@ define([
             }
 
             return false;
+        };
+
+        // Resize the main dialog to fit the content. Reset the scroll
+        // height to the previous value afterwards (otherwise the
+        // scroll is reset to the top every time the dialog is resized).
+        this.ResizeMainDialog = function () {
+            var mainDialog = registry.byId("connectWithGitMainDialog");
+            var paneContentNode = query(".dijitDialogPaneContent", mainDialog.domNode)[0];
+            var originalScrollTop = paneContentNode.scrollTop;
+            mainDialog.resize();
+            mainDialog.resize(); // The second time it fixes the positioning
+            paneContentNode.scrollTo(0, originalScrollTop);
         };
     };
 });
