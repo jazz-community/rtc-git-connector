@@ -20,14 +20,9 @@ define([
     {
         templateString: template,
         mainDataStore: null,
-        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
-
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
-                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-            }
         },
 
         startup: function () {
@@ -87,26 +82,13 @@ define([
                     }
                 });
 
-                var trash = self.fontAwesome.icon({prefix: 'fas', iconName: 'trash'});
-                domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemButton removeButton",
-                    innerHTML: trash.html[0]
-                }, commitListItem);
-
-                var commitListItemContent = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemContent"
-                }, commitListItem);
-
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
-                    innerHTML: commit.message.split(/\r?\n/g)[0]
-                }, commitListItemContent);
-
+                var firstLine = commit.message.split(/\r?\n/g)[0];
                 var commitDate = new Date(commit.authoredDate);
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                    innerHTML: commit.authorName + " committed on " + commitDate.toDateString() + " at " + ("00" + commitDate.getHours()).slice(-2) + ":" + ("00" + commitDate.getMinutes()).slice(-2)
-                }, commitListItemContent);
+                var secondLine = commit.authorName + " committed on "
+                    + commitDate.toDateString() + " at "
+                    + ("00" + commitDate.getHours()).slice(-2) + ":"
+                    + ("00" + commitDate.getMinutes()).slice(-2);
+                ViewHelper.DrawListItem(commitListItem, firstLine, secondLine, "removeButton", "trash");
             });
 
             // Get the mainDialog and resize to fit the new content
