@@ -108,5 +108,29 @@ define([
 
             return messageNode;
         };
+
+        // List item view node creators
+        this.DrawListItem = function (listItem, firstLine, secondLine, buttonName, iconName) {
+            var fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
+            var icon = fontAwesome.icon({ prefix: 'fas', iconName: iconName });
+            domConstruct.create("div", {
+                "class": "rtcGitConnectorViewAndSelectListItemButton " + buttonName,
+                innerHTML: icon.html[0]
+            }, listItem);
+
+            var listItemContent = domConstruct.create("div", {
+                "class": "rtcGitConnectorViewAndSelectListItemContent"
+            }, listItem);
+
+            domConstruct.create("span", {
+                "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
+                innerHTML: firstLine
+            }, listItemContent);
+
+            domConstruct.create("span", {
+                "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
+                innerHTML: secondLine
+            }, listItemContent);
+        };
     };
 });

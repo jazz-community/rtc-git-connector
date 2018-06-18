@@ -20,14 +20,9 @@ define([
     {
         templateString: template,
         mainDataStore: null,
-        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
-
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
-                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-            }
         },
 
         startup: function () {
@@ -87,26 +82,11 @@ define([
                     }
                 });
 
-                var trash = self.fontAwesome.icon({prefix: 'fas', iconName: 'trash'});
-                domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemButton removeButton",
-                    innerHTML: trash.html[0]
-                }, requestListItem);
-
-                var requestListItemContent = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemContent"
-                }, requestListItem);
-
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
-                    innerHTML: request.title
-                }, requestListItemContent);
-
                 var requestDate = new Date(request.openedDate);
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                    innerHTML: "#" + request.id + " opened by " + request.openedBy + " on " + requestDate.toDateString() + " at " + ("00" + requestDate.getHours()).slice(-2) + ":" + ("00" + requestDate.getMinutes()).slice(-2)
-                }, requestListItemContent);
+                var secondLine = "#" + request.id + " opened by " + request.openedBy + " on "
+                    + requestDate.toDateString() + " at " + ("00" + requestDate.getHours()).slice(-2)
+                    + ":" + ("00" + requestDate.getMinutes()).slice(-2);
+                ViewHelper.DrawListItem(requestListItem, request.title, secondLine, "removeButton", "trash");
             });
 
             // Get the mainDialog and resize to fit the new content
