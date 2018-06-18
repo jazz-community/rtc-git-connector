@@ -335,28 +335,7 @@ define([
 
         // Sort the view requests by the openedDate
         sortViewRequestsByDate: function () {
-            var self = this;
-
-            // Create a temp array so that the date objects are only created once
-            var tempArray = this.viewRequests.map(function (el, i) {
-                return {
-                    index: i,
-                    value: new Date(el.openedDate).getTime()
-                };
-            });
-
-            // Sort the temp array
-            tempArray.sort(function (a, b) {
-                return b.value - a.value;
-            });
-
-            // Get a sorted version of the original array
-            var sortedArray = tempArray.map(function (el) {
-                return self.viewRequests[el.index];
-            });
-
-            // Use the sorted array
-            this.viewRequests = sortedArray;
+            this.viewRequests = ViewHelper.SortListDataByDate("openedDate", this.viewRequests);
         },
 
         // Filter the view requests using the filter text.
