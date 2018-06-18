@@ -197,7 +197,7 @@ define([
                 on(commitListItem, "click", function (event) {
                     var commitSha = this.getAttribute("data-commit-sha");
 
-                    if (!commit.alreadyLinked && self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (!commit.alreadyLinked && ViewHelper.IsNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the commit with the specified sha from the commits list in store and add to the selected list
                         if (commitSha) {
                             var selectedCommit = null;
@@ -370,19 +370,6 @@ define([
                     commit.authorEmail.toLowerCase().indexOf(filterText) > -1;
             });
             ViewHelper.HighlightFilterText(filterText, ["sha", "message", "authorName", "authorEmail"], this.viewCommits);
-        },
-
-        // Checks if the node or any of it's parents have the class name
-        isNodeInClass: function (node, className) {
-            if (node.classList && node.classList.contains(className)) {
-                return true;
-            }
-
-            if (node.parentNode) {
-                return this.isNodeInClass(node.parentNode, className);
-            }
-
-            return false;
         }
     });
 });

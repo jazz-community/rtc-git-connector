@@ -23,5 +23,18 @@ define([
             }
             return fullText;
         };
+
+        // Checks if the node or any of it's parents have the class name
+        this.IsNodeInClass = function (node, className) {
+            if (node.classList && node.classList.contains(className)) {
+                return true;
+            }
+
+            if (node.parentNode) {
+                return self.IsNodeInClass(node.parentNode, className);
+            }
+
+            return false;
+        };
     };
 });
