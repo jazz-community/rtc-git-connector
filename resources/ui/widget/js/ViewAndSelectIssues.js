@@ -380,36 +380,11 @@ define([
 
         // Filter the view issues using the filter text.
         // Only keep issues that contain the filter text either
-        // in the issue title or issue author name or id or email
+        // in the issue title or issue author name or id or state
         filterViewIssuesByText: function (filterText) {
-            filterText = filterText.toLowerCase();
-            this.viewIssues = this.viewIssues.filter(function (issue) {
-                issue.id = issue.id.toString();
-                return issue.id.toLowerCase().indexOf(filterText) > -1 ||
-                    issue.title.toLowerCase().indexOf(filterText) > -1 ||
-                    issue.state.toLowerCase().indexOf(filterText) > -1 ||
-                    issue.openedBy.toLowerCase().indexOf(filterText) > -1;
-            });
-            this._highlightFilterText(filterText, ["id", "title", "state", "openedBy"], this.viewIssues);
-        },
-
-        _highlightFilterText: function (filterText, filterBy, filterResult) {
-            for (var i=0; i < filterResult.length; i++) {
-                for (var j=0; j < filterBy.length; j++) {
-                    filterResult[i][filterBy[j]] = this._highlightTextInString(filterText, filterResult[i][filterBy[j]]);
-                }
-            }
-        },
-
-        _highlightTextInString: function (searchText, fullText) {
-            var startIndex;
-            if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1) {
-                var beforeFound = fullText.slice(0, startIndex);
-                var found = fullText.slice(startIndex, startIndex + searchText.length);
-                var afterFound = this._highlightTextInString(searchText, fullText.slice(startIndex + searchText.length));
-                fullText = beforeFound + "<b class='rtcGitConnectorHighlightText'>" + found + "</b>" + afterFound;
-            }
-            return fullText;
+            this.viewIssues = ViewHelper.FilterListDataByText(filterText,
+                ["id", "title", "state", "openedBy"],
+                this.viewIssues);
         }
     });
 });
