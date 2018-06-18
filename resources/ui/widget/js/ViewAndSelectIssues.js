@@ -354,28 +354,7 @@ define([
 
         // Sort the view issues by the openedDate
         sortViewIssuesByDate: function () {
-            var self = this;
-
-            // Create a temp array so that the date objects are only created once
-            var tempArray = this.viewIssues.map(function (el, i) {
-                return {
-                    index: i,
-                    value: new Date(el.openedDate).getTime()
-                };
-            });
-
-            // Sort the temp array
-            tempArray.sort(function (a, b) {
-                return b.value - a.value;
-            });
-
-            // Get a sorted version of the original array
-            var sortedArray = tempArray.map(function (el) {
-                return self.viewIssues[el.index];
-            });
-
-            // Use the sorted array
-            this.viewIssues = sortedArray;
+            this.viewIssues = ViewHelper.SortListDataByDate("openedDate", this.viewIssues);
         },
 
         // Filter the view issues using the filter text.
