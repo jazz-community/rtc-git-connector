@@ -362,14 +362,7 @@ define([
         // Only keep commits that contain the filter text either
         // in the commit message or commit author name or sha or email
         filterViewCommitsByText: function (filterText) {
-            filterText = filterText.toLowerCase();
-            this.viewCommits = this.viewCommits.filter(function (commit) {
-                return commit.sha.toLowerCase().indexOf(filterText) > -1 ||
-                    commit.message.toLowerCase().indexOf(filterText) > -1 ||
-                    commit.authorName.toLowerCase().indexOf(filterText) > -1 ||
-                    commit.authorEmail.toLowerCase().indexOf(filterText) > -1;
-            });
-            ViewHelper.HighlightFilterText(filterText, ["sha", "message", "authorName", "authorEmail"], this.viewCommits);
+            this.viewCommits = ViewHelper.FilterListDataByText(filterText, ["sha", "message", "authorName", "authorEmail"], this.viewCommits);
         }
     });
 });
