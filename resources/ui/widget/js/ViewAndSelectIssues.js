@@ -189,7 +189,6 @@ define([
             domConstruct.empty(issuesListNode);
 
             array.forEach(this.viewIssues, function (issue) {
-                // TODO: This is where I need to add a class with lower alpha
                 var issueListItem = domConstruct.create("div", {
                     "class": "rtcGitConnectorViewAndSelectListItem",
                     "data-issue-id": issue.originalId
