@@ -295,41 +295,17 @@ define([
                     innerHTML: "Select a commit to view more details"
                 }, commitDetailsNode);
             } else {
-                this.addToDetailsViewNode(commitDetailsNode, "Message: ", commit.message.replace(/(\r\n|\n|\r)/gm, "<br />"));
-                this.addToDetailsViewNode(commitDetailsNode, "Author: ", commit.authorName + " (" + commit.authorEmail + ")");
-                this.addToDetailsViewNode(commitDetailsNode, "Date: ", new Date(commit.authoredDate).toString());
-                this.addToDetailsViewNode(commitDetailsNode, "SHA: ", commit.sha);
+                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Message: ", commit.message.replace(/(\r\n|\n|\r)/gm, "<br />"));
+                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Author: ", commit.authorName + " (" + commit.authorEmail + ")");
+                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Date: ", new Date(commit.authoredDate).toString());
+                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "SHA: ", commit.sha);
                 var linkNode = domConstruct.create("a", {
                     innerHTML: "Open this commit in a new tab",
                     href: commit.webUrl,
                     target: "_blank"
                 });
-                this.addLinkToDetailsViewNode(commitDetailsNode, "Web Link: ", linkNode);
+                ViewHelper.AddLinkToDetailsViewNode(commitDetailsNode, "Web Link: ", linkNode);
             }
-        },
-
-        addToDetailsViewNode: function (detailsViewNode, label, value) {
-            var commitMessageNode = this.createDetailsViewSpan(detailsViewNode, label);
-            domConstruct.create("span", {
-                innerHTML: value
-            }, commitMessageNode);
-        },
-
-        addLinkToDetailsViewNode: function (detailsViewNode, label, linkNode) {
-            var commitMessageNode = this.createDetailsViewSpan(detailsViewNode, label);
-            domConstruct.place(linkNode, commitMessageNode);
-        },
-
-        createDetailsViewSpan: function (detailsViewNode, label) {
-            var commitMessageNode = domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsSpan"
-            }, detailsViewNode);
-            domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsLabel",
-                innerHTML: label
-            }, commitMessageNode);
-
-            return commitMessageNode;
         },
 
         // Sort the view commits by the authoredDate

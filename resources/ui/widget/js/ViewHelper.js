@@ -1,8 +1,9 @@
 define([
     "dojo/_base/declare",
+    "dojo/dom-construct",
     "dojo/query",
     "dijit/registry"
-], function (declare, query, registry) {
+], function (declare, domConstruct, query, registry) {
     // Return an instance so that the functions can be used as if they were static
     return new function () {
         var self = this;
@@ -81,6 +82,31 @@ define([
             mainDialog.resize();
             mainDialog.resize(); // The second time it fixes the positioning
             paneContentNode.scrollTo(0, originalScrollTop);
+        };
+
+        // Details view node creators
+        this.AddToDetailsViewNode = function (detailsViewNode, label, value) {
+            var messageNode = self.CreateDetailsViewSpan(detailsViewNode, label);
+            domConstruct.create("span", {
+                innerHTML: value
+            }, messageNode);
+        };
+
+        this.AddLinkToDetailsViewNode = function (detailsViewNode, label, linkNode) {
+            var messageNode = self.CreateDetailsViewSpan(detailsViewNode, label);
+            domConstruct.place(linkNode, messageNode);
+        };
+
+        this.CreateDetailsViewSpan = function (detailsViewNode, label) {
+            var messageNode = domConstruct.create("span", {
+                "class": "rtcGitConnectorViewAndSelectDetailsSpan"
+            }, detailsViewNode);
+            domConstruct.create("span", {
+                "class": "rtcGitConnectorViewAndSelectDetailsLabel",
+                innerHTML: label
+            }, messageNode);
+
+            return messageNode;
         };
     };
 });
