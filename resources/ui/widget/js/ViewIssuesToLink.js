@@ -20,14 +20,9 @@ define([
     {
         templateString: template,
         mainDataStore: null,
-        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
-
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
-                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-            }
         },
 
         startup: function () {
@@ -88,41 +83,26 @@ define([
                     }
                 });
 
-                if (issue.id < 0) {
-                    var trash = self.fontAwesome.icon({prefix: 'fas', iconName: 'times'});
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton deleteButton",
-                        innerHTML: trash.html[0]
-                    }, issueListItem);
-                } else {
-                    var trash = self.fontAwesome.icon({prefix: 'fas', iconName: 'trash'});
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton removeButton",
-                        innerHTML: trash.html[0]
-                    }, issueListItem);
-                }
-
-                var issueListItemContent = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemContent"
-                }, issueListItem);
-
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
-                    innerHTML: issue.title
-                }, issueListItemContent);
+                var firstLine = issue.title;
+                var secondLine;
+                var buttonName;
+                var iconName;
 
                 if (issue.id < 0) {
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "This will create a new issue in " + gitHost + " using the information from the current work item"
-                    }, issueListItemContent);
+                    secondLine = "This will create a new issue in " + gitHost + " using the information from the current work item";
+                    buttonName = "deleteButton";
+                    iconName = "times";
                 } else {
                     var issueDate = new Date(issue.openedDate);
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "#" + issue.id + " opened by " + issue.openedBy + " on " + issueDate.toDateString() + " at " + ("00" + issueDate.getHours()).slice(-2) + ":" + ("00" + issueDate.getMinutes()).slice(-2)
-                    }, issueListItemContent);
+                    secondLine = "#" + issue.id + " opened by " + issue.openedBy +
+                        " on " + issueDate.toDateString() +
+                        " at " + ("00" + issueDate.getHours()).slice(-2) +
+                        ":" + ("00" + issueDate.getMinutes()).slice(-2);
+                    buttonName = "removeButton";
+                    iconName = "trash";
                 }
+                
+                ViewHelper.DrawListItem(issueListItem, firstLine, secondLine, buttonName, iconName);
             });
 
             // Get the mainDialog and resize to fit the new content
