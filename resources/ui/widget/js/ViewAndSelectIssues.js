@@ -314,42 +314,18 @@ define([
                         "The new issue will also be added as a link."
                 }, issueDetailsNode);
             } else {
-                this.addToDetailsViewNode(issueDetailsNode, "Title: ", issue.title);
-                this.addToDetailsViewNode(issueDetailsNode, "State: ", issue.state);
-                this.addToDetailsViewNode(issueDetailsNode, "Opened by: ", issue.openedBy);
-                this.addToDetailsViewNode(issueDetailsNode, "Date opened: ", new Date(issue.openedDate).toString());
-                this.addToDetailsViewNode(issueDetailsNode, "Issue id: ", "#" + issue.id);
+                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Title: ", issue.title);
+                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "State: ", issue.state);
+                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Opened by: ", issue.openedBy);
+                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Date opened: ", new Date(issue.openedDate).toString());
+                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Issue id: ", "#" + issue.id);
                 var linkNode = domConstruct.create("a", {
                     innerHTML: "Open this issue in a new tab",
                     href: issue.webUrl,
                     target: "_blank"
                 });
-                this.addLinkToDetailsViewNode(issueDetailsNode, "Web Link: ", linkNode);
+                ViewHelper.AddLinkToDetailsViewNode(issueDetailsNode, "Web Link: ", linkNode);
             }
-        },
-
-        addToDetailsViewNode: function (detailsViewNode, label, value) {
-            var issueTitleNode = this.createDetailsViewSpan(detailsViewNode, label);
-            domConstruct.create("span", {
-                innerHTML: value
-            }, issueTitleNode);
-        },
-
-        addLinkToDetailsViewNode: function (detailsViewNode, label, linkNode) {
-            var issueTitleNode = this.createDetailsViewSpan(detailsViewNode, label);
-            domConstruct.place(linkNode, issueTitleNode);
-        },
-
-        createDetailsViewSpan: function (detailsViewNode, label) {
-            var issueTitleNode = domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsSpan"
-            }, detailsViewNode);
-            domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsLabel",
-                innerHTML: label
-            }, issueTitleNode);
-
-            return issueTitleNode;
         },
 
         // Sort the view issues by the openedDate
