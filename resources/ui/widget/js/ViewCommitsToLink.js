@@ -83,11 +83,7 @@ define([
                 });
 
                 var firstLine = commit.message.split(/\r?\n/g)[0];
-                var commitDate = new Date(commit.authoredDate);
-                var secondLine = commit.authorName + " committed on "
-                    + commitDate.toDateString() + " at "
-                    + ("00" + commitDate.getHours()).slice(-2) + ":"
-                    + ("00" + commitDate.getMinutes()).slice(-2);
+                var secondLine = ViewHelper.GetCommitDateString(commit);
                 ViewHelper.DrawListItem(commitListItem, firstLine, secondLine, "removeButton", "trash");
             });
 

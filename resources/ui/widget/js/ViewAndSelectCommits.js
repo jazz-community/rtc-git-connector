@@ -217,19 +217,9 @@ define([
                 });
 
                 var firstLine = commit.message.split(/\r?\n/g)[0];
-                var secondLine;
+                var secondLine = ViewHelper.GetCommitDateString(commit);
                 var buttonName = "";
                 var iconName;
-
-                if (commit.authoredDate) {
-                    var commitDate = new Date(commit.authoredDate);
-                    secondLine = commit.authorName + " committed on "
-                        + commitDate.toDateString() + " at "
-                        + ("00" + commitDate.getHours()).slice(-2) + ":"
-                        + ("00" + commitDate.getMinutes()).slice(-2);
-                } else {
-                    secondLine = "&nbsp;";
-                }
 
                 if (commit.alreadyLinked) {
                     domClass.add(commitListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
@@ -238,7 +228,7 @@ define([
                 } else {
                     iconName = "link";
                 }
-                
+
                 ViewHelper.DrawListItem(commitListItem, firstLine, secondLine, buttonName, iconName);
             });
         },

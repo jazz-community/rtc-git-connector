@@ -132,5 +132,27 @@ define([
                 innerHTML: secondLine
             }, listItemContent);
         };
+
+        // Create a string with information about who created the commit and when
+        this.GetCommitDateString = function (commit) {
+            var commitDateString;
+
+            if (commit.authoredDate) {
+                var commitDate = new Date(commit.authoredDate);
+                commitDateString = commit.authorName + " committed on "
+                    + commitDate.toDateString() + " at "
+                    + ("00" + commitDate.getHours()).slice(-2) + ":"
+                    + ("00" + commitDate.getMinutes()).slice(-2);
+            } else {
+                commitDateString = "&nbsp;";
+            }
+
+            return commitDateString;
+        };
+
+        // Create a string with information about who created the issue or request and when
+        this.GetIssueOrRequestDateString = function (issueOrRequest) {
+
+        };
     };
 });
