@@ -33,8 +33,8 @@ define([
             this.gitCommitServiceUrl =
                 this.ajaxContextRoot +
                 "/com.ibm.team.git.internal.resources.IGitResourceRestService/commit";
-            this.richHoverServiceUrl = 
-                this.ajaxContextRoot + 
+            this.richHoverServiceUrl =
+                this.ajaxContextRoot +
                 "/service/org.jazzcommunity.GitConnectorService.IGitConnectorService"
         },
 
