@@ -6,28 +6,23 @@ define([
     "dojo/on",
     "dojo/query",
     "./DataStores/MainDataStore",
-    "dijit/registry",
+    "./ViewHelper",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewRequestsToLink.html"
 ], function (declare, array, domConstruct, domStyle, on, query,
-    MainDataStore,
-    registry, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
+    MainDataStore, ViewHelper,
+    _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewRequestsToLink",
         [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],
     {
         templateString: template,
         mainDataStore: null,
-        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
-
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
-                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-            }
         },
 
         startup: function () {
@@ -66,7 +61,7 @@ define([
                 on(requestListItem, "click", function (event) {
                     var requestId = this.getAttribute("data-request-id");
 
-                    if (self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (ViewHelper.IsNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the request with the specified id from the requests to link list in store and add to the requests list
                         if (requestId) {
                             var selectedRequest = null;
@@ -87,48 +82,12 @@ define([
                     }
                 });
 
-                var trash = self.fontAwesome.icon({prefix: 'fas', iconName: 'trash'});
-                domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemButton removeButton",
-                    innerHTML: trash.html[0]
-                }, requestListItem);
-
-                var requestListItemContent = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemContent"
-                }, requestListItem);
-
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
-                    innerHTML: request.title
-                }, requestListItemContent);
-
-                var requestDate = new Date(request.openedDate);
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                    innerHTML: "#" + request.id + " opened by " + request.openedBy + " on " + requestDate.toDateString() + " at " + ("00" + requestDate.getHours()).slice(-2) + ":" + ("00" + requestDate.getMinutes()).slice(-2)
-                }, requestListItemContent);
+                var secondLine = ViewHelper.GetIssueOrRequestDateString(request);
+                ViewHelper.DrawListItem(requestListItem, request.title, secondLine, "removeButton", "trash");
             });
 
             // Get the mainDialog and resize to fit the new content
-            var mainDialog = registry.byId("connectWithGitMainDialog");
-            var paneContentNode = query(".dijitDialogPaneContent", mainDialog.domNode)[0];
-            var originalScrollTop = paneContentNode.scrollTop;
-            mainDialog.resize();
-            mainDialog.resize();
-            paneContentNode.scrollTo(0, originalScrollTop);
-        },
-
-        // Checks if the node or any of it's parents have the class name
-        isNodeInClass: function (node, className) {
-            if (node.classList && node.classList.contains(className)) {
-                return true;
-            }
-
-            if (node.parentNode) {
-                return this.isNodeInClass(node.parentNode, className);
-            }
-
-            return false;
+            ViewHelper.ResizeMainDialog();
         }
     });
 });

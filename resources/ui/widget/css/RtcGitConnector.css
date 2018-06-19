@@ -80,7 +80,6 @@
 
 .rtcGitConnectorSelectLinkType {
     display: flex;
-    background-color: gray;
 }
 
 .rtcGitConnectorSelectLinkType .linkTypeItem {
@@ -91,7 +90,7 @@
     font-weight: bold;
     cursor: pointer;
     background-color: white;
-    margin: 1px;
+    border: 1px solid gray;
 }
 
 .rtcGitConnectorSelectLinkType .linkTypeItem:hover {

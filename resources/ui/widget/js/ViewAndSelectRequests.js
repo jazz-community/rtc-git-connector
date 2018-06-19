@@ -10,12 +10,13 @@ define([
     "./DataStores/MainDataStore",
     "./RestServices/JazzRestService",
     "./RestServices/GitRestService",
+    "./ViewHelper",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewAndSelectRequests.html"
 ], function (declare, array, lang, dom, domClass, domConstruct, on, query,
-    MainDataStore, JazzRestService, GitRestService,
+    MainDataStore, JazzRestService, GitRestService, ViewHelper,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectRequests",
@@ -196,7 +197,7 @@ define([
                 on(requestListItem, "click", function (event) {
                     var requestId = this.getAttribute("data-request-id");
 
-                    if (!request.alreadyLinked && self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (!request.alreadyLinked && ViewHelper.IsNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the request with the specified id from the requests list in store and add to the selected list
                         if (requestId) {
                             var selectedRequest = null;
@@ -220,42 +221,20 @@ define([
                     }
                 });
 
+                var firstLine = request.title;
+                var secondLine = ViewHelper.GetIssueOrRequestDateString(request);
+                var buttonName = "";
+                var iconName;
+
                 if (request.alreadyLinked) {
-                    var check = self.fontAwesome.icon({prefix: 'fas', iconName: 'check'});
                     domClass.add(requestListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton emptyButton",
-                        innerHTML: check.html[0]
-                    }, requestListItem);
+                    buttonName = "emptyButton";
+                    iconName = "check";
                 } else {
-                    var link = self.fontAwesome.icon({prefix: 'fas', iconName: 'link'});
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton",
-                        innerHTML: link.html[0]
-                    }, requestListItem);
+                    iconName = "link";
                 }
 
-                var requestListItemContent = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemContent"
-                }, requestListItem);
-
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
-                    innerHTML: request.title
-                }, requestListItemContent);
-
-                if (request.openedDate) {
-                    var requestDate = new Date(request.openedDate);
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "#" + request.id + " opened by " + request.openedBy + " on " + requestDate.toDateString() + " at " + ("00" + requestDate.getHours()).slice(-2) + ":" + ("00" + requestDate.getMinutes()).slice(-2)
-                    }, requestListItemContent);
-                } else {
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "&nbsp;"
-                    }, requestListItemContent);
-                }
+                ViewHelper.DrawListItem(requestListItem, firstLine, secondLine, buttonName, iconName);
             });
         },
 
@@ -294,115 +273,32 @@ define([
                     innerHTML: "Select a request to view more details"
                 }, requestDetailsNode);
             } else {
-                this.addToDetailsViewNode(requestDetailsNode, "Title: ", request.title);
-                this.addToDetailsViewNode(requestDetailsNode, "State: ", request.state);
-                this.addToDetailsViewNode(requestDetailsNode, "Opened by: ", request.openedBy);
-                this.addToDetailsViewNode(requestDetailsNode, "Date opened: ", new Date(request.openedDate).toString());
-                this.addToDetailsViewNode(requestDetailsNode, "Request id: ", "#" + request.id);
+                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Title: ", request.title);
+                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "State: ", request.state);
+                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Opened by: ", request.openedBy);
+                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Date opened: ", new Date(request.openedDate).toString());
+                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Request id: ", "#" + request.id);
                 var linkNode = domConstruct.create("a", {
                     innerHTML: "Open this request in a new tab",
                     href: request.webUrl,
                     target: "_blank"
                 });
-                this.addLinkToDetailsViewNode(requestDetailsNode, "Web Link: ", linkNode);
+                ViewHelper.AddLinkToDetailsViewNode(requestDetailsNode, "Web Link: ", linkNode);
             }
-        },
-
-        addToDetailsViewNode: function (detailsViewNode, label, value) {
-            var requestTitleNode = this.createDetailsViewSpan(detailsViewNode, label);
-            domConstruct.create("span", {
-                innerHTML: value
-            }, requestTitleNode);
-        },
-
-        addLinkToDetailsViewNode: function (detailsViewNode, label, linkNode) {
-            var requestTitleNode = this.createDetailsViewSpan(detailsViewNode, label);
-            domConstruct.place(linkNode, requestTitleNode);
-        },
-
-        createDetailsViewSpan: function (detailsViewNode, label) {
-            var requestTitleNode = domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsSpan"
-            }, detailsViewNode);
-            domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsLabel",
-                innerHTML: label
-            }, requestTitleNode);
-
-            return requestTitleNode;
         },
 
         // Sort the view requests by the openedDate
         sortViewRequestsByDate: function () {
-            var self = this;
-
-            // Create a temp array so that the date objects are only created once
-            var tempArray = this.viewRequests.map(function (el, i) {
-                return {
-                    index: i,
-                    value: new Date(el.openedDate).getTime()
-                };
-            });
-
-            // Sort the temp array
-            tempArray.sort(function (a, b) {
-                return b.value - a.value;
-            });
-
-            // Get a sorted version of the original array
-            var sortedArray = tempArray.map(function (el) {
-                return self.viewRequests[el.index];
-            });
-
-            // Use the sorted array
-            this.viewRequests = sortedArray;
+            this.viewRequests = ViewHelper.SortListDataByDate("openedDate", this.viewRequests);
         },
 
         // Filter the view requests using the filter text.
         // Only keep requests that contain the filter text either
-        // in the request title or request author name or id or email
+        // in the request title or request author name or id or state
         filterViewRequestsByText: function (filterText) {
-            filterText = filterText.toLowerCase();
-            this.viewRequests = this.viewRequests.filter(function (request) {
-                request.id = request.id.toString();
-                return request.id.toLowerCase().indexOf(filterText) > -1 ||
-                    request.title.toLowerCase().indexOf(filterText) > -1 ||
-                    request.state.toLowerCase().indexOf(filterText) > -1 ||
-                    request.openedBy.toLowerCase().indexOf(filterText) > -1;
-            });
-            this._highlightFilterText(filterText, ["id", "title", "state", "openedBy"], this.viewRequests);
-        },
-
-        _highlightFilterText: function (filterText, filterBy, filterResult) {
-            for (var i=0; i < filterResult.length; i++) {
-                for (var j=0; j < filterBy.length; j++) {
-                    filterResult[i][filterBy[j]] = this._highlightTextInString(filterText, filterResult[i][filterBy[j]]);
-                }
-            }
-        },
-
-        _highlightTextInString: function (searchText, fullText) {
-            var startIndex;
-            if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1) {
-                var beforeFound = fullText.slice(0, startIndex);
-                var found = fullText.slice(startIndex, startIndex + searchText.length);
-                var afterFound = this._highlightTextInString(searchText, fullText.slice(startIndex + searchText.length));
-                fullText = beforeFound + "<b class='rtcGitConnectorHighlightText'>" + found + "</b>" + afterFound;
-            }
-            return fullText;
-        },
-
-        // Checks if the node or any of it's parents have the class name
-        isNodeInClass: function (node, className) {
-            if (node.classList && node.classList.contains(className)) {
-                return true;
-            }
-
-            if (node.parentNode) {
-                return this.isNodeInClass(node.parentNode, className);
-            }
-
-            return false;
+            this.viewRequests = ViewHelper.FilterListDataByText(filterText,
+                ["id", "title", "state", "openedBy"],
+                this.viewRequests);
         }
     });
 });

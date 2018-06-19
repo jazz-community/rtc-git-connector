@@ -10,12 +10,13 @@ define([
     "./DataStores/MainDataStore",
     "./RestServices/JazzRestService",
     "./RestServices/GitRestService",
+    "./ViewHelper",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewAndSelectCommits.html"
 ], function (declare, array, lang, dom, domClass, domConstruct, on, query,
-    MainDataStore, JazzRestService, GitRestService,
+    MainDataStore, JazzRestService, GitRestService, ViewHelper,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectCommits",
@@ -26,16 +27,11 @@ define([
         jazzRestService: null,
         gitRestService: null,
         viewCommits: null,
-        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
             this.jazzRestService = JazzRestService.getInstance();
             this.gitRestService = GitRestService.getInstance();
-
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
-                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-            }
         },
 
         startup: function () {
@@ -196,7 +192,7 @@ define([
                 on(commitListItem, "click", function (event) {
                     var commitSha = this.getAttribute("data-commit-sha");
 
-                    if (!commit.alreadyLinked && self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (!commit.alreadyLinked && ViewHelper.IsNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the commit with the specified sha from the commits list in store and add to the selected list
                         if (commitSha) {
                             var selectedCommit = null;
@@ -220,42 +216,20 @@ define([
                     }
                 });
 
+                var firstLine = commit.message.split(/\r?\n/g)[0];
+                var secondLine = ViewHelper.GetCommitDateString(commit);
+                var buttonName = "";
+                var iconName;
+
                 if (commit.alreadyLinked) {
-                    var check = self.fontAwesome.icon({prefix: 'fas', iconName: 'check'});
                     domClass.add(commitListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton emptyButton",
-                        innerHTML: check.html[0]
-                    }, commitListItem);
+                    buttonName = "emptyButton";
+                    iconName = "check";
                 } else {
-                    var link = self.fontAwesome.icon({prefix: 'fas', iconName: 'link'});
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton",
-                        innerHTML: link.html[0]
-                    }, commitListItem);
+                    iconName = "link";
                 }
 
-                var commitListItemContent = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemContent"
-                }, commitListItem);
-
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
-                    innerHTML: commit.message.split(/\r?\n/g)[0]
-                }, commitListItemContent);
-
-                if (commit.authoredDate) {
-                    var commitDate = new Date(commit.authoredDate);
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: commit.authorName + " committed on " + commitDate.toDateString() + " at " + ("00" + commitDate.getHours()).slice(-2) + ":" + ("00" + commitDate.getMinutes()).slice(-2)
-                    }, commitListItemContent);
-                } else {
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "&nbsp;"
-                    }, commitListItemContent);
-                }
+                ViewHelper.DrawListItem(commitListItem, firstLine, secondLine, buttonName, iconName);
             });
         },
 
@@ -294,113 +268,31 @@ define([
                     innerHTML: "Select a commit to view more details"
                 }, commitDetailsNode);
             } else {
-                this.addToDetailsViewNode(commitDetailsNode, "Message: ", commit.message.replace(/(\r\n|\n|\r)/gm, "<br />"));
-                this.addToDetailsViewNode(commitDetailsNode, "Author: ", commit.authorName + " (" + commit.authorEmail + ")");
-                this.addToDetailsViewNode(commitDetailsNode, "Date: ", new Date(commit.authoredDate).toString());
-                this.addToDetailsViewNode(commitDetailsNode, "SHA: ", commit.sha);
+                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Message: ", commit.message.replace(/(\r\n|\n|\r)/gm, "<br />"));
+                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Author: ", commit.authorName + " (" + commit.authorEmail + ")");
+                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Date: ", new Date(commit.authoredDate).toString());
+                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "SHA: ", commit.sha);
                 var linkNode = domConstruct.create("a", {
                     innerHTML: "Open this commit in a new tab",
                     href: commit.webUrl,
                     target: "_blank"
                 });
-                this.addLinkToDetailsViewNode(commitDetailsNode, "Web Link: ", linkNode);
+                ViewHelper.AddLinkToDetailsViewNode(commitDetailsNode, "Web Link: ", linkNode);
             }
-        },
-
-        addToDetailsViewNode: function (detailsViewNode, label, value) {
-            var commitMessageNode = this.createDetailsViewSpan(detailsViewNode, label);
-            domConstruct.create("span", {
-                innerHTML: value
-            }, commitMessageNode);
-        },
-
-        addLinkToDetailsViewNode: function (detailsViewNode, label, linkNode) {
-            var commitMessageNode = this.createDetailsViewSpan(detailsViewNode, label);
-            domConstruct.place(linkNode, commitMessageNode);
-        },
-
-        createDetailsViewSpan: function (detailsViewNode, label) {
-            var commitMessageNode = domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsSpan"
-            }, detailsViewNode);
-            domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsLabel",
-                innerHTML: label
-            }, commitMessageNode);
-
-            return commitMessageNode;
         },
 
         // Sort the view commits by the authoredDate
         sortViewCommitsByDate: function () {
-            var self = this;
-
-            // Create a temp array so that the date objects are only created once
-            var tempArray = this.viewCommits.map(function (el, i) {
-                return {
-                    index: i,
-                    value: new Date(el.authoredDate).getTime()
-                };
-            });
-
-            // Sort the temp array
-            tempArray.sort(function (a, b) {
-                return b.value - a.value;
-            });
-
-            // Get a sorted version of the original array
-            var sortedArray = tempArray.map(function (el) {
-                return self.viewCommits[el.index];
-            });
-
-            // Use the sorted array
-            this.viewCommits = sortedArray;
+            this.viewCommits = ViewHelper.SortListDataByDate("authoredDate", this.viewCommits);
         },
 
         // Filter the view commits using the filter text.
         // Only keep commits that contain the filter text either
         // in the commit message or commit author name or sha or email
         filterViewCommitsByText: function (filterText) {
-            filterText = filterText.toLowerCase();
-            this.viewCommits = this.viewCommits.filter(function (commit) {
-                return commit.sha.toLowerCase().indexOf(filterText) > -1 ||
-                    commit.message.toLowerCase().indexOf(filterText) > -1 ||
-                    commit.authorName.toLowerCase().indexOf(filterText) > -1 ||
-                    commit.authorEmail.toLowerCase().indexOf(filterText) > -1;
-            });
-            this._highlightFilterText(filterText, ["sha", "message", "authorName", "authorEmail"], this.viewCommits);
-        },
-
-        _highlightFilterText: function (filterText, filterBy, filterResult) {
-            for (var i=0; i < filterResult.length; i++) {
-                for (var j=0; j < filterBy.length; j++) {
-                    filterResult[i][filterBy[j]] = this._highlightTextInString(filterText, filterResult[i][filterBy[j]]);
-                }
-            }
-        },
-
-        _highlightTextInString: function (searchText, fullText) {
-            var startIndex;
-            if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1) {
-                var beforeFound = fullText.slice(0, startIndex);
-                var found = fullText.slice(startIndex, startIndex + searchText.length);
-                var afterFound = this._highlightTextInString(searchText, fullText.slice(startIndex + searchText.length));
-                fullText = beforeFound + "<b class='rtcGitConnectorHighlightText'>" + found + "</b>" + afterFound;
-            }
-            return fullText;
-        },
-
-        // Checks if the node or any of it's parents have the class name
-        isNodeInClass: function (node, className) {
-            if (node.classList && node.classList.contains(className)) {
-                return true;
-            }
-
-            if (node.parentNode) {
-                return this.isNodeInClass(node.parentNode, className);
-            }
-
-            return false;
+            this.viewCommits = ViewHelper.FilterListDataByText(filterText,
+                ["sha", "message", "authorName", "authorEmail"],
+                this.viewCommits);
         }
     });
 });

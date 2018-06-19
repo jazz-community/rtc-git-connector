@@ -10,12 +10,13 @@ define([
     "./DataStores/MainDataStore",
     "./RestServices/JazzRestService",
     "./RestServices/GitRestService",
+    "./ViewHelper",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewAndSelectIssues.html"
 ], function (declare, array, lang, dom, domClass, domConstruct, on, query,
-    MainDataStore, JazzRestService, GitRestService,
+    MainDataStore, JazzRestService, GitRestService, ViewHelper,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectIssues",
@@ -26,16 +27,11 @@ define([
         jazzRestService: null,
         gitRestService: null,
         viewIssues: null,
-        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
             this.jazzRestService = JazzRestService.getInstance();
             this.gitRestService = GitRestService.getInstance();
-
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
-                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-            }
         },
 
         startup: function () {
@@ -189,7 +185,6 @@ define([
             domConstruct.empty(issuesListNode);
 
             array.forEach(this.viewIssues, function (issue) {
-                // TODO: This is where I need to add a class with lower alpha
                 var issueListItem = domConstruct.create("div", {
                     "class": "rtcGitConnectorViewAndSelectListItem",
                     "data-issue-id": issue.originalId
@@ -198,7 +193,7 @@ define([
                 on(issueListItem, "click", function (event) {
                     var issueId = this.getAttribute("data-issue-id");
 
-                    if (!issue.alreadyLinked && self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (!issue.alreadyLinked && ViewHelper.IsNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the issue with the specified id from the issues list in store and add to the selected list
                         if (issueId) {
                             var selectedIssue = null;
@@ -222,53 +217,28 @@ define([
                     }
                 });
 
-                if (issue.id < 0) {
-                    var plus = self.fontAwesome.icon({prefix: 'fas', iconName: 'plus'});
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton addButton",
-                        innerHTML: plus.html[0]
-                    }, issueListItem);
-                } else if (issue.alreadyLinked) {
-                    var check = self.fontAwesome.icon({prefix: 'fas', iconName: 'check'});
-                    domClass.add(issueListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton emptyButton",
-                        innerHTML: check.html[0]
-                    }, issueListItem);
-                } else {
-                    var link = self.fontAwesome.icon({prefix: 'fas', iconName: 'link'});
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton",
-                        innerHTML: link.html[0]
-                    }, issueListItem);
-                }
-
-                var issueListItemContent = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemContent"
-                }, issueListItem);
-
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
-                    innerHTML: issue.title
-                }, issueListItemContent);
+                var firstLine = issue.title;
+                var secondLine;
+                var buttonName = "";
+                var iconName;
 
                 if (issue.id < 0) {
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "This will create a new issue in " + gitHost + " using the information from the current work item"
-                    }, issueListItemContent);
-                } else if (issue.openedDate) {
-                    var issueDate = new Date(issue.openedDate);
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "#" + issue.id + " opened by " + issue.openedBy + " on " + issueDate.toDateString() + " at " + ("00" + issueDate.getHours()).slice(-2) + ":" + ("00" + issueDate.getMinutes()).slice(-2)
-                    }, issueListItemContent);
+                    secondLine = "This will create a new issue in " + gitHost + " using the information from the current work item";
+                    buttonName = "addButton";
+                    iconName = "plus";
                 } else {
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "&nbsp;"
-                    }, issueListItemContent);
+                    secondLine = ViewHelper.GetIssueOrRequestDateString(issue);
+
+                    if (issue.alreadyLinked) {
+                        domClass.add(issueListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
+                        buttonName = "emptyButton";
+                        iconName = "check";
+                    } else {
+                        iconName = "link";
+                    }
                 }
+
+                ViewHelper.DrawListItem(issueListItem, firstLine, secondLine, buttonName, iconName);
             });
         },
 
@@ -314,115 +284,32 @@ define([
                         "The new issue will also be added as a link."
                 }, issueDetailsNode);
             } else {
-                this.addToDetailsViewNode(issueDetailsNode, "Title: ", issue.title);
-                this.addToDetailsViewNode(issueDetailsNode, "State: ", issue.state);
-                this.addToDetailsViewNode(issueDetailsNode, "Opened by: ", issue.openedBy);
-                this.addToDetailsViewNode(issueDetailsNode, "Date opened: ", new Date(issue.openedDate).toString());
-                this.addToDetailsViewNode(issueDetailsNode, "Issue id: ", "#" + issue.id);
+                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Title: ", issue.title);
+                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "State: ", issue.state);
+                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Opened by: ", issue.openedBy);
+                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Date opened: ", new Date(issue.openedDate).toString());
+                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Issue id: ", "#" + issue.id);
                 var linkNode = domConstruct.create("a", {
                     innerHTML: "Open this issue in a new tab",
                     href: issue.webUrl,
                     target: "_blank"
                 });
-                this.addLinkToDetailsViewNode(issueDetailsNode, "Web Link: ", linkNode);
+                ViewHelper.AddLinkToDetailsViewNode(issueDetailsNode, "Web Link: ", linkNode);
             }
-        },
-
-        addToDetailsViewNode: function (detailsViewNode, label, value) {
-            var issueTitleNode = this.createDetailsViewSpan(detailsViewNode, label);
-            domConstruct.create("span", {
-                innerHTML: value
-            }, issueTitleNode);
-        },
-
-        addLinkToDetailsViewNode: function (detailsViewNode, label, linkNode) {
-            var issueTitleNode = this.createDetailsViewSpan(detailsViewNode, label);
-            domConstruct.place(linkNode, issueTitleNode);
-        },
-
-        createDetailsViewSpan: function (detailsViewNode, label) {
-            var issueTitleNode = domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsSpan"
-            }, detailsViewNode);
-            domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsLabel",
-                innerHTML: label
-            }, issueTitleNode);
-
-            return issueTitleNode;
         },
 
         // Sort the view issues by the openedDate
         sortViewIssuesByDate: function () {
-            var self = this;
-
-            // Create a temp array so that the date objects are only created once
-            var tempArray = this.viewIssues.map(function (el, i) {
-                return {
-                    index: i,
-                    value: new Date(el.openedDate).getTime()
-                };
-            });
-
-            // Sort the temp array
-            tempArray.sort(function (a, b) {
-                return b.value - a.value;
-            });
-
-            // Get a sorted version of the original array
-            var sortedArray = tempArray.map(function (el) {
-                return self.viewIssues[el.index];
-            });
-
-            // Use the sorted array
-            this.viewIssues = sortedArray;
+            this.viewIssues = ViewHelper.SortListDataByDate("openedDate", this.viewIssues);
         },
 
         // Filter the view issues using the filter text.
         // Only keep issues that contain the filter text either
-        // in the issue title or issue author name or id or email
+        // in the issue title or issue author name or id or state
         filterViewIssuesByText: function (filterText) {
-            filterText = filterText.toLowerCase();
-            this.viewIssues = this.viewIssues.filter(function (issue) {
-                issue.id = issue.id.toString();
-                return issue.id.toLowerCase().indexOf(filterText) > -1 ||
-                    issue.title.toLowerCase().indexOf(filterText) > -1 ||
-                    issue.state.toLowerCase().indexOf(filterText) > -1 ||
-                    issue.openedBy.toLowerCase().indexOf(filterText) > -1;
-            });
-            this._highlightFilterText(filterText, ["id", "title", "state", "openedBy"], this.viewIssues);
-        },
-
-        _highlightFilterText: function (filterText, filterBy, filterResult) {
-            for (var i=0; i < filterResult.length; i++) {
-                for (var j=0; j < filterBy.length; j++) {
-                    filterResult[i][filterBy[j]] = this._highlightTextInString(filterText, filterResult[i][filterBy[j]]);
-                }
-            }
-        },
-
-        _highlightTextInString: function (searchText, fullText) {
-            var startIndex;
-            if (searchText.toLowerCase() && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1) {
-                var beforeFound = fullText.slice(0, startIndex);
-                var found = fullText.slice(startIndex, startIndex + searchText.length);
-                var afterFound = this._highlightTextInString(searchText, fullText.slice(startIndex + searchText.length));
-                fullText = beforeFound + "<b class='rtcGitConnectorHighlightText'>" + found + "</b>" + afterFound;
-            }
-            return fullText;
-        },
-
-        // Checks if the node or any of it's parents have the class name
-        isNodeInClass: function (node, className) {
-            if (node.classList && node.classList.contains(className)) {
-                return true;
-            }
-
-            if (node.parentNode) {
-                return this.isNodeInClass(node.parentNode, className);
-            }
-
-            return false;
+            this.viewIssues = ViewHelper.FilterListDataByText(filterText,
+                ["id", "title", "state", "openedBy"],
+                this.viewIssues);
         }
     });
 });

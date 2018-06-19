@@ -6,28 +6,23 @@ define([
     "dojo/on",
     "dojo/query",
     "./DataStores/MainDataStore",
-    "dijit/registry",
+    "./ViewHelper",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewCommitsToLink.html"
 ], function (declare, array, domConstruct, domStyle, on, query,
-    MainDataStore,
-    registry, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
+    MainDataStore, ViewHelper,
+    _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewCommitsToLink",
         [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],
     {
         templateString: template,
         mainDataStore: null,
-        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
-
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
-                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-            }
         },
 
         startup: function () {
@@ -66,7 +61,7 @@ define([
                 on(commitListItem, "click", function (event) {
                     var commitSha = this.getAttribute("data-commit-sha");
 
-                    if (self.isNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
+                    if (ViewHelper.IsNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
                         // Remove the commit with the specified sha from the commits to link list in store and add to the commits list
                         if (commitSha) {
                             var selectedCommit = null;
@@ -87,48 +82,13 @@ define([
                     }
                 });
 
-                var trash = self.fontAwesome.icon({prefix: 'fas', iconName: 'trash'});
-                domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemButton removeButton",
-                    innerHTML: trash.html[0]
-                }, commitListItem);
-
-                var commitListItemContent = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemContent"
-                }, commitListItem);
-
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
-                    innerHTML: commit.message.split(/\r?\n/g)[0]
-                }, commitListItemContent);
-
-                var commitDate = new Date(commit.authoredDate);
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                    innerHTML: commit.authorName + " committed on " + commitDate.toDateString() + " at " + ("00" + commitDate.getHours()).slice(-2) + ":" + ("00" + commitDate.getMinutes()).slice(-2)
-                }, commitListItemContent);
+                var firstLine = commit.message.split(/\r?\n/g)[0];
+                var secondLine = ViewHelper.GetCommitDateString(commit);
+                ViewHelper.DrawListItem(commitListItem, firstLine, secondLine, "removeButton", "trash");
             });
 
             // Get the mainDialog and resize to fit the new content
-            var mainDialog = registry.byId("connectWithGitMainDialog");
-            var paneContentNode = query(".dijitDialogPaneContent", mainDialog.domNode)[0];
-            var originalScrollTop = paneContentNode.scrollTop;
-            mainDialog.resize();
-            mainDialog.resize();
-            paneContentNode.scrollTo(0, originalScrollTop);
-        },
-
-        // Checks if the node or any of it's parents have the class name
-        isNodeInClass: function (node, className) {
-            if (node.classList && node.classList.contains(className)) {
-                return true;
-            }
-
-            if (node.parentNode) {
-                return this.isNodeInClass(node.parentNode, className);
-            }
-
-            return false;
+            ViewHelper.ResizeMainDialog();
         }
     });
 });
