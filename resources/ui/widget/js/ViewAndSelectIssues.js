@@ -27,16 +27,11 @@ define([
         jazzRestService: null,
         gitRestService: null,
         viewIssues: null,
-        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
             this.jazzRestService = JazzRestService.getInstance();
             this.gitRestService = GitRestService.getInstance();
-
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
-                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-            }
         },
 
         startup: function () {
@@ -222,53 +217,36 @@ define([
                     }
                 });
 
-                if (issue.id < 0) {
-                    var plus = self.fontAwesome.icon({prefix: 'fas', iconName: 'plus'});
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton addButton",
-                        innerHTML: plus.html[0]
-                    }, issueListItem);
-                } else if (issue.alreadyLinked) {
-                    var check = self.fontAwesome.icon({prefix: 'fas', iconName: 'check'});
-                    domClass.add(issueListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton emptyButton",
-                        innerHTML: check.html[0]
-                    }, issueListItem);
-                } else {
-                    var link = self.fontAwesome.icon({prefix: 'fas', iconName: 'link'});
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton",
-                        innerHTML: link.html[0]
-                    }, issueListItem);
-                }
-
-                var issueListItemContent = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemContent"
-                }, issueListItem);
-
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
-                    innerHTML: issue.title
-                }, issueListItemContent);
+                var firstLine = issue.title;
+                var secondLine;
+                var buttonName = "";
+                var iconName;
 
                 if (issue.id < 0) {
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "This will create a new issue in " + gitHost + " using the information from the current work item"
-                    }, issueListItemContent);
-                } else if (issue.openedDate) {
-                    var issueDate = new Date(issue.openedDate);
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "#" + issue.id + " opened by " + issue.openedBy + " on " + issueDate.toDateString() + " at " + ("00" + issueDate.getHours()).slice(-2) + ":" + ("00" + issueDate.getMinutes()).slice(-2)
-                    }, issueListItemContent);
+                    secondLine = "This will create a new issue in " + gitHost + " using the information from the current work item";
+                    buttonName = "addButton";
+                    iconName = "plus";
                 } else {
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "&nbsp;"
-                    }, issueListItemContent);
+                    if (issue.openedDate) {
+                        var issueDate = new Date(issue.openedDate);
+                        secondLine = "#" + issue.id + " opened by " + issue.openedBy +
+                            " on " + issueDate.toDateString() +
+                            " at " + ("00" + issueDate.getHours()).slice(-2) +
+                            ":" + ("00" + issueDate.getMinutes()).slice(-2);
+                    } else {
+                        secondLine = "&nbsp;";
+                    }
+
+                    if (issue.alreadyLinked) {
+                        domClass.add(issueListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
+                        buttonName = "emptyButton";
+                        iconName = "check";
+                    } else {
+                        iconName = "link";
+                    }
                 }
+
+                ViewHelper.DrawListItem(issueListItem, firstLine, secondLine, buttonName, iconName);
             });
         },
 
