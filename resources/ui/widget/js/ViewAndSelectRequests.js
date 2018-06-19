@@ -221,42 +221,30 @@ define([
                     }
                 });
 
-                if (request.alreadyLinked) {
-                    var check = self.fontAwesome.icon({prefix: 'fas', iconName: 'check'});
-                    domClass.add(requestListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton emptyButton",
-                        innerHTML: check.html[0]
-                    }, requestListItem);
-                } else {
-                    var link = self.fontAwesome.icon({prefix: 'fas', iconName: 'link'});
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton",
-                        innerHTML: link.html[0]
-                    }, requestListItem);
-                }
-
-                var requestListItemContent = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemContent"
-                }, requestListItem);
-
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
-                    innerHTML: request.title
-                }, requestListItemContent);
+                var firstLine = request.title;
+                var secondLine;
+                var buttonName = "";
+                var iconName;
 
                 if (request.openedDate) {
                     var requestDate = new Date(request.openedDate);
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "#" + request.id + " opened by " + request.openedBy + " on " + requestDate.toDateString() + " at " + ("00" + requestDate.getHours()).slice(-2) + ":" + ("00" + requestDate.getMinutes()).slice(-2)
-                    }, requestListItemContent);
+                    secondLine = "#" + request.id + " opened by " + request.openedBy +
+                        " on " + requestDate.toDateString() +
+                        " at " + ("00" + requestDate.getHours()).slice(-2) +
+                        ":" + ("00" + requestDate.getMinutes()).slice(-2);
                 } else {
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "&nbsp;"
-                    }, requestListItemContent);
+                    secondLine = "&nbsp;";
                 }
+
+                if (request.alreadyLinked) {
+                    domClass.add(requestListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
+                    buttonName = "emptyButton";
+                    iconName = "check";
+                } else {
+                    iconName = "link";
+                }
+
+                ViewHelper.DrawListItem(requestListItem, firstLine, secondLine, buttonName, iconName);
             });
         },
 
