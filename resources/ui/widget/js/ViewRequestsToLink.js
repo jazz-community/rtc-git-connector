@@ -82,11 +82,7 @@ define([
                     }
                 });
 
-                var requestDate = new Date(request.openedDate);
-                var secondLine = "#" + request.id + " opened by " + request.openedBy +
-                    " on " + requestDate.toDateString() +
-                    " at " + ("00" + requestDate.getHours()).slice(-2) +
-                    ":" + ("00" + requestDate.getMinutes()).slice(-2);
+                var secondLine = ViewHelper.GetIssueOrRequestDateString(request);
                 ViewHelper.DrawListItem(requestListItem, request.title, secondLine, "removeButton", "trash");
             });
 

@@ -227,15 +227,7 @@ define([
                     buttonName = "addButton";
                     iconName = "plus";
                 } else {
-                    if (issue.openedDate) {
-                        var issueDate = new Date(issue.openedDate);
-                        secondLine = "#" + issue.id + " opened by " + issue.openedBy +
-                            " on " + issueDate.toDateString() +
-                            " at " + ("00" + issueDate.getHours()).slice(-2) +
-                            ":" + ("00" + issueDate.getMinutes()).slice(-2);
-                    } else {
-                        secondLine = "&nbsp;";
-                    }
+                    secondLine = ViewHelper.GetIssueOrRequestDateString(issue);
 
                     if (issue.alreadyLinked) {
                         domClass.add(issueListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");

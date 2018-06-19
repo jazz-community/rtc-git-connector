@@ -222,19 +222,9 @@ define([
                 });
 
                 var firstLine = request.title;
-                var secondLine;
+                var secondLine = ViewHelper.GetIssueOrRequestDateString(request);
                 var buttonName = "";
                 var iconName;
-
-                if (request.openedDate) {
-                    var requestDate = new Date(request.openedDate);
-                    secondLine = "#" + request.id + " opened by " + request.openedBy +
-                        " on " + requestDate.toDateString() +
-                        " at " + ("00" + requestDate.getHours()).slice(-2) +
-                        ":" + ("00" + requestDate.getMinutes()).slice(-2);
-                } else {
-                    secondLine = "&nbsp;";
-                }
 
                 if (request.alreadyLinked) {
                     domClass.add(requestListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");

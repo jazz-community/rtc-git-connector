@@ -93,11 +93,7 @@ define([
                     buttonName = "deleteButton";
                     iconName = "times";
                 } else {
-                    var issueDate = new Date(issue.openedDate);
-                    secondLine = "#" + issue.id + " opened by " + issue.openedBy +
-                        " on " + issueDate.toDateString() +
-                        " at " + ("00" + issueDate.getHours()).slice(-2) +
-                        ":" + ("00" + issueDate.getMinutes()).slice(-2);
+                    secondLine = ViewHelper.GetIssueOrRequestDateString(issue);
                     buttonName = "removeButton";
                     iconName = "trash";
                 }
