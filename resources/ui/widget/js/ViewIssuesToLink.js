@@ -97,7 +97,7 @@ define([
                     buttonName = "removeButton";
                     iconName = "trash";
                 }
-                
+
                 ViewHelper.DrawListItem(issueListItem, firstLine, secondLine, buttonName, iconName);
             });
 
