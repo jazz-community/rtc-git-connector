@@ -156,10 +156,11 @@ define([
 
             if (issueOrRequest.openedDate) {
                 var issueOrRequestDate = new Date(issueOrRequest.openedDate);
-                issueOrRequestDateString = "#" + issueOrRequest.id + " opened by " + issueOrRequest.openedBy +
-                    " on " + issueOrRequestDate.toDateString() +
-                    " at " + ("00" + issueOrRequestDate.getHours()).slice(-2) +
-                    ":" + ("00" + issueOrRequestDate.getMinutes()).slice(-2);
+                issueOrRequestDateString = "#" + issueOrRequest.id + " opened by "
+                    + issueOrRequest.openedBy + " on "
+                    + issueOrRequestDate.toDateString() + " at "
+                    + ("00" + issueOrRequestDate.getHours()).slice(-2) + ":"
+                    + ("00" + issueOrRequestDate.getMinutes()).slice(-2);
             } else {
                 issueOrRequestDateString = "&nbsp;";
             }
