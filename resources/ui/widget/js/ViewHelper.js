@@ -141,8 +141,8 @@ define([
                 var commitDate = new Date(commit.authoredDate);
                 commitDateString = commit.authorName + " committed on "
                     + commitDate.toDateString() + " at "
-                    + ("00" + commitDate.getHours()).slice(-2) + ":"
-                    + ("00" + commitDate.getMinutes()).slice(-2);
+                    + self.FrontPadWithZeros(commitDate.getHours()) + ":"
+                    + self.FrontPadWithZeros(commitDate.getMinutes());
             } else {
                 commitDateString = "&nbsp;";
             }
@@ -159,13 +159,18 @@ define([
                 issueOrRequestDateString = "#" + issueOrRequest.id + " opened by "
                     + issueOrRequest.openedBy + " on "
                     + issueOrRequestDate.toDateString() + " at "
-                    + ("00" + issueOrRequestDate.getHours()).slice(-2) + ":"
-                    + ("00" + issueOrRequestDate.getMinutes()).slice(-2);
+                    + self.FrontPadWithZeros(issueOrRequestDate.getHours()) + ":"
+                    + self.FrontPadWithZeros(issueOrRequestDate.getMinutes());
             } else {
                 issueOrRequestDateString = "&nbsp;";
             }
 
             return issueOrRequestDateString;
+        };
+
+        // Add zeros to the front if the passed in time has less than two digits
+        this.FrontPadWithZeros = function (hoursOrMinutes) {
+            return ("00" + hoursOrMinutes).slice(-2);
         };
     };
 });
