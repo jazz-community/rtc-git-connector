@@ -27,16 +27,11 @@ define([
         jazzRestService: null,
         gitRestService: null,
         viewCommits: null,
-        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
             this.jazzRestService = JazzRestService.getInstance();
             this.gitRestService = GitRestService.getInstance();
-
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
-                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-            }
         },
 
         startup: function () {
@@ -221,42 +216,30 @@ define([
                     }
                 });
 
-                if (commit.alreadyLinked) {
-                    var check = self.fontAwesome.icon({prefix: 'fas', iconName: 'check'});
-                    domClass.add(commitListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton emptyButton",
-                        innerHTML: check.html[0]
-                    }, commitListItem);
-                } else {
-                    var link = self.fontAwesome.icon({prefix: 'fas', iconName: 'link'});
-                    domConstruct.create("div", {
-                        "class": "rtcGitConnectorViewAndSelectListItemButton",
-                        innerHTML: link.html[0]
-                    }, commitListItem);
-                }
-
-                var commitListItemContent = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItemContent"
-                }, commitListItem);
-
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
-                    innerHTML: commit.message.split(/\r?\n/g)[0]
-                }, commitListItemContent);
+                var firstLine = commit.message.split(/\r?\n/g)[0];
+                var secondLine;
+                var buttonName = "";
+                var iconName;
 
                 if (commit.authoredDate) {
                     var commitDate = new Date(commit.authoredDate);
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: commit.authorName + " committed on " + commitDate.toDateString() + " at " + ("00" + commitDate.getHours()).slice(-2) + ":" + ("00" + commitDate.getMinutes()).slice(-2)
-                    }, commitListItemContent);
+                    secondLine = commit.authorName + " committed on "
+                        + commitDate.toDateString() + " at "
+                        + ("00" + commitDate.getHours()).slice(-2) + ":"
+                        + ("00" + commitDate.getMinutes()).slice(-2);
                 } else {
-                    domConstruct.create("span", {
-                        "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                        innerHTML: "&nbsp;"
-                    }, commitListItemContent);
+                    secondLine = "&nbsp;";
                 }
+
+                if (commit.alreadyLinked) {
+                    domClass.add(commitListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
+                    buttonName = "emptyButton";
+                    iconName = "check";
+                } else {
+                    iconName = "link";
+                }
+                
+                ViewHelper.DrawListItem(commitListItem, firstLine, secondLine, buttonName, iconName);
             });
         },
 
