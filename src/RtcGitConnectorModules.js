@@ -22,9 +22,8 @@ function base64UrlDecode(string) {
 export function encoder () {
     // Creates an encoded string from a stringified json object
     this.encode = function encode(value) {
-        const compressed = gzip.zip(value);
-        const buffer = Buffer.from(compressed);
-        const encoded = base64js.fromByteArray(buffer);
+        const compressed = gzip.zip(Buffer.from(value));
+        const encoded = base64js.fromByteArray(compressed);
         const urlEncoded = base64UrlEncode(encoded);
         return urlEncoded;
     };
