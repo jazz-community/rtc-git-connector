@@ -46,6 +46,8 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
+                var tags = workItem.object.attributes.internalTags.content.split(", ");
+                tags.push("from-rtc-work-item");
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 github.authenticate({
@@ -57,7 +59,7 @@ define([
                     repo: urlParts[1],
                     title: workItem.object.attributes.summary.content,
                     body: workItem.object.attributes.description.content,
-                    labels: ["from-rtc-work-item"]
+                    labels: tags
                 }, function (error, response) {
                     if (error) {
                         deferred.reject("Couldn't create an issue in the GitHub repository. Error: " + (error.message || error));
