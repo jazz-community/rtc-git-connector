@@ -76,6 +76,9 @@ define([
         createNewGitLabIssue: function (selectedGitRepository, accessToken, workItem) {
             var deferred = new Deferred();
             var giturl = this._createUrlInformation(selectedGitRepository.url);
+            var tags = workItem.object.attributes.internalTags.content;
+            tags = (tags.length) ? tags + ", " : tags;
+            tags += "from-rtc-work-item";
 
             var gitlab = this.gitLabApi({
                 url: this._formatUrlWithProxy(giturl.origin),
@@ -88,7 +91,7 @@ define([
                 gitlab.projects.issues.create(encodeURIComponent(giturl.joined), {
                     title: workItem.object.attributes.summary.content,
                     description: workItem.object.attributes.description.content,
-                    labels: "from-rtc-work-item, " + workItem.object.attributes.internalTags.content
+                    labels: tags
                 }).then(function (response) {
                     deferred.resolve(IssueModel.CreateFromGitLabIssue(response, []));
                 }, function (error) {
