@@ -170,7 +170,7 @@ define([
                             });
                         });
                     };
-                    
+
                     // Check if a new issue should be created
                     var newIssueIndex = self.mainDataStore.selectedRepositoryData.issuesToLink.findIndex(function (issue) {
                         return issue.id < 0;
@@ -181,9 +181,7 @@ define([
                         self.mainDataStore.selectedRepositoryData.issuesToLink.splice(newIssueIndex, 1)[0];
 
                         // Create the issue with the title and description of the work item
-                        self.gitRestService.createNewIssue(selectedRepository, gitHost, accessToken,
-                            self.mainDataStore.workItem.object.attributes.summary.content,
-                            self.mainDataStore.workItem.object.attributes.description.content)
+                        self.gitRestService.createNewIssue(selectedRepository, gitHost, accessToken, self.mainDataStore.workItem)
                             .then(function (result) {
                             // Get the new issue and add it to the list of issues to link
                             self.mainDataStore.selectedRepositoryData.issuesToLink.push(result);

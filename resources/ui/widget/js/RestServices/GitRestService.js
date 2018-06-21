@@ -25,11 +25,11 @@ define([
             }
         },
 
-        createNewIssue: function (selectedGitRepository, gitHost, accessToken, title, description) {
+        createNewIssue: function (selectedGitRepository, gitHost, accessToken, workItem) {
             if (gitHost === this.gitHubString) {
-                return this.createNewGitHubIssue(selectedGitRepository, accessToken, title, description);
+                return this.createNewGitHubIssue(selectedGitRepository, accessToken, workItem);
             } else if (gitHost === this.gitLabString) {
-                return this.createNewGitLabIssue(selectedGitRepository, accessToken, title, description);
+                return this.createNewGitLabIssue(selectedGitRepository, accessToken, workItem);
             } else {
                 var deferred = new Deferred();
                 deferred.reject("Invalid git host.");
@@ -37,7 +37,7 @@ define([
             }
         },
 
-        createNewGitHubIssue: function (selectedGitRepository, accessToken, title, description) {
+        createNewGitHubIssue: function (selectedGitRepository, accessToken, workItem) {
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
@@ -55,8 +55,8 @@ define([
                 github.issues.create({
                     owner: urlParts[0],
                     repo: urlParts[1],
-                    title: title,
-                    body: description,
+                    title: workItem.object.attributes.summary.content,
+                    body: workItem.object.attributes.description.content,
                     labels: ["from-rtc-work-item"]
                 }, function (error, response) {
                     if (error) {
@@ -70,7 +70,7 @@ define([
             return deferred.promise;
         },
 
-        createNewGitLabIssue: function (selectedGitRepository, accessToken, title, description) {
+        createNewGitLabIssue: function (selectedGitRepository, accessToken, workItem) {
             var deferred = new Deferred();
             var giturl = this._createUrlInformation(selectedGitRepository.url);
 
@@ -83,8 +83,8 @@ define([
                 deferred.reject("Invalid repository URL.");
             } else {
                 gitlab.projects.issues.create(encodeURIComponent(giturl.joined), {
-                    title: title,
-                    description: description,
+                    title: workItem.object.attributes.summary.content,
+                    description: workItem.object.attributes.description.content,
                     labels: "from-rtc-work-item"
                 }).then(function (response) {
                     deferred.resolve(IssueModel.CreateFromGitLabIssue(response, []));
