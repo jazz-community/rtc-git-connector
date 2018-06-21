@@ -46,7 +46,8 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                var tags = workItem.object.attributes.internalTags.content.split(", ");
+                var tags = workItem.object.attributes.internalTags.content;
+                tags = (tags.length) ? tags.split(", ") : [];
                 tags.push("from-rtc-work-item");
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
