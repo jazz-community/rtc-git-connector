@@ -83,7 +83,8 @@ define([
             } else {
                 gitlab.projects.issues.create(encodeURIComponent(giturl.joined), {
                     title: title,
-                    description: description
+                    description: description,
+                    labels: "from-rtc-work-item"
                 }).then(function (response) {
                     deferred.resolve(IssueModel.CreateFromGitLabIssue(response, []));
                 }, function (error) {
@@ -566,7 +567,7 @@ define([
             // as mentioned below, this should be a member function
             // or maybe not even... not quite sure yet about this one
             //var proxy = this._formatUrlWithProxy()
-            
+
             return {
                 original : original,
                 origin: origin,
@@ -581,7 +582,7 @@ define([
         getRecentGitLabCommits: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
             var giturl = this._createUrlInformation(selectedGitRepository.url);
             var deferred = new Deferred();
-            
+
             var gitlab = this.gitLabApi({
                 url: this._formatUrlWithProxy(giturl.origin),
                 token: accessToken
