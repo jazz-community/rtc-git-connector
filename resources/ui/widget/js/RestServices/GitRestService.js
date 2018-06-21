@@ -56,7 +56,8 @@ define([
                     owner: urlParts[0],
                     repo: urlParts[1],
                     title: title,
-                    body: description
+                    body: description,
+                    labels: ["from-rtc-work-item"]
                 }, function (error, response) {
                     if (error) {
                         deferred.reject("Couldn't create an issue in the GitHub repository. Error: " + (error.message || error));
