@@ -85,7 +85,7 @@ define([
                 gitlab.projects.issues.create(encodeURIComponent(giturl.joined), {
                     title: workItem.object.attributes.summary.content,
                     description: workItem.object.attributes.description.content,
-                    labels: "from-rtc-work-item"
+                    labels: "from-rtc-work-item, " + workItem.object.attributes.internalTags.content
                 }).then(function (response) {
                     deferred.resolve(IssueModel.CreateFromGitLabIssue(response, []));
                 }, function (error) {
