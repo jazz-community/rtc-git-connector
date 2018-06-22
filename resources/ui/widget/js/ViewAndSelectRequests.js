@@ -27,16 +27,11 @@ define([
         jazzRestService: null,
         gitRestService: null,
         viewRequests: null,
-        fontAwesome: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
             this.jazzRestService = JazzRestService.getInstance();
             this.gitRestService = GitRestService.getInstance();
-
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
-                this.fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-            }
         },
 
         startup: function () {
