@@ -5,10 +5,10 @@ const JazzUpdateSitePlugin = require('jazz-update-site-webpack-plugin');
 module.exports = (env) => {
     const version = (typeof env !== 'undefined' && env.buildUUID) || packageJson.version;
     const config = {
-        node : {
-            fs : 'empty',
-            net : 'empty',
-            tls : 'empty'
+        node: {
+            fs: 'empty',
+            net: 'empty',
+            tls: 'empty'
         },
 
         entry: {
@@ -27,16 +27,16 @@ module.exports = (env) => {
                 appType: 'ccm',
                 projectId: 'com.siemens.bt.jazz.workitemeditor.rtcGitConnector',
                 acceptGlobPattern: [
-                   'resources/**',
-                   'META-INF/**',
-                   'plugin.xml',
+                    'resources/**',
+                    'META-INF/**',
+                    'plugin.xml',
                 ],
                 projectInfo: {
-                   author: packageJson.author,
-                   copyright: packageJson.author,
-                   description: packageJson.description,
-                   license: packageJson.license,
-                   version: version,
+                    author: packageJson.author,
+                    copyright: packageJson.author,
+                    description: packageJson.description,
+                    license: packageJson.license,
+                    version: version,
                 },
             }),
 
