@@ -33,13 +33,13 @@ define([
             this.setEventHandlers();
 
             // Show the error dialog in Internet Explorer (better than nothing happening)
-            if (this.isInternetExplorer()) {
-                this.mainErrorDialog.startup();
-                this.mainErrorDialog.show();
-            } else {
+            // if (this.isInternetExplorer()) {
+            //     this.mainErrorDialog.startup();
+            //     this.mainErrorDialog.show();
+            // } else {
                 this.mainDialog.startup();
                 this.mainDialog.show();
-            }
+            // }
         },
 
         setEventHandlers: function () {
