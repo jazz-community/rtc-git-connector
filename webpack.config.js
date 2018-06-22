@@ -18,7 +18,8 @@ module.exports = (env) => {
         output: {
             libraryTarget: 'var',
             library: 'com_siemens_bt_jazz_rtcgitconnector_modules',
-            filename: './resources/dist/modules-bundle.js',
+            filename: 'modules-bundle.js',
+            path: __dirname + '/resources/dist'
         },
 
         plugins: [
