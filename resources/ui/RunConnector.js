@@ -7,7 +7,7 @@ define([
     "../library/HoverViewWrapper"
 ], function(declare, script, focus, RtcGitConnector, ActionNode, HoverViewWrapper) {
     var cssSelector = "img.button-img";
-    script.get(net.jazz.ajax._contextRoot + net.jazz.ajax._webuiPrefix + "com.siemens.bt.jazz.workitemeditor.rtcGitConnector/dist/modules-bundle.js");
+    script.get(net.jazz.ajax._contextRoot + net.jazz.ajax._webuiPrefix + "com.siemens.bt.jazz.workitemeditor.rtcGitConnector/dist/babel-modules-bundle.js");
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.RunConnector",
         com.ibm.team.workitem.web.ui2.internal.action.AbstractAction,
     {
