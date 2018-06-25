@@ -20,7 +20,6 @@
         "webpack-cli": "^3.0.8"
     },
     "scripts": {
-        "postinstall": "cd ./node_modules/node-gitlab-api && npm install && npm run build",
         "build": "node ./node_modules/webpack/bin/webpack.js"
     },
     "repository": {
