@@ -11,9 +11,12 @@ module.exports = (env) => {
             tls: 'empty'
         },
 
-        entry: {
-            app: './src/RtcGitConnectorModules.js',
-        },
+        entry: [
+            'whatwg-fetch',
+            'url-search-params-polyfill',
+            '@babel/polyfill',
+            './src/RtcGitConnectorModules.js'
+        ],
 
         output: {
             libraryTarget: 'var',

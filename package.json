@@ -6,16 +6,17 @@
     "dependencies": {
         "@babel/cli": "^7.0.0-beta.51",
         "@babel/core": "^7.0.0-beta.51",
-        "@babel/plugin-transform-runtime": "^7.0.0-beta.51",
+        "@babel/polyfill": "^7.0.0-beta.51",
         "@babel/preset-env": "^7.0.0-beta.51",
-        "@babel/runtime": "^7.0.0-beta.51",
         "@fortawesome/fontawesome": "^1.1.8",
         "@fortawesome/fontawesome-free-solid": "^5.0.13",
         "@octokit/rest": "^15.9.1",
         "base64-js": "^1.2.1",
         "buffer": "^5.0.7",
         "gzip-js": "^0.3.2",
-        "node-gitlab-api": "^2.2.3"
+        "node-gitlab-api": "^2.2.3",
+        "url-search-params-polyfill": "^4.0.0",
+        "whatwg-fetch": "^2.0.4"
     },
     "devDependencies": {
         "jazz-update-site-webpack-plugin": "^0.4.1",
@@ -24,7 +25,7 @@
         "webpack-cli": "^3.0.8"
     },
     "scripts": {
-        "build": "node ./node_modules/webpack/bin/webpack.js && babel ./resources/dist/modules-bundle.js -o ./resources/dist/babel-modules-bundle.js --presets=@babel/preset-env --plugins @babel/plugin-transform-runtime"
+        "build": "node ./node_modules/webpack/bin/webpack.js && babel ./resources/dist/modules-bundle.js -o ./resources/dist/babel-modules-bundle.js --presets=@babel/preset-env"
     },
     "repository": {
         "type": "git",
