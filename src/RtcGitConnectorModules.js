@@ -44,8 +44,6 @@ export const GitHubApi = require('@octokit/rest');
 // GitLab API client library
 export const GitLabApi = require('node-gitlab-api');
 
-console.log("GitLabApi: ", GitLabApi);
-
 // Fontawesome fonts
 export const FontAwesome = require('@fortawesome/fontawesome');
 const FaCheck = require('@fortawesome/fontawesome-free-solid/faCheck');
