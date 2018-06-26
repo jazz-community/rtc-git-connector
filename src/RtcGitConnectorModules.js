@@ -38,8 +38,11 @@ export function encoder () {
     };
 }
 
-// Handlebars for the browser
+// Handlebars for the browser (templating)
 export const Handlebars = require('handlebars/dist/handlebars');
+
+// Turndown service for the browser (html to markdown)
+export const TurndownService = require('turndown/lib/turndown.browser.umd');
 
 // GitHub API client library
 export const GitHubApi = require('@octokit/rest');
