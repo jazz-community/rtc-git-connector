@@ -2,12 +2,15 @@ define([
     "dojo/_base/declare"
 ], function (declare) {
     return declare(null, {
+        handlebars: null,
+
         constructor: function () {
-            console.log("test from the template service");
+            this.handlebars = com_siemens_bt_jazz_rtcgitconnector_modules.Handlebars;
         },
 
-        renderTemplateFromString: function (templateString) {
-            return templateString;
+        renderTemplateWithWorkItem: function (templateString, workItem) {
+            var template = this.handlebars.compile(templateString);
+            return template(workItem.object.attributes);
         }
     });
 });
