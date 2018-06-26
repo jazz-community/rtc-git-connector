@@ -10,7 +10,8 @@
         "base64-js": "^1.2.1",
         "buffer": "^5.0.7",
         "gzip-js": "^0.3.2",
-        "node-gitlab-api": "^2.2.3"
+        "node-gitlab-api": "^2.2.3",
+        "turndown": "^4.0.2"
     },
     "devDependencies": {
         "jazz-update-site-webpack-plugin": "^0.4.1",
