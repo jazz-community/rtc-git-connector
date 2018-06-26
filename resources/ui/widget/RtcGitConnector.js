@@ -35,7 +35,8 @@ define([
             var defaultIssueTemplateString = this.defaultIssueTemplate.getTemplateString();
 
             this.templateService = new TemplateService();
-            console.log("rendered template string: ", this.templateService.renderTemplateFromString(defaultIssueTemplateString));
+            var renderedTemplate = this.templateService.renderTemplateWithWorkItem(defaultIssueTemplateString, this.mainDataStore.workItem);
+            console.log("rendered template string: ", renderedTemplate);
         },
 
         startup: function () {
