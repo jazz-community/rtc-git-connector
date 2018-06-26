@@ -38,6 +38,9 @@ export function encoder () {
     };
 }
 
+// Handlebars for the browser
+export const Handlebars = require('handlebars/dist/handlebars');
+
 // GitHub API client library
 export const GitHubApi = require('@octokit/rest');
 
