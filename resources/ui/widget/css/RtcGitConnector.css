@@ -208,7 +208,7 @@ button.viewAndSelectSearchButton[disabled] {
 .rtcGitConnectorViewAndSelectListItemButton.emptyButton {
     color: #555;
     cursor: default;
-    
+
     /* border-color: #555; */
 }
 
