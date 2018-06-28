@@ -12,7 +12,7 @@
         "gzip-js": "^0.3.2",
         "handlebars": "^4.0.11",
         "node-gitlab-api": "^2.2.3",
-        "turndown": "https://github.com/MartinBenninger/turndown/tarball/escape-markdown-optionally"
+        "turndown": "MartinBenninger/turndown#target-branch"
     },
     "devDependencies": {
         "jazz-update-site-webpack-plugin": "^0.4.1",
