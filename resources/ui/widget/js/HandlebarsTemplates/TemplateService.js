@@ -27,10 +27,7 @@ define([
             var self = this;
 
             this.handlebars.registerHelper('turndown', function (inputString) {
-                console.log("inputString: ", inputString);
-                var output = inputString ? self.turndownService.turndown(inputString) : "";
-                console.log("output: ", output);
-                return output;
+                return inputString ? self.turndownService.turndown(inputString) : "";
             });
         }
     });

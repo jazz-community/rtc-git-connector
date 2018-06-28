@@ -5,10 +5,6 @@ define([
     return declare(null, {
         templateString: template,
 
-        constructor: function () {
-            console.log("test from default issue template");
-        },
-
         getTemplateString: function () {
             return this.templateString;
         }
