@@ -7,9 +7,13 @@ define([
 
         constructor: function () {
             this.handlebars = com_siemens_bt_jazz_rtcgitconnector_modules.Handlebars;
-            this.turndownService = new com_siemens_bt_jazz_rtcgitconnector_modules.TurndownService({
-                escapeMarkdown: false
-            });
+            this.turndownService = new com_siemens_bt_jazz_rtcgitconnector_modules.TurndownService();
+
+            // Get rid of this and use the option {escapeMarkdown: false}
+            // as soon as it's available in a turndown release
+            this.turndownService.escape = function (input) {
+                return input;
+            };
 
             this.registerHtmlToMarkdownHelper();
         },
