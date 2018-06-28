@@ -7,7 +7,9 @@ define([
 
         constructor: function () {
             this.handlebars = com_siemens_bt_jazz_rtcgitconnector_modules.Handlebars;
-            this.turndownService = new com_siemens_bt_jazz_rtcgitconnector_modules.TurndownService();
+            this.turndownService = new com_siemens_bt_jazz_rtcgitconnector_modules.TurndownService({
+                escapeMarkdown: false
+            });
 
             this.registerHtmlToMarkdownHelper();
         },
