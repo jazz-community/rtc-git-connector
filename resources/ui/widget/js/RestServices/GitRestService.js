@@ -7,9 +7,12 @@ define([
     "dojo/DeferredList",
     "../Models/CommitModel",
     "../Models/IssueModel",
-    "../Models/RequestModel"
+    "../Models/RequestModel",
+    "../HandlebarsTemplates/TemplateService",
+    "../HandlebarsTemplates/DefaultIssueTemplate"
 ], function (declare, url, array, json, Deferred, DeferredList,
-    CommitModel, IssueModel, RequestModel) {
+    CommitModel, IssueModel, RequestModel,
+    TemplateService, DefaultIssueTemplate) {
     var _instance = null;
     var GitRestService = declare(null, {
         gitHubString: "GITHUB",
@@ -43,6 +46,13 @@ define([
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({});
 
+            // Get and render the issue template
+            var defaultIssueTemplateString = new DefaultIssueTemplate().getTemplateString();
+            var renderedTemplate = new TemplateService().renderTemplateWithWorkItem(
+                defaultIssueTemplateString,
+                workItem
+            );
+
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
@@ -59,7 +69,7 @@ define([
                     owner: urlParts[0],
                     repo: urlParts[1],
                     title: workItem.object.attributes.summary.content,
-                    body: workItem.object.attributes.description.content,
+                    body: renderedTemplate,
                     labels: tags
                 }, function (error, response) {
                     if (error) {
@@ -80,6 +90,13 @@ define([
             tags = (tags.length) ? tags + ", " : tags;
             tags += "from-rtc-work-item";
 
+            // Get and render the issue template
+            var defaultIssueTemplateString = new DefaultIssueTemplate().getTemplateString();
+            var renderedTemplate = new TemplateService().renderTemplateWithWorkItem(
+                defaultIssueTemplateString,
+                workItem
+            );
+
             var gitlab = this.gitLabApi({
                 url: this._formatUrlWithProxy(giturl.origin),
                 token: accessToken
@@ -90,7 +107,7 @@ define([
             } else {
                 gitlab.projects.issues.create(encodeURIComponent(giturl.joined), {
                     title: workItem.object.attributes.summary.content,
-                    description: workItem.object.attributes.description.content,
+                    description: renderedTemplate,
                     labels: tags
                 }).then(function (response) {
                     deferred.resolve(IssueModel.CreateFromGitLabIssue(response, []));
