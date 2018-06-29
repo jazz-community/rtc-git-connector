@@ -90,13 +90,6 @@ define([
             tags = (tags.length) ? tags + ", " : tags;
             tags += "from-rtc-work-item";
 
-            // Get and render the issue template
-            var defaultIssueTemplateString = new DefaultIssueTemplate().getTemplateString();
-            var renderedTemplate = new TemplateService().renderTemplateWithWorkItem(
-                defaultIssueTemplateString,
-                workItem
-            );
-
             var gitlab = this.gitLabApi({
                 url: this._formatUrlWithProxy(giturl.origin),
                 token: accessToken
@@ -105,16 +98,49 @@ define([
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.projects.issues.create(encodeURIComponent(giturl.joined), {
-                    title: workItem.object.attributes.summary.content,
-                    description: renderedTemplate,
-                    labels: tags
-                }).then(function (response) {
-                    deferred.resolve(IssueModel.CreateFromGitLabIssue(response, []));
+                this.getGitLabIssueTemplate(gitlab, giturl.joined).then(function (result) {
+                    createIssue(result);
                 }, function (error) {
-                    deferred.reject("Couldn't create an issue in the GitLab repository. Error: " + (error.error.message || error.error));
+                    console.log("Couldn't find an issue template. Error: ", error);
+
+                    // Use the default issue template if none was found on the server
+                    var defaultIssueTemplateString = new DefaultIssueTemplate().getTemplateString();
+                    createIssue(defaultIssueTemplateString);
                 });
+
+                var createIssue = function (templateString) {
+                    var renderedTemplate = new TemplateService()
+                        .renderTemplateWithWorkItem(templateString, workItem);
+
+                    gitlab.projects.issues.create(encodeURIComponent(giturl.joined), {
+                        title: workItem.object.attributes.summary.content,
+                        description: renderedTemplate,
+                        labels: tags
+                    }).then(function (response) {
+                        deferred.resolve(IssueModel.CreateFromGitLabIssue(response, []));
+                    }, function (error) {
+                        deferred.reject("Couldn't create an issue in the GitLab repository. Error: " + (error.error.message || error.error));
+                    });
+                };
             }
+
+            return deferred.promise;
+        },
+
+        getGitLabIssueTemplate: function (gitlab, projectId) {
+            var deferred = new Deferred();
+            var filePath = ".gitlab/issue_templates/rtc-work-item-v1.md";
+            var url = "projects/" + encodeURIComponent(projectId) +
+                "/repository/files/" + encodeURIComponent(filePath) + "/raw?ref=master";
+
+            // Use the get function directly instead of the "projects.repository.files.showRaw" function
+            // This is a workaround so that the jazz proxy correctly sends the "ref" parameter as a
+            // query parameter
+            gitlab.get(encodeURIComponent(url), {}).then(function (response) {
+                deferred.resolve(response);
+            }, function (error) {
+                deferred.reject("Couldn't get the issue template from GitLab. Error: " + (error.message || error));
+            });
 
             return deferred.promise;
         },
