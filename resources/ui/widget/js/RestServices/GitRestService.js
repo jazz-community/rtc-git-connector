@@ -47,13 +47,6 @@ define([
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({});
 
-            // Get and render the issue template
-            var defaultIssueTemplateString = new DefaultIssueTemplate().getTemplateString();
-            var renderedTemplate = new TemplateService().renderTemplateWithWorkItem(
-                defaultIssueTemplateString,
-                workItem
-            );
-
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
@@ -66,20 +59,57 @@ define([
                     type: 'token',
                     token: accessToken
                 });
-                github.issues.create({
-                    owner: urlParts[0],
-                    repo: urlParts[1],
-                    title: workItem.object.attributes.summary.content,
-                    body: renderedTemplate,
-                    labels: tags
-                }, function (error, response) {
-                    if (error) {
-                        deferred.reject("Couldn't create an issue in the GitHub repository. Error: " + (error.message || error));
-                    } else {
-                        deferred.resolve(IssueModel.CreateFromGitHubIssue(response.data, []));
-                    }
+                this.getGitHubIssueTemplate(github, urlParts).then(function (result) {
+                    createIssue(result);
+                }, function (error) {
+                    console.log("Couldn't find an issue template. Error: ", error);
+
+                    // Use the default issue template if none was found on the server
+                    var defaultIssueTemplateString = new DefaultIssueTemplate().getTemplateString();
+                    createIssue(defaultIssueTemplateString);
                 });
+
+                var createIssue = function (templateString) {
+                    var renderedTemplate = new TemplateService()
+                        .renderTemplateWithWorkItem(templateString, workItem);
+
+                    github.issues.create({
+                        owner: urlParts[0],
+                        repo: urlParts[1],
+                        title: workItem.object.attributes.summary.content,
+                        body: renderedTemplate,
+                        labels: tags
+                    }, function (error, response) {
+                        if (error) {
+                            deferred.reject("Couldn't create an issue in the GitHub repository. Error: " + (error.message || error));
+                        } else {
+                            deferred.resolve(IssueModel.CreateFromGitHubIssue(response.data, []));
+                        }
+                    });
+                };
             }
+
+            return deferred.promise;
+        },
+
+        getGitHubIssueTemplate: function (github, urlParts) {
+            var deferred = new Deferred();
+            var filePath = ".github/ISSUE_TEMPLATE/" + this.issueTemplateName;
+
+            github.repos.getContent({
+                owner: urlParts[0],
+                repo: urlParts[1],
+                path: filePath,
+                headers: {
+                    accept: "application/vnd.github.VERSION.raw"
+                }
+            }, function (error, response) {
+                if (error) {
+                    deferred.reject("Couldn't get the issue template from GitHub. Error: " + (error.message || error));
+                } else {
+                    deferred.resolve(response.data);
+                }
+            });
 
             return deferred.promise;
         },
