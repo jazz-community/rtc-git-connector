@@ -1,28 +1,28 @@
 ### Description\n
 \n
-{{#if description.content}}
-{{{turndown description.content}}}\n
+{{#if attributes.description.content}}
+{{{turndown attributes.description.content}}}\n
 {{else}}
 Please add a description\n
 {{/if}}
 \n\n
-{{#if com.ibm.team.apt.attribute.acceptance}}
+{{#if attributes.[com.ibm.team.apt.attribute.acceptance]}}
 ### Acceptance Criteria\n
 \n
-{{#if com.ibm.team.apt.attribute.acceptance.content}}
-{{{turndown com.ibm.team.apt.attribute.acceptance.content}}}\n
+{{#if attributes.[com.ibm.team.apt.attribute.acceptance].content}}
+{{{turndown attributes.[com.ibm.team.apt.attribute.acceptance].content}}}\n
 {{else}}
 Please add some acceptance criteria\n
 {{/if}}
-\n
+\n\n
 {{/if}}
 ### Other Attributes\n
 \n
 | Attributes | Values |\n
 | --- | --- |\n
-| Owned By | [{{{owner.name}}}](mailto:{{{owner.emailAddress}}}) |\n
-| Filed Against | {{{category.label}}} |\n
-| Planned For | {{{target.label}}} |\n
-{{#if internalTags.content}}
-| Tags | {{{internalTags.content}}} |\n
+| Owned By | [{{{attributes.owner.name}}}](mailto:{{{attributes.owner.emailAddress}}}) |\n
+| Filed Against | {{{attributes.category.label}}} |\n
+| Planned For | {{{attributes.target.label}}} |\n
+{{#if attributes.internalTags.content}}
+| Tags | {{{attributes.internalTags.content}}} |\n
 {{/if}}

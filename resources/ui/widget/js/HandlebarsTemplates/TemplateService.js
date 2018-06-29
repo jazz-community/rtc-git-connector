@@ -20,7 +20,7 @@ define([
 
         renderTemplateWithWorkItem: function (templateString, workItem) {
             var template = this.handlebars.compile(templateString);
-            return template(workItem.object.attributes);
+            return template(workItem.object);
         },
 
         registerHtmlToMarkdownHelper: function () {
