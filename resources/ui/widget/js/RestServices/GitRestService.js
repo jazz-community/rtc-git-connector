@@ -19,6 +19,7 @@ define([
         gitLabString: "GITLAB",
         gitHubApi: null, // use with new
         gitLabApi: null, // use without new
+        issueTemplateName: "rtc-work-item-v1.md",
 
         constructor: function () {
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
@@ -129,7 +130,7 @@ define([
 
         getGitLabIssueTemplate: function (gitlab, projectId) {
             var deferred = new Deferred();
-            var filePath = ".gitlab/issue_templates/rtc-work-item-v1.md";
+            var filePath = ".gitlab/issue_templates/" + this.issueTemplateName;
             var url = "projects/" + encodeURIComponent(projectId) +
                 "/repository/files/" + encodeURIComponent(filePath) + "/raw?ref=master";
 
