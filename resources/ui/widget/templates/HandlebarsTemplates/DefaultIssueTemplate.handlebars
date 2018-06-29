@@ -1,11 +1,19 @@
 ### Description\n
 \n
+{{#if description.content}}
 {{{turndown description.content}}}\n
-\n
-{{#if com.ibm.team.apt.attribute.acceptance.content}}
+{{else}}
+Please add a description\n
+{{/if}}
+\n\n
+{{#if com.ibm.team.apt.attribute.acceptance}}
 ### Acceptance Criteria\n
 \n
+{{#if com.ibm.team.apt.attribute.acceptance.content}}
 {{{turndown com.ibm.team.apt.attribute.acceptance.content}}}\n
+{{else}}
+Please add some acceptance criteria\n
+{{/if}}
 \n
 {{/if}}
 ### Other Attributes\n
@@ -15,4 +23,6 @@
 | Owned By | [{{{owner.name}}}](mailto:{{{owner.emailAddress}}}) |\n
 | Filed Against | {{{category.label}}} |\n
 | Planned For | {{{target.label}}} |\n
+{{#if internalTags.content}}
 | Tags | {{{internalTags.content}}} |\n
+{{/if}}
