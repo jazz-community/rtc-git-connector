@@ -2,8 +2,6 @@ define([
     "dojo/_base/declare",
     "dojo/dom",
     "dojo/dom-style",
-    "./js/HandlebarsTemplates/TemplateService",
-    "./js/HandlebarsTemplates/DefaultIssueTemplate",
     "./js/MainLayout",
     "./js/DataStores/MainDataStore",
     "./js/RestServices/JazzRestService",
@@ -16,7 +14,6 @@ define([
     "dojo/text!./templates/RtcGitConnector.html",
     "dojo/domReady!"
 ], function (declare, dom, domStyle,
-    TemplateService, DefaultIssueTemplate,
     MainLayout, MainDataStore, JazzRestService, GitRestService,
     _AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin,
     registry, Dialog, template) {
@@ -30,13 +27,6 @@ define([
             this.mainDataStore = MainDataStore.getInstance();
             this.mainDataStore.workItem = this.workItem;
             this.mainDataStore.projectArea = this.workItem.object.attributes.projectArea;
-
-            this.defaultIssueTemplate = new DefaultIssueTemplate();
-            var defaultIssueTemplateString = this.defaultIssueTemplate.getTemplateString();
-
-            this.templateService = new TemplateService();
-            var renderedTemplate = this.templateService.renderTemplateWithWorkItem(defaultIssueTemplateString, this.mainDataStore.workItem);
-            console.log("rendered template string: ", renderedTemplate);
         },
 
         startup: function () {
