@@ -7,6 +7,7 @@ define([
     "dojo/dom-construct",
     "dojo/on",
     "dojo/query",
+    "dojo/json",
     "./DataStores/MainDataStore",
     "./RestServices/JazzRestService",
     "./RestServices/GitRestService",
@@ -15,7 +16,7 @@ define([
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!../templates/ViewAndSelectIssues.html"
-], function (declare, array, lang, dom, domClass, domConstruct, on, query,
+], function (declare, array, lang, dom, domClass, domConstruct, on, query, json,
     MainDataStore, JazzRestService, GitRestService, ViewHelper,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
@@ -283,6 +284,13 @@ define([
                     innerHTML: "This will create a new issue in the selected " + gitHost + " repository and fill it with the information from this work item. " +
                         "The new issue will also be added as a link."
                 }, issueDetailsNode);
+                ViewHelper.AddLinkToDetailsViewNode(issueDetailsNode, "Developer info: ", domConstruct.create("button", {
+                    "id": "viewAndSelectIssuesCopyWorkItemDetails",
+                    "class": "secondary-button",
+                    "type": "button",
+                    innerHTML: "Copy work item details to clipboard"
+                }));
+                this.copyJsonWorkItemToClipboard();
             } else {
                 ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Title: ", issue.title);
                 ViewHelper.AddToDetailsViewNode(issueDetailsNode, "State: ", issue.state);
@@ -310,6 +318,15 @@ define([
             this.viewIssues = ViewHelper.FilterListDataByText(filterText,
                 ["id", "title", "state", "openedBy"],
                 this.viewIssues);
+        },
+
+        copyJsonWorkItemToClipboard: function () {
+            var self = this;
+            new com_siemens_bt_jazz_rtcgitconnector_modules.ClipboardJS("#viewAndSelectIssuesCopyWorkItemDetails", {
+                text: function () {
+                    return json.stringify(self.mainDataStore.workItem.object, null, 2);
+                }
+            });
         }
     });
 });
