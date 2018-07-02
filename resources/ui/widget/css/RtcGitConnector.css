@@ -32,7 +32,7 @@
     position: absolute;
     bottom: 0;
     right: 1rem;
-    font-size: 1rem;
+    font-size: 1em;
 }
 
 .rtcGitConnectorError {
@@ -42,7 +42,7 @@
 .rtcGitConnectorLabelText {
     display: inline-block;
     margin-bottom: .5rem;
-    font-size: 1.5rem;
+    font-size: 1.5em;
     font-weight: bold;
 }
 
@@ -62,7 +62,7 @@
     width: 100%;
     text-align: left;
     padding: .2rem;
-    font-size: 1rem;
+    font-size: 1em;
 }
 
 /* Add a light blue background to the selected option in the drop-down list. */
@@ -86,7 +86,7 @@
     display: inline-block;
     flex-grow: 1;
     padding: .5rem;
-    font-size: 1rem;
+    font-size: 1em;
     font-weight: bold;
     cursor: pointer;
     background-color: white;
@@ -155,7 +155,7 @@ button.viewAndSelectSearchButton[disabled] {
     display: flex;
     border-bottom: 1px solid lightgray;
     padding: .2rem;
-    font-size: 1rem;
+    font-size: 1em;
     cursor: pointer;
 }
 
@@ -176,7 +176,7 @@ button.viewAndSelectSearchButton[disabled] {
     width: 2rem;
     height: 100%;
     margin: auto .3rem;
-    font-size: 1.5rem;
+    font-size: 1.5em;
     color: #0645AD;
     text-align: center;
     cursor: pointer;
@@ -232,7 +232,7 @@ button.viewAndSelectSearchButton[disabled] {
 
 .rtcGitConnectorViewAndSelectDetailsSpan {
     display: block;
-    font-size: 1rem;
+    font-size: 1em;
     padding-top: .5rem;
     padding-bottom: .5rem;
     border-bottom: 1px dashed lightgray;
@@ -261,5 +261,5 @@ button.viewAndSelectSearchButton[disabled] {
     z-index: 10000;
     text-align: center;
     line-height: 80vh;
-    font-size: 5rem;
+    font-size: 5em;
 }
