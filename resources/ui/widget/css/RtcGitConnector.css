@@ -23,15 +23,15 @@
     width: 80vw;
     min-width: 800px;
     min-height: 80vh;
-    margin: 1rem;
+    margin: 1em;
     position: relative;
-    padding-bottom: 2rem;
+    padding-bottom: 2em;
 }
 
 .rtcGitConnectorActionButtons {
     position: absolute;
     bottom: 0;
-    right: 1rem;
+    right: 1em;
     font-size: 1em;
 }
 
@@ -41,7 +41,7 @@
 
 .rtcGitConnectorLabelText {
     display: inline-block;
-    margin-bottom: .5rem;
+    margin-bottom: .5em;
     font-size: 1.5em;
     font-weight: bold;
 }
@@ -53,7 +53,7 @@
 
 /* Limit the size of the dojo select list drop-down arrow. It looks bad when any larger. */
 .rtcGitConnectorSelectList .dijitArrowButton {
-    width: 1rem;
+    width: 1em;
 }
 
 .rtcGitConnectorSelectListSpan {
@@ -61,7 +61,7 @@
     display: block;
     width: 100%;
     text-align: left;
-    padding: .2rem;
+    padding: .2em;
     font-size: 1em;
 }
 
@@ -85,7 +85,7 @@
 .rtcGitConnectorSelectLinkType .linkTypeItem {
     display: inline-block;
     flex-grow: 1;
-    padding: .5rem;
+    padding: .5em;
     font-size: 1em;
     font-weight: bold;
     cursor: pointer;
@@ -104,14 +104,14 @@
 
 .viewAndSelectSearchInput {
     width: calc(50% - 138px);
-    margin-bottom: .5rem;
+    margin-bottom: .5em;
 }
 
 .viewAndSelectSearchButton {
     display: inline-block;
     width: 60px;
     height: 20px;
-    margin-bottom: .5rem;
+    margin-bottom: .5em;
     border: 1px solid;
     border-radius: 3px;
     border-color: #357ebd;
@@ -134,7 +134,7 @@ button.viewAndSelectSearchButton[disabled] {
 
 .viewAndSelectFilterInput {
     width: calc(50% - 74px);
-    margin-bottom: .5rem;
+    margin-bottom: .5em;
 }
 
 .rtcGitConnectorViewAndSelectWrapper {
@@ -154,7 +154,7 @@ button.viewAndSelectSearchButton[disabled] {
 .rtcGitConnectorViewAndSelectListItem {
     display: flex;
     border-bottom: 1px solid lightgray;
-    padding: .2rem;
+    padding: .2em;
     font-size: 1em;
     cursor: pointer;
 }
@@ -173,18 +173,18 @@ button.viewAndSelectSearchButton[disabled] {
 }
 
 .rtcGitConnectorViewAndSelectListItemButton {
-    width: 2rem;
+    width: 2em;
     height: 100%;
-    margin: auto .3rem;
+    margin: auto .3em;
     font-size: 1.5em;
     color: #0645AD;
     text-align: center;
     cursor: pointer;
 
     /* background-color: white;
-    border: 0.2rem solid #0645AD;
-    border-radius: .5rem;
-    padding: .5rem; */
+    border: 0.2em solid #0645AD;
+    border-radius: .5em;
+    padding: .5em; */
 }
 
 .rtcGitConnectorViewAndSelectListItemButton.addButton {
@@ -233,8 +233,8 @@ button.viewAndSelectSearchButton[disabled] {
 .rtcGitConnectorViewAndSelectDetailsSpan {
     display: block;
     font-size: 1em;
-    padding-top: .5rem;
-    padding-bottom: .5rem;
+    padding-top: .5em;
+    padding-bottom: .5em;
     border-bottom: 1px dashed lightgray;
 }
 
@@ -253,10 +253,10 @@ button.viewAndSelectSearchButton[disabled] {
 
 #rtcGitConnectorFullPageLoadingOverlay {
     position: absolute;
-    top: -1rem;
-    bottom: -1rem;
-    left: -1rem;
-    right: -1rem;
+    top: -1em;
+    bottom: -1em;
+    left: -1em;
+    right: -1em;
     background-color: white;
     z-index: 10000;
     text-align: center;
