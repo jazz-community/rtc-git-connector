@@ -157,6 +157,7 @@ button.viewAndSelectSearchButton[disabled] {
     padding: .2em;
     font-size: 1em;
     cursor: pointer;
+    transition: all 0.3s ease-out;
 }
 
 .rtcGitConnectorViewAndSelectListItem.itemToLink {
