@@ -92,9 +92,9 @@ define([
             }, messageNode);
         };
 
-        this.AddLinkToDetailsViewNode = function (detailsViewNode, label, linkNode) {
+        this.AddNodeToDetailsViewNode = function (detailsViewNode, label, node) {
             var messageNode = self.CreateDetailsViewSpan(detailsViewNode, label);
-            domConstruct.place(linkNode, messageNode);
+            domConstruct.place(node, messageNode);
         };
 
         this.CreateDetailsViewSpan = function (detailsViewNode, label) {

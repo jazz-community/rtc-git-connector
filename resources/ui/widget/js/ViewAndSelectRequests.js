@@ -278,7 +278,7 @@ define([
                     href: request.webUrl,
                     target: "_blank"
                 });
-                ViewHelper.AddLinkToDetailsViewNode(requestDetailsNode, "Web Link: ", linkNode);
+                ViewHelper.AddNodeToDetailsViewNode(requestDetailsNode, "Web Link: ", linkNode);
             }
         },
 

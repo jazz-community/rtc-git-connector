@@ -277,7 +277,7 @@ define([
                     href: commit.webUrl,
                     target: "_blank"
                 });
-                ViewHelper.AddLinkToDetailsViewNode(commitDetailsNode, "Web Link: ", linkNode);
+                ViewHelper.AddNodeToDetailsViewNode(commitDetailsNode, "Web Link: ", linkNode);
             }
         },
 

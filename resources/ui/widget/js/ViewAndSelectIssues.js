@@ -284,7 +284,7 @@ define([
                     innerHTML: "This will create a new issue in the selected " + gitHost + " repository and fill it with the information from this work item. " +
                         "The new issue will also be added as a link."
                 }, issueDetailsNode);
-                ViewHelper.AddLinkToDetailsViewNode(issueDetailsNode, "Developer info: ", domConstruct.create("button", {
+                ViewHelper.AddNodeToDetailsViewNode(issueDetailsNode, "Developer info: ", domConstruct.create("button", {
                     "id": "viewAndSelectIssuesCopyWorkItemDetails",
                     "class": "secondary-button",
                     "type": "button",
@@ -302,7 +302,7 @@ define([
                     href: issue.webUrl,
                     target: "_blank"
                 });
-                ViewHelper.AddLinkToDetailsViewNode(issueDetailsNode, "Web Link: ", linkNode);
+                ViewHelper.AddNodeToDetailsViewNode(issueDetailsNode, "Web Link: ", linkNode);
             }
         },
 
