@@ -44,6 +44,9 @@ export const Handlebars = require('handlebars/dist/handlebars');
 // Turndown service for the browser (html to markdown)
 export const TurndownService = require('turndown/lib/turndown.browser.umd');
 
+// Clipboard.js for copying directly to the clipboard with wide browser support
+export const ClipboardJS = require('clipboard/dist/clipboard.min');
+
 // GitHub API client library
 export const GitHubApi = require('@octokit/rest');
 

@@ -9,6 +9,7 @@
         "@octokit/rest": "^15.2.6",
         "base64-js": "^1.2.1",
         "buffer": "^5.0.7",
+        "clipboard": "^2.0.1",
         "gzip-js": "^0.3.2",
         "handlebars": "^4.0.11",
         "node-gitlab-api": "^2.2.3",
