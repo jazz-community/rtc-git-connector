@@ -71,7 +71,7 @@
 }
 
 .rtcGitConnectorSelectListFirstLine {
-    font-weight: bold;
+    /* font-weight: bold; */
 }
 
 .rtcGitConnectorSelectListSecondLine {
@@ -87,7 +87,7 @@
     flex-grow: 1;
     padding: .5em;
     font-size: 1em;
-    font-weight: bold;
+    /* font-weight: bold; */
     cursor: pointer;
     background-color: white;
     border: 1px solid gray;
@@ -239,7 +239,7 @@ button.viewAndSelectSearchButton[disabled] {
 }
 
 .rtcGitConnectorViewAndSelectDetailsLabel {
-    font-weight: bold;
+    /* font-weight: bold; */
 }
 
 .rtcGitConnectorViewItemsToLinkList {
