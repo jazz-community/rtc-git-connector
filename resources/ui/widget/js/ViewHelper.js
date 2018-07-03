@@ -37,13 +37,14 @@ define([
         this.FilterListDataByText = function (filterText, filterBy, filterResult) {
             filterText = filterText.toLowerCase();
             return filterResult.filter(function (item) {
+                var keepItem = false;
                 for (var i = 0; i < filterBy.length; i++) {
-                        return true;
                     if (item[filterBy[i]].toString().toLowerCase().indexOf(filterText) > -1) {
                         item[filterBy[i]] = self.HighlightTextInString(filterText, item[filterBy[i]].toString());
+                        keepItem = true;
                     }
                 }
-                return false;
+                return keepItem;
             });
         };
 
