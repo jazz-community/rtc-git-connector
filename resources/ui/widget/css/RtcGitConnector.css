@@ -44,6 +44,7 @@
     margin-bottom: .5em;
     font-size: 1em;
     font-weight: bold;
+    color: #666666;
 }
 
 .rtcGitConnectorSelectList {
@@ -239,8 +240,21 @@ button.viewAndSelectSearchButton[disabled] {
     border-bottom: 1px dashed lightgray;
 }
 
+.rtcGitConnectorViewAndSelectDetailsSpan span {
+    display: inline-block;
+}
+
 .rtcGitConnectorViewAndSelectDetailsLabel {
-    /* font-weight: bold; */
+    color: #666666;
+}
+
+.rtcGitConnectorViewAndSelectDetailsSpan.rtcGitConnectorViewAndSelectDetailsLabel {
+    font-weight: bold;
+}
+
+.rtcGitConnectorViewAndSelectDetailsSpan .rtcGitConnectorViewAndSelectDetailsLabel {
+    width: 100px;
+    vertical-align: top;
 }
 
 .rtcGitConnectorViewItemsToLinkList {
