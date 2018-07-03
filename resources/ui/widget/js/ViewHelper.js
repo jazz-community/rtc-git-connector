@@ -38,10 +38,9 @@ define([
             filterText = filterText.toLowerCase();
             return filterResult.filter(function (item) {
                 for (var i = 0; i < filterBy.length; i++) {
-                    var lowerCaseString = item[filterBy[i]].toString().toLowerCase();
-                    if (lowerCaseString.indexOf(filterText) > -1) {
-                        item[filterBy[i]] = self.HighlightTextInString(filterText, lowerCaseString);
                         return true;
+                    if (item[filterBy[i]].toString().toLowerCase().indexOf(filterText) > -1) {
+                        item[filterBy[i]] = self.HighlightTextInString(filterText, item[filterBy[i]].toString());
                     }
                 }
                 return false;
@@ -50,7 +49,7 @@ define([
 
         this.HighlightTextInString = function (searchText, fullText) {
             var startIndex;
-            if (searchText && (startIndex = fullText.indexOf(searchText)) > -1) {
+            if (searchText && (startIndex = fullText.toLowerCase().indexOf(searchText)) > -1) {
                 var beforeFound = fullText.slice(0, startIndex);
                 var found = fullText.slice(startIndex, startIndex + searchText.length);
                 var afterFound = self.HighlightTextInString(searchText, fullText.slice(startIndex + searchText.length));
