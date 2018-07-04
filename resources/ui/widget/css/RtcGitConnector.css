@@ -52,11 +52,14 @@
 
 .rtcGitConnectorLabelText {
     display: inline-block;
-    /* margin-bottom: .5em; */
+    margin-bottom: .5em;
     font-size: 1em;
     font-weight: bold;
     color: #666666;
     width: 200px;
+}
+
+.rtcGitConnectorSelectRegisteredGitRepository .rtcGitConnectorLabelText {
     margin-top: auto;
     margin-bottom: auto;
 }
@@ -165,6 +168,12 @@ button.viewAndSelectSearchButton[disabled] {
 .viewAndSelectFilterInput {
     width: calc(50% - 74px);
     margin-bottom: .5em;
+}
+
+.rtcGitConnectorViewAndSelectContainer {
+    background-color: white;
+    border: 1px solid #cacaca;
+    padding: 10px;
 }
 
 .rtcGitConnectorViewAndSelectWrapper {
