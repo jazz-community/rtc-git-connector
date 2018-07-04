@@ -104,10 +104,18 @@
     flex-grow: 1;
     padding: .5em;
     font-size: 1em;
-    /* font-weight: bold; */
     cursor: pointer;
     background-color: white;
-    border: 1px solid gray;
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-top: 0px;
+    border-right: 0px;
+    border-style: solid;
+    border-color: #cacaca;
+}
+
+.rtcGitConnectorSelectLinkType .linkTypeItem.lastLinkTypeItem {
+    border-right-width: 1px;
 }
 
 .rtcGitConnectorSelectLinkType .linkTypeItem:hover {
