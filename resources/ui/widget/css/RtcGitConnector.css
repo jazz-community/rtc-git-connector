@@ -186,7 +186,7 @@ button.viewAndSelectSearchButton[disabled] {
     width: 100%;
     height: 300px;
     margin-right: 10px;
-    border: 1px solid gray;
+    border: 1px solid #cacaca;
     overflow-y: auto;
 }
 
@@ -297,7 +297,7 @@ button.viewAndSelectSearchButton[disabled] {
 
 .rtcGitConnectorViewItemsToLinkList {
     width: 100%;
-    border: 1px solid gray;
+    border: 1px solid #cacaca;
 }
 
 .rtcGitConnectorHighlightText {
