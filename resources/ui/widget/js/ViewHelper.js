@@ -138,11 +138,8 @@ define([
             var commitDateString;
 
             if (commit.authoredDate) {
-                var commitDate = new Date(commit.authoredDate);
                 commitDateString = commit.authorName + " committed on "
-                    + commitDate.toDateString() + " at "
-                    + self.FrontPadWithZeros(commitDate.getHours()) + ":"
-                    + self.FrontPadWithZeros(commitDate.getMinutes());
+                    + self.GetFormattedDateFromString(commit.authoredDate);
             } else {
                 commitDateString = "&nbsp;";
             }
@@ -155,17 +152,22 @@ define([
             var issueOrRequestDateString;
 
             if (issueOrRequest.openedDate) {
-                var issueOrRequestDate = new Date(issueOrRequest.openedDate);
                 issueOrRequestDateString = "#" + issueOrRequest.id + " opened by "
                     + issueOrRequest.openedBy + " on "
-                    + issueOrRequestDate.toDateString() + " at "
-                    + self.FrontPadWithZeros(issueOrRequestDate.getHours()) + ":"
-                    + self.FrontPadWithZeros(issueOrRequestDate.getMinutes());
+                    + self.GetFormattedDateFromString(issueOrRequest.openedDate);
             } else {
                 issueOrRequestDateString = "&nbsp;";
             }
 
             return issueOrRequestDateString;
+        };
+
+        // Create and format a date from a string
+        this.GetFormattedDateFromString = function (dateString) {
+            var dateObject = new Date(dateString);
+            return dateObject.toDateString() + " at "
+                + self.FrontPadWithZeros(dateObject.getHours()) + ":"
+                + self.FrontPadWithZeros(dateObject.getMinutes());
         };
 
         // Add zeros to the front if the passed in time has less than two digits

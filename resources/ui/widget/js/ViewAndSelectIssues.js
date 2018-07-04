@@ -295,7 +295,7 @@ define([
                 ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Title: ", issue.title);
                 ViewHelper.AddToDetailsViewNode(issueDetailsNode, "State: ", issue.state);
                 ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Opened by: ", issue.openedBy);
-                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Date opened: ", new Date(issue.openedDate).toString());
+                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Date opened: ", ViewHelper.GetFormattedDateFromString(issue.openedDate));
                 ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Issue id: ", "#" + issue.id);
                 var linkNode = domConstruct.create("a", {
                     innerHTML: "Open this issue in a new tab",

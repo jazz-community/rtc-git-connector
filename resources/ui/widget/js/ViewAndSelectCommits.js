@@ -268,9 +268,10 @@ define([
                     innerHTML: "Select a commit to view more details"
                 }, commitDetailsNode);
             } else {
+                console.log("authoredDate: ", commit.authoredDate);
                 ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Message: ", commit.message.replace(/(\r\n|\n|\r)/gm, "<br />"));
                 ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Author: ", commit.authorName + " (" + commit.authorEmail + ")");
-                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Date: ", new Date(commit.authoredDate).toString());
+                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Date: ", ViewHelper.GetFormattedDateFromString(commit.authoredDate));
                 ViewHelper.AddToDetailsViewNode(commitDetailsNode, "SHA: ", commit.sha);
                 var linkNode = domConstruct.create("a", {
                     innerHTML: "Open this commit in a new tab",

@@ -271,7 +271,7 @@ define([
                 ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Title: ", request.title);
                 ViewHelper.AddToDetailsViewNode(requestDetailsNode, "State: ", request.state);
                 ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Opened by: ", request.openedBy);
-                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Date opened: ", new Date(request.openedDate).toString());
+                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Date opened: ", ViewHelper.GetFormattedDateFromString(request.openedDate));
                 ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Request id: ", "#" + request.id);
                 var linkNode = domConstruct.create("a", {
                     innerHTML: "Open this request in a new tab",
