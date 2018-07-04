@@ -27,7 +27,7 @@
     width: 80vw;
     min-width: 800px;
     min-height: 80vh;
-    margin: 1em;
+    margin: 5px;
     position: relative;
     padding-bottom: 2em;
 }
@@ -93,6 +93,10 @@
 
 .rtcGitConnectorSelectListSecondLine {
     color: gray;
+}
+
+#rtcGitConnectorSelectLinkTypeContainer {
+    margin-bottom: 10px;
 }
 
 .rtcGitConnectorSelectLinkType {
