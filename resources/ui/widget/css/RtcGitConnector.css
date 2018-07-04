@@ -122,7 +122,7 @@
     transition: all 0.3s ease-out;
 }
 
-.rtcGitConnectorSelectLinkType .linkTypeItem.lastLinkTypeItem {
+.rtcGitConnectorSelectLinkType .linkTypeItem:last-child {
     border-right-width: 1px;
 }
 
@@ -198,6 +198,10 @@ button.viewAndSelectSearchButton[disabled] {
     font-size: 1em;
     cursor: pointer;
     transition: all 0.3s ease-out;
+}
+
+.rtcGitConnectorViewAndSelectListItem:last-child {
+    border-bottom-width: 0px;
 }
 
 .rtcGitConnectorViewAndSelectListItem.itemToLink {
