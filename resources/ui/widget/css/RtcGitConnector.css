@@ -136,13 +136,21 @@
 }
 
 .viewAndSelectSearchInput {
-    width: calc(50% - 138px);
-    margin-bottom: .5em;
+    flex-grow: 1;
+    margin-right: .5em;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.viewAndSelectSearchButton {
+    margin-right: .5em !important;
 }
 
 .viewAndSelectFilterInput {
-    width: calc(50% - 74px);
-    margin-bottom: .5em;
+    flex-grow: 1;
+    margin-right: .5em;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .rtcGitConnectorViewAndSelectContainer {
@@ -176,7 +184,20 @@
     transition: all 0.3s ease-out;
 }
 
-.rtcGitConnectorViewAndSelectListItem:last-child {
+.rtcGitConnectorViewAndSelectListControl {
+    display: flex;
+    border-bottom: 1px solid #cacaca;
+    padding: .5em;
+}
+
+.viewAndSelectControlLabel {
+    color: #666666;
+    width: 75px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.rtcGitConnectorViewItemsToLinkList .rtcGitConnectorViewAndSelectListItem:last-child {
     border-bottom-width: 0px;
 }
 

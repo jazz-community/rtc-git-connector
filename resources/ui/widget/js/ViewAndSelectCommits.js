@@ -180,7 +180,7 @@ define([
         // Draw the commits list from the view commits
         drawViewCommits: function () {
             var self = this;
-            var commitsListNode = query("#viewAndSelectCommitsWrapper .rtcGitConnectorViewAndSelectList")[0];
+            var commitsListNode = query("#viewAndSelectCommitsWrapper .rtcGitConnectorViewAndSelectList .rtcGitConnectorViewAndSelectListItems")[0];
             domConstruct.empty(commitsListNode);
 
             array.forEach(this.viewCommits, function (commit) {
