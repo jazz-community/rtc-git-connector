@@ -268,7 +268,7 @@
     flex-grow: 1;
     width: calc(100% - 20px);
     height: 200px;
-    padding: 10px;
+    padding: 4px 10px;
     margin-left: 10px;
     border: 1px solid #cacaca;
     overflow-y: auto;
