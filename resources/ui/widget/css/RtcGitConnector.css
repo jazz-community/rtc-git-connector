@@ -18,6 +18,10 @@
 /*
     Set the height and width of the widget in percentage of the window height / width.
 */
+#connectWithGitMainDialog .dijitDialogPaneContent {
+    background-color: #f5f5f5;
+}
+
 .rtcGitConnectorMainLayout {
     box-sizing: border-box;
     width: 80vw;
