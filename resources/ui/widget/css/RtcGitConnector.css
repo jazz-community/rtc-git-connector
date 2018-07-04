@@ -32,6 +32,13 @@
     padding-bottom: 2em;
 }
 
+.rtcGitConnectorSelectRegisteredGitRepository {
+    display: flex;
+    background-color: white;
+    border: 1px solid #cacaca;
+    padding-left: 10px;
+}
+
 .rtcGitConnectorActionButtons {
     position: absolute;
     bottom: 0;
@@ -45,15 +52,20 @@
 
 .rtcGitConnectorLabelText {
     display: inline-block;
-    margin-bottom: .5em;
+    /* margin-bottom: .5em; */
     font-size: 1em;
     font-weight: bold;
     color: #666666;
+    width: 200px;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .rtcGitConnectorSelectList {
-    display: table;
-    width: 100%;
+    flex-grow: 1;
+    border-top: 0px;
+    border-bottom: 0px;
+    border-right: 0px;
 }
 
 /* Limit the size of the dojo select list drop-down arrow. It looks bad when any larger. */
