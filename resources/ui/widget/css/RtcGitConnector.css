@@ -140,31 +140,6 @@
     margin-bottom: .5em;
 }
 
-.viewAndSelectSearchButton {
-    display: inline-block;
-    width: 60px;
-    height: 20px;
-    margin-bottom: .5em;
-    border: 1px solid;
-    border-radius: 3px;
-    border-color: #357ebd;
-    background-color: #428bca;
-    color: white;
-    vertical-align: middle;
-    cursor: pointer;
-}
-
-.viewAndSelectSearchButton.viewAndSelectSearchClearButton {
-    border-color: #ccc;
-    background-color: #fbfbfb;
-    color: #333;
-}
-
-button.viewAndSelectSearchButton[disabled] {
-    opacity: 0.6;
-    cursor: default;
-}
-
 .viewAndSelectFilterInput {
     width: calc(50% - 74px);
     margin-bottom: .5em;
