@@ -174,6 +174,7 @@ button.viewAndSelectSearchButton[disabled] {
     background-color: white;
     border: 1px solid #cacaca;
     padding: 10px;
+    margin-bottom: 10px;
 }
 
 .rtcGitConnectorViewAndSelectWrapper {
@@ -301,6 +302,13 @@ button.viewAndSelectSearchButton[disabled] {
 .rtcGitConnectorViewAndSelectDetailsSpan .rtcGitConnectorViewAndSelectDetailsLabel {
     width: 100px;
     vertical-align: top;
+}
+
+.viewItemsToLinkContainer {
+    background-color: white;
+    border: 1px solid #cacaca;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 .rtcGitConnectorViewItemsToLinkList {
