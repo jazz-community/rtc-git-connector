@@ -326,6 +326,20 @@
     vertical-align: top;
 }
 
+.rtcGitConnectorListsToLinkContainer {
+    display: flex;
+}
+
+.rtcGitConnectorListsToLinkContainer .rtcGitConnectorListToLink {
+    flex-grow: 1;
+    width: 100%;
+    padding-right: 10px;
+}
+
+.rtcGitConnectorListsToLinkContainer .rtcGitConnectorListToLink:last-child {
+    padding-right: 0px;
+}
+
 .viewItemsToLinkContainer {
     background-color: white;
     border: 1px solid #cacaca;
