@@ -180,7 +180,7 @@ define([
         // Draw the requests list from the view requests
         drawViewRequests: function () {
             var self = this;
-            var requestsListNode = query("#viewAndSelectRequestsWrapper .rtcGitConnectorViewAndSelectList")[0];
+            var requestsListNode = query("#viewAndSelectRequestsWrapper .rtcGitConnectorViewAndSelectList .rtcGitConnectorViewAndSelectListItems")[0];
             domConstruct.empty(requestsListNode);
 
             array.forEach(this.viewRequests, function (request) {
