@@ -30,6 +30,7 @@
     margin: 5px;
     position: relative;
     padding-bottom: 1em;
+    overflow: hidden;
 }
 
 .rtcGitConnectorSelectRegisteredGitRepository {
@@ -130,34 +131,38 @@
 
 .rtcGitConnectorSelectLinkType {
     display: flex;
+    background-color: white;
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-top-width: 0px;
+    border-right-width: 1px;
+    border-style: solid;
+    border-color: #cacaca;
 }
 
 .rtcGitConnectorSelectLinkType .linkTypeItem {
     display: inline-block;
-    flex-grow: 1;
-    padding: .5em;
+    /* flex-grow: 1; */
     font-size: 1em;
     cursor: pointer;
-    background-color: white;
-    border-left-width: 1px;
-    border-bottom-width: 1px;
-    border-top: 0px;
-    border-right: 0px;
-    border-style: solid;
-    border-color: #cacaca;
-    transition: all 0.3s ease-out;
-}
-
-.rtcGitConnectorSelectLinkType .linkTypeItem:last-child {
-    border-right-width: 1px;
+    height: 2.75em;
+    line-height: 2em;
+    text-decoration: none;
+    color: black;
+    padding: 4px 20px;
+    margin: 0px;
+    overflow: hidden;
+    border-bottom: 0px solid #3087b3;
+    box-sizing: border-box;
+    transition: all 0.1s ease-out;
 }
 
 .rtcGitConnectorSelectLinkType .linkTypeItem:hover {
-    background-color: #cacaca;
+    border-bottom-width: 3px;
 }
 
 .rtcGitConnectorSelectLinkType .linkTypeItem.selected {
-    background-color: #cfe5fa;
+    border-bottom-width: 3px;
     cursor: default;
 }
 
