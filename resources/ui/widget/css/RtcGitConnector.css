@@ -325,6 +325,9 @@
     background-color: white;
     z-index: 10000;
     text-align: center;
-    line-height: 80vh;
-    font-size: 5em;
+    line-height: 20vh;
+}
+
+#rtcGitConnectorFullPageLoadingOverlayContent span {
+    display: block;
 }

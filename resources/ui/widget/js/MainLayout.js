@@ -2,6 +2,7 @@ define([
     "dojo/_base/declare",
     "dojo/_base/url",
     "dojo/dom",
+    "dojo/dom-construct",
     "dojo/dom-style",
     "dojo/on",
     "dojo/keys",
@@ -18,7 +19,7 @@ define([
     "dijit/form/TextBox",
     "dijit/form/Button",
     "dojo/text!../templates/MainLayout.html"
-], function (declare, url, dom, domStyle, on, keys,
+], function (declare, url, dom, domConstruct, domStyle, on, keys,
     MainDataStore, JazzRestService, GitRestService,
     SelectRegisteredGitRepository, SelectLinkType,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
@@ -232,6 +233,13 @@ define([
                 // Be aware that the currentUserId can be null
                 self.mainDataStore.currentUserId = userId;
             });
+
+            // Add the font awesome icon to the loading screen
+            var fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
+            var icon = fontAwesome.icon({ prefix: 'fas', iconName: "spinner" }, { classes: ['fa-pulse'] });
+            domConstruct.create("span", {
+                innerHTML: icon.html[0]
+            }, "rtcGitConnectorSavingSpinnerIcon");
         },
 
         watchDataStore: function () {
