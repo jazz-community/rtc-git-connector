@@ -5,21 +5,21 @@
         data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectLinkType"></div>
 
     <div id="noRegisteredGitRepositoriesContainer" style="display: none;">
-        <p>Please register a git repository in this project area. More info...</p>
+        <p class="rtcGitConnectorMessage rtcGitConnectorMessageWarning">Please register a git repository in this project area. More info...</p>
     </div>
 
     <div id="noGitRepositorySelectedContainer" style="display: none;">
-        <p>No git repository selected.</p>
+        <p class="rtcGitConnectorMessage rtcGitConnectorMessageInfo">No git repository selected.</p>
     </div>
 
-    <div id="invalidGitRepositoryTypeContainer" class="rtcGitConnectorError" style="display: none;">
-        <p>The selected repository is not hosted on a supported platform. Currently only GitHub and GitLab are supported.<br />
+    <div id="invalidGitRepositoryTypeContainer" style="display: none;">
+        <p class="rtcGitConnectorMessage rtcGitConnectorMessageError">The selected repository is not hosted on a supported platform. Currently only GitHub and GitLab are supported.<br />
             If the repository is actually hosted on one of the supported platforms, please check the configuration and make sure that the URL is correct.
         </p>
     </div>
 
-    <div id="couldNotGetAccessTokenContainer" class="rtcGitConnectorError" style="display: none;">
-        <p>An error occurred and the access token could not be retrieved from the server. Please refresh the page and try again.<br />
+    <div id="couldNotGetAccessTokenContainer" style="display: none;">
+        <p class="rtcGitConnectorMessage rtcGitConnectorMessageError">An error occurred and the access token could not be retrieved from the server. Please refresh the page and try again.<br />
             This may be caused by the token service being unavailable or incorrectly configured.<br />
             If this error persists, please contact the Jazz Administrator and inform them of the problem.
         </p>
