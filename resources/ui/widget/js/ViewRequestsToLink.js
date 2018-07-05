@@ -37,8 +37,12 @@ define([
                 if (self.mainDataStore.selectedRepositoryData.requestsToLink.length > 0) {
                     // show requests to link list
                     domStyle.set("viewRequestsToLinkContainer", "display", "block");
+                    domStyle.set("rtcGitConnectorRequestsListToLink", "width", "100%");
+                    domStyle.set("rtcGitConnectorRequestsListToLink", "margin-right", "10px");
                 } else {
                     // hide requests to link list
+                    domStyle.set("rtcGitConnectorRequestsListToLink", "width", "0");
+                    domStyle.set("rtcGitConnectorRequestsListToLink", "margin-right", "0");
                     domStyle.set("viewRequestsToLinkContainer", "display", "none");
                 }
 

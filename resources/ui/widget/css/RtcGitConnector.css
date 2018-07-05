@@ -328,16 +328,13 @@
 
 .rtcGitConnectorListsToLinkContainer {
     display: flex;
+    margin-right: -10px;
 }
 
 .rtcGitConnectorListsToLinkContainer .rtcGitConnectorListToLink {
     flex-grow: 1;
-    width: 100%;
-    padding-right: 10px;
-}
-
-.rtcGitConnectorListsToLinkContainer .rtcGitConnectorListToLink:last-child {
-    padding-right: 0px;
+    width: 0;
+    transition: all 0.3s ease-out;
 }
 
 .viewItemsToLinkContainer {
