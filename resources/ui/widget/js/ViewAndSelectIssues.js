@@ -182,7 +182,7 @@ define([
         drawViewIssues: function () {
             var self = this;
             var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
-            var issuesListNode = query("#viewAndSelectIssuesWrapper .rtcGitConnectorViewAndSelectList")[0];
+            var issuesListNode = query("#viewAndSelectIssuesWrapper .rtcGitConnectorViewAndSelectList .rtcGitConnectorViewAndSelectListItems")[0];
             domConstruct.empty(issuesListNode);
 
             array.forEach(this.viewIssues, function (issue) {
