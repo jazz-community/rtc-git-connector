@@ -2,8 +2,9 @@ define([
     "dojo/_base/declare",
     "dojo/_base/array",
     "dojo/json",
+    "dojo/request/xhr",
     "dojo/Deferred"
-], function (declare, array, json, Deferred) {
+], function (declare, array, json, xhr, Deferred) {
     var _instance = null;
     var JazzRestService = declare(null, {
         commitLinkEncoder: null,
@@ -143,7 +144,7 @@ define([
                             artifactLinkTypeContainer.linkDTOs.push({
                                 _isNew: true,
                                 comment: request.title,
-                                url: self._createRichHoverUrl(request)
+                                url: request.linkUrl
                             });
                         } else {
                             artifactLinkTypeContainer.linkDTOs.push({
@@ -210,11 +211,13 @@ define([
         getAccessTokenByHost: function (hostUrl) {
             var deferred = new Deferred();
 
-            jazz.client.xhrGet({
-                url: this.personalTokenServiceUrl + "?key=" + hostUrl,
+            xhr.get(this.personalTokenServiceUrl, {
+                query: {
+                    key: hostUrl
+                },
                 handleAs: "json",
                 headers: {
-                    "accept": "application/json"
+                    "Accept": "application/json"
                 }
             }).then(function (response) {
                 deferred.resolve(response.token ? response.token : null);
@@ -233,9 +236,8 @@ define([
 
         // Saves the specified access token using the specified host
         saveAccessTokenByHost: function (hostUrl, accessToken) {
-            return jazz.client.xhrPost({
-                url: this.personalTokenServiceUrl,
-                postData: json.stringify({
+            return xhr.post(this.personalTokenServiceUrl, {
+                data: json.stringify({
                     key: hostUrl,
                     token: accessToken
                 }),
@@ -248,15 +250,14 @@ define([
         // Gets the Jazz user id. This is usually the email address.
         // Returns null if not found or on error.
         getCurrentUserId: function () {
-            return jazz.client.xhrGet({
-                url: this.currentUserUrl,
+            return xhr.get(this.currentUserUrl, {
                 handleAs: "json",
                 headers: {
                     "Accept": "application/json"
                 }
             }).then(function (response) {
                 return response.userId ? response.userId : null;
-            }, function (error){
+            }, function (error) {
                 return null;
             });
         },
@@ -267,16 +268,12 @@ define([
         // will be empty if there was an error.
         getAllRegisteredGitRepositoriesForProjectArea: function (projectAreaId) {
             var self = this;
-
-            var parameters = new URLSearchParams();
-            parameters.append("findRecursively", true);
-            parameters.append("ownerItemIds", projectAreaId);
-            parameters.append("populateProcessOwner", false);
-
-            var url = this.allRegisteredGitRepositoriesUrl + "?" + parameters.toString();
-
-            return jazz.client.xhrGet({
-                url: url,
+            return xhr.get(this.allRegisteredGitRepositoriesUrl, {
+                query: {
+                    findRecursively: "true",
+                    ownerItemIds: projectAreaId,
+                    populateProcessOwner: "false"
+                },
                 handleAs: "json",
                 headers: {
                     "Accept": "text/json"
@@ -356,6 +353,7 @@ define([
         },
 
         // TODO: This needs some cleaning up...
+        // Keeping this even though it's no longer used. Might still be useful in the future.
         _createRichHoverUrl: function(artifact) {
             return this.richHoverServiceUrl + "/" + artifact.service +
                 "/" + new URL(artifact.webUrl).hostname +

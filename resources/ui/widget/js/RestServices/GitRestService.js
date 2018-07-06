@@ -3,6 +3,7 @@ define([
     "dojo/_base/url",
     "dojo/_base/array",
     "dojo/json",
+    "dojo/request/xhr",
     "dojo/Deferred",
     "dojo/DeferredList",
     "../Models/CommitModel",
@@ -10,7 +11,7 @@ define([
     "../Models/RequestModel",
     "../HandlebarsTemplates/TemplateService",
     "../HandlebarsTemplates/DefaultIssueTemplate"
-], function (declare, url, array, json, Deferred, DeferredList,
+], function (declare, url, array, json, xhr, Deferred, DeferredList,
     CommitModel, IssueModel, RequestModel,
     TemplateService, DefaultIssueTemplate) {
     var _instance = null;
@@ -121,9 +122,10 @@ define([
             tags = (tags.length) ? tags + ", " : tags;
             tags += "from-rtc-work-item";
 
-            var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
-                token: accessToken
+            var gitlab = new this.gitLabApi({
+                url: giturl.origin,
+                token: accessToken,
+                useXMLHttpRequest: true
             });
 
             if (giturl.parts.length < 2) {
@@ -143,7 +145,7 @@ define([
                     var renderedTemplate = new TemplateService()
                         .renderTemplateWithWorkItem(templateString, workItem);
 
-                    gitlab.projects.issues.create(encodeURIComponent(giturl.joined), {
+                    gitlab.Issues.create(giturl.joined, {
                         title: workItem.object.attributes.summary.content,
                         description: renderedTemplate,
                         labels: tags
@@ -161,13 +163,8 @@ define([
         getGitLabIssueTemplate: function (gitlab, projectId) {
             var deferred = new Deferred();
             var filePath = ".gitlab/issue_templates/" + this.issueTemplateName;
-            var url = "projects/" + encodeURIComponent(projectId) +
-                "/repository/files/" + encodeURIComponent(filePath) + "/raw?ref=master";
 
-            // Use the get function directly instead of the "projects.repository.files.showRaw" function
-            // This is a workaround so that the jazz proxy correctly sends the "ref" parameter as a
-            // query parameter
-            gitlab.get(encodeURIComponent(url), {}).then(function (response) {
+            gitlab.RepositoryFiles.showRaw(projectId, filePath, "master").then(function (response) {
                 deferred.resolve(response);
             }, function (error) {
                 deferred.reject("Couldn't get the issue template from GitLab. Error: " + (error.message || error));
@@ -282,9 +279,10 @@ define([
             var deferredArray = [];
             var giturl = this._createUrlInformation(params.selectedGitRepository.url);
 
-            var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
-                token: params.accessToken
+            var gitlab = new this.gitLabApi({
+                url: giturl.origin,
+                token: params.accessToken,
+                useXMLHttpRequest: true
             });
 
             var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
@@ -324,7 +322,7 @@ define([
         addBackLinksToGitLabCommits: function (gitlab, path, sha, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.repository.commits.comments.create(encodeURIComponent(path), sha, commentBody).then(function (response) {
+            gitlab.Commits.createComment(path, sha, commentBody).then(function (response) {
                 deferred.resolve(response);
             }, function (error) {
                 deferred.reject("Couldn't add a comment to the GitLab commit. Error: " + (error.error.message || error.error));
@@ -336,7 +334,7 @@ define([
         addBackLinksToGitLabIssues: function (gitlab, path, id, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.issues.notes.create(encodeURIComponent(path), id, {
+            gitlab.IssueNotes.create(path, id, {
                 body: commentBody
             }).then(function (response) {
                 deferred.resolve(response);
@@ -350,7 +348,7 @@ define([
         addBackLinksToGitLabRequests: function (gitlab, path, id, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.mergeRequests.notes.create(encodeURIComponent(path), id, {
+            gitlab.MergeRequestNotes.create(path, id, {
                 body: commentBody
             }).then(function (response) {
                 deferred.resolve(response);
@@ -414,15 +412,16 @@ define([
             var deferred = new Deferred();
             var giturl = this._createUrlInformation(selectedGitRepository.url);
 
-            var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
-                token: accessToken
+            var gitlab = new this.gitLabApi({
+                url: giturl.origin,
+                token: accessToken,
+                useXMLHttpRequest: true
             });
 
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.projects.repository.commits.show(encodeURIComponent(giturl.joined), commitSha).then(function (response) {
+                gitlab.Commits.show(giturl.joined, commitSha).then(function (response) {
                     var commitUrlPath = giturl.repo + "/commit/";
                     var convertedCommits = [];
                     convertedCommits.push(CommitModel.CreateFromGitLabCommit(response, commitUrlPath, alreadyLinkedUrls));
@@ -491,15 +490,16 @@ define([
             var deferred = new Deferred();
             var giturl = this._createUrlInformation(selectedGitRepository.url);
 
-            var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
-                token: accessToken
+            var gitlab = new this.gitLabApi({
+                url: giturl.origin,
+                token: accessToken,
+                useXMLHttpRequest: true
             });
 
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.projects.issues.show(encodeURIComponent(giturl.joined), issueId).then(function (response) {
+                gitlab.Issues.show(giturl.joined, issueId).then(function (response) {
                     var convertedIssues = [];
                     convertedIssues.push(IssueModel.CreateFromGitLabIssue(response, alreadyLinkedUrls));
                     deferred.resolve(convertedIssues);
@@ -564,15 +564,16 @@ define([
             var deferred = new Deferred();
             var giturl = this._createUrlInformation(selectedGitRepository.url);
 
-            var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
-                token: accessToken
+            var gitlab = new this.gitLabApi({
+                url: giturl.origin,
+                token: accessToken,
+                useXMLHttpRequest: true
             });
 
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.projects.mergeRequests.show(encodeURIComponent(giturl.joined), requestId).then(function (response) {
+                gitlab.MergeRequests.show(giturl.joined, requestId).then(function (response) {
                     var convertedRequests = [];
                     convertedRequests.push(RequestModel.CreateFromGitLabRequest(response, alreadyLinkedUrls));
                     deferred.resolve(convertedRequests);
@@ -647,7 +648,6 @@ define([
             var parts = this._getUrlPartsFromPath(sanitized);
             // as mentioned below, this should be a member function
             // or maybe not even... not quite sure yet about this one
-            //var proxy = this._formatUrlWithProxy()
 
             return {
                 original : original,
@@ -664,15 +664,16 @@ define([
             var giturl = this._createUrlInformation(selectedGitRepository.url);
             var deferred = new Deferred();
 
-            var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
-                token: accessToken
+            var gitlab = new this.gitLabApi({
+                url: giturl.origin,
+                token: accessToken,
+                useXMLHttpRequest: true
             });
 
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.projects.repository.commits.all(encodeURIComponent(giturl.joined), {
+                gitlab.Commits.all(giturl.joined, {
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
@@ -747,9 +748,10 @@ define([
             var giturl = this._createUrlInformation(selectedGitRepository.url);
             var deferred = new Deferred();
 
-            var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
-                token: accessToken
+            var gitlab = new this.gitLabApi({
+                url: giturl.origin,
+                token: accessToken,
+                useXMLHttpRequest: true
             });
 
             // instead of checking for validity with the length of a path, it would be nice to
@@ -757,7 +759,8 @@ define([
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.projects.issues.all(encodeURIComponent(giturl.joined), {
+                gitlab.Issues.all({
+                    projectId: giturl.joined,
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
@@ -830,15 +833,17 @@ define([
             var giturl = this._createUrlInformation(selectedGitRepository.url);
             var deferred = new Deferred();
 
-            var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
-                token: accessToken
+            var gitlab = new this.gitLabApi({
+                url: giturl.origin,
+                token: accessToken,
+                useXMLHttpRequest: true
             });
 
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.projects.mergeRequests.all(encodeURIComponent(giturl.joined), {
+                gitlab.MergeRequests.all({
+                    projectId: giturl.joined,
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
@@ -889,10 +894,7 @@ define([
         // Make a request for a single public project from the gitlab api.
         // Return true if the request was successful, otherwise false.
         isGitLabRepository: function (gitRepositoryUrl) {
-            var url = this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects?per_page=1";
-
-            return jazz.client.xhrGet({
-                url: url,
+            return xhr.get(this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects", {
                 query: {
                     per_page: 1
                 },
@@ -927,11 +929,12 @@ define([
                 });
             } else if (gitHost === this.gitLabString) {
                 // Check access token with GitLab
-                var gitlab = this.gitLabApi({
-                    url: this._formatUrlWithProxy(this._getOriginFromUrlObject(gitRepositoryUrl)),
-                    token: accessToken
+                var gitlab = new this.gitLabApi({
+                    url: this._getOriginFromUrlObject(gitRepositoryUrl),
+                    token: accessToken,
+                    useXMLHttpRequest: true
                 });
-                gitlab.users.current().then(function (response) {
+                gitlab.Users.current().then(function (response) {
                     if (response) deferred.resolve(true);
                     else deferred.resolve(false);
                 }, function (error) {
@@ -947,13 +950,6 @@ define([
         // Gets the origin without a trailing slash
         _getOriginFromUrlObject: function (url) {
             return url.scheme + "://" + url.host + (url.port ? ":" + url.port : "");
-        },
-
-        // Format url with jazz proxy for properly authenticated access to remote host
-        // This should be a member function of a future "giturl" class
-        _formatUrlWithProxy: function (url) {
-            var proxyUrl = new URL(net.jazz.ajax._contextRoot + "/proxy?uri=", window.location.origin);
-            return proxyUrl.href + encodeURIComponent(url);
         },
 
         // Remove the ".git" suffix from the repository name if present
