@@ -143,7 +143,7 @@ define([
                             artifactLinkTypeContainer.linkDTOs.push({
                                 _isNew: true,
                                 comment: request.title,
-                                url: self._createRichHoverUrl(request)
+                                url: request.linkUrl
                             });
                         } else {
                             artifactLinkTypeContainer.linkDTOs.push({
@@ -356,6 +356,7 @@ define([
         },
 
         // TODO: This needs some cleaning up...
+        // Keeping this even though it's no longer used. Might still be useful in the future.
         _createRichHoverUrl: function(artifact) {
             return this.richHoverServiceUrl + "/" + artifact.service +
                 "/" + new URL(artifact.webUrl).hostname +
