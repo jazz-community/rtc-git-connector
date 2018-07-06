@@ -145,7 +145,7 @@ define([
                     var renderedTemplate = new TemplateService()
                         .renderTemplateWithWorkItem(templateString, workItem);
 
-                    gitlab.projects.issues.create(giturl.joined, {
+                    gitlab.Issues.create(giturl.joined, {
                         title: workItem.object.attributes.summary.content,
                         description: renderedTemplate,
                         labels: tags
@@ -164,7 +164,7 @@ define([
             var deferred = new Deferred();
             var filePath = ".gitlab/issue_templates/" + this.issueTemplateName;
 
-            gitlab.projects.repository.files.showRaw(projectId, filePath, "master").then(function (response) {
+            gitlab.RepositoryFiles.showRaw(projectId, filePath, "master").then(function (response) {
                 deferred.resolve(response);
             }, function (error) {
                 deferred.reject("Couldn't get the issue template from GitLab. Error: " + (error.message || error));
