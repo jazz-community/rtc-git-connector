@@ -322,7 +322,7 @@ define([
         addBackLinksToGitLabCommits: function (gitlab, path, sha, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.repository.commits.comments.create(path, sha, commentBody).then(function (response) {
+            gitlab.Commits.createComment(path, sha, commentBody).then(function (response) {
                 deferred.resolve(response);
             }, function (error) {
                 deferred.reject("Couldn't add a comment to the GitLab commit. Error: " + (error.error.message || error.error));
@@ -334,7 +334,7 @@ define([
         addBackLinksToGitLabIssues: function (gitlab, path, id, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.issues.notes.create(path, id, {
+            gitlab.IssueNotes.create(path, id, {
                 body: commentBody
             }).then(function (response) {
                 deferred.resolve(response);
@@ -348,7 +348,7 @@ define([
         addBackLinksToGitLabRequests: function (gitlab, path, id, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.projects.mergeRequests.notes.create(path, id, {
+            gitlab.MergeRequestNotes.create(path, id, {
                 body: commentBody
             }).then(function (response) {
                 deferred.resolve(response);
