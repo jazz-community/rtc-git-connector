@@ -162,13 +162,8 @@ define([
         getGitLabIssueTemplate: function (gitlab, projectId) {
             var deferred = new Deferred();
             var filePath = ".gitlab/issue_templates/" + this.issueTemplateName;
-            var url = "projects/" + encodeURIComponent(projectId) +
-                "/repository/files/" + encodeURIComponent(filePath) + "/raw?ref=master";
 
-            // Use the get function directly instead of the "projects.repository.files.showRaw" function
-            // This is a workaround so that the jazz proxy correctly sends the "ref" parameter as a
-            // query parameter
-            gitlab.get(encodeURIComponent(url), {}).then(function (response) {
+            gitlab.projects.repository.files.showRaw(projectId, filePath, "master").then(function (response) {
                 deferred.resolve(response);
             }, function (error) {
                 deferred.reject("Couldn't get the issue template from GitLab. Error: " + (error.message || error));
