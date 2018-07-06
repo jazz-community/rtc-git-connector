@@ -51,7 +51,7 @@ export const ClipboardJS = require('clipboard/dist/clipboard.min');
 export const GitHubApi = require('@octokit/rest');
 
 // GitLab API client library
-export const GitLabApi = require('node-gitlab-api');
+export const GitLabApi = require('gitlab');
 
 // Fontawesome fonts
 export const FontAwesome = require('@fortawesome/fontawesome');
