@@ -759,7 +759,8 @@ define([
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.projects.issues.all(giturl.joined, {
+                gitlab.Issues.all({
+                    projectId: giturl.joined,
                     max_pages: 1,
                     per_page: 100
                 }).then(function (response) {
