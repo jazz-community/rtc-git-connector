@@ -122,7 +122,7 @@ define([
             tags += "from-rtc-work-item";
 
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
+                url: giturl.origin,
                 token: accessToken
             });
 
@@ -283,7 +283,7 @@ define([
             var giturl = this._createUrlInformation(params.selectedGitRepository.url);
 
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
+                url: giturl.origin,
                 token: params.accessToken
             });
 
@@ -415,7 +415,7 @@ define([
             var giturl = this._createUrlInformation(selectedGitRepository.url);
 
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
+                url: giturl.origin,
                 token: accessToken
             });
 
@@ -492,7 +492,7 @@ define([
             var giturl = this._createUrlInformation(selectedGitRepository.url);
 
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
+                url: giturl.origin,
                 token: accessToken
             });
 
@@ -565,7 +565,7 @@ define([
             var giturl = this._createUrlInformation(selectedGitRepository.url);
 
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
+                url: giturl.origin,
                 token: accessToken
             });
 
@@ -647,7 +647,6 @@ define([
             var parts = this._getUrlPartsFromPath(sanitized);
             // as mentioned below, this should be a member function
             // or maybe not even... not quite sure yet about this one
-            //var proxy = this._formatUrlWithProxy()
 
             return {
                 original : original,
@@ -665,7 +664,7 @@ define([
             var deferred = new Deferred();
 
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
+                url: giturl.origin,
                 token: accessToken
             });
 
@@ -748,7 +747,7 @@ define([
             var deferred = new Deferred();
 
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
+                url: giturl.origin,
                 token: accessToken
             });
 
@@ -831,7 +830,7 @@ define([
             var deferred = new Deferred();
 
             var gitlab = this.gitLabApi({
-                url: this._formatUrlWithProxy(giturl.origin),
+                url: giturl.origin,
                 token: accessToken
             });
 
@@ -928,7 +927,7 @@ define([
             } else if (gitHost === this.gitLabString) {
                 // Check access token with GitLab
                 var gitlab = this.gitLabApi({
-                    url: this._formatUrlWithProxy(this._getOriginFromUrlObject(gitRepositoryUrl)),
+                    url: this._getOriginFromUrlObject(gitRepositoryUrl),
                     token: accessToken
                 });
                 gitlab.users.current().then(function (response) {
@@ -947,14 +946,6 @@ define([
         // Gets the origin without a trailing slash
         _getOriginFromUrlObject: function (url) {
             return url.scheme + "://" + url.host + (url.port ? ":" + url.port : "");
-        },
-
-        // Format url with jazz proxy for properly authenticated access to remote host
-        // This should be a member function of a future "giturl" class
-        _formatUrlWithProxy: function (url) {
-            var proxyUrl = new URL(net.jazz.ajax._contextRoot + "/proxy?uri=", window.location.origin);
-            return proxyUrl.href + encodeURIComponent(url);
-            return url;
         },
 
         // Remove the ".git" suffix from the repository name if present
