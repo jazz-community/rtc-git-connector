@@ -421,7 +421,7 @@ define([
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.projects.repository.commits.show(giturl.joined, commitSha).then(function (response) {
+                gitlab.Commits.show(giturl.joined, commitSha).then(function (response) {
                     var commitUrlPath = giturl.repo + "/commit/";
                     var convertedCommits = [];
                     convertedCommits.push(CommitModel.CreateFromGitLabCommit(response, commitUrlPath, alreadyLinkedUrls));
