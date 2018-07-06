@@ -76,12 +76,15 @@ define([
         // height to the previous value afterwards (otherwise the
         // scroll is reset to the top every time the dialog is resized).
         this.ResizeMainDialog = function () {
-            var mainDialog = registry.byId("connectWithGitMainDialog");
-            var paneContentNode = query(".dijitDialogPaneContent", mainDialog.domNode)[0];
-            var originalScrollTop = paneContentNode.scrollTop;
-            mainDialog.resize();
-            mainDialog.resize(); // The second time it fixes the positioning
-            paneContentNode.scrollTo(0, originalScrollTop);
+            // Use a timeout to wait for the css transitions to finish before resizing
+            setTimeout(function () {
+                var mainDialog = registry.byId("connectWithGitMainDialog");
+                var paneContentNode = query(".dijitDialogPaneContent", mainDialog.domNode)[0];
+                var originalScrollTop = paneContentNode.scrollTop;
+                mainDialog.resize();
+                mainDialog.resize(); // The second time it fixes the positioning
+                paneContentNode.scrollTo(0, originalScrollTop);
+            }, 400);
         };
 
         // Details view node creators
@@ -138,11 +141,8 @@ define([
             var commitDateString;
 
             if (commit.authoredDate) {
-                var commitDate = new Date(commit.authoredDate);
                 commitDateString = commit.authorName + " committed on "
-                    + commitDate.toDateString() + " at "
-                    + self.FrontPadWithZeros(commitDate.getHours()) + ":"
-                    + self.FrontPadWithZeros(commitDate.getMinutes());
+                    + self.GetFormattedDateFromString(commit.authoredDate);
             } else {
                 commitDateString = "&nbsp;";
             }
@@ -155,17 +155,22 @@ define([
             var issueOrRequestDateString;
 
             if (issueOrRequest.openedDate) {
-                var issueOrRequestDate = new Date(issueOrRequest.openedDate);
                 issueOrRequestDateString = "#" + issueOrRequest.id + " opened by "
                     + issueOrRequest.openedBy + " on "
-                    + issueOrRequestDate.toDateString() + " at "
-                    + self.FrontPadWithZeros(issueOrRequestDate.getHours()) + ":"
-                    + self.FrontPadWithZeros(issueOrRequestDate.getMinutes());
+                    + self.GetFormattedDateFromString(issueOrRequest.openedDate);
             } else {
                 issueOrRequestDateString = "&nbsp;";
             }
 
             return issueOrRequestDateString;
+        };
+
+        // Create and format a date from a string
+        this.GetFormattedDateFromString = function (dateString) {
+            var dateObject = new Date(dateString);
+            return dateObject.toDateString() + " at "
+                + self.FrontPadWithZeros(dateObject.getHours()) + ":"
+                + self.FrontPadWithZeros(dateObject.getMinutes());
         };
 
         // Add zeros to the front if the passed in time has less than two digits

@@ -37,8 +37,12 @@ define([
                 if (self.mainDataStore.selectedRepositoryData.commitsToLink.length > 0) {
                     // show commits to link list
                     domStyle.set("viewCommitsToLinkContainer", "display", "block");
+                    domStyle.set("rtcGitConnectorCommitsListToLink", "width", "100%");
+                    domStyle.set("rtcGitConnectorCommitsListToLink", "margin-right", "10px");
                 } else {
                     // hide commits to link list
+                    domStyle.set("rtcGitConnectorCommitsListToLink", "width", "0");
+                    domStyle.set("rtcGitConnectorCommitsListToLink", "margin-right", "0");
                     domStyle.set("viewCommitsToLinkContainer", "display", "none");
                 }
 

@@ -37,8 +37,12 @@ define([
                 if (self.mainDataStore.selectedRepositoryData.issuesToLink.length > 0) {
                     // show issues to link list
                     domStyle.set("viewIssuesToLinkContainer", "display", "block");
+                    domStyle.set("rtcGitConnectorIssuesListToLink", "width", "100%");
+                    domStyle.set("rtcGitConnectorIssuesListToLink", "margin-right", "10px");
                 } else {
                     // hide issues to link list
+                    domStyle.set("rtcGitConnectorIssuesListToLink", "width", "0");
+                    domStyle.set("rtcGitConnectorIssuesListToLink", "margin-right", "0");
                     domStyle.set("viewIssuesToLinkContainer", "display", "none");
                 }
 

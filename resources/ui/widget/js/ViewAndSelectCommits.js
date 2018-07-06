@@ -180,7 +180,7 @@ define([
         // Draw the commits list from the view commits
         drawViewCommits: function () {
             var self = this;
-            var commitsListNode = query("#viewAndSelectCommitsWrapper .rtcGitConnectorViewAndSelectList")[0];
+            var commitsListNode = query("#viewAndSelectCommitsWrapper .rtcGitConnectorViewAndSelectList .rtcGitConnectorViewAndSelectListItems")[0];
             domConstruct.empty(commitsListNode);
 
             array.forEach(this.viewCommits, function (commit) {
@@ -270,7 +270,7 @@ define([
             } else {
                 ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Message: ", commit.message.replace(/(\r\n|\n|\r)/gm, "<br />"));
                 ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Author: ", commit.authorName + " (" + commit.authorEmail + ")");
-                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Date: ", new Date(commit.authoredDate).toString());
+                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Date: ", ViewHelper.GetFormattedDateFromString(commit.authoredDate));
                 ViewHelper.AddToDetailsViewNode(commitDetailsNode, "SHA: ", commit.sha);
                 var linkNode = domConstruct.create("a", {
                     innerHTML: "Open this commit in a new tab",
