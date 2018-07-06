@@ -573,7 +573,7 @@ define([
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.projects.mergeRequests.show(giturl.joined, requestId).then(function (response) {
+                gitlab.MergeRequests.show(giturl.joined, requestId).then(function (response) {
                     var convertedRequests = [];
                     convertedRequests.push(RequestModel.CreateFromGitLabRequest(response, alreadyLinkedUrls));
                     deferred.resolve(convertedRequests);
