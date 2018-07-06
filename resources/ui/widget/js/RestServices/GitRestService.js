@@ -932,7 +932,7 @@ define([
                     token: accessToken,
                     useXMLHttpRequest: true
                 });
-                gitlab.users.current().then(function (response) {
+                gitlab.Users.current().then(function (response) {
                     if (response) deferred.resolve(true);
                     else deferred.resolve(false);
                 }, function (error) {
