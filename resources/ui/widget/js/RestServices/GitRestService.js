@@ -3,6 +3,7 @@ define([
     "dojo/_base/url",
     "dojo/_base/array",
     "dojo/json",
+    "dojo/request/xhr",
     "dojo/Deferred",
     "dojo/DeferredList",
     "../Models/CommitModel",
@@ -10,7 +11,7 @@ define([
     "../Models/RequestModel",
     "../HandlebarsTemplates/TemplateService",
     "../HandlebarsTemplates/DefaultIssueTemplate"
-], function (declare, url, array, json, Deferred, DeferredList,
+], function (declare, url, array, json, xhr, Deferred, DeferredList,
     CommitModel, IssueModel, RequestModel,
     TemplateService, DefaultIssueTemplate) {
     var _instance = null;
@@ -888,10 +889,7 @@ define([
         // Make a request for a single public project from the gitlab api.
         // Return true if the request was successful, otherwise false.
         isGitLabRepository: function (gitRepositoryUrl) {
-            var url = this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects?per_page=1";
-
-            return jazz.client.xhrGet({
-                url: url,
+            return xhr.get(this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects", {
                 query: {
                     per_page: 1
                 },
