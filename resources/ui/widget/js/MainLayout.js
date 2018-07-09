@@ -84,7 +84,7 @@ define([
                 });
             };
 
-            on(this.accessTokenInput, "keydown", function (event) {
+            on(this.accessTokenInput, "keydown, paste", function (event) {
                 if (event.keyCode === keys.ENTER) {
                     // Run the submit function when the enter key is pressed
                     event.preventDefault();
