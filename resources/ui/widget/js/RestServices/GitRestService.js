@@ -735,6 +735,7 @@ define([
                         array.forEach(self._removePullRequestsFromIssuesList(response.data), function (issue) {
                             convertedIssues.push(IssueModel.CreateFromGitHubIssue(issue, alreadyLinkedUrls));
                         });
+                        convertedIssues.push(self._createNewIssueElement("GitHub"));
                         deferred.resolve(convertedIssues);
                     }
                 });
@@ -745,6 +746,7 @@ define([
 
         // Get the last 100 issues from the specified repository on GitLab
         getRecentGitLabIssues: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
+            var self = this;
             var giturl = this._createUrlInformation(selectedGitRepository.url);
             var deferred = new Deferred();
 
@@ -768,6 +770,7 @@ define([
                     array.forEach(response, function (issue) {
                         convertedIssues.push(IssueModel.CreateFromGitLabIssue(issue, alreadyLinkedUrls));
                     });
+                    convertedIssues.push(self._createNewIssueElement("GitLab"));
                     deferred.resolve(convertedIssues);
                 }, function (error) {
                     deferred.reject("Couldn't get the issues from the GitLab repository. Error: " + (error.error.message || error.error));
@@ -775,6 +778,18 @@ define([
             }
 
             return deferred.promise;
+        },
+
+        // Create a fake issue object used to create a new issue in GitHub or GitLab
+        _createNewIssueElement: function (gitHost) {
+            return {
+                id: -1,
+                title: "Create a new issue in " + gitHost,
+                alreadyLinked: false,
+                state: "",
+                openedBy: "",
+                openedDate: 4684608000000 // Magic number! Should work for about 100 years though...
+            };
         },
 
         // Get the last 100 requests (pull/merge) from the selected repository on GitHub or GitLab
