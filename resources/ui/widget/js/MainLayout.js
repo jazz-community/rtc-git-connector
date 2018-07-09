@@ -179,7 +179,7 @@ define([
 
                     if (newIssueIndex >= 0) {
                         // Remove the fake new issue from the issues to link
-                        self.mainDataStore.selectedRepositoryData.issuesToLink.splice(newIssueIndex, 1)[0];
+                        self.mainDataStore.selectedRepositoryData.issuesToLink.splice(newIssueIndex, 1);
 
                         // Create the issue with the title and description of the work item
                         self.gitRestService.createNewIssue(selectedRepository, gitHost, accessToken, self.mainDataStore.workItem)
