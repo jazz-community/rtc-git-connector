@@ -209,6 +209,38 @@ define([
             return linkedUrls;
         },
 
+        getIssueLinksFromWorkItem: function (workItem) {
+            var self = this;
+            var linkedIssueUrls = [];
+            var issueLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                return linkType.id === self.issueLinkTypeId;
+            });
+
+            if (issueLinkTypeContainer) {
+                array.forEach(issueLinkTypeContainer.linkDTOs, function (issueLink) {
+                    linkedIssueUrls.push(issueLink.url.toLowerCase());
+                });
+            }
+
+            return linkedIssueUrls;
+        },
+
+        getRequestLinksFromWorkItem: function (workItem) {
+            var self = this;
+            var linkedRequestUrls = [];
+            var requestLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                return linkType.id === self.requestLinkTypeId;
+            });
+
+            if (requestLinkTypeContainer) {
+                array.forEach(requestLinkTypeContainer.linkDTOs, function (requestLink) {
+                    linkedRequestUrls.push(requestLink.url.toLowerCase());
+                });
+            }
+
+            return linkedRequestUrls;
+        },
+
         // Get the access token for the user and host
         getAccessTokenByHost: function (hostUrl) {
             var deferred = new Deferred();
