@@ -69,7 +69,7 @@ define([
                     var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
                     var accessToken = self.mainDataStore.selectedRepositorySettings.get("accessToken");
                     var issueId = self.issuesSearchInput.value;
-                    var alreadyLinkedUrls = self.jazzRestService.getRelatedArtifactLinksFromWorkItem(self.mainDataStore.workItem);
+                    var alreadyLinkedUrls = self.jazzRestService.getIssueLinksFromWorkItem(self.mainDataStore.workItem);
 
                     // Disable the search and clear buttons while loading
                     dom.byId("viewAndSelectIssuesSearchButton").setAttribute("disabled", "disabled");
