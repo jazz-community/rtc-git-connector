@@ -16,6 +16,8 @@ define([
         richHoverServiceUrl: null,
         gitCommitLinkTypeId: "com.ibm.team.git.workitem.linktype.gitCommit",
         relatedArtifactLinkTypeId: "com.ibm.team.workitem.linktype.relatedartifact",
+        issueLinkTypeId: "org.jazzcommunity.git.link.git_issue.issue_target",
+        requestLinkTypeId: "org.jazzcommunity.git.link.git_mergerequest.request_target",
 
         constructor: function () {
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
@@ -323,6 +325,28 @@ define([
                 displayName: "Related Artifacts",
                 endpointId: "relatedArtifact",
                 id: this.relatedArtifactLinkTypeId,
+                isSource: false,
+                linkDTOs: []
+            };
+        },
+
+        // Creates a new empty issue link type container object
+        _getEmptyIssueLinkTypeContainer: function () {
+            return {
+                displayName: "Git Issues",
+                endpointId: "issue_target",
+                id: this.issueLinkTypeId,
+                isSource: false,
+                linkDTOs: []
+            };
+        },
+
+        // Creates a new empty request link type container object
+        _getEmptyRequestLinkTypeContainer: function () {
+            return {
+                displayName: "Git Merge / Pull Requests",
+                endpointId: "request_target",
+                id: this.requestLinkTypeId,
                 isSource: false,
                 linkDTOs: []
             };
