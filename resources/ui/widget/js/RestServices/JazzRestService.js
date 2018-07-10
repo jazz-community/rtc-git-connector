@@ -51,8 +51,6 @@ define([
                     // Remove the event listener so that this function is only called once
                     workItem.removeListener(listener);
 
-                    console.log("workItem linkTypes before save: ", workItem.object.linkTypes);
-
                     // Save the changes
                     workItem.storeWorkItem({
                         operationMsg: 'Saving',
