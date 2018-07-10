@@ -322,15 +322,20 @@ define([
 
         copyJsonWorkItemToClipboard: function () {
             var self = this;
-            var clipboard = new com_siemens_bt_jazz_rtcgitconnector_modules.ClipboardJS("#viewAndSelectIssuesCopyWorkItemDetails", {
+
+            if (this.clipboard) {
+                this.clipboard.destroy();
+            }
+
+            this.clipboard = new com_siemens_bt_jazz_rtcgitconnector_modules.ClipboardJS("#viewAndSelectIssuesCopyWorkItemDetails", {
                 text: function () {
                     return json.stringify(self.mainDataStore.workItem.object, null, 2);
                 }
             });
-            clipboard.on("success", function (e) {
+            this.clipboard.on("success", function (e) {
                 alert("Successfully copied the work item details. Paste into a text editor to view them.");
             });
-            clipboard.on("error", function (e) {
+            this.clipboard.on("error", function (e) {
                 alert("Failed to copy the work item details. Try refreshing the page and make sure that you are using a modern browser.");
             });
         }
