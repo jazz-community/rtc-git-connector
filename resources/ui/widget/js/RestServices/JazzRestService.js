@@ -16,8 +16,8 @@ define([
         richHoverServiceUrl: null,
         gitCommitLinkTypeId: "com.ibm.team.git.workitem.linktype.gitCommit",
         relatedArtifactLinkTypeId: "com.ibm.team.workitem.linktype.relatedartifact",
-        issueLinkTypeId: "org.jazzcommunity.git.link.git_issue.issue_target",
-        requestLinkTypeId: "org.jazzcommunity.git.link.git_mergerequest.request_target",
+        issueLinkTypeId: "org.jazzcommunity.git.link.git_issue",
+        requestLinkTypeId: "org.jazzcommunity.git.link.git_mergerequest",
 
         constructor: function () {
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
@@ -50,6 +50,8 @@ define([
                 changeFunc: function (event) {
                     // Remove the event listener so that this function is only called once
                     workItem.removeListener(listener);
+
+                    console.log("workItem linkTypes before save: ", workItem.object.linkTypes);
 
                     // Save the changes
                     workItem.storeWorkItem({
@@ -100,63 +102,70 @@ define([
                 });
             }
 
-            // Add links to issues and requests
-            if ((issuesToLink && issuesToLink.length > 0) || (requestsToLink && requestsToLink.length > 0)) {
-                // Get the artifact link type container from the work item
-                var artifactLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                    return linkType.id === self.relatedArtifactLinkTypeId;
+            // Add links to issues
+            if (issuesToLink && issuesToLink.length > 0) {
+                // Get the issue link type container from the work item
+                var issueLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                    return linkType.id === self.issueLinkTypeId;
                 });
 
-                // Create and add an empty artifact link type container if the work item doesn't already have one
-                if (!artifactLinkTypeContainer) {
-                    artifactLinkTypeContainer = this._getEmptyRelatedArtifactLinkTypeContainer();
-                    workItem.object.linkTypes.push(artifactLinkTypeContainer);
+                // Create and add an empty issue link type container if the work item doesn't already have one
+                if (!issueLinkTypeContainer) {
+                    issueLinkTypeContainer = this._getEmptyIssueLinkTypeContainer();
+                    workItem.object.linkTypes.push(issueLinkTypeContainer);
                 }
 
                 // Add all issues to link to the link type container
-                if (issuesToLink && issuesToLink.length > 0) {
-                    array.forEach(issuesToLink, function (issue) {
-                        // TODO: Remove diff again
-                        var url = new URL(issue.webUrl);
-                        if (url.hostname.indexOf('github') === -1) {
-                            // has to be a gitlab request
-                            artifactLinkTypeContainer.linkDTOs.push({
-                                _isNew: true,
-                                comment: issue.title,
-                                url: issue.linkUrl
-                            });
-                        } else {
-                            artifactLinkTypeContainer.linkDTOs.push({
-                                _isNew: true,
-                                comment: issue.title,
-                                url: issue.webUrl
-                            });
-                        }
+                array.forEach(issuesToLink, function (issue) {
+                    var url = new URL(issue.webUrl);
+                    if (url.hostname.indexOf('github') === -1) {
+                        // Only use the link to the service for GitLab
+                        issueLinkTypeContainer.linkDTOs.push({
+                            _isNew: true,
+                            comment: issue.title,
+                            url: issue.linkUrl
+                        });
+                    } else {
+                        issueLinkTypeContainer.linkDTOs.push({
+                            _isNew: true,
+                            comment: issue.title,
+                            url: issue.webUrl
+                        });
+                    }
+                });
+            }
 
-                    });
+            // Add links to requests
+            if (requestsToLink && requestsToLink.length > 0) {
+                // Get the request link type container from the work item
+                var requestLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                    return linkType.id === self.requestLinkTypeId;
+                });
+
+                // Create and add an empty request link type container if the work item doesn't already have one
+                if (!requestLinkTypeContainer) {
+                    requestLinkTypeContainer = this._getEmptyRequestLinkTypeContainer();
+                    workItem.object.linkTypes.push(requestLinkTypeContainer);
                 }
 
                 // Add all requests to link to the link type container
-                if (requestsToLink && requestsToLink.length > 0) {
-                    array.forEach(requestsToLink, function (request) {
-                        // TODO: Remove diff again
-                        var url = new URL(request.webUrl);
-                        if (url.hostname.indexOf('github') === -1) {
-                            // has to be a gitlab request
-                            artifactLinkTypeContainer.linkDTOs.push({
-                                _isNew: true,
-                                comment: request.title,
-                                url: request.linkUrl
-                            });
-                        } else {
-                            artifactLinkTypeContainer.linkDTOs.push({
-                                _isNew: true,
-                                comment: request.title,
-                                url: request.webUrl
-                            });
-                        }
-                    });
-                }
+                array.forEach(requestsToLink, function (request) {
+                    var url = new URL(request.webUrl);
+                    if (url.hostname.indexOf('github') === -1) {
+                        // Only use the link to the service for GitLab
+                        requestLinkTypeContainer.linkDTOs.push({
+                            _isNew: true,
+                            comment: request.title,
+                            url: request.linkUrl
+                        });
+                    } else {
+                        requestLinkTypeContainer.linkDTOs.push({
+                            _isNew: true,
+                            comment: request.title,
+                            url: request.webUrl
+                        });
+                    }
+                });
             }
 
             // Set the linkTypes value on the work item.
