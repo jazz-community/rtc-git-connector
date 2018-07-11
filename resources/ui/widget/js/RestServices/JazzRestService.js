@@ -425,70 +425,55 @@ define([
             };
         },
 
+        // Creates a function that returns a link type container with the partially applied values
+        _makeEmptyLinkTypeContainerGetter: function (displayName, endpointId, id) {
+            return function () {
+                return {
+                    displayName: displayName,
+                    endpointId: endpointId,
+                    id: id,
+                    isSource: false,
+                    linkDTOs: []
+                };
+            };
+        },
+
         _createLinkTypeContainerGetters: function () {
             this._getCommitLinkTypeContainer = this._makeLinkTypeContainerGetter(
                 this.gitCommitLinkTypeId,
-                this._getEmptyCommitLinkTypeContainer
+                this._makeEmptyLinkTypeContainerGetter(
+                    "Git Commits",
+                    "gitcommit",
+                    this.gitCommitLinkTypeId
+                )
             );
 
             this._getRelatedArtifactLinkTypeContainer = this._makeLinkTypeContainerGetter(
                 this.relatedArtifactLinkTypeId,
-                this._getEmptyRelatedArtifactLinkTypeContainer
+                this._makeEmptyLinkTypeContainerGetter(
+                    "Related Artifacts",
+                    "relatedArtifact",
+                    this.relatedArtifactLinkTypeId
+                )
             );
 
             this._getIssueLinkTypeContainer = this._makeLinkTypeContainerGetter(
                 this.issueLinkTypeId,
-                this._getEmptyIssueLinkTypeContainer
+                this._makeEmptyLinkTypeContainerGetter(
+                    "Git Issues",
+                    "issue_target",
+                    this.issueLinkTypeId
+                )
             );
 
             this._getRequestLinkTypeContainer = this._makeLinkTypeContainerGetter(
                 this.requestLinkTypeId,
-                this._getEmptyRequestLinkTypeContainer
+                this._makeEmptyLinkTypeContainerGetter(
+                    "Git Merge / Pull Requests",
+                    "request_target",
+                    this.requestLinkTypeId
+                )
             );
-        },
-
-        // Creates a new empty commit link type container object
-        _getEmptyCommitLinkTypeContainer: function () {
-            return {
-                displayName: "Git Commits",
-                endpointId: "gitcommit",
-                id: this.gitCommitLinkTypeId,
-                isSource: false,
-                linkDTOs: []
-            };
-        },
-
-        // Creates a new empty related artifact link type container object
-        _getEmptyRelatedArtifactLinkTypeContainer: function () {
-            return {
-                displayName: "Related Artifacts",
-                endpointId: "relatedArtifact",
-                id: this.relatedArtifactLinkTypeId,
-                isSource: false,
-                linkDTOs: []
-            };
-        },
-
-        // Creates a new empty issue link type container object
-        _getEmptyIssueLinkTypeContainer: function () {
-            return {
-                displayName: "Git Issues",
-                endpointId: "issue_target",
-                id: this.issueLinkTypeId,
-                isSource: false,
-                linkDTOs: []
-            };
-        },
-
-        // Creates a new empty request link type container object
-        _getEmptyRequestLinkTypeContainer: function () {
-            return {
-                displayName: "Git Merge / Pull Requests",
-                endpointId: "request_target",
-                id: this.requestLinkTypeId,
-                isSource: false,
-                linkDTOs: []
-            };
         },
 
         // Creates the url to the internal git service including the commit as a encoded value.
