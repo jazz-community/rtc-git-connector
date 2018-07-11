@@ -115,20 +115,16 @@ define([
                 // Add all issues to link to the link type container
                 array.forEach(issuesToLink, function (issue) {
                     var url = new URL(issue.webUrl);
+                    var linkUrl = issue.webUrl;
                     if (url.hostname.indexOf('github') === -1) {
                         // Only use the link to the service for GitLab
-                        issueLinkTypeContainer.linkDTOs.push({
-                            _isNew: true,
-                            comment: issue.title,
-                            url: issue.linkUrl
-                        });
-                    } else {
-                        issueLinkTypeContainer.linkDTOs.push({
-                            _isNew: true,
-                            comment: issue.title,
-                            url: issue.webUrl
-                        });
+                        linkUrl = issue.linkUrl;
                     }
+                    issueLinkTypeContainer.linkDTOs.push({
+                        _isNew: true,
+                        comment: issue.title,
+                        url: linkUrl
+                    });
                 });
             }
 
@@ -140,20 +136,16 @@ define([
                 // Add all requests to link to the link type container
                 array.forEach(requestsToLink, function (request) {
                     var url = new URL(request.webUrl);
+                    var linkUrl = request.webUrl;
                     if (url.hostname.indexOf('github') === -1) {
                         // Only use the link to the service for GitLab
-                        requestLinkTypeContainer.linkDTOs.push({
-                            _isNew: true,
-                            comment: request.title,
-                            url: request.linkUrl
-                        });
-                    } else {
-                        requestLinkTypeContainer.linkDTOs.push({
-                            _isNew: true,
-                            comment: request.title,
-                            url: request.webUrl
-                        });
+                        linkUrl = request.linkUrl;
                     }
+                    requestLinkTypeContainer.linkDTOs.push({
+                        _isNew: true,
+                        comment: request.title,
+                        url: linkUrl
+                    });
                 });
             }
 
