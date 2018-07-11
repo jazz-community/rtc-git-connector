@@ -124,16 +124,8 @@ define([
 
             // Add links to commits
             if (commitsToLink && commitsToLink.length > 0) {
-                // Get the commit link type container from the work item
-                var commitLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                    return linkType.id === self.gitCommitLinkTypeId;
-                });
-
-                // Create and add an empty commit link type container if the work item doesn't already have one
-                if (!commitLinkTypeContainer) {
-                    commitLinkTypeContainer = this._getEmptyCommitLinkTypeContainer();
-                    workItem.object.linkTypes.push(commitLinkTypeContainer);
-                }
+                // Get the commit link type container
+                var commitLinkTypeContainer = this._getCommitLinkTypeContainer(workItem);
 
                 // Add all commits to link to the link type container
                 array.forEach(commitsToLink, function (commit) {
@@ -147,16 +139,8 @@ define([
 
             // Add links to issues
             if (issuesToLink && issuesToLink.length > 0) {
-                // Get the issue link type container from the work item
-                var issueLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                    return linkType.id === self.issueLinkTypeId;
-                });
-
-                // Create and add an empty issue link type container if the work item doesn't already have one
-                if (!issueLinkTypeContainer) {
-                    issueLinkTypeContainer = this._getEmptyIssueLinkTypeContainer();
-                    workItem.object.linkTypes.push(issueLinkTypeContainer);
-                }
+                // Get the issue link type container
+                var issueLinkTypeContainer = this._getIssueLinkTypeContainer(workItem);
 
                 // Add all issues to link to the link type container
                 array.forEach(issuesToLink, function (issue) {
@@ -180,16 +164,8 @@ define([
 
             // Add links to requests
             if (requestsToLink && requestsToLink.length > 0) {
-                // Get the request link type container from the work item
-                var requestLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                    return linkType.id === self.requestLinkTypeId;
-                });
-
-                // Create and add an empty request link type container if the work item doesn't already have one
-                if (!requestLinkTypeContainer) {
-                    requestLinkTypeContainer = this._getEmptyRequestLinkTypeContainer();
-                    workItem.object.linkTypes.push(requestLinkTypeContainer);
-                }
+                // Get the request link type container
+                var requestLinkTypeContainer = this._getRequestLinkTypeContainer(workItem);
 
                 // Add all requests to link to the link type container
                 array.forEach(requestsToLink, function (request) {
@@ -228,11 +204,9 @@ define([
             var self = this;
             var issueLinksRegex = /\/org\.jazzcommunity\.gitconnectorservice\.igitconnectorservice\/gitlab\/[^\/]+\/project\/[^\/]+\/issue\/[^\/]+\/link/gmi;
             var requestLinksRegex = /\/org\.jazzcommunity\.gitconnectorservice\.igitconnectorservice\/gitlab\/[^\/]+\/project\/[^\/]+\/merge-request\/[^\/]+\/link/gmi;
-            var artifactLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                return linkType.id === self.relatedArtifactLinkTypeId;
-            });
+            var artifactLinkTypeContainer = this._getRelatedArtifactLinkTypeContainer(workItem);
 
-            if (artifactLinkTypeContainer) {
+            if (artifactLinkTypeContainer.linkDTOs.length) {
                 var issueLinkObjects = [];
                 var requestLinkObjects = [];
 
@@ -255,14 +229,7 @@ define([
                 }
 
                 if (issueLinkObjects.length) {
-                    var issueLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                        return linkType.id === self.issueLinkTypeId;
-                    });
-
-                    if (!issueLinkTypeContainer) {
-                        issueLinkTypeContainer = this._getEmptyIssueLinkTypeContainer();
-                        workItem.object.linkTypes.push(issueLinkTypeContainer);
-                    }
+                    var issueLinkTypeContainer = this._getIssueLinkTypeContainer(workItem);
 
                     array.forEach(issueLinkObjects, function (issueLinkObject) {
                         issueLinkTypeContainer.linkDTOs.push(issueLinkObject);
@@ -270,14 +237,7 @@ define([
                 }
 
                 if (requestLinkObjects.length) {
-                    var requestLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                        return linkType.id === self.requestLinkTypeId;
-                    });
-
-                    if (!requestLinkTypeContainer) {
-                        requestLinkTypeContainer = this._getEmptyRequestLinkTypeContainer();
-                        workItem.object.linkTypes.push(requestLinkTypeContainer);
-                    }
+                    var requestLinkTypeContainer = this._getRequestLinkTypeContainer(workItem);
 
                     array.forEach(requestLinkObjects, function (requestLinkObject) {
                         requestLinkTypeContainer.linkDTOs.push(requestLinkObject);
@@ -295,22 +255,18 @@ define([
         getGitCommitLinksFromWorkItem: function (workItem) {
             var self = this;
             var linkedCommitUrls = [];
-            var commitLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                return linkType.id === self.gitCommitLinkTypeId;
+            var commitLinkTypeContainer = this._getCommitLinkTypeContainer(workItem);
+
+            array.forEach(commitLinkTypeContainer.linkDTOs, function (commitLink) {
+                var searchTerm = "/commit?value=";
+                var lastIndex = commitLink.url.lastIndexOf(searchTerm);
+
+                if (lastIndex != -1) {
+                    var encodedCommit = commitLink.url.slice(lastIndex + searchTerm.length);
+                    var linkCommit = json.parse(self.commitLinkEncoder.decode(encodedCommit));
+                    linkedCommitUrls.push(linkCommit.u.toLowerCase());
+                }
             });
-
-            if (commitLinkTypeContainer) {
-                array.forEach(commitLinkTypeContainer.linkDTOs, function (commitLink) {
-                    var searchTerm = "/commit?value=";
-                    var lastIndex = commitLink.url.lastIndexOf(searchTerm);
-
-                    if (lastIndex != -1) {
-                        var encodedCommit = commitLink.url.slice(lastIndex + searchTerm.length);
-                        var linkCommit = json.parse(self.commitLinkEncoder.decode(encodedCommit));
-                        linkedCommitUrls.push(linkCommit.u.toLowerCase());
-                    }
-                });
-            }
 
             return linkedCommitUrls;
         },
@@ -318,15 +274,11 @@ define([
         getRelatedArtifactLinksFromWorkItem: function (workItem) {
             var self = this;
             var linkedUrls = [];
-            var artifactLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                return linkType.id === self.relatedArtifactLinkTypeId;
-            });
+            var artifactLinkTypeContainer = this._getRelatedArtifactLinkTypeContainer(workItem);
 
-            if (artifactLinkTypeContainer) {
-                array.forEach(artifactLinkTypeContainer.linkDTOs, function (artifactLink) {
-                    linkedUrls.push(artifactLink.url.toLowerCase());
-                });
-            }
+            array.forEach(artifactLinkTypeContainer.linkDTOs, function (artifactLink) {
+                linkedUrls.push(artifactLink.url.toLowerCase());
+            });
 
             return linkedUrls;
         },
@@ -334,15 +286,11 @@ define([
         getIssueLinksFromWorkItem: function (workItem) {
             var self = this;
             var linkedIssueUrls = [];
-            var issueLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                return linkType.id === self.issueLinkTypeId;
-            });
+            var issueLinkTypeContainer = this._getIssueLinkTypeContainer(workItem);
 
-            if (issueLinkTypeContainer) {
-                array.forEach(issueLinkTypeContainer.linkDTOs, function (issueLink) {
-                    linkedIssueUrls.push(issueLink.url.toLowerCase());
-                });
-            }
+            array.forEach(issueLinkTypeContainer.linkDTOs, function (issueLink) {
+                linkedIssueUrls.push(issueLink.url.toLowerCase());
+            });
 
             return linkedIssueUrls;
         },
@@ -350,15 +298,11 @@ define([
         getRequestLinksFromWorkItem: function (workItem) {
             var self = this;
             var linkedRequestUrls = [];
-            var requestLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                return linkType.id === self.requestLinkTypeId;
-            });
+            var requestLinkTypeContainer = this._getRequestLinkTypeContainer(workItem);
 
-            if (requestLinkTypeContainer) {
-                array.forEach(requestLinkTypeContainer.linkDTOs, function (requestLink) {
-                    linkedRequestUrls.push(requestLink.url.toLowerCase());
-                });
-            }
+            array.forEach(requestLinkTypeContainer.linkDTOs, function (requestLink) {
+                linkedRequestUrls.push(requestLink.url.toLowerCase());
+            });
 
             return linkedRequestUrls;
         },
@@ -460,6 +404,37 @@ define([
             }
 
             return gitRepositories;
+        },
+
+        // Gets the specified link type container from the work item
+        // If the container doesn't already exist, it's created and added to the work item
+        _getLinkTypeContainer: function (workItem, linkTypeId, getEmptyContainerFunction) {
+            var linkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                return linkType.id === linkTypeId;
+            });
+
+            if (!linkTypeContainer) {
+                linkTypeContainer = getEmptyContainerFunction();
+                workItem.object.linkTypes.push(linkTypeContainer);
+            }
+
+            return linkTypeContainer;
+        },
+
+        _getCommitLinkTypeContainer: function (workItem) {
+            return this._getLinkTypeContainer(workItem, this.gitCommitLinkTypeId, this._getEmptyCommitLinkTypeContainer);
+        },
+
+        _getRelatedArtifactLinkTypeContainer: function (workItem) {
+            return this._getLinkTypeContainer(workItem, this.relatedArtifactLinkTypeId, this._getEmptyRelatedArtifactLinkTypeContainer);
+        },
+
+        _getIssueLinkTypeContainer: function (workItem) {
+            return this._getLinkTypeContainer(workItem, this.issueLinkTypeId, this._getEmptyIssueLinkTypeContainer);
+        },
+
+        _getRequestLinkTypeContainer: function (workItem) {
+            return this._getLinkTypeContainer(workItem, this.requestLinkTypeId, this._getEmptyRequestLinkTypeContainer);
         },
 
         // Creates a new empty commit link type container object
