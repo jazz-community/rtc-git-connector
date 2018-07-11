@@ -1,18 +1,13 @@
 <div>
     <div id="rtcGitConnectorSelectLinkTypeContainer" style="display: none;">
         <div class="rtcGitConnectorSelectLinkType">
-            <div class="linkTypeItem" data-link-type="COMMIT">Commits</div>
             <div class="linkTypeItem" data-link-type="ISSUE">Issues</div>
             <div class="linkTypeItem" data-link-type="REQUEST">Requests</div>
+            <div class="linkTypeItem" data-link-type="COMMIT">Commits</div>
         </div>
     </div>
 
     <p id="errorLoadingDataFromHostContainer" class="rtcGitConnectorMessage rtcGitConnectorMessageError" style="display: none;"></p>
-
-    <div class="rtcGitConnectorViewAndSelectContainer" data-link-type="COMMIT" style="display: none;">
-        <div data-dojo-attach-point="viewAndSelectCommits"
-            data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectCommits"></div>
-    </div>
 
     <div class="rtcGitConnectorViewAndSelectContainer" data-link-type="ISSUE" style="display: none;">
         <div data-dojo-attach-point="viewAndSelectIssues"
@@ -24,11 +19,12 @@
             data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectRequests"></div>
     </div>
 
+    <div class="rtcGitConnectorViewAndSelectContainer" data-link-type="COMMIT" style="display: none;">
+        <div data-dojo-attach-point="viewAndSelectCommits"
+            data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectCommits"></div>
+    </div>
+
     <div class="rtcGitConnectorListsToLinkContainer">
-        <div id="rtcGitConnectorCommitsListToLink" class="rtcGitConnectorListToLink">
-            <div data-dojo-attach-point="viewCommitsToLink"
-                data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewCommitsToLink"></div>
-        </div>
         <div id="rtcGitConnectorIssuesListToLink" class="rtcGitConnectorListToLink">
             <div data-dojo-attach-point="viewIssuesToLink"
                 data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewIssuesToLink"></div>
@@ -36,6 +32,10 @@
         <div id="rtcGitConnectorRequestsListToLink" class="rtcGitConnectorListToLink">
             <div data-dojo-attach-point="viewRequestsToLink"
                 data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewRequestsToLink"></div>
+        </div>
+        <div id="rtcGitConnectorCommitsListToLink" class="rtcGitConnectorListToLink">
+            <div data-dojo-attach-point="viewCommitsToLink"
+                data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewCommitsToLink"></div>
         </div>
     </div>
 </div>
