@@ -16,6 +16,8 @@ define([
         richHoverServiceUrl: null,
         gitCommitLinkTypeId: "com.ibm.team.git.workitem.linktype.gitCommit",
         relatedArtifactLinkTypeId: "com.ibm.team.workitem.linktype.relatedartifact",
+        issueLinkTypeId: "org.jazzcommunity.git.link.git_issue",
+        requestLinkTypeId: "org.jazzcommunity.git.link.git_mergerequest",
 
         constructor: function () {
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
@@ -36,13 +38,12 @@ define([
                 "/com.ibm.team.git.internal.resources.IGitResourceRestService/commit";
             this.richHoverServiceUrl =
                 this.ajaxContextRoot +
-                "/service/org.jazzcommunity.GitConnectorService.IGitConnectorService"
+                "/service/org.jazzcommunity.GitConnectorService.IGitConnectorService";
+
+            this._createLinkTypeContainerGetters();
         },
 
-        // Adds links to the workItem object and saves them
-        // The addBackLinksFunction is run on success without any parameters
-        addLinksToWorkItem: function (workItem, registeredGitRepository, commitsToLink, issuesToLink, requestsToLink, addBackLinksFunction) {
-            var self = this;
+        saveLinksInWorkItem: function (workItem, successCallbackFunction) {
             var onChangeFunc = {
                 // Create a function to run after the linkType change
                 changeFunc: function (event) {
@@ -55,7 +56,7 @@ define([
                         applyDelta: true,
                         onSuccess: function(params) {
                             console.log("Save Success");
-                            addBackLinksFunction();
+                            successCallbackFunction();
                         },
                         onError: function(error) {
                             console.log("Save Error: ", error);
@@ -75,88 +76,6 @@ define([
             // Add the listener to the work item
             workItem.addListener(listener);
 
-            // Add links to commits
-            if (commitsToLink && commitsToLink.length > 0) {
-                // Get the commit link type container from the work item
-                var commitLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                    return linkType.id === self.gitCommitLinkTypeId;
-                });
-
-                // Create and add an empty commit link type container if the work item doesn't already have one
-                if (!commitLinkTypeContainer) {
-                    commitLinkTypeContainer = this._getEmptyCommitLinkTypeContainer();
-                    workItem.object.linkTypes.push(commitLinkTypeContainer);
-                }
-
-                // Add all commits to link to the link type container
-                array.forEach(commitsToLink, function (commit) {
-                    commitLinkTypeContainer.linkDTOs.push({
-                        _isNew: true,
-                        comment: commit.message.split(/\r?\n/g)[0] + " [@" + commit.sha + "]",
-                        url: self._createCommitLinkUrl(commit, registeredGitRepository)
-                    });
-                });
-            }
-
-            // Add links to issues and requests
-            if ((issuesToLink && issuesToLink.length > 0) || (requestsToLink && requestsToLink.length > 0)) {
-                // Get the artifact link type container from the work item
-                var artifactLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                    return linkType.id === self.relatedArtifactLinkTypeId;
-                });
-
-                // Create and add an empty artifact link type container if the work item doesn't already have one
-                if (!artifactLinkTypeContainer) {
-                    artifactLinkTypeContainer = this._getEmptyRelatedArtifactLinkTypeContainer();
-                    workItem.object.linkTypes.push(artifactLinkTypeContainer);
-                }
-
-                // Add all issues to link to the link type container
-                if (issuesToLink && issuesToLink.length > 0) {
-                    array.forEach(issuesToLink, function (issue) {
-                        // TODO: Remove diff again
-                        var url = new URL(issue.webUrl);
-                        if (url.hostname.indexOf('github') === -1) {
-                            // has to be a gitlab request
-                            artifactLinkTypeContainer.linkDTOs.push({
-                                _isNew: true,
-                                comment: issue.title,
-                                url: issue.linkUrl
-                            });
-                        } else {
-                            artifactLinkTypeContainer.linkDTOs.push({
-                                _isNew: true,
-                                comment: issue.title,
-                                url: issue.webUrl
-                            });
-                        }
-
-                    });
-                }
-
-                // Add all requests to link to the link type container
-                if (requestsToLink && requestsToLink.length > 0) {
-                    array.forEach(requestsToLink, function (request) {
-                        // TODO: Remove diff again
-                        var url = new URL(request.webUrl);
-                        if (url.hostname.indexOf('github') === -1) {
-                            // has to be a gitlab request
-                            artifactLinkTypeContainer.linkDTOs.push({
-                                _isNew: true,
-                                comment: request.title,
-                                url: request.linkUrl
-                            });
-                        } else {
-                            artifactLinkTypeContainer.linkDTOs.push({
-                                _isNew: true,
-                                comment: request.title,
-                                url: request.webUrl
-                            });
-                        }
-                    });
-                }
-            }
-
             // Set the linkTypes value on the work item.
             // This will also trigger the save
             workItem.setValue({
@@ -168,43 +87,174 @@ define([
             workItem.removeListener(listener);
         },
 
+        // Adds links to the workItem object and saves them
+        // The addBackLinksFunction is run on success without any parameters
+        addLinksToWorkItem: function (workItem, registeredGitRepository, commitsToLink, issuesToLink, requestsToLink, addBackLinksFunction) {
+            var self = this;
+
+            // Add links to commits
+            if (commitsToLink && commitsToLink.length > 0) {
+                // Get the commit link type container
+                var commitLinkTypeContainer = this._getCommitLinkTypeContainer(workItem);
+
+                // Add all commits to link to the link type container
+                array.forEach(commitsToLink, function (commit) {
+                    commitLinkTypeContainer.linkDTOs.push({
+                        _isNew: true,
+                        comment: commit.message.split(/\r?\n/g)[0] + " [@" + commit.sha + "]",
+                        url: self._createCommitLinkUrl(commit, registeredGitRepository)
+                    });
+                });
+            }
+
+            // Add links to issues
+            if (issuesToLink && issuesToLink.length > 0) {
+                // Get the issue link type container
+                var issueLinkTypeContainer = this._getIssueLinkTypeContainer(workItem);
+
+                // Add all issues to link to the link type container
+                array.forEach(issuesToLink, function (issue) {
+                    var url = new URL(issue.webUrl);
+                    var linkUrl = issue.webUrl;
+                    if (url.hostname.indexOf('github') === -1) {
+                        // Only use the link to the service for GitLab
+                        linkUrl = issue.linkUrl;
+                    }
+                    issueLinkTypeContainer.linkDTOs.push({
+                        _isNew: true,
+                        comment: issue.title,
+                        url: linkUrl
+                    });
+                });
+            }
+
+            // Add links to requests
+            if (requestsToLink && requestsToLink.length > 0) {
+                // Get the request link type container
+                var requestLinkTypeContainer = this._getRequestLinkTypeContainer(workItem);
+
+                // Add all requests to link to the link type container
+                array.forEach(requestsToLink, function (request) {
+                    var url = new URL(request.webUrl);
+                    var linkUrl = request.webUrl;
+                    if (url.hostname.indexOf('github') === -1) {
+                        // Only use the link to the service for GitLab
+                        linkUrl = request.linkUrl;
+                    }
+                    requestLinkTypeContainer.linkDTOs.push({
+                        _isNew: true,
+                        comment: request.title,
+                        url: linkUrl
+                    });
+                });
+            }
+
+            this.saveLinksInWorkItem(workItem, addBackLinksFunction);
+        },
+
+        // Move issue and request links that were created as related artifacts to their own custom link types
+        // Returns true if any changes where made; otherwise false
+        moveOldLinksToNewLinkTypes: function (workItem) {
+            var issueLinksRegex = /\/org\.jazzcommunity\.gitconnectorservice\.igitconnectorservice\/gitlab\/[^\/]+\/project\/[^\/]+\/issue\/[^\/]+\/link/gmi;
+            var requestLinksRegex = /\/org\.jazzcommunity\.gitconnectorservice\.igitconnectorservice\/gitlab\/[^\/]+\/project\/[^\/]+\/merge-request\/[^\/]+\/link/gmi;
+            var artifactLinkTypeContainer = this._getRelatedArtifactLinkTypeContainer(workItem);
+
+            if (artifactLinkTypeContainer.linkDTOs.length) {
+                var issueLinkObjects = [];
+                var requestLinkObjects = [];
+
+                for (var i = artifactLinkTypeContainer.linkDTOs.length - 1; i >= 0; i--) {
+                    if (issueLinksRegex.test(artifactLinkTypeContainer.linkDTOs[i].url)) {
+                        issueLinkObjects.push({
+                            _isNew: true,
+                            comment: artifactLinkTypeContainer.linkDTOs[i].comment,
+                            url: artifactLinkTypeContainer.linkDTOs[i].url
+                        });
+                        artifactLinkTypeContainer.linkDTOs.splice(i, 1);
+                    } else if (requestLinksRegex.test(artifactLinkTypeContainer.linkDTOs[i].url)) {
+                        requestLinkObjects.push({
+                            _isNew: true,
+                            comment: artifactLinkTypeContainer.linkDTOs[i].comment,
+                            url: artifactLinkTypeContainer.linkDTOs[i].url
+                        });
+                        artifactLinkTypeContainer.linkDTOs.splice(i, 1);
+                    }
+                }
+
+                if (issueLinkObjects.length) {
+                    var issueLinkTypeContainer = this._getIssueLinkTypeContainer(workItem);
+
+                    array.forEach(issueLinkObjects, function (issueLinkObject) {
+                        issueLinkTypeContainer.linkDTOs.push(issueLinkObject);
+                    });
+                }
+
+                if (requestLinkObjects.length) {
+                    var requestLinkTypeContainer = this._getRequestLinkTypeContainer(workItem);
+
+                    array.forEach(requestLinkObjects, function (requestLinkObject) {
+                        requestLinkTypeContainer.linkDTOs.push(requestLinkObject);
+                    });
+                }
+
+                if (issueLinkObjects.length || requestLinkObjects.length) {
+                    return true;
+                }
+            }
+
+            return false;
+        },
+
         getGitCommitLinksFromWorkItem: function (workItem) {
             var self = this;
             var linkedCommitUrls = [];
-            var commitLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                return linkType.id === self.gitCommitLinkTypeId;
+            var commitLinkTypeContainer = this._getCommitLinkTypeContainer(workItem);
+
+            array.forEach(commitLinkTypeContainer.linkDTOs, function (commitLink) {
+                var searchTerm = "/commit?value=";
+                var lastIndex = commitLink.url.lastIndexOf(searchTerm);
+
+                if (lastIndex != -1) {
+                    var encodedCommit = commitLink.url.slice(lastIndex + searchTerm.length);
+                    var linkCommit = json.parse(self.commitLinkEncoder.decode(encodedCommit));
+                    linkedCommitUrls.push(linkCommit.u.toLowerCase());
+                }
             });
-
-            if (commitLinkTypeContainer) {
-                array.forEach(commitLinkTypeContainer.linkDTOs, function (commitLink) {
-                    var searchTerm = "/commit?value=";
-                    var lastIndex = commitLink.url.lastIndexOf(searchTerm);
-
-                    if (lastIndex != -1) {
-                        var encodedCommit = commitLink.url.slice(lastIndex + searchTerm.length);
-                        var linkCommit = json.parse(self.commitLinkEncoder.decode(encodedCommit));
-                        linkedCommitUrls.push(linkCommit.u.toLowerCase());
-                    }
-                });
-            }
 
             return linkedCommitUrls;
         },
 
         getRelatedArtifactLinksFromWorkItem: function (workItem) {
-            var self = this;
             var linkedUrls = [];
-            var artifactLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                return linkType.id === self.relatedArtifactLinkTypeId;
+            var artifactLinkTypeContainer = this._getRelatedArtifactLinkTypeContainer(workItem);
+
+            array.forEach(artifactLinkTypeContainer.linkDTOs, function (artifactLink) {
+                linkedUrls.push(artifactLink.url.toLowerCase());
             });
 
-            if (artifactLinkTypeContainer) {
-                array.forEach(artifactLinkTypeContainer.linkDTOs, function (artifactLink) {
-                    linkedUrls.push(artifactLink.url.toLowerCase());
-                });
-            }
-
             return linkedUrls;
+        },
+
+        getIssueLinksFromWorkItem: function (workItem) {
+            var linkedIssueUrls = [];
+            var issueLinkTypeContainer = this._getIssueLinkTypeContainer(workItem);
+
+            array.forEach(issueLinkTypeContainer.linkDTOs, function (issueLink) {
+                linkedIssueUrls.push(issueLink.url.toLowerCase());
+            });
+
+            return linkedIssueUrls;
+        },
+
+        getRequestLinksFromWorkItem: function (workItem) {
+            var linkedRequestUrls = [];
+            var requestLinkTypeContainer = this._getRequestLinkTypeContainer(workItem);
+
+            array.forEach(requestLinkTypeContainer.linkDTOs, function (requestLink) {
+                linkedRequestUrls.push(requestLink.url.toLowerCase());
+            });
+
+            return linkedRequestUrls;
         },
 
         // Get the access token for the user and host
@@ -306,26 +356,59 @@ define([
             return gitRepositories;
         },
 
-        // Creates a new empty commit link type container object
-        _getEmptyCommitLinkTypeContainer: function () {
+        // Creates a function that gets the specified link type container from the work item
+        // If the container doesn't already exist, it's created and added to the work item
+        _makeLinkTypeContainerGetter: function (linkTypeId, displayName, endpointId) {
+            var self = this;
+            return function (workItem) {
+                var linkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                    return linkType.id === linkTypeId;
+                });
+
+                if (!linkTypeContainer) {
+                    linkTypeContainer = self._getEmptyLinkTypeContainer(displayName, endpointId, linkTypeId);
+                    workItem.object.linkTypes.push(linkTypeContainer);
+                }
+
+                return linkTypeContainer;
+            };
+        },
+
+        // Creates a link type container with the specified values
+        _getEmptyLinkTypeContainer: function (displayName, endpointId, id) {
             return {
-                displayName: "Git Commits",
-                endpointId: "gitcommit",
-                id: this.gitCommitLinkTypeId,
+                displayName: displayName,
+                endpointId: endpointId,
+                id: id,
                 isSource: false,
                 linkDTOs: []
             };
         },
 
-        // Creates a new empty related artifact link type container object
-        _getEmptyRelatedArtifactLinkTypeContainer: function () {
-            return {
-                displayName: "Related Artifacts",
-                endpointId: "relatedArtifact",
-                id: this.relatedArtifactLinkTypeId,
-                isSource: false,
-                linkDTOs: []
-            };
+        _createLinkTypeContainerGetters: function () {
+            this._getCommitLinkTypeContainer = this._makeLinkTypeContainerGetter(
+                this.gitCommitLinkTypeId,
+                "Git Commits",
+                "gitcommit"
+            );
+
+            this._getRelatedArtifactLinkTypeContainer = this._makeLinkTypeContainerGetter(
+                this.relatedArtifactLinkTypeId,
+                "Related Artifacts",
+                "relatedArtifact"
+            );
+
+            this._getIssueLinkTypeContainer = this._makeLinkTypeContainerGetter(
+                this.issueLinkTypeId,
+                "Git Issues",
+                "issue_target"
+            );
+
+            this._getRequestLinkTypeContainer = this._makeLinkTypeContainerGetter(
+                this.requestLinkTypeId,
+                "Git Merge / Pull Requests",
+                "request_target"
+            );
         },
 
         // Creates the url to the internal git service including the commit as a encoded value.

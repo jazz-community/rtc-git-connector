@@ -54,7 +54,10 @@ define([
                 "/project/" + requestModel.projectId +
                 "/" + requestModel.type + "/" + requestModel.iid +
                 "/link";
-            requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.linkUrl.toLowerCase()) > -1;
+            var lowerCaseLinkUrl = requestModel.linkUrl.toLowerCase();
+            requestModel.alreadyLinked = alreadyLinkedUrls.some(function (alreadyLinkedUrl) {
+                return alreadyLinkedUrl.indexOf(lowerCaseLinkUrl) > -1;
+            });
 
             return requestModel;
         };

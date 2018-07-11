@@ -45,6 +45,7 @@ define([
             issueModel.openedBy = gitLabIssue.author.name;
             issueModel.openedDate = gitLabIssue.created_at;
             issueModel.webUrl = gitLabIssue.web_url;
+            issueModel.service = 'gitlab';
             issueModel.projectId = gitLabIssue.project_id;
             issueModel.iid = gitLabIssue.iid;
             issueModel.linkUrl = net.jazz.ajax._contextRoot +
@@ -53,8 +54,10 @@ define([
                 "/project/" + issueModel.projectId +
                 "/" + issueModel.type + "/" + issueModel.iid +
                 "/link";
-            issueModel.alreadyLinked = alreadyLinkedUrls.indexOf(issueModel.linkUrl.toLowerCase()) > -1;
-
+            var lowerCaseLinkUrl = issueModel.linkUrl.toLowerCase();
+            issueModel.alreadyLinked = alreadyLinkedUrls.some(function (alreadyLinkedUrl) {
+                return alreadyLinkedUrl.indexOf(lowerCaseLinkUrl) > -1;
+            });
 
             return issueModel;
         };

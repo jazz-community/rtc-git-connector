@@ -128,6 +128,8 @@ define([
                     domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
 
                     var saveTheLinks = function () {
+                        // There are no more hidden changes because they will be saved
+                        self.mainDataStore.hasHiddenChanges = false;
                         // Save the links
                         self.jazzRestService.addLinksToWorkItem(self.mainDataStore.workItem,
                             selectedRepository,
@@ -359,7 +361,17 @@ define([
         _hideMainDialog: function () {
             // Get the mainDialog by it's dom id
             var mainDialog = registry.byId("connectWithGitMainDialog");
-            mainDialog.hide();
+
+            // Save hidden changes before closing if there are any
+            if (this.mainDataStore.hasHiddenChanges) {
+                domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
+                this.jazzRestService.saveLinksInWorkItem(this.mainDataStore.workItem, function () {
+                    domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
+                    mainDialog.hide();
+                });
+            } else {
+                mainDialog.hide();
+            }
         }
     });
 });

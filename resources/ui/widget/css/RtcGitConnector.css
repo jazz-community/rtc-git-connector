@@ -371,6 +371,12 @@
     line-height: 20vh;
 }
 
+#rtcGitConnectorFullPageLoadingOverlayContent {
+    position: fixed;
+    width: 80vw;
+    bottom: 0;
+}
+
 #rtcGitConnectorFullPageLoadingOverlayContent span {
     display: block;
 }
