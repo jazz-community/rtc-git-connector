@@ -43,7 +43,7 @@ define([
             this._createLinkTypeContainerGetters();
         },
 
-        saveLinksInWorkItem: function (workItem, callbackFunction) {
+        saveLinksInWorkItem: function (workItem, successCallbackFunction) {
             var onChangeFunc = {
                 // Create a function to run after the linkType change
                 changeFunc: function (event) {
@@ -56,11 +56,10 @@ define([
                         applyDelta: true,
                         onSuccess: function(params) {
                             console.log("Save Success");
-                            callbackFunction();
+                            successCallbackFunction();
                         },
                         onError: function(error) {
                             console.log("Save Error: ", error);
-                            callbackFunction();
                         }
                     });
                 }
@@ -92,37 +91,6 @@ define([
         // The addBackLinksFunction is run on success without any parameters
         addLinksToWorkItem: function (workItem, registeredGitRepository, commitsToLink, issuesToLink, requestsToLink, addBackLinksFunction) {
             var self = this;
-            var onChangeFunc = {
-                // Create a function to run after the linkType change
-                changeFunc: function (event) {
-                    // Remove the event listener so that this function is only called once
-                    workItem.removeListener(listener);
-
-                    // Save the changes
-                    workItem.storeWorkItem({
-                        operationMsg: 'Saving',
-                        applyDelta: true,
-                        onSuccess: function(params) {
-                            console.log("Save Success");
-                            addBackLinksFunction();
-                        },
-                        onError: function(error) {
-                            console.log("Save Error: ", error);
-                        }
-                    });
-                }
-            };
-
-            // Create a listener for changes to the linkTypes
-            var listener = {
-                path: ["linkTypes"],
-                event: "onchange",
-                listener: onChangeFunc,
-                functionName: "changeFunc"
-            };
-
-            // Add the listener to the work item
-            workItem.addListener(listener);
 
             // Add links to commits
             if (commitsToLink && commitsToLink.length > 0) {
@@ -189,15 +157,7 @@ define([
                 });
             }
 
-            // Set the linkTypes value on the work item.
-            // This will also trigger the save
-            workItem.setValue({
-                path: ["linkTypes"],
-                value: workItem.object.linkTypes
-            });
-
-            // Remove the listener again just incase it wasn't removed before (the event wasn't fired?)
-            workItem.removeListener(listener);
+            this.saveLinksInWorkItem(workItem, addBackLinksFunction);
         },
 
         // Move issue and request links that were created as related artifacts to their own custom link types
