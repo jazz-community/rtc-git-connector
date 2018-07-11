@@ -86,28 +86,6 @@ define([
                     self.showViewAndSelectWidget(value);
                 }
 
-                if (!self.mainDataStore.selectedRepositorySettings.get("commitsLoaded") &&
-                        !self.mainDataStore.selectedRepositorySettings.get("commitsLoading")) {
-                    // Set the commitsLoading to true to prevent multiple requests
-                    self.mainDataStore.selectedRepositorySettings.set("commitsLoading", true);
-
-                    // Get commits from host if not already loaded
-                    self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken,
-                        self.jazzRestService.getGitCommitLinksFromWorkItem(self.mainDataStore.workItem)).then(function (commits) {
-                        // Set the list in the store and set commitsLoaded to true.
-                        // Clear the list first just incase the function is run multiple times due to slow loading
-                        self.mainDataStore.selectedRepositoryData.commits
-                            .splice(0, self.mainDataStore.selectedRepositoryData.commits.length);
-                        self.mainDataStore.selectedRepositoryData.commits
-                            .push.apply(self.mainDataStore.selectedRepositoryData.commits, commits);
-                        self.mainDataStore.selectedRepositorySettings.set("commitsLoaded", true);
-                        self.mainDataStore.selectedRepositorySettings.set("commitsLoading", false);
-                    }, function (error) {
-                        self.mainDataStore.selectedRepositorySettings.set("commitsLoadError", error || "Unknown Error");
-                        self.showLoadingDataError(error);
-                    });
-                }
-
                 if (!self.mainDataStore.selectedRepositorySettings.get("issuesLoaded") &&
                         !self.mainDataStore.selectedRepositorySettings.get("issuesLoading")) {
                     // Set the issuesLoading to true to prevent multiple requests
@@ -148,6 +126,28 @@ define([
                         self.mainDataStore.selectedRepositorySettings.set("requestsLoading", false);
                     }, function (error) {
                         self.mainDataStore.selectedRepositorySettings.set("requestsLoadError", error || "Unknown Error");
+                        self.showLoadingDataError(error);
+                    });
+                }
+
+                if (!self.mainDataStore.selectedRepositorySettings.get("commitsLoaded") &&
+                        !self.mainDataStore.selectedRepositorySettings.get("commitsLoading")) {
+                    // Set the commitsLoading to true to prevent multiple requests
+                    self.mainDataStore.selectedRepositorySettings.set("commitsLoading", true);
+
+                    // Get commits from host if not already loaded
+                    self.gitRestService.getRecentCommits(selectedRepository, gitHost, accessToken,
+                        self.jazzRestService.getGitCommitLinksFromWorkItem(self.mainDataStore.workItem)).then(function (commits) {
+                        // Set the list in the store and set commitsLoaded to true.
+                        // Clear the list first just incase the function is run multiple times due to slow loading
+                        self.mainDataStore.selectedRepositoryData.commits
+                            .splice(0, self.mainDataStore.selectedRepositoryData.commits.length);
+                        self.mainDataStore.selectedRepositoryData.commits
+                            .push.apply(self.mainDataStore.selectedRepositoryData.commits, commits);
+                        self.mainDataStore.selectedRepositorySettings.set("commitsLoaded", true);
+                        self.mainDataStore.selectedRepositorySettings.set("commitsLoading", false);
+                    }, function (error) {
+                        self.mainDataStore.selectedRepositorySettings.set("commitsLoadError", error || "Unknown Error");
                         self.showLoadingDataError(error);
                     });
                 }
