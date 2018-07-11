@@ -276,8 +276,8 @@ define([
             this.mainDataStore.selectedRepositorySettings.watch("accessToken", function (name, oldValue, value) {
                 // Set the default link type if the access token is not null
                 if (value) {
-                    // Set the link type to commit (as default)
-                    self.mainDataStore.selectedRepositorySettings.set("linkType", "COMMIT");
+                    // Set the link type to issue (as default)
+                    self.mainDataStore.selectedRepositorySettings.set("linkType", "ISSUE");
                 }
             });
         },
