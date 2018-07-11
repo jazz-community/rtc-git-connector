@@ -203,7 +203,6 @@ define([
         // Move issue and request links that were created as related artifacts to their own custom link types
         // Returns true if any changes where made; otherwise false
         moveOldLinksToNewLinkTypes: function (workItem) {
-            var self = this;
             var issueLinksRegex = /\/org\.jazzcommunity\.gitconnectorservice\.igitconnectorservice\/gitlab\/[^\/]+\/project\/[^\/]+\/issue\/[^\/]+\/link/gmi;
             var requestLinksRegex = /\/org\.jazzcommunity\.gitconnectorservice\.igitconnectorservice\/gitlab\/[^\/]+\/project\/[^\/]+\/merge-request\/[^\/]+\/link/gmi;
             var artifactLinkTypeContainer = this._getRelatedArtifactLinkTypeContainer(workItem);
@@ -274,7 +273,6 @@ define([
         },
 
         getRelatedArtifactLinksFromWorkItem: function (workItem) {
-            var self = this;
             var linkedUrls = [];
             var artifactLinkTypeContainer = this._getRelatedArtifactLinkTypeContainer(workItem);
 
@@ -286,7 +284,6 @@ define([
         },
 
         getIssueLinksFromWorkItem: function (workItem) {
-            var self = this;
             var linkedIssueUrls = [];
             var issueLinkTypeContainer = this._getIssueLinkTypeContainer(workItem);
 
@@ -298,7 +295,6 @@ define([
         },
 
         getRequestLinksFromWorkItem: function (workItem) {
-            var self = this;
             var linkedRequestUrls = [];
             var requestLinkTypeContainer = this._getRequestLinkTypeContainer(workItem);
 
