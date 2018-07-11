@@ -38,7 +38,9 @@ define([
                 "/com.ibm.team.git.internal.resources.IGitResourceRestService/commit";
             this.richHoverServiceUrl =
                 this.ajaxContextRoot +
-                "/service/org.jazzcommunity.GitConnectorService.IGitConnectorService"
+                "/service/org.jazzcommunity.GitConnectorService.IGitConnectorService";
+
+            this._createLinkTypeContainerGetters();
         },
 
         saveLinksInWorkItem: function (workItem, callbackFunction) {
@@ -406,35 +408,43 @@ define([
             return gitRepositories;
         },
 
-        // Gets the specified link type container from the work item
+        // Creates a function that gets the specified link type container from the work item
         // If the container doesn't already exist, it's created and added to the work item
-        _getLinkTypeContainer: function (workItem, linkTypeId, getEmptyContainerFunction) {
-            var linkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
-                return linkType.id === linkTypeId;
-            });
+        _makeLinkTypeContainerGetter: function (linkTypeId, getEmptyContainerFunction) {
+            return function (workItem) {
+                var linkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                    return linkType.id === linkTypeId;
+                });
 
-            if (!linkTypeContainer) {
-                linkTypeContainer = getEmptyContainerFunction();
-                workItem.object.linkTypes.push(linkTypeContainer);
-            }
+                if (!linkTypeContainer) {
+                    linkTypeContainer = getEmptyContainerFunction();
+                    workItem.object.linkTypes.push(linkTypeContainer);
+                }
 
-            return linkTypeContainer;
+                return linkTypeContainer;
+            };
         },
 
-        _getCommitLinkTypeContainer: function (workItem) {
-            return this._getLinkTypeContainer(workItem, this.gitCommitLinkTypeId, this._getEmptyCommitLinkTypeContainer);
-        },
+        _createLinkTypeContainerGetters: function () {
+            this._getCommitLinkTypeContainer = this._makeLinkTypeContainerGetter(
+                this.gitCommitLinkTypeId,
+                this._getEmptyCommitLinkTypeContainer
+            );
 
-        _getRelatedArtifactLinkTypeContainer: function (workItem) {
-            return this._getLinkTypeContainer(workItem, this.relatedArtifactLinkTypeId, this._getEmptyRelatedArtifactLinkTypeContainer);
-        },
+            this._getRelatedArtifactLinkTypeContainer = this._makeLinkTypeContainerGetter(
+                this.relatedArtifactLinkTypeId,
+                this._getEmptyRelatedArtifactLinkTypeContainer
+            );
 
-        _getIssueLinkTypeContainer: function (workItem) {
-            return this._getLinkTypeContainer(workItem, this.issueLinkTypeId, this._getEmptyIssueLinkTypeContainer);
-        },
+            this._getIssueLinkTypeContainer = this._makeLinkTypeContainerGetter(
+                this.issueLinkTypeId,
+                this._getEmptyIssueLinkTypeContainer
+            );
 
-        _getRequestLinkTypeContainer: function (workItem) {
-            return this._getLinkTypeContainer(workItem, this.requestLinkTypeId, this._getEmptyRequestLinkTypeContainer);
+            this._getRequestLinkTypeContainer = this._makeLinkTypeContainerGetter(
+                this.requestLinkTypeId,
+                this._getEmptyRequestLinkTypeContainer
+            );
         },
 
         // Creates a new empty commit link type container object
