@@ -41,6 +41,51 @@ define([
                 "/service/org.jazzcommunity.GitConnectorService.IGitConnectorService"
         },
 
+        saveLinksInWorkItem: function (workItem, callbackFunction) {
+            var onChangeFunc = {
+                // Create a function to run after the linkType change
+                changeFunc: function (event) {
+                    // Remove the event listener so that this function is only called once
+                    workItem.removeListener(listener);
+
+                    // Save the changes
+                    workItem.storeWorkItem({
+                        operationMsg: 'Saving',
+                        applyDelta: true,
+                        onSuccess: function(params) {
+                            console.log("Save Success");
+                            callbackFunction();
+                        },
+                        onError: function(error) {
+                            console.log("Save Error: ", error);
+                            callbackFunction();
+                        }
+                    });
+                }
+            };
+
+            // Create a listener for changes to the linkTypes
+            var listener = {
+                path: ["linkTypes"],
+                event: "onchange",
+                listener: onChangeFunc,
+                functionName: "changeFunc"
+            };
+
+            // Add the listener to the work item
+            workItem.addListener(listener);
+
+            // Set the linkTypes value on the work item.
+            // This will also trigger the save
+            workItem.setValue({
+                path: ["linkTypes"],
+                value: workItem.object.linkTypes
+            });
+
+            // Remove the listener again just incase it wasn't removed before (the event wasn't fired?)
+            workItem.removeListener(listener);
+        },
+
         // Adds links to the workItem object and saves them
         // The addBackLinksFunction is run on success without any parameters
         addLinksToWorkItem: function (workItem, registeredGitRepository, commitsToLink, issuesToLink, requestsToLink, addBackLinksFunction) {
@@ -175,6 +220,76 @@ define([
 
             // Remove the listener again just incase it wasn't removed before (the event wasn't fired?)
             workItem.removeListener(listener);
+        },
+
+        // Move issue and request links that were created as related artifacts to their own custom link types
+        // Returns true if any changes where made; otherwise false
+        moveOldLinksToNewLinkTypes: function (workItem) {
+            var self = this;
+            var issueLinksRegex = /\/org\.jazzcommunity\.gitconnectorservice\.igitconnectorservice\/gitlab\/[^\/]+\/project\/[^\/]+\/issue\/[^\/]+\/link/gmi;
+            var requestLinksRegex = /\/org\.jazzcommunity\.gitconnectorservice\.igitconnectorservice\/gitlab\/[^\/]+\/project\/[^\/]+\/merge-request\/[^\/]+\/link/gmi;
+            var artifactLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                return linkType.id === self.relatedArtifactLinkTypeId;
+            });
+
+            if (artifactLinkTypeContainer) {
+                var issueLinkObjects = [];
+                var requestLinkObjects = [];
+
+                for (var i = artifactLinkTypeContainer.linkDTOs.length - 1; i >= 0; i--) {
+                    if (issueLinksRegex.test(artifactLinkTypeContainer.linkDTOs[i].url)) {
+                        issueLinkObjects.push({
+                            _isNew: true,
+                            comment: artifactLinkTypeContainer.linkDTOs[i].comment,
+                            url: artifactLinkTypeContainer.linkDTOs[i].url
+                        });
+                        artifactLinkTypeContainer.linkDTOs.splice(i, 1);
+                    } else if (requestLinksRegex.test(artifactLinkTypeContainer.linkDTOs[i].url)) {
+                        requestLinkObjects.push({
+                            _isNew: true,
+                            comment: artifactLinkTypeContainer.linkDTOs[i].comment,
+                            url: artifactLinkTypeContainer.linkDTOs[i].url
+                        });
+                        artifactLinkTypeContainer.linkDTOs.splice(i, 1);
+                    }
+                }
+
+                if (issueLinkObjects.length) {
+                    var issueLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                        return linkType.id === self.issueLinkTypeId;
+                    });
+
+                    if (!issueLinkTypeContainer) {
+                        issueLinkTypeContainer = this._getEmptyIssueLinkTypeContainer();
+                        workItem.object.linkTypes.push(issueLinkTypeContainer);
+                    }
+
+                    array.forEach(issueLinkObjects, function (issueLinkObject) {
+                        issueLinkTypeContainer.linkDTOs.push(issueLinkObject);
+                    });
+                }
+
+                if (requestLinkObjects.length) {
+                    var requestLinkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
+                        return linkType.id === self.requestLinkTypeId;
+                    });
+
+                    if (!requestLinkTypeContainer) {
+                        requestLinkTypeContainer = this._getEmptyRequestLinkTypeContainer();
+                        workItem.object.linkTypes.push(requestLinkTypeContainer);
+                    }
+
+                    array.forEach(requestLinkObjects, function (requestLinkObject) {
+                        requestLinkTypeContainer.linkDTOs.push(requestLinkObject);
+                    });
+                }
+
+                if (issueLinkObjects.length || requestLinkObjects.length) {
+                    return true;
+                }
+            }
+
+            return false;
         },
 
         getGitCommitLinksFromWorkItem: function (workItem) {

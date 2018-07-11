@@ -20,16 +20,20 @@ define([
     return declare([_AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
         mainDataStore: null,
+        jazzRestService: null,
 
         // Set the work item and project area properties in the
         // data store so that other classes can access them
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
+            this.jazzRestService = JazzRestService.getInstance();
             this.mainDataStore.workItem = this.workItem;
             this.mainDataStore.projectArea = this.workItem.object.attributes.projectArea;
         },
 
         startup: function () {
+            this.mainDataStore.hasHiddenChanges = this.jazzRestService
+                .moveOldLinksToNewLinkTypes(this.mainDataStore.workItem);
             this.setEventHandlers();
 
             // Show the error dialog in Internet Explorer (better than nothing happening)

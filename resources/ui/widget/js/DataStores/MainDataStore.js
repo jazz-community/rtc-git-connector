@@ -32,6 +32,7 @@ define([
             requestsToLink: null
         },
         currentUserId: null,
+        hasHiddenChanges: false,
 
         constructor: function () {
             this.registeredGitRepositories = new StatefulArray([]);
