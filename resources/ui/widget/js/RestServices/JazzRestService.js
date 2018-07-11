@@ -410,14 +410,15 @@ define([
 
         // Creates a function that gets the specified link type container from the work item
         // If the container doesn't already exist, it's created and added to the work item
-        _makeLinkTypeContainerGetter: function (linkTypeId, getEmptyContainerFunction) {
+        _makeLinkTypeContainerGetter: function (linkTypeId, displayName, endpointId) {
+            var self = this;
             return function (workItem) {
                 var linkTypeContainer = workItem.object.linkTypes.find(function (linkType) {
                     return linkType.id === linkTypeId;
                 });
 
                 if (!linkTypeContainer) {
-                    linkTypeContainer = getEmptyContainerFunction();
+                    linkTypeContainer = self._getEmptyLinkTypeContainer(displayName, endpointId, linkTypeId);
                     workItem.object.linkTypes.push(linkTypeContainer);
                 }
 
@@ -425,54 +426,40 @@ define([
             };
         },
 
-        // Creates a function that returns a link type container with the partially applied values
-        _makeEmptyLinkTypeContainerGetter: function (displayName, endpointId, id) {
-            return function () {
-                return {
-                    displayName: displayName,
-                    endpointId: endpointId,
-                    id: id,
-                    isSource: false,
-                    linkDTOs: []
-                };
+        // Creates a link type container with the specified values
+        _getEmptyLinkTypeContainer: function (displayName, endpointId, id) {
+            return {
+                displayName: displayName,
+                endpointId: endpointId,
+                id: id,
+                isSource: false,
+                linkDTOs: []
             };
         },
 
         _createLinkTypeContainerGetters: function () {
             this._getCommitLinkTypeContainer = this._makeLinkTypeContainerGetter(
                 this.gitCommitLinkTypeId,
-                this._makeEmptyLinkTypeContainerGetter(
-                    "Git Commits",
-                    "gitcommit",
-                    this.gitCommitLinkTypeId
-                )
+                "Git Commits",
+                "gitcommit"
             );
 
             this._getRelatedArtifactLinkTypeContainer = this._makeLinkTypeContainerGetter(
                 this.relatedArtifactLinkTypeId,
-                this._makeEmptyLinkTypeContainerGetter(
-                    "Related Artifacts",
-                    "relatedArtifact",
-                    this.relatedArtifactLinkTypeId
-                )
+                "Related Artifacts",
+                "relatedArtifact"
             );
 
             this._getIssueLinkTypeContainer = this._makeLinkTypeContainerGetter(
                 this.issueLinkTypeId,
-                this._makeEmptyLinkTypeContainerGetter(
-                    "Git Issues",
-                    "issue_target",
-                    this.issueLinkTypeId
-                )
+                "Git Issues",
+                "issue_target"
             );
 
             this._getRequestLinkTypeContainer = this._makeLinkTypeContainerGetter(
                 this.requestLinkTypeId,
-                this._makeEmptyLinkTypeContainerGetter(
-                    "Git Merge / Pull Requests",
-                    "request_target",
-                    this.requestLinkTypeId
-                )
+                "Git Merge / Pull Requests",
+                "request_target"
             );
         },
 
