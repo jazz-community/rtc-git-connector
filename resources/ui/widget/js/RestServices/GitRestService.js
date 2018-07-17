@@ -613,7 +613,7 @@ define([
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                var auth = github.authenticate({
+                github.authenticate({
                     type: 'token',
                     token: accessToken
                 });
