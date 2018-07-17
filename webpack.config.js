@@ -4,8 +4,8 @@ const packageJson = require('./package.json');
 const JazzUpdateSitePlugin = require('jazz-update-site-webpack-plugin');
 
 module.exports = (env) => {
-    const timestamp = moment().format('[_]YYYYMMDD[-]HHMM');
-    const version = (typeof env !== 'undefined' && packageJson.version + "_" + env.buildUUID) || packageJson.version + timestamp;
+    const timestamp = moment().format('[_]YYYYMMDD[-]HHmm');
+    const version = (typeof env !== 'undefined' && (packageJson.version + "_" + env.buildUUID)) || packageJson.version + timestamp;
     const config = {
         node : {
             fs : 'empty',
