@@ -63,6 +63,9 @@ const FaLink = require('@fortawesome/fontawesome-free-solid/faLink');
 const FaTrash = require('@fortawesome/fontawesome-free-solid/faTrash');
 const FaSpinner = require('@fortawesome/fontawesome-free-solid/faSpinner');
 
+// Build version
+export const buildVersion = '__BUILD_VERSION__';
+
 // Adding the entire solid library doesn't seem to work in the frontend.
 // So we have no other choice than adding them one by one.
 FontAwesome.library.add(FaCheck);
