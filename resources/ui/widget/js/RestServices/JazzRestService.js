@@ -18,8 +18,11 @@ define([
         relatedArtifactLinkTypeId: "com.ibm.team.workitem.linktype.relatedartifact",
         issueLinkTypeId: "org.jazzcommunity.git.link.git_issue",
         requestLinkTypeId: "org.jazzcommunity.git.link.git_mergerequest",
+        _originalXhrOpen: null,
 
         constructor: function () {
+            this._originalXhrOpen = XMLHttpRequest.prototype.open;
+
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
             if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
                 this.commitLinkEncoder = new com_siemens_bt_jazz_rtcgitconnector_modules.encoder();
@@ -259,6 +262,7 @@ define([
 
         // Get the access token for the user and host
         getAccessTokenByHost: function (hostUrl) {
+            var self = this;
             var deferred = new Deferred();
 
             xhr.get(this.personalTokenServiceUrl, {
@@ -270,6 +274,7 @@ define([
                     "Accept": "application/json"
                 }
             }).then(function (response) {
+                self._registerJazzProxy(hostUrl);
                 deferred.resolve(response.token ? response.token : null);
             }, function (error) {
                 // return null if the service didn't find a token
@@ -443,6 +448,22 @@ define([
                 "/project/" + artifact.projectId +
                 "/" + artifact.type + "/" + artifact.iid +
                 "/link";
+        },
+
+        _registerJazzProxy: function (hostUrl) {
+            var self = this;
+            XMLHttpRequest.prototype.open = function (method, url, async, user, password) {
+                if (url && url.toLowerCase().indexOf(hostUrl.toLowerCase()) > -1) {
+                    url = window.location.origin +
+                        net.jazz.ajax._contextRoot +
+                        "/proxy?uri=" + encodeURIComponent(url);
+                }
+                self._originalXhrOpen.apply(this, arguments);
+            };
+        },
+
+        _unregisterJazzProxy: function () {
+            XMLHttpRequest.prototype.open = this._originalXhrOpen;
         }
     });
 
@@ -465,6 +486,7 @@ define([
         // Destroys the existing instance. It doesn't matter if none exists.
         // This causes the next call to getInstance to create a new instance
         this.destroyInstance = function () {
+            _instance._unregisterJazzProxy();
             _instance = null;
         };
     };
