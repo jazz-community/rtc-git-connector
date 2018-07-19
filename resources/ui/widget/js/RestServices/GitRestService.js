@@ -449,7 +449,6 @@ define([
 
         // Get a GitHub issue by it's id (only if it's an issue, not a pull request)
         getGitHubIssueById: function (selectedGitRepository, accessToken, issueId, alreadyLinkedUrls) {
-            var self = this;
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
@@ -526,7 +525,6 @@ define([
         },
 
         getGitHubRequestById: function (selectedGitRepository, accessToken, requestId, alreadyLinkedUrls) {
-            var self = this;
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
@@ -612,12 +610,10 @@ define([
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
-
-                var auth = github.authenticate({
+                github.authenticate({
                     type: 'token',
                     token: accessToken
                 });
-
                 github.repos.getCommits({
                     owner: urlParts[0],
                     repo: urlParts[1],
@@ -661,8 +657,8 @@ define([
 
         // Get the last 100 commits from the specified repository on GitLab
         getRecentGitLabCommits: function (selectedGitRepository, accessToken, alreadyLinkedUrls) {
-            var giturl = this._createUrlInformation(selectedGitRepository.url);
             var deferred = new Deferred();
+            var giturl = this._createUrlInformation(selectedGitRepository.url);
 
             var gitlab = new this.gitLabApi({
                 url: giturl.origin,
