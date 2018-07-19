@@ -1,3 +1,6 @@
+// Make sure that this is included before any other packages
+require("./OverrideFetch");
+
 const gzip = require('gzip-js');
 const base64js = require('base64-js');
 const Buffer = require('buffer/').Buffer;
