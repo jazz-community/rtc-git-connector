@@ -22,6 +22,7 @@ define([
 
         constructor: function () {
             this._originalXhrOpen = XMLHttpRequest.prototype.open;
+            this._registerJazzProxy();
 
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
             if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
@@ -274,7 +275,6 @@ define([
                     "Accept": "application/json"
                 }
             }).then(function (response) {
-                self._registerJazzProxy(hostUrl);
                 deferred.resolve(response.token ? response.token : null);
             }, function (error) {
                 // return null if the service didn't find a token
@@ -450,10 +450,10 @@ define([
                 "/link";
         },
 
-        _registerJazzProxy: function (hostUrl) {
+        _registerJazzProxy: function () {
             var self = this;
             XMLHttpRequest.prototype.open = function (method, url, async, user, password) {
-                if (url && url.toLowerCase().indexOf(hostUrl.toLowerCase()) > -1) {
+                if (url && url.toLowerCase().startsWith('http') && !url.toLowerCase().startsWith(window.location.origin)) {
                     url = window.location.origin +
                         net.jazz.ajax._contextRoot +
                         "/proxy?uri=" + encodeURIComponent(url);
