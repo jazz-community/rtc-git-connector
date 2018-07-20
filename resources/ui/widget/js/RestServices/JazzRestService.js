@@ -263,7 +263,6 @@ define([
 
         // Get the access token for the user and host
         getAccessTokenByHost: function (hostUrl) {
-            var self = this;
             var deferred = new Deferred();
 
             xhr.get(this.personalTokenServiceUrl, {
