@@ -485,7 +485,9 @@ define([
         // Destroys the existing instance. It doesn't matter if none exists.
         // This causes the next call to getInstance to create a new instance
         this.destroyInstance = function () {
-            _instance._unregisterJazzProxy();
+            if (_instance) {
+                _instance._unregisterJazzProxy();
+            }
             _instance = null;
         };
     };
