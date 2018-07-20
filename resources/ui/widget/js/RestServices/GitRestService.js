@@ -926,7 +926,7 @@ define([
         // Make a request for a single public project from the gitlab api.
         // Return true if the request was successful, otherwise false.
         isGitLabRepository: function (gitRepositoryUrl) {
-            return xhr.get(this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects", {
+            return xhr.get(this._getBaseGitLabUrl(gitRepositoryUrl.host) + "/api/v4/projects", {
                 query: {
                     per_page: 1
                 },
