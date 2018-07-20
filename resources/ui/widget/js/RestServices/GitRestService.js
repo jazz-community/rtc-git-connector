@@ -159,7 +159,7 @@ define([
                     }).then(function (response) {
                         deferred.resolve(IssueModel.CreateFromGitLabIssue(response, []));
                     }, function (error) {
-                        deferred.reject("Couldn't create an issue in the GitLab repository. Error: " + (error.error.message || error.error));
+                        deferred.reject("Couldn't create an issue in the GitLab repository. Error: " + (error.message || error));
                     });
                 };
             }
@@ -334,7 +334,7 @@ define([
             gitlab.Commits.createComment(path, sha, commentBody).then(function (response) {
                 deferred.resolve(response);
             }, function (error) {
-                deferred.reject("Couldn't add a comment to the GitLab commit. Error: " + (error.error.message || error.error));
+                deferred.reject("Couldn't add a comment to the GitLab commit. Error: " + (error.message || error));
             });
 
             return deferred;
@@ -348,7 +348,7 @@ define([
             }).then(function (response) {
                 deferred.resolve(response);
             }, function (error) {
-                deferred.reject("Couldn't add a comment to the GitLab issue. Error: " + (error.error.message || error.error));
+                deferred.reject("Couldn't add a comment to the GitLab issue. Error: " + (error.message || error));
             });
 
             return deferred;
@@ -362,7 +362,7 @@ define([
             }).then(function (response) {
                 deferred.resolve(response);
             }, function (error) {
-                deferred.reject("Couldn't add a comment to the GitLab merge request. Error: " + (error.error.message || error.error));
+                deferred.reject("Couldn't add a comment to the GitLab merge request. Error: " + (error.message || error));
             });
 
             return deferred;
@@ -701,7 +701,7 @@ define([
                     });
                     deferred.resolve(convertedCommits);
                 }, function (error) {
-                    deferred.reject("Couldn't get the commits from the GitLab repository. Error: " + (error.error.message || error.error));
+                    deferred.reject("Couldn't get the commits from the GitLab repository. Error: " + (error.message || error));
                 });
             }
 
@@ -792,7 +792,7 @@ define([
                     convertedIssues.push(self._createNewIssueElement("GitLab"));
                     deferred.resolve(convertedIssues);
                 }, function (error) {
-                    deferred.reject("Couldn't get the issues from the GitLab repository. Error: " + (error.error.message || error.error));
+                    deferred.reject("Couldn't get the issues from the GitLab repository. Error: " + (error.message || error));
                 });
             }
 
@@ -889,7 +889,7 @@ define([
                     });
                     deferred.resolve(convertedRequests);
                 }, function (error) {
-                    deferred.reject("Couldn't get the merge requests from the GitLab repository. Error: " + (error.error.message || error.error));
+                    deferred.reject("Couldn't get the merge requests from the GitLab repository. Error: " + (error.message || error));
                 });
             }
 
