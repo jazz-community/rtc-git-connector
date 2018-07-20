@@ -21,6 +21,7 @@ define([
         gitHubApi: null, // use with new
         gitLabApi: null, // use without new
         issueTemplateName: "rtc-work-item-v1.md",
+        gitConnectorServiceUrl: null,
 
         constructor: function () {
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
@@ -28,6 +29,10 @@ define([
                 this.gitHubApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitHubApi;
                 this.gitLabApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitLabApi;
             }
+
+            this.gitConnectorServiceUrl =
+                net.jazz.ajax._contextRoot +
+                "/service/org.jazzcommunity.GitConnectorService.IGitConnectorService";
         },
 
         createNewIssue: function (selectedGitRepository, gitHost, accessToken, workItem) {
@@ -46,7 +51,9 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                baseUrl: this._getBaseGitHubUrl()
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
@@ -194,7 +201,9 @@ define([
             var deferredArray = [];
             var repositoryUrl = new url(params.selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                baseUrl: this._getBaseGitHubUrl()
+            });
             var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
                     "(" + params.workItem.object.locationUri + ")" +
                     " on behalf of " + params.currentUser;
@@ -377,7 +386,9 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                baseUrl: this._getBaseGitHubUrl()
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
@@ -453,7 +464,9 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                baseUrl: this._getBaseGitHubUrl()
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
@@ -530,7 +543,9 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                baseUrl: this._getBaseGitHubUrl()
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
@@ -606,7 +621,9 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                baseUrl: this._getBaseGitHubUrl()
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
@@ -710,7 +727,9 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                baseUrl: this._getBaseGitHubUrl()
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
@@ -810,7 +829,9 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                baseUrl: this._getBaseGitHubUrl()
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
@@ -930,7 +951,9 @@ define([
 
             if (gitHost === this.gitHubString) {
                 // Check access token with GitHub
-                var github = new this.gitHubApi({});
+                var github = new this.gitHubApi({
+                    baseUrl: this._getBaseGitHubUrl()
+                });
                 github.authenticate({
                     type: 'token',
                     token: accessToken
@@ -977,6 +1000,10 @@ define([
             return urlPath.split('/').filter(function (part) {
                 return part; // Remove empty parts (initial slash).
             });
+        },
+
+        _getBaseGitHubUrl: function () {
+            return this.gitConnectorServiceUrl + "/proxy/api.github.com";
         },
 
         // Remove pull requests from the list of issues provided by the GitHub API.
