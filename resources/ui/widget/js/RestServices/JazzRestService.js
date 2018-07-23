@@ -164,6 +164,9 @@ define([
                 var requestLinkObjects = [];
 
                 for (var i = artifactLinkTypeContainer.linkDTOs.length - 1; i >= 0; i--) {
+                    issueLinksRegex.lastIndex = 0;
+                    requestLinksRegex.lastIndex = 0;
+
                     if (issueLinksRegex.test(artifactLinkTypeContainer.linkDTOs[i].url)) {
                         issueLinkObjects.push({
                             _isNew: true,
