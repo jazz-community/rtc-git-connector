@@ -1,5 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Web
+Bundle-Name: RTC Git Connector
 Bundle-SymbolicName: com.siemens.bt.jazz.workitemeditor.rtcGitConnector;singleton:=true
 Bundle-Version: 2.3.1.qualifier
+Bundle-Vendor: Siemens Building Technologies
+Bundle-Localization: plugin
+Require-Bundle: org.jazzcommunity.GitConnectorService;bundle-version="1.8.3"
