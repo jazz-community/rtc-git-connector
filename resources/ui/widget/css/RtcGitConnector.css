@@ -43,7 +43,7 @@
 .rtcGitConnectorActionButtons {
     position: absolute;
     bottom: 0;
-    right: 1em;
+    right: 0;
     font-size: 1em;
 }
 
