@@ -93,7 +93,7 @@ define([
                 var iconName;
 
                 if (issue.id < 0) {
-                    secondLine = "This will create a new issue in " + gitHost + " using the information from the current work item";
+                    secondLine = "This will create a new issue in " + gitHost.displayName + " using the information from the current work item";
                     buttonName = "deleteButton";
                     iconName = "times";
                 } else {

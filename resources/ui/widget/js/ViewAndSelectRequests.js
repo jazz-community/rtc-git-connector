@@ -254,18 +254,19 @@ define([
 
         // Draw the details view for the selected request
         drawDetailsView: function (request) {
+            var gitHost = this.mainDataStore.selectedRepositorySettings.get("gitHost");
             var requestDetailsNode = query("#viewAndSelectRequestsWrapper .rtcGitConnectorViewAndSelectDetails")[0];
             domConstruct.empty(requestDetailsNode);
 
             domConstruct.create("span", {
                 "class": "rtcGitConnectorViewAndSelectDetailsSpan rtcGitConnectorViewAndSelectDetailsLabel",
-                innerHTML: "Request Details"
+                innerHTML: gitHost.requestPrefix + "Request Details"
             }, requestDetailsNode);
 
             if (!request) {
                 domConstruct.create("span", {
                     "class": "rtcGitConnectorViewAndSelectDetailsSpan",
-                    innerHTML: "Select a request to view more details"
+                    innerHTML: "Select a " + gitHost.requestPrefix.toLowerCase() + "request to view more details"
                 }, requestDetailsNode);
             } else {
                 ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Title: ", request.title);
@@ -274,7 +275,7 @@ define([
                 ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Date opened: ", ViewHelper.GetFormattedDateFromString(request.openedDate));
                 ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Request id: ", "#" + request.id);
                 var linkNode = domConstruct.create("a", {
-                    innerHTML: "Open this request in a new tab",
+                    innerHTML: "Open this " + gitHost.requestPrefix.toLowerCase() + "request in a new tab",
                     href: request.webUrl,
                     target: "_blank"
                 });

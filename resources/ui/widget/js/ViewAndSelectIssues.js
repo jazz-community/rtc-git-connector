@@ -224,7 +224,7 @@ define([
                 var iconName;
 
                 if (issue.originalId < 0) {
-                    secondLine = "This will create a new issue in " + gitHost + " using the information from the current work item";
+                    secondLine = "This will create a new issue in " + gitHost.displayName + " using the information from the current work item";
                     buttonName = "addButton";
                     iconName = "plus";
                 } else {
@@ -281,7 +281,7 @@ define([
             } else if (issue.originalId < 0) {
                 domConstruct.create("span", {
                     "class": "rtcGitConnectorViewAndSelectDetailsSpan",
-                    innerHTML: "This will create a new issue in the selected " + gitHost + " repository and fill it with the information from this work item. " +
+                    innerHTML: "This will create a new issue in the selected " + gitHost.displayName + " repository and fill it with the information from this work item. " +
                         "The new issue will also be added as a link."
                 }, issueDetailsNode);
                 ViewHelper.AddNodeToDetailsViewNode(issueDetailsNode, "Developer info: ", domConstruct.create("button", {

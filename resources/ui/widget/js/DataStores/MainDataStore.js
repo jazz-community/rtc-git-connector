@@ -10,7 +10,11 @@ define([
         registeredGitRepositories: null,
         selectedRepositorySettings: {
             repository: null,   // Object from registeredGitRepositories
-            gitHost: null,      // Uppercase "GITHUB", "GITLAB", "OTHER"
+            gitHost: {
+                name: "",       // Name is uppercase "GITHUB", "GITLAB", "OTHER"
+                displayName: "",
+                requestPrefix: ""
+            },
             accessToken: null,  // For GitHub or GitLab
             linkType: null,     // Uppercase "COMMIT", "ISSUE", "REQUEST"
             commitsLoaded: false,
@@ -47,7 +51,11 @@ define([
 
         // Rest settings and data for the selected repository
         resetSelectedRepository: function () {
-            this.selectedRepositorySettings.set("gitHost", null);
+            this.selectedRepositorySettings.set("gitHost", {
+                name: "",
+                displayName: "",
+                requestPrefix: ""
+            });
             this.selectedRepositorySettings.set("accessToken", null);
             this.selectedRepositorySettings.set("linkType", null);
             this.selectedRepositorySettings.set("commitsLoaded", false);

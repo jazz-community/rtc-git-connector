@@ -53,10 +53,10 @@ define([
             var originalAccessTokenDialogShow = this.getAccessTokenDialog.show;
 
             this.getAccessTokenDialog.show = function (hostType) {
-                if (hostType === "GITHUB") {
+                if (hostType.name === "GITHUB") {
                     domStyle.set("getGitHubAccessTokenContainer", "display", "block");
                     domStyle.set("getGitLabAccessTokenContainer", "display", "none");
-                } else if (hostType === "GITLAB") {
+                } else if (hostType.name === "GITLAB") {
                     domStyle.set("getGitHubAccessTokenContainer", "display", "none");
                     domStyle.set("getGitLabAccessTokenContainer", "display", "block");
                 } else {
@@ -263,8 +263,8 @@ define([
 
             // React when the selected repository host type changes
             this.mainDataStore.selectedRepositorySettings.watch("gitHost", function (name, oldValue, value) {
-                var valueIsValid = (value === "GITHUB" || value === "GITLAB");
-                domStyle.set("invalidGitRepositoryTypeContainer", "display", (valueIsValid || value === null) ? "none" : "block");
+                var valueIsValid = (value.name === "GITHUB" || value.name === "GITLAB");
+                domStyle.set("invalidGitRepositoryTypeContainer", "display", (valueIsValid || value.name === "") ? "none" : "block");
 
                 // Get the access token if the host type is valid
                 if (valueIsValid) {
@@ -290,12 +290,13 @@ define([
             if (typeof this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server === "string") {
                 // Set from the config
                 this.mainDataStore.selectedRepositorySettings
-                    .set("gitHost", this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server.toUpperCase());
+                    .set("gitHost", this.gitRestService.gitHosts
+                        .getHostType(this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server));
             } else {
                 // Make requests to find the type and then set it
                 this.gitRestService.determineRepositoryGitHost(this.mainDataStore.selectedRepositorySettings.get("repository"))
                     .then(function (hostType) {
-                        self.mainDataStore.selectedRepositorySettings.set("gitHost", hostType.toUpperCase());
+                        self.mainDataStore.selectedRepositorySettings.set("gitHost", hostType);
                 });
             }
         },

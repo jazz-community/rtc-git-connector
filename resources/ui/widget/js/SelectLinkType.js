@@ -176,16 +176,12 @@ define([
 
         // Set the requests text to Pull Requests for GitHub or Merge Requests for GitLab
         setRequestsText: function (gitHost) {
-            var requestsText = "Requests";
-
-            if (gitHost === "GITHUB") {
-                requestsText = "Pull " + requestsText;
-            } else if (gitHost === "GITLAB") {
-                requestsText = "Merge " + requestsText;
-            }
+            var requestsText = gitHost.requestPrefix + "Requests";
 
             // Find the element using the data attribute
             query(".rtcGitConnectorSelectLinkType .linkTypeItem[data-link-type='REQUEST']")[0].innerHTML = requestsText;
+            query(".rtcGitConnectorViewAndSelectContainer[data-link-type='REQUEST'] .rtcGitConnectorLabelText")[0].innerHTML = "Recent " + requestsText;
+            query("#viewRequestsToLinkContainer .rtcGitConnectorLabelText")[0].innerHTML = requestsText + " to link";
         },
 
         // Probably an incorrect repository configuration. Show an error and hide the list view (all three?).

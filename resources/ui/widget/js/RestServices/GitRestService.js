@@ -21,19 +21,42 @@ define([
         gitHubApi: null, // use with new
         gitLabApi: null, // use without new
         issueTemplateName: "rtc-work-item-v1.md",
+        gitHosts: null,
+        gitHostType: function (name, displayName, requestPrefix) {
+            this.name = name,
+            this.displayName = displayName,
+            this.requestPrefix = requestPrefix
+        },
 
         constructor: function () {
+            var self = this;
+
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
             if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
                 this.gitHubApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitHubApi;
                 this.gitLabApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitLabApi;
             }
+
+            this.gitHosts = {
+                gitHubHost: new this.gitHostType(this.gitHubString, "GitHub", "Pull "),
+                gitLabHost: new this.gitHostType(this.gitLabString, "GitLab", "Merge "),
+                otherGitHost: new this.gitHostType("OTHER", "Other", ""),
+                getHostType: function (name) {
+                    if (name.toUpperCase() === self.gitHubString) {
+                        return self.gitHosts.gitHubHost;
+                    } else if (name.toUpperCase() === self.gitLabString) {
+                        return self.gitHosts.gitLabHost;
+                    } else {
+                        return self.gitHosts.otherGitHost;
+                    }
+                }
+            };
         },
 
         createNewIssue: function (selectedGitRepository, gitHost, accessToken, workItem) {
-            if (gitHost === this.gitHubString) {
+            if (gitHost.name === this.gitHubString) {
                 return this.createNewGitHubIssue(selectedGitRepository, accessToken, workItem);
-            } else if (gitHost === this.gitLabString) {
+            } else if (gitHost.name === this.gitLabString) {
                 return this.createNewGitLabIssue(selectedGitRepository, accessToken, workItem);
             } else {
                 var deferred = new Deferred();
@@ -176,9 +199,9 @@ define([
         addBackLinksToGitHost: function (params) {
             var deferredList = null;
 
-            if (params.gitHost === this.gitHubString) {
+            if (params.gitHost.name === this.gitHubString) {
                 deferredList = this.addBackLinksToGitHub(params);
-            } else if (params.gitHost === this.gitLabString) {
+            } else if (params.gitHost.name === this.gitLabString) {
                 deferredList = this.addBackLinksToGitLab(params);
             } else {
                 var deferred = new Deferred();
@@ -361,9 +384,9 @@ define([
 
         // Try to get a commit by it's SHA
         getCommitById: function (selectedGitRepository, gitHost, accessToken, commitSha, alreadyLinkedUrls) {
-            if (gitHost === this.gitHubString) {
+            if (gitHost.name === this.gitHubString) {
                 return this.getGitHubCommitById(selectedGitRepository, accessToken, commitSha, alreadyLinkedUrls);
-            } else if (gitHost === this.gitLabString) {
+            } else if (gitHost.name === this.gitLabString) {
                 return this.getGitLabCommitById(selectedGitRepository, accessToken, commitSha, alreadyLinkedUrls);
             } else {
                 var deferred = new Deferred();
@@ -436,9 +459,9 @@ define([
         },
 
         getIssueById: function (selectedGitRepository, gitHost, accessToken, issueId, alreadyLinkedUrls) {
-            if (gitHost === this.gitHubString) {
+            if (gitHost.name === this.gitHubString) {
                 return this.getGitHubIssueById(selectedGitRepository, accessToken, issueId, alreadyLinkedUrls);
-            } else if (gitHost === this.gitLabString) {
+            } else if (gitHost.name === this.gitLabString) {
                 return this.getGitLabIssueById(selectedGitRepository, accessToken, issueId, alreadyLinkedUrls);
             } else {
                 var deferred = new Deferred();
@@ -513,9 +536,9 @@ define([
 
         // Try to get a request by it's id
         getRequestById: function (selectedGitRepository, gitHost, accessToken, requestId, alreadyLinkedUrls) {
-            if (gitHost === this.gitHubString) {
+            if (gitHost.name === this.gitHubString) {
                 return this.getGitHubRequestById(selectedGitRepository, accessToken, requestId, alreadyLinkedUrls);
-            } else if (gitHost === this.gitLabString) {
+            } else if (gitHost.name === this.gitLabString) {
                 return this.getGitLabRequestById(selectedGitRepository, accessToken, requestId, alreadyLinkedUrls);
             } else {
                 var deferred = new Deferred();
@@ -586,11 +609,9 @@ define([
 
         // Get the last 100 commits from the specified repository on GitHub or GitLab
         getRecentCommits: function (selectedGitRepository, gitHost, accessToken, alreadyLinkedUrls) {
-            // Depending on how the returned objects look like, they may need to be converted
-            // first so that the same property names are always used.
-            if (gitHost === this.gitHubString) {
+            if (gitHost.name === this.gitHubString) {
                 return this.getRecentGitHubCommits(selectedGitRepository, accessToken, alreadyLinkedUrls);
-            } else if (gitHost === this.gitLabString) {
+            } else if (gitHost.name === this.gitLabString) {
                 return this.getRecentGitLabCommits(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else {
                 var deferred = new Deferred();
@@ -689,9 +710,9 @@ define([
 
         // Get the last 100 issues form the specified repository on GitHub or GitLab
         getRecentIssues: function (selectedGitRepository, gitHost, accessToken, alreadyLinkedUrls) {
-            if (gitHost === this.gitHubString) {
+            if (gitHost.name === this.gitHubString) {
                 return this.getRecentGitHubIssues(selectedGitRepository, accessToken, alreadyLinkedUrls);
-            } else if (gitHost === this.gitLabString) {
+            } else if (gitHost.name === this.gitLabString) {
                 return this.getRecentGitLabIssues(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else {
                 var deferred = new Deferred();
@@ -731,7 +752,7 @@ define([
                         array.forEach(self._removePullRequestsFromIssuesList(response.data), function (issue) {
                             convertedIssues.push(IssueModel.CreateFromGitHubIssue(issue, alreadyLinkedUrls));
                         });
-                        convertedIssues.push(self._createNewIssueElement("GitHub"));
+                        convertedIssues.push(self._createNewIssueElement(self.gitHosts.gitHubHost.displayName));
                         deferred.resolve(convertedIssues);
                     }
                 });
@@ -766,7 +787,7 @@ define([
                     array.forEach(response, function (issue) {
                         convertedIssues.push(IssueModel.CreateFromGitLabIssue(issue, alreadyLinkedUrls));
                     });
-                    convertedIssues.push(self._createNewIssueElement("GitLab"));
+                    convertedIssues.push(self._createNewIssueElement(self.gitHosts.gitLabHost.displayName));
                     deferred.resolve(convertedIssues);
                 }, function (error) {
                     deferred.reject("Couldn't get the issues from the GitLab repository. Error: " + (error.error.message || error.error));
@@ -790,9 +811,9 @@ define([
 
         // Get the last 100 requests (pull/merge) from the selected repository on GitHub or GitLab
         getRecentRequests: function (selectedGitRepository, gitHost, accessToken, alreadyLinkedUrls) {
-            if (gitHost === this.gitHubString) {
+            if (gitHost.name === this.gitHubString) {
                 return this.getRecentGitHubRequests(selectedGitRepository, accessToken, alreadyLinkedUrls);
-            } else if (gitHost === this.gitLabString) {
+            } else if (gitHost.name === this.gitLabString) {
                 return this.getRecentGitLabRequests(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else {
                 var deferred = new Deferred();
@@ -879,22 +900,22 @@ define([
 
             // Check if the host is github (the github url doesn't vary)
             if (lowerCaseHost === "github.com") {
-                deferred.resolve(this.gitHubString);
+                deferred.resolve(this.gitHosts.gitHubHost);
             } else if (lowerCaseHost === "gitlab.com") {
                 // Check for gitlab.com directly. This is for two reasons:
                 // 1. It also is a static url
                 // 2. Requesting a repository from gitlab.com is quite slow.
                 //    Other gitlab instances are generally faster and there is
                 //    no way to statically check for them.
-                deferred.resolve(this.gitLabString);
+                deferred.resolve(this.gitHosts.gitLabHost);
             } else {
                 // Make a request to a gitlab api endpoint. If the request is
                 // successful, assume that the repository is hosted on a gitlab instance
                 this.isGitLabRepository(repositoryUrl).then(function (statusOk) {
                     if (statusOk) {
-                        deferred.resolve(self.gitLabString);
+                        deferred.resolve(self.gitHosts.gitLabHost);
                     } else {
-                        deferred.resolve("OTHER");
+                        deferred.resolve(self.gitHosts.otherGitHost);
                     }
                 });
             }
@@ -924,7 +945,7 @@ define([
         checkAccessToken: function (gitRepositoryUrl, gitHost, accessToken) {
             var deferred = new Deferred();
 
-            if (gitHost === this.gitHubString) {
+            if (gitHost.name === this.gitHubString) {
                 // Check access token with GitHub
                 var github = new this.gitHubApi({});
                 github.authenticate({
@@ -938,7 +959,7 @@ define([
                         deferred.resolve(true);
                     }
                 });
-            } else if (gitHost === this.gitLabString) {
+            } else if (gitHost.name === this.gitLabString) {
                 // Check access token with GitLab
                 var gitlab = new this.gitLabApi({
                     url: this._getOriginFromUrlObject(gitRepositoryUrl),
