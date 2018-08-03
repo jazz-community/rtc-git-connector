@@ -43,7 +43,7 @@ define([
             this._createLinkTypeContainerGetters();
         },
 
-        saveLinksInWorkItem: function (workItem, successCallbackFunction) {
+        saveLinksInWorkItem: function (workItem, successCallbackFunction, failureCallbackFunction) {
             var onChangeFunc = {
                 // Create a function to run after the linkType change
                 changeFunc: function (event) {
@@ -60,6 +60,7 @@ define([
                         },
                         onError: function(error) {
                             console.log("Save Error: ", error);
+                            failureCallbackFunction(error);
                         }
                     });
                 }
@@ -89,7 +90,7 @@ define([
 
         // Adds links to the workItem object and saves them
         // The addBackLinksFunction is run on success without any parameters
-        addLinksToWorkItem: function (workItem, registeredGitRepository, commitsToLink, issuesToLink, requestsToLink, addBackLinksFunction) {
+        addLinksToWorkItem: function (workItem, registeredGitRepository, commitsToLink, issuesToLink, requestsToLink, addBackLinksFunction, failureCallbackFunction) {
             var self = this;
 
             // Add links to commits
@@ -149,7 +150,7 @@ define([
                 });
             }
 
-            this.saveLinksInWorkItem(workItem, addBackLinksFunction);
+            this.saveLinksInWorkItem(workItem, addBackLinksFunction, failureCallbackFunction);
         },
 
         // Move issue and request links that were created as related artifacts to their own custom link types

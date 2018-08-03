@@ -171,6 +171,16 @@ define([
 
                                 console.log("Error adding back links: ", error);
                             });
+                        }, function (error) {
+                            var errorText = "";
+
+                            if (error && error.message) {
+                                errorText = " Error: " + error.message;
+                            }
+
+                            alert("Something went wrong and the changes could not be saved." + errorText);
+                            domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
+                            self._hideMainDialog();
                         });
                     };
 
@@ -367,6 +377,16 @@ define([
             if (this.mainDataStore.hasHiddenChanges) {
                 domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
                 this.jazzRestService.saveLinksInWorkItem(this.mainDataStore.workItem, function () {
+                    domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
+                    mainDialog.hide();
+                }, function (error) {
+                    var errorText = "";
+
+                    if (error && error.message) {
+                        errorText = " Error: " + error.message;
+                    }
+
+                    alert("Something went wrong and the changes could not be saved." + errorText);
                     domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
                     mainDialog.hide();
                 });
