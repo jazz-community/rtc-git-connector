@@ -5,6 +5,9 @@ Connect your RTC work items with Git commits, issues, and pull/merge requests. B
 
 This project contains detailed documentation and instructions in the [Wiki](https://github.com/jazz-community/rtc-git-connector/wiki).
 
+## Releases
+To download the latest release please navigate to the [releases page](https://github.com/jazz-community/rtc-git-connector/releases).
+
 ## Contributing
 Please use the [Issue Tracker](https://github.com/jazz-community/rtc-git-connector/issues) of this repository to report issues or suggest enhancements.
 
