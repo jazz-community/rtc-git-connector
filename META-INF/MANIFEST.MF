@@ -5,5 +5,5 @@ Bundle-SymbolicName: com.siemens.bt.jazz.workitemeditor.rtcGitConnector;singleto
 Bundle-Version: 2.3.2.qualifier
 Bundle-Vendor: Siemens Building Technologies
 Bundle-Localization: plugin
-Require-Bundle: org.jazzcommunity.GitConnectorService;bundle-version="1.8.3",
+Require-Bundle: org.jazzcommunity.GitConnectorService;bundle-version="1.8.2",
     com.siemens.bt.jazz.services.PersonalTokenService;bundle-version="1.0.1"
