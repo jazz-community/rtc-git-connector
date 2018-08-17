@@ -1,6 +1,6 @@
 {
     "name": "com.siemens.bt.jazz.workitemeditor.rtcgitconnector",
-    "version": "2.3.1",
+    "version": "2.3.2",
     "description": "Connect RTC work items with various Git hosting systems",
     "main": "./resources/ui/RunConnector.js",
     "dependencies": {
