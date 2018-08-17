@@ -3,9 +3,10 @@
 ## Introduction
 The RTC-Git-Connector is a plugin for the Rational Team Concert from Jazz. It enables you to connect your RTC work items with Git commits, issues, and pull/merge requests. Use this plugin to bridge the workflow gap between RTC and Git platforms like GitHub and GitLab.
 
-This project contains detailed documentation and instructions in the [Wiki](https://github.com/jazz-community/rtc-git-connector/wiki).
-
 ![Introduction](https://github.com/jazz-community/rtc-git-connector/blob/master/documentation/wiki/introduction.png)
+
+## Installation and Usage
+There are detailed instructions on how to install and use the plugin in the [Wiki](https://github.com/jazz-community/rtc-git-connector/wiki) of this repository.
 
 ## Releases
 To download the latest release please navigate to the [releases page](https://github.com/jazz-community/rtc-git-connector/releases).
