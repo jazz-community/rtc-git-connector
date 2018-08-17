@@ -9,8 +9,8 @@ define([
             this.handlebars = com_siemens_bt_jazz_rtcgitconnector_modules.Handlebars;
             this.turndownService = new com_siemens_bt_jazz_rtcgitconnector_modules.TurndownService();
 
-            this.doNotEscapeMarkdown();
-            this.registerHtmlToMarkdownHelper();
+            this._doNotEscapeMarkdown();
+            this._registerHtmlToMarkdownHelper();
         },
 
         renderTemplateWithWorkItem: function (templateString, workItem) {
@@ -18,7 +18,7 @@ define([
             return template(workItem.object);
         },
 
-        doNotEscapeMarkdown: function () {
+        _doNotEscapeMarkdown: function () {
             // Override the escape method so that markdown is not escaped
             // when converting HTML to Markdown
             this.turndownService.escape = function (input) {
@@ -26,7 +26,7 @@ define([
             };
         },
 
-        registerHtmlToMarkdownHelper: function () {
+        _registerHtmlToMarkdownHelper: function () {
             var self = this;
 
             this.handlebars.registerHelper('turndown', function (inputString) {
