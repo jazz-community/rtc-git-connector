@@ -9,18 +9,21 @@ define([
             this.handlebars = com_siemens_bt_jazz_rtcgitconnector_modules.Handlebars;
             this.turndownService = new com_siemens_bt_jazz_rtcgitconnector_modules.TurndownService();
 
-            // Override the escape method so that markdown is not escaped
-            // when converting HTML to Markdown
-            this.turndownService.escape = function (input) {
-                return input;
-            };
-
+            this.doNotEscapeMarkdown();
             this.registerHtmlToMarkdownHelper();
         },
 
         renderTemplateWithWorkItem: function (templateString, workItem) {
             var template = this.handlebars.compile(templateString);
             return template(workItem.object);
+        },
+
+        doNotEscapeMarkdown: function () {
+            // Override the escape method so that markdown is not escaped
+            // when converting HTML to Markdown
+            this.turndownService.escape = function (input) {
+                return input;
+            };
         },
 
         registerHtmlToMarkdownHelper: function () {
