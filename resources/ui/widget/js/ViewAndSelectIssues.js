@@ -284,6 +284,12 @@ define([
                     innerHTML: "This will create a new issue in the selected " + gitHost.displayName + " repository and fill it with the information from this work item. " +
                         "The new issue will also be added as a link."
                 }, issueDetailsNode);
+                var docsLink = domConstruct.create("a", {
+                    innerHTML: "Open the wiki page for more info on creating issues",
+                    href: "https://github.com/jazz-community/rtc-git-connector/wiki/2.5-Creating-an-Issue",
+                    target: "_blank"
+                });
+                ViewHelper.AddNodeToDetailsViewNode(issueDetailsNode, "More info: ", docsLink);
                 ViewHelper.AddNodeToDetailsViewNode(issueDetailsNode, "Developer info: ", domConstruct.create("button", {
                     "id": "viewAndSelectIssuesCopyWorkItemDetails",
                     "class": "secondary-button",
