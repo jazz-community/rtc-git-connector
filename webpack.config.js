@@ -5,7 +5,7 @@ const JazzUpdateSitePlugin = require('jazz-update-site-webpack-plugin');
 
 module.exports = (env) => {
     const timestamp = moment().format('[_]YYYYMMDD[-]HHmm');
-    const version = (typeof env !== 'undefined' && (packageJson.version + "_" + env.buildUUID)) || packageJson.version + timestamp;
+    const version = (typeof env !== 'undefined' && env.buildUUID) || packageJson.version + timestamp;
     const config = {
         node: {
             fs: 'empty',
