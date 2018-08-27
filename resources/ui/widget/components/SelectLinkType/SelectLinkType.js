@@ -17,7 +17,7 @@ define([
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
-    "dojo/text!../templates/SelectLinkType.html"
+    "dojo/text!./SelectLinkType.html"
 ], function (declare, dom, domClass, domStyle, on, query,
     MainDataStore, JazzRestService, GitRestService,
     ViewAndSelectCommits, ViewAndSelectIssues, ViewAndSelectRequests,

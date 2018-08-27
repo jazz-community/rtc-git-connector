@@ -10,7 +10,7 @@ define([
     "../../services/JazzRestService",
     "../../services/GitRestService",
     "../../js/SelectRegisteredGitRepository",
-    "../../js/SelectLinkType",
+    "../SelectLinkType/SelectLinkType",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
