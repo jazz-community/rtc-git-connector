@@ -5,7 +5,7 @@ define([
     "dojo/dom-style",
     "dojo/on",
     "dojo/query",
-    "./DataStores/MainDataStore",
+    "../services/MainDataStore",
     "./ViewHelper",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",

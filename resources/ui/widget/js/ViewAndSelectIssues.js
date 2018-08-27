@@ -8,7 +8,7 @@ define([
     "dojo/on",
     "dojo/query",
     "dojo/json",
-    "./DataStores/MainDataStore",
+    "../services/MainDataStore",
     "../services/JazzRestService",
     "../services/GitRestService",
     "./ViewHelper",

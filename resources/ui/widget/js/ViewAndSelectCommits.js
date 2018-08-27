@@ -7,7 +7,7 @@ define([
     "dojo/dom-construct",
     "dojo/on",
     "dojo/query",
-    "./DataStores/MainDataStore",
+    "../services/MainDataStore",
     "../services/JazzRestService",
     "../services/GitRestService",
     "./ViewHelper",

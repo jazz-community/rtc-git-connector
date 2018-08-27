@@ -1,7 +1,7 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/array",
-    "./DataStores/MainDataStore",
+    "../services/MainDataStore",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
