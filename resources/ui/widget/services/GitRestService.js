@@ -9,7 +9,7 @@ define([
     "../js/Models/CommitModel",
     "../js/Models/IssueModel",
     "../js/Models/RequestModel",
-    "../js/HandlebarsTemplates/TemplateService",
+    "./TemplateService",
     "../js/HandlebarsTemplates/DefaultIssueTemplate"
 ], function (declare, url, array, json, xhr, Deferred, DeferredList,
     CommitModel, IssueModel, RequestModel,
