@@ -11,7 +11,7 @@ define([
     "../ViewAndSelectCommits/ViewAndSelectCommits",
     "../ViewAndSelectIssues/ViewAndSelectIssues",
     "../ViewAndSelectRequests/ViewAndSelectRequests",
-    "../../js/ViewCommitsToLink",
+    "../ViewCommitsToLink/ViewCommitsToLink",
     "../../js/ViewIssuesToLink",
     "../../js/ViewRequestsToLink",
     "dijit/_WidgetBase",

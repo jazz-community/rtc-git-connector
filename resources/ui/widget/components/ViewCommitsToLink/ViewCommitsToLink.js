@@ -10,7 +10,7 @@ define([
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
-    "dojo/text!../templates/ViewCommitsToLink.html"
+    "dojo/text!./ViewCommitsToLink.html"
 ], function (declare, array, domConstruct, domStyle, on, query,
     MainDataStore, ViewHelper,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
