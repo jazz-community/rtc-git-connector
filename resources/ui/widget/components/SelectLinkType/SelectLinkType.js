@@ -9,7 +9,7 @@ define([
     "../../services/JazzRestService",
     "../../services/GitRestService",
     "../ViewAndSelectCommits/ViewAndSelectCommits",
-    "../../js/ViewAndSelectIssues",
+    "../ViewAndSelectIssues/ViewAndSelectIssues",
     "../../js/ViewAndSelectRequests",
     "../../js/ViewCommitsToLink",
     "../../js/ViewIssuesToLink",
