@@ -6,7 +6,7 @@ define([
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dijit/form/Select",
-    "dojo/text!../templates/SelectRegisteredGitRepository.html"
+    "dojo/text!./SelectRegisteredGitRepository.html"
 ], function (declare, array,
     MainDataStore,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
