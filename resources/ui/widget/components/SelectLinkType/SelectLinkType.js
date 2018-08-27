@@ -12,7 +12,7 @@ define([
     "../ViewAndSelectIssues/ViewAndSelectIssues",
     "../ViewAndSelectRequests/ViewAndSelectRequests",
     "../ViewCommitsToLink/ViewCommitsToLink",
-    "../../js/ViewIssuesToLink",
+    "../ViewIssuesToLink/ViewIssuesToLink",
     "../../js/ViewRequestsToLink",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
