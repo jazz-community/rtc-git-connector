@@ -22,7 +22,7 @@
 		<cssBindingSet id="com.siemens.bt.jazz.workitemeditor.rtcGitConnector" path="">
             <!-- bindings used in all modules -->
         	<cssBinding jsModule="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.RunConnector">
-                <cssModule path="/ui/widget/RtcGitConnector.css"/>
+                <cssModule path="/ui/widget/components/RtcGitConnector/RtcGitConnector.css"/>
             </cssBinding>
         </cssBindingSet>
     </extension>

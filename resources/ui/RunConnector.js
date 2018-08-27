@@ -2,7 +2,7 @@ define([
     "dojo/_base/declare",
     "dojo/request/script",
     "dijit/focus",
-    "./widget/RtcGitConnector",
+    "./widget/components/RtcGitConnector/RtcGitConnector",
     "../library/ActionNode",
     "../library/HoverViewWrapper"
 ], function(declare, script, focus, RtcGitConnector, ActionNode, HoverViewWrapper) {
