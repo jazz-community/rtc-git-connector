@@ -2,7 +2,7 @@ define([
     "dojo/_base/declare",
     "dojo/dom",
     "dojo/dom-style",
-    "../../js/MainLayout",
+    "../MainLayout/MainLayout",
     "../../services/MainDataStore",
     "../../services/JazzRestService",
     "../../services/GitRestService",

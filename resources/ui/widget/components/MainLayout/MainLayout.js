@@ -18,7 +18,7 @@ define([
     "dijit/Dialog",
     "dijit/form/TextBox",
     "dijit/form/Button",
-    "dojo/text!../templates/MainLayout.html"
+    "dojo/text!./MainLayout.html"
 ], function (declare, url, dom, domConstruct, domStyle, on, keys,
     MainDataStore, JazzRestService, GitRestService,
     SelectRegisteredGitRepository, SelectLinkType,
