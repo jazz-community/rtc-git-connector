@@ -14,7 +14,7 @@ define([
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
-    "dojo/text!../templates/ViewAndSelectCommits.html"
+    "dojo/text!./ViewAndSelectCommits.html"
 ], function (declare, array, lang, dom, domClass, domConstruct, on, query,
     MainDataStore, JazzRestService, GitRestService, ViewHelper,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,

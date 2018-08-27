@@ -8,7 +8,7 @@ define([
     "../../services/MainDataStore",
     "../../services/JazzRestService",
     "../../services/GitRestService",
-    "../../js/ViewAndSelectCommits",
+    "../ViewAndSelectCommits/ViewAndSelectCommits",
     "../../js/ViewAndSelectIssues",
     "../../js/ViewAndSelectRequests",
     "../../js/ViewCommitsToLink",
