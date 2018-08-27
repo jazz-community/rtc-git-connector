@@ -11,7 +11,7 @@ define([
     "dijit/_WidgetsInTemplateMixin",
     "dijit/registry",
     "dijit/Dialog",
-    "dojo/text!./templates/RtcGitConnector.html",
+    "dojo/text!./RtcGitConnector.html",
     "dojo/domReady!"
 ], function (declare, dom, domStyle,
     MainLayout, MainDataStore, JazzRestService, GitRestService,
