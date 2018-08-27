@@ -13,7 +13,7 @@ define([
     "../ViewAndSelectRequests/ViewAndSelectRequests",
     "../ViewCommitsToLink/ViewCommitsToLink",
     "../ViewIssuesToLink/ViewIssuesToLink",
-    "../../js/ViewRequestsToLink",
+    "../ViewRequestsToLink/ViewRequestsToLink",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
