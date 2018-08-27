@@ -6,7 +6,7 @@ define([
     "../../services/MainDataStore",
     "../../services/JazzRestService",
     "../../services/GitRestService",
-    "../../_AbstractActionWidget",
+    "../../../library/_AbstractActionWidget",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dijit/registry",
