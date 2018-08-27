@@ -6,11 +6,11 @@ define([
     "dojo/request/xhr",
     "dojo/Deferred",
     "dojo/DeferredList",
-    "../Models/CommitModel",
-    "../Models/IssueModel",
-    "../Models/RequestModel",
-    "../HandlebarsTemplates/TemplateService",
-    "../HandlebarsTemplates/DefaultIssueTemplate"
+    "../js/Models/CommitModel",
+    "../js/Models/IssueModel",
+    "../js/Models/RequestModel",
+    "../js/HandlebarsTemplates/TemplateService",
+    "../js/HandlebarsTemplates/DefaultIssueTemplate"
 ], function (declare, url, array, json, xhr, Deferred, DeferredList,
     CommitModel, IssueModel, RequestModel,
     TemplateService, DefaultIssueTemplate) {
