@@ -1,6 +1,6 @@
 define([
     "dojo/_base/declare",
-    "dojo/text!../../templates/HandlebarsTemplates/DefaultIssueTemplate.handlebars"
+    "dojo/text!./DefaultIssueTemplate.handlebars"
 ], function (declare, template) {
     return declare(null, {
         templateString: template,
