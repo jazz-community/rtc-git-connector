@@ -87,31 +87,6 @@ define([
             }, 400);
         };
 
-        // Details view node creators
-        this.AddToDetailsViewNode = function (detailsViewNode, label, value) {
-            var messageNode = self.CreateDetailsViewSpan(detailsViewNode, label);
-            domConstruct.create("span", {
-                innerHTML: value
-            }, messageNode);
-        };
-
-        this.AddNodeToDetailsViewNode = function (detailsViewNode, label, node) {
-            var messageNode = self.CreateDetailsViewSpan(detailsViewNode, label);
-            domConstruct.place(node, messageNode);
-        };
-
-        this.CreateDetailsViewSpan = function (detailsViewNode, label) {
-            var messageNode = domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsSpan"
-            }, detailsViewNode);
-            domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsLabel",
-                innerHTML: label
-            }, messageNode);
-
-            return messageNode;
-        };
-
         // List item view node creators
         this.DrawListItem = function (listItem, firstLine, secondLine, buttonName, iconName) {
             var fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
