@@ -12,12 +12,13 @@ define([
     "../../services/JazzRestService",
     "../../services/GitRestService",
     "../../js/ViewHelper",
+    "../DetailsPane/DetailsPane",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!./ViewAndSelectIssues.html"
 ], function (declare, array, lang, dom, domClass, domConstruct, on, query, json,
-    MainDataStore, JazzRestService, GitRestService, ViewHelper,
+    MainDataStore, JazzRestService, GitRestService, ViewHelper, DetailsPane,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectIssues",
@@ -265,51 +266,54 @@ define([
         // Draw the details view for the selected issue
         drawDetailsView: function (issue) {
             var gitHost = this.mainDataStore.selectedRepositorySettings.get("gitHost");
-            var issueDetailsNode = query("#viewAndSelectIssuesWrapper .rtcGitConnectorViewAndSelectDetails")[0];
-            domConstruct.empty(issueDetailsNode);
-
-            domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsSpan rtcGitConnectorViewAndSelectDetailsLabel",
-                innerHTML: "Issue Details"
-            }, issueDetailsNode);
+            var items = [];
 
             if (!issue) {
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorViewAndSelectDetailsSpan",
-                    innerHTML: "Select an issue to view more details"
-                }, issueDetailsNode);
-            } else if (issue.originalId < 0) {
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorViewAndSelectDetailsSpan",
-                    innerHTML: "This will create a new issue in the selected " + gitHost.displayName + " repository and fill it with the information from this work item. " +
-                        "The new issue will also be added as a link."
-                }, issueDetailsNode);
-                var docsLink = domConstruct.create("a", {
-                    innerHTML: "Open the wiki page for more info on creating issues",
-                    href: "https://github.com/jazz-community/rtc-git-connector/wiki/2.5-Creating-an-Issue",
-                    target: "_blank"
+                items.push({
+                    text: "Select an issue to view more details"
                 });
-                ViewHelper.AddNodeToDetailsViewNode(issueDetailsNode, "More info: ", docsLink);
-                ViewHelper.AddNodeToDetailsViewNode(issueDetailsNode, "Developer info: ", domConstruct.create("button", {
-                    "id": "viewAndSelectIssuesCopyWorkItemDetails",
-                    "class": "secondary-button",
-                    "type": "button",
-                    innerHTML: "Copy work item details to clipboard"
-                }));
+            } else if (issue.originalId < 0) {
+                items.push({
+                    text: "This will create a new issue in the selected " + gitHost.displayName + " repository and fill it with the information from this work item. " +
+                        "The new issue will also be added as a link."
+                }, {
+                    label: "More info: ",
+                    text: "Open the wiki page for more info on creating issues",
+                    link: "https://github.com/jazz-community/rtc-git-connector/wiki/2.5-Creating-an-Issue"
+                }, {
+                    label: "Developer info: ",
+                    node: domConstruct.create("button", {
+                            "id": "viewAndSelectIssuesCopyWorkItemDetails",
+                            "class": "secondary-button",
+                            "type": "button",
+                            innerHTML: "Copy work item details to clipboard"
+                        })
+                });
                 this.copyJsonWorkItemToClipboard();
             } else {
-                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Title: ", issue.title);
-                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "State: ", issue.state);
-                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Opened by: ", issue.openedBy);
-                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Date opened: ", ViewHelper.GetFormattedDateFromString(issue.openedDate));
-                ViewHelper.AddToDetailsViewNode(issueDetailsNode, "Issue id: ", "#" + issue.id);
-                var linkNode = domConstruct.create("a", {
-                    innerHTML: "Open this issue in a new tab",
-                    href: issue.webUrl,
-                    target: "_blank"
+                items.push({
+                    label: "Title: ",
+                    text: issue.title
+                }, {
+                    label: "State: ",
+                    text: issue.state
+                }, {
+                    label: "Opened by: ",
+                    text: issue.openedBy
+                }, {
+                    label: "Date opened: ",
+                    text: ViewHelper.GetFormattedDateFromString(issue.openedDate)
+                }, {
+                    label: "Issue id: ",
+                    text: "#" + issue.id
+                }, {
+                    label: "Web Link: ",
+                    text: "Open this issue in a new tab",
+                    link: issue.webUrl
                 });
-                ViewHelper.AddNodeToDetailsViewNode(issueDetailsNode, "Web Link: ", linkNode);
             }
+
+            this.detailsPane.setContent("Issue Details", items);
         },
 
         // Sort the view issues by the openedDate
