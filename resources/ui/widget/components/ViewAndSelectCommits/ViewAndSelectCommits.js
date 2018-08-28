@@ -11,12 +11,13 @@ define([
     "../../services/JazzRestService",
     "../../services/GitRestService",
     "../../js/ViewHelper",
+    "../DetailsPane/DetailsPane",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!./ViewAndSelectCommits.html"
 ], function (declare, array, lang, dom, domClass, domConstruct, on, query,
-    MainDataStore, JazzRestService, GitRestService, ViewHelper,
+    MainDataStore, JazzRestService, GitRestService, ViewHelper, DetailsPane,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectCommits",
@@ -254,31 +255,33 @@ define([
 
         // Draw the details view for the selected commit
         drawDetailsView: function (commit) {
-            var commitDetailsNode = query("#viewAndSelectCommitsWrapper .rtcGitConnectorViewAndSelectDetails")[0];
-            domConstruct.empty(commitDetailsNode);
-
-            domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsSpan rtcGitConnectorViewAndSelectDetailsLabel",
-                innerHTML: "Commit Details"
-            }, commitDetailsNode);
+            var items = [];
 
             if (!commit) {
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorViewAndSelectDetailsSpan",
-                    innerHTML: "Select a commit to view more details"
-                }, commitDetailsNode);
-            } else {
-                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Message: ", commit.message.replace(/(\r\n|\n|\r)/gm, "<br />"));
-                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Author: ", commit.authorName + " (" + commit.authorEmail + ")");
-                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "Date: ", ViewHelper.GetFormattedDateFromString(commit.authoredDate));
-                ViewHelper.AddToDetailsViewNode(commitDetailsNode, "SHA: ", commit.sha);
-                var linkNode = domConstruct.create("a", {
-                    innerHTML: "Open this commit in a new tab",
-                    href: commit.webUrl,
-                    target: "_blank"
+                items.push({
+                    text: "Select a commit to view more details"
                 });
-                ViewHelper.AddNodeToDetailsViewNode(commitDetailsNode, "Web Link: ", linkNode);
+            } else {
+                items.push({
+                    label: "Message: ",
+                    text: commit.message.replace(/(\r\n|\n|\r)/gm, "<br />")
+                }, {
+                    label: "Author: ",
+                    text: commit.authorName + " (" + commit.authorEmail + ")"
+                }, {
+                    label: "Date: ",
+                    text: ViewHelper.GetFormattedDateFromString(commit.authoredDate)
+                }, {
+                    label: "SHA: ",
+                    text: commit.sha
+                }, {
+                    label: "Web Link: ",
+                    text: "Open this commit in a new tab",
+                    link: commit.webUrl
+                });
             }
+
+            this.detailsPane.setContent("Commit Details", items);
         },
 
         // Sort the view commits by the authoredDate
