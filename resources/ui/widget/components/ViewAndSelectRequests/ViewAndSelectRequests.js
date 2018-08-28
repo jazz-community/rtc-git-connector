@@ -11,12 +11,13 @@ define([
     "../../services/JazzRestService",
     "../../services/GitRestService",
     "../../js/ViewHelper",
+    "../DetailsPane/DetailsPane",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!./ViewAndSelectRequests.html"
 ], function (declare, array, lang, dom, domClass, domConstruct, on, query,
-    MainDataStore, JazzRestService, GitRestService, ViewHelper,
+    MainDataStore, JazzRestService, GitRestService, ViewHelper, DetailsPane,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectRequests",
@@ -255,32 +256,36 @@ define([
         // Draw the details view for the selected request
         drawDetailsView: function (request) {
             var gitHost = this.mainDataStore.selectedRepositorySettings.get("gitHost");
-            var requestDetailsNode = query("#viewAndSelectRequestsWrapper .rtcGitConnectorViewAndSelectDetails")[0];
-            domConstruct.empty(requestDetailsNode);
-
-            domConstruct.create("span", {
-                "class": "rtcGitConnectorViewAndSelectDetailsSpan rtcGitConnectorViewAndSelectDetailsLabel",
-                innerHTML: gitHost.requestPrefix + "Request Details"
-            }, requestDetailsNode);
+            var items = [];
 
             if (!request) {
-                domConstruct.create("span", {
-                    "class": "rtcGitConnectorViewAndSelectDetailsSpan",
-                    innerHTML: "Select a " + gitHost.requestPrefix.toLowerCase() + "request to view more details"
-                }, requestDetailsNode);
-            } else {
-                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Title: ", request.title);
-                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "State: ", request.state);
-                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Opened by: ", request.openedBy);
-                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Date opened: ", ViewHelper.GetFormattedDateFromString(request.openedDate));
-                ViewHelper.AddToDetailsViewNode(requestDetailsNode, "Request id: ", "#" + request.id);
-                var linkNode = domConstruct.create("a", {
-                    innerHTML: "Open this " + gitHost.requestPrefix.toLowerCase() + "request in a new tab",
-                    href: request.webUrl,
-                    target: "_blank"
+                items.push({
+                    text: "Select a " + gitHost.requestPrefix.toLowerCase() + "request to view more details"
                 });
-                ViewHelper.AddNodeToDetailsViewNode(requestDetailsNode, "Web Link: ", linkNode);
+            } else {
+                items.push({
+                    label: "Title: ",
+                    text: request.title
+                }, {
+                    label: "State: ",
+                    text: request.state
+                }, {
+                    label: "Opened by: ",
+                    text: request.openedBy
+                }, {
+                    label: "Date opened: ",
+                    text: ViewHelper.GetFormattedDateFromString(request.openedDate)
+                }, {
+                    label: "Request id: ",
+                    text: "#" + request.id
+                }, {
+                    label: "Web Link: ",
+                    text: "Open this " + gitHost.requestPrefix.toLowerCase() + "request in a new tab",
+                    link: request.webUrl
+                });
             }
+
+            this.detailsPane.setContent(gitHost.requestPrefix + "Request Details", items);
         },
 
         // Sort the view requests by the openedDate
