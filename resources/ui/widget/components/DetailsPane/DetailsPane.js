@@ -4,7 +4,8 @@ define([
     "dojo/dom-construct",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
-    "dojo/text!./DetailsPane.html"
+    "dojo/text!./DetailsPane.html",
+    "jazz/css!./DetailsPane.css"
 ], function (declare, array, domConstruct,
     _WidgetBase, _TemplatedMixin,
     template) {
