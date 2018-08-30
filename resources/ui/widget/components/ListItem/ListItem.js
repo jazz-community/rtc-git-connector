@@ -13,17 +13,6 @@ define([
     {
         templateString: template,
 
-        selected: false,
-        _setSelectedAttr: function (selected) {
-            if (selected) {
-                domClass.add(this.listItem, "selected");
-            } else {
-                domClass.remove(this.listItem, "selected");
-            }
-
-            this._set("selected", selected);
-        },
-
         itemId: "",
         _setItemIdAttr: { node: "listItem", type: "attribute", attribute: "data-item-id" },
 
@@ -37,9 +26,20 @@ define([
         _setButtonTypeAttr: function (buttonName) {
             domClass.remove(this.itemButton, this.buttonType);
             domClass.add(this.itemButton, buttonName);
-            this.itemButton.innerHTML = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome
-                .icon({ prefix: 'fas', iconName: buttonName }).html[0];
+            this.itemButton.innerHTML = com_siemens_bt_jazz_rtcgitconnector_modules
+                .FontAwesome.icon({ prefix: 'fas', iconName: buttonName }).html[0];
             this._set("buttonType", buttonName);
+        },
+
+        selected: false,
+        _setSelectedAttr: function (selected) {
+            if (selected) {
+                domClass.add(this.listItem, "selected");
+            } else {
+                domClass.remove(this.listItem, "selected");
+            }
+
+            this._set("selected", selected);
         },
 
         constructor: function (itemId) {
