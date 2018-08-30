@@ -33,6 +33,15 @@ define([
         details: "",
         _setDetailsAttr: { node: "secondLine", type: "innerHTML" },
 
+        buttonType: "link",
+        _setButtonTypeAttr: function (buttonName) {
+            domClass.remove(this.itemButton, this.buttonType);
+            domClass.add(this.itemButton, buttonName);
+            this.itemButton.innerHTML = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome
+                .icon({ prefix: 'fas', iconName: buttonName }).html[0];
+            this._set("buttonType", buttonName);
+        },
+
         constructor: function (itemId) {
             this.itemId = itemId;
 
