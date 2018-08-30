@@ -42,10 +42,24 @@ define([
             this._set("selected", selected);
         },
 
+        _onButtonClick: function (e) {
+            this.onButtonClick(this.itemId);
+        },
+
+        onButtonClick: function (itemId) {
+            // The container widget can set this function to react to the button click event.
+        },
+
+        _onContentClick: function (e) {
+            this.onContentClick(this.itemId);
+        },
+
+        onContentClick: function (itemId) {
+            // The container widget can set this function to react to the content click event.
+        },
+
         constructor: function (itemId) {
             this.itemId = itemId;
-
-            console.log("listItem this: ", this);
         }
     });
 });
