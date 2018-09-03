@@ -1,18 +1,18 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/array",
+    "dojo/_base/lang",
     "dojo/dom-construct",
     "dojo/dom-style",
-    "dojo/on",
-    "dojo/query",
     "../../services/MainDataStore",
     "../../js/ViewHelper",
+    "../ListItem/ListItem",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!./ViewCommitsToLink.html"
-], function (declare, array, domConstruct, domStyle, on, query,
-    MainDataStore, ViewHelper,
+], function (declare, array, lang, domConstruct, domStyle,
+    MainDataStore, ViewHelper, ListItem,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewCommitsToLink",
@@ -53,46 +53,39 @@ define([
         // Draw the commits to link list in the view
         drawCommitsToLink: function (commitsToLink) {
             var self = this;
-            var commitsListNode = query("#viewCommitsToLinkContainer .rtcGitConnectorViewItemsToLinkList")[0];
-            domConstruct.empty(commitsListNode);
+            domConstruct.empty(this.listItemsContainer);
 
             array.forEach(commitsToLink, function (commit) {
-                var commitListItem = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItem itemToLink",
-                    "data-commit-sha": commit.sha
-                }, commitsListNode);
+                var listItem = new ListItem(commit.sha);
+                listItem.set("title", commit.message.split(/\r?\n/g)[0]);
+                listItem.set("details", ViewHelper.GetCommitDateString(commit));
+                listItem.set("buttonType", "trash");
 
-                on(commitListItem, "click", function (event) {
-                    var commitSha = this.getAttribute("data-commit-sha");
+                listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
 
-                    if (ViewHelper.IsNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
-                        // Remove the commit with the specified sha from the commits to link list in store and add to the commits list
-                        if (commitSha) {
-                            var selectedCommit = null;
-
-                            for (var i = self.mainDataStore.selectedRepositoryData.commitsToLink.length - 1; i >= 0; i--) {
-                                if (self.mainDataStore.selectedRepositoryData.commitsToLink[i].sha === commitSha) {
-                                    selectedCommit = self.mainDataStore.selectedRepositoryData.commitsToLink.splice(i, 1)[0];
-                                    break;
-                                }
-                            }
-
-                            if (selectedCommit && !self.mainDataStore.selectedRepositoryData.commits.find(function (commit) {
-                                return commit.sha === selectedCommit.sha;
-                            })) {
-                                self.mainDataStore.selectedRepositoryData.commits.push(selectedCommit);
-                            }
-                        }
-                    }
-                });
-
-                var firstLine = commit.message.split(/\r?\n/g)[0];
-                var secondLine = ViewHelper.GetCommitDateString(commit);
-                ViewHelper.DrawListItem(commitListItem, firstLine, secondLine, "removeButton", "trash");
+                commit.listItem = listItem;
+                domConstruct.place(listItem.domNode, self.listItemsContainer);
             });
 
             // Get the mainDialog and resize to fit the new content
             ViewHelper.ResizeMainDialog();
+        },
+
+        listItemButtonClick: function (itemId) {
+            var selectedCommit = null;
+
+            for (var i = this.mainDataStore.selectedRepositoryData.commitsToLink.length - 1; i >= 0; i--) {
+                if (this.mainDataStore.selectedRepositoryData.commitsToLink[i].sha === itemId) {
+                    selectedCommit = this.mainDataStore.selectedRepositoryData.commitsToLink.splice(i, 1)[0];
+                    break;
+                }
+            }
+
+            if (selectedCommit && !this.mainDataStore.selectedRepositoryData.commits.find(function (commit) {
+                return commit.sha === selectedCommit.sha;
+            })) {
+                this.mainDataStore.selectedRepositoryData.commits.push(selectedCommit);
+            }
         }
     });
 });
