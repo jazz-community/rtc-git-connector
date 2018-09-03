@@ -24,8 +24,8 @@ define([
 
         buttonType: "link",
         _setButtonTypeAttr: function (buttonName) {
-            domClass.remove(this.itemButton, this.buttonType);
-            domClass.add(this.itemButton, buttonName);
+            domClass.remove(this.listItem, this.buttonType + "Button");
+            domClass.add(this.listItem, buttonName + "Button");
             this.itemButton.innerHTML = com_siemens_bt_jazz_rtcgitconnector_modules
                 .FontAwesome.icon({ prefix: 'fas', iconName: buttonName }).html[0];
             this._set("buttonType", buttonName);
@@ -40,6 +40,17 @@ define([
             }
 
             this._set("selected", selected);
+        },
+
+        notClickable: false,
+        _setNotClickable: function (notClickable) {
+            if (notClickable) {
+                domClass.add(this.itemContent, "notClickable");
+            } else {
+                domClass.remove(this.itemContent, "notClickable");
+            }
+
+            this._set("notClickable", notClickable);
         },
 
         _onButtonClick: function (e) {
