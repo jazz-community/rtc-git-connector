@@ -3,21 +3,20 @@ define([
     "dojo/_base/array",
     "dojo/_base/lang",
     "dojo/dom",
-    "dojo/dom-class",
     "dojo/dom-construct",
     "dojo/on",
-    "dojo/query",
     "../../services/MainDataStore",
     "../../services/JazzRestService",
     "../../services/GitRestService",
     "../../js/ViewHelper",
     "../DetailsPane/DetailsPane",
+    "../ListItem/ListItem",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!./ViewAndSelectRequests.html"
-], function (declare, array, lang, dom, domClass, domConstruct, on, query,
-    MainDataStore, JazzRestService, GitRestService, ViewHelper, DetailsPane,
+], function (declare, array, lang, dom, domConstruct, on,
+    MainDataStore, JazzRestService, GitRestService, ViewHelper, DetailsPane, ListItem,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectRequests",
@@ -181,74 +180,51 @@ define([
         // Draw the requests list from the view requests
         drawViewRequests: function () {
             var self = this;
-            var requestsListNode = query("#viewAndSelectRequestsWrapper .rtcGitConnectorViewAndSelectList .rtcGitConnectorViewAndSelectListItems")[0];
-            domConstruct.empty(requestsListNode);
+            domConstruct.empty(this.listItemsContainer);
 
             array.forEach(this.viewRequests, function (request) {
-                var requestListItem = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItem",
-                    "data-request-id": request.originalId
-                }, requestsListNode);
+                var listItem = new ListItem(request.originalId);
+                listItem.set("title", request.title);
+                listItem.set("details", ViewHelper.GetIssueOrRequestDateString(request));
+                listItem.set("buttonType", request.alreadyLinked ? "check" : "link");
 
-                on(requestListItem, "click", function (event) {
-                    var requestId = this.getAttribute("data-request-id");
+                listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
+                listItem.onContentClick = lang.hitch(self, self.setSelectedItemById);
 
-                    if (!request.alreadyLinked && ViewHelper.IsNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
-                        // Remove the request with the specified id from the requests list in store and add to the selected list
-                        if (requestId) {
-                            var selectedRequest = null;
-
-                            for (var i = self.mainDataStore.selectedRepositoryData.requests.length - 1; i >= 0; i--) {
-                                if (self.mainDataStore.selectedRepositoryData.requests[i].id == requestId) {
-                                    selectedRequest = self.mainDataStore.selectedRepositoryData.requests.splice(i, 1)[0];
-                                    break;
-                                }
-                            }
-
-                            if (selectedRequest && !self.mainDataStore.selectedRepositoryData.requestsToLink.find(function (request) {
-                                return request.id == selectedRequest.id;
-                            })) {
-                                self.mainDataStore.selectedRepositoryData.requestsToLink.push(selectedRequest);
-                            }
-                        }
-                    } else {
-                        // Select request
-                        self.setSelectedRequestById(requestId);
-                    }
-                });
-
-                var firstLine = request.title;
-                var secondLine = ViewHelper.GetIssueOrRequestDateString(request);
-                var buttonName = "";
-                var iconName;
-
-                if (request.alreadyLinked) {
-                    domClass.add(requestListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
-                    buttonName = "emptyButton";
-                    iconName = "check";
-                } else {
-                    iconName = "link";
-                }
-
-                ViewHelper.DrawListItem(requestListItem, firstLine, secondLine, buttonName, iconName);
+                request.listItem = listItem;
+                domConstruct.place(listItem.domNode, self.listItemsContainer);
             });
         },
 
-        // Set the selected request in the view using the request id
-        setSelectedRequestById: function (requestId) {
+        // Remove the request with the specified id from the requests list in store and add to the selected list
+        listItemButtonClick: function (itemId) {
+            var selectedRequest = null;
+
+            for (var i = this.mainDataStore.selectedRepositoryData.requests.length - 1; i >= 0; i--) {
+                if (this.mainDataStore.selectedRepositoryData.requests[i].id == itemId &&
+                    !this.mainDataStore.selectedRepositoryData.requests[i].alreadyLinked) {
+                    selectedRequest = this.mainDataStore.selectedRepositoryData.requests.splice(i, 1)[0];
+                    break;
+                }
+            }
+
+            if (selectedRequest && !this.mainDataStore.selectedRepositoryData.requestsToLink.find(function (request) {
+                return request.id == selectedRequest.id;
+            })) {
+                this.mainDataStore.selectedRepositoryData.requestsToLink.push(selectedRequest);
+            }
+        },
+
+        // Set the selected list item in the view using the item id
+        setSelectedItemById: function (itemId) {
             var self = this;
 
-            query("#viewAndSelectRequestsWrapper .rtcGitConnectorViewAndSelectList .rtcGitConnectorViewAndSelectListItem").forEach(function (node) {
-                if (node.getAttribute("data-request-id") == requestId) {
-                    domClass.add(node, "selected");
-                } else {
-                    domClass.remove(node, "selected");
-                }
-            });
-
             array.forEach(this.viewRequests, function (request) {
-                if (request.originalId == requestId) {
+                if (request.originalId && request.originalId === itemId) {
+                    request.listItem.set("selected", true);
                     self.drawDetailsView(request);
+                } else {
+                    request.listItem.set("selected", false);
                 }
             });
         },
