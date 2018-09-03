@@ -72,6 +72,7 @@ define([
                 listItem.set("title", issue.title);
                 listItem.set("details", details);
                 listItem.set("buttonType", buttonType);
+                listItem.set("notClickable", true);
 
                 listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
 

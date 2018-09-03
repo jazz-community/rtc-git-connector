@@ -43,7 +43,7 @@ define([
         },
 
         notClickable: false,
-        _setNotClickable: function (notClickable) {
+        _setNotClickableAttr: function (notClickable) {
             if (notClickable) {
                 domClass.add(this.itemContent, "notClickable");
             } else {

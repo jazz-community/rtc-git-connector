@@ -60,6 +60,7 @@ define([
                 listItem.set("title", commit.message.split(/\r?\n/g)[0]);
                 listItem.set("details", ViewHelper.GetCommitDateString(commit));
                 listItem.set("buttonType", "trash");
+                listItem.set("notClickable", true);
 
                 listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
 
