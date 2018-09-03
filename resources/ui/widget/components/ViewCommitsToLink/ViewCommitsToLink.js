@@ -71,6 +71,7 @@ define([
             ViewHelper.ResizeMainDialog();
         },
 
+        // Remove the commit with the specified sha from the commits to link list in store and add to the commits list
         listItemButtonClick: function (itemId) {
             var selectedCommit = null;
 
