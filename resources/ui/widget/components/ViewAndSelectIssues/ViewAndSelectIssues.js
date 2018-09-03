@@ -3,22 +3,21 @@ define([
     "dojo/_base/array",
     "dojo/_base/lang",
     "dojo/dom",
-    "dojo/dom-class",
     "dojo/dom-construct",
     "dojo/on",
-    "dojo/query",
     "dojo/json",
     "../../services/MainDataStore",
     "../../services/JazzRestService",
     "../../services/GitRestService",
     "../../js/ViewHelper",
     "../DetailsPane/DetailsPane",
+    "../ListItem/ListItem",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!./ViewAndSelectIssues.html"
-], function (declare, array, lang, dom, domClass, domConstruct, on, query, json,
-    MainDataStore, JazzRestService, GitRestService, ViewHelper, DetailsPane,
+], function (declare, array, lang, dom, domConstruct, on, json,
+    MainDataStore, JazzRestService, GitRestService, ViewHelper, DetailsPane, ListItem,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectIssues",
@@ -183,82 +182,67 @@ define([
         drawViewIssues: function () {
             var self = this;
             var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
-            var issuesListNode = query("#viewAndSelectIssuesWrapper .rtcGitConnectorViewAndSelectList .rtcGitConnectorViewAndSelectListItems")[0];
-            domConstruct.empty(issuesListNode);
+            domConstruct.empty(this.listItemsContainer);
 
             array.forEach(this.viewIssues, function (issue) {
-                var issueListItem = domConstruct.create("div", {
-                    "class": "rtcGitConnectorViewAndSelectListItem",
-                    "data-issue-id": issue.originalId
-                }, issuesListNode);
-
-                on(issueListItem, "click", function (event) {
-                    var issueId = this.getAttribute("data-issue-id");
-
-                    if (!issue.alreadyLinked && ViewHelper.IsNodeInClass(event.target, "rtcGitConnectorViewAndSelectListItemButton")) {
-                        // Remove the issue with the specified id from the issues list in store and add to the selected list
-                        if (issueId) {
-                            var selectedIssue = null;
-
-                            for (var i = self.mainDataStore.selectedRepositoryData.issues.length - 1; i >= 0; i--) {
-                                if (self.mainDataStore.selectedRepositoryData.issues[i].id == issueId) {
-                                    selectedIssue = self.mainDataStore.selectedRepositoryData.issues.splice(i, 1)[0];
-                                    break;
-                                }
-                            }
-
-                            if (selectedIssue && !self.mainDataStore.selectedRepositoryData.issuesToLink.find(function (issue) {
-                                return issue.id == selectedIssue.id;
-                            })) {
-                                self.mainDataStore.selectedRepositoryData.issuesToLink.push(selectedIssue);
-                            }
-                        }
-                    } else {
-                        // Select issue
-                        self.setSelectedIssueById(issueId);
-                    }
-                });
-
-                var firstLine = issue.title;
-                var secondLine;
-                var buttonName = "";
-                var iconName;
+                var details;
+                var buttonType;
 
                 if (issue.originalId < 0) {
-                    secondLine = "This will create a new issue in " + gitHost.displayName + " using the information from the current work item";
-                    buttonName = "addButton";
-                    iconName = "plus";
+                    details = "This will create a new issue in " + gitHost.displayName + " using the information from the current work item";
+                    buttonType = "plus";
                 } else {
-                    secondLine = ViewHelper.GetIssueOrRequestDateString(issue);
+                    details = ViewHelper.GetIssueOrRequestDateString(issue);
 
                     if (issue.alreadyLinked) {
-                        domClass.add(issueListItem, "rtcGitConnectorViewAndSelectListItemAlreadyLinked");
-                        buttonName = "emptyButton";
-                        iconName = "check";
+                        buttonType = "check";
                     } else {
-                        iconName = "link";
+                        buttonType = "link";
                     }
                 }
 
-                ViewHelper.DrawListItem(issueListItem, firstLine, secondLine, buttonName, iconName);
+                var listItem = new ListItem(issue.originalId);
+                listItem.set("title", issue.title);
+                listItem.set("details", details);
+                listItem.set("buttonType", buttonType);
+
+                listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
+                listItem.onContentClick = lang.hitch(self, self.setSelectedItemById);
+
+                issue.listItem = listItem;
+                domConstruct.place(listItem.domNode, self.listItemsContainer);
             });
         },
 
-        // Set the selected issue in the view using the issue id
-        setSelectedIssueById: function (issueId) {
+        // Remove the issue with the specified id from the issues list in store and add to the selected list
+        listItemButtonClick: function (itemId) {
+            var selectedIssue = null;
+
+            for (var i = this.mainDataStore.selectedRepositoryData.issues.length - 1; i >= 0; i--) {
+                if (this.mainDataStore.selectedRepositoryData.issues[i].id == itemId &&
+                    !this.mainDataStore.selectedRepositoryData.issues[i].alreadyLinked) {
+                    selectedIssue = this.mainDataStore.selectedRepositoryData.issues.splice(i, 1)[0];
+                    break;
+                }
+            }
+
+            if (selectedIssue && !this.mainDataStore.selectedRepositoryData.issuesToLink.find(function (issue) {
+                return issue.id == selectedIssue.id;
+            })) {
+                this.mainDataStore.selectedRepositoryData.issuesToLink.push(selectedIssue);
+            }
+        },
+
+        // Set the selected list item in the view using the item id
+        setSelectedItemById: function (itemId) {
             var self = this;
 
-            query("#viewAndSelectIssuesWrapper .rtcGitConnectorViewAndSelectList .rtcGitConnectorViewAndSelectListItem").forEach(function (node) {
-                if (node.getAttribute("data-issue-id") == issueId) {
-                    domClass.add(node, "selected");
-                } else {
-                    domClass.remove(node, "selected");
-                }
-            });
-
             array.forEach(this.viewIssues, function (issue) {
-                if (issue.originalId == issueId) {
+                if (issue.originalId && issue.originalId === itemId) {
+                    issue.listItem.set("selected", true);
                     self.drawDetailsView(issue);
+                } else {
+                    issue.listItem.set("selected", false);
                 }
             });
         },
