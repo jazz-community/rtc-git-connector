@@ -59,19 +59,6 @@ define([
             return fullText;
         };
 
-        // Checks if the node or any of it's parents have the class name
-        this.IsNodeInClass = function (node, className) {
-            if (node.classList && node.classList.contains(className)) {
-                return true;
-            }
-
-            if (node.parentNode) {
-                return self.IsNodeInClass(node.parentNode, className);
-            }
-
-            return false;
-        };
-
         // Resize the main dialog to fit the content. Reset the scroll
         // height to the previous value afterwards (otherwise the
         // scroll is reset to the top every time the dialog is resized).
@@ -85,30 +72,6 @@ define([
                 mainDialog.resize(); // The second time it fixes the positioning
                 paneContentNode.scrollTo(0, originalScrollTop);
             }, 400);
-        };
-
-        // List item view node creators
-        this.DrawListItem = function (listItem, firstLine, secondLine, buttonName, iconName) {
-            var fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-            var icon = fontAwesome.icon({ prefix: 'fas', iconName: iconName });
-            domConstruct.create("div", {
-                "class": "rtcGitConnectorViewAndSelectListItemButton " + buttonName,
-                innerHTML: icon.html[0]
-            }, listItem);
-
-            var listItemContent = domConstruct.create("div", {
-                "class": "rtcGitConnectorViewAndSelectListItemContent"
-            }, listItem);
-
-            domConstruct.create("span", {
-                "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListFirstLine",
-                innerHTML: firstLine
-            }, listItemContent);
-
-            domConstruct.create("span", {
-                "class": "rtcGitConnectorSelectListSpan rtcGitConnectorSelectListSecondLine",
-                innerHTML: secondLine
-            }, listItemContent);
         };
 
         // Create a string with information about who created the commit and when
