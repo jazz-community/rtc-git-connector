@@ -57,6 +57,20 @@ define([
 
         // Set values in the work item from the git issue. Also add a link to the git issue.
         setWorkItemValuesFromGitIssue: function (workItem, gitIssue) {
+            // Set the work item summary
+            workItem.setValue({
+                path: ["attributes", "summary"],
+                attributeId: "summary",
+                value: gitIssue.title
+            });
+
+            // Set the work item description. Use <br /> instead of end line characters.
+            workItem.setValue({
+                path: ["attributes", "description"],
+                attributeId: "description",
+                value: gitIssue.description.replace(/(\r\n|\n|\r)/gm, "<br />")
+            });
+
             // Add the git issue as a link
             this.addIssueLinksToWorkItemObject(workItem, [gitIssue]);
 
