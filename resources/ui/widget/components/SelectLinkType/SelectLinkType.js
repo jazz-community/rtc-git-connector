@@ -108,7 +108,8 @@ define([
                     });
                 }
 
-                if (!self.mainDataStore.selectedRepositorySettings.get("requestsLoaded") &&
+                if (!self.mainDataStore.newWorkItemMode &&
+                        !self.mainDataStore.selectedRepositorySettings.get("requestsLoaded") &&
                         !self.mainDataStore.selectedRepositorySettings.get("requestsLoading")) {
                     // Set the requestsLoading to true to prevent multiple requests
                     self.mainDataStore.selectedRepositorySettings.set("requestsLoading", true);
@@ -130,7 +131,8 @@ define([
                     });
                 }
 
-                if (!self.mainDataStore.selectedRepositorySettings.get("commitsLoaded") &&
+                if (!self.mainDataStore.newWorkItemMode &&
+                        !self.mainDataStore.selectedRepositorySettings.get("commitsLoaded") &&
                         !self.mainDataStore.selectedRepositorySettings.get("commitsLoading")) {
                     // Set the commitsLoading to true to prevent multiple requests
                     self.mainDataStore.selectedRepositorySettings.set("commitsLoading", true);
