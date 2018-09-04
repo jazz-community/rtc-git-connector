@@ -82,6 +82,7 @@ define([
 
                 // Set the selected type in the view
                 self.setSelectedLinkType(value);
+                self.setIssuesText();
                 self.setRequestsText(gitHost);
 
                 if (loadingError) {
@@ -195,6 +196,14 @@ define([
             query(".rtcGitConnectorSelectLinkType .linkTypeItem").forEach(function (node) {
                 handleItem(node);
             });
+        },
+
+        // Change the issues to link text if in new work item mode
+        setIssuesText: function () {
+            if (this.mainDataStore.newWorkItemMode) {
+                query("#rtcGitConnectorIssuesListToLink .rtcGitConnectorLabelText")[0].innerHTML =
+                    "Issues to create as work items";
+            }
         },
 
         // Set the requests text to Pull Requests for GitHub or Merge Requests for GitLab
