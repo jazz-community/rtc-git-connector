@@ -37,6 +37,7 @@ define([
                 .moveOldLinksToNewLinkTypes(this.mainDataStore.workItem);
             this.setEventHandlers();
 
+            // Change the popup title in new work item mode
             if (this.mainDataStore.newWorkItemMode) {
                 this.mainDialog.set("title", "Create Work Items from Git Issues");
             }
