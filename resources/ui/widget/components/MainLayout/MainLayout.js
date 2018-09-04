@@ -215,8 +215,16 @@ define([
                 }
             };
 
-            on(dom.byId("rtcGitConnectorSaveButton"), "click", saveButtonClick);
-            on(dom.byId("rtcGitConnectorSaveAndCloseButton"), "click", saveButtonClick);
+            if (this.mainDataStore.newWorkItemMode) {
+                domStyle.set("rtcGitConnectorSaveButton", "display", "none");
+                on(dom.byId("rtcGitConnectorSaveAndCloseButton"), "click", function () {
+                    alert("Save new work items");
+                    self._hideMainDialog();
+                });
+            } else {
+                on(dom.byId("rtcGitConnectorSaveButton"), "click", saveButtonClick);
+                on(dom.byId("rtcGitConnectorSaveAndCloseButton"), "click", saveButtonClick);
+            }
 
             on(dom.byId("rtcGitConnectorCancelButton"), "click", function (event) {
                 self._hideMainDialog();
