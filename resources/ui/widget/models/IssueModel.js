@@ -4,6 +4,7 @@ define([
     var IssueModel = declare(null, {
         id: null,           // The issue id in the web UI
         title: null,        // The title of the issue
+        description: null,  // The description of the issue
         state: null,        // The state of the issue
         openedBy: null,     // The user that opened the issue (user name or real name)
         openedDate: null,   // The date & time when the issue was opened
@@ -24,6 +25,7 @@ define([
             var issueModel = new IssueModel();
             issueModel.id = gitHubIssue.number;
             issueModel.title = gitHubIssue.title;
+            issueModel.description = gitHubIssue.body;
             issueModel.state = gitHubIssue.state;
             issueModel.openedBy = gitHubIssue.user.login;
             issueModel.openedDate = gitHubIssue.created_at;
@@ -41,6 +43,7 @@ define([
             var issueModel = new IssueModel();
             issueModel.id = gitLabIssue.iid;
             issueModel.title = gitLabIssue.title;
+            issueModel.description = gitLabIssue.description;
             issueModel.state = gitLabIssue.state;
             issueModel.openedBy = gitLabIssue.author.name;
             issueModel.openedDate = gitLabIssue.created_at;
