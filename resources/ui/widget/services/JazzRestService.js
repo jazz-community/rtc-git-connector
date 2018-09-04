@@ -43,6 +43,29 @@ define([
             this._createLinkTypeContainerGetters();
         },
 
+        // Create and fill work items from the git issues.
+        createNewWorkItems: function (currentWorkItem, gitIssues, addBackLinksFunction, failureCallbackFunction) {
+            for (var i = 0; i < gitIssues.length; i++) {
+                if (i === 0) {
+                    this.setWorkItemValuesFromGitIssue(currentWorkItem, gitIssues[0]);
+                } else {
+                    // Create work item
+                    // Set values on new work item with git issue
+                }
+            }
+        },
+
+        // Set values in the work item from the git issue. Also add a link to the git issue.
+        setWorkItemValuesFromGitIssue: function (workItem, gitIssue) {
+            // Add the git issue as a link
+            this.addIssueLinksToWorkItemObject(workItem, [gitIssue]);
+
+            workItem.setValue({
+                path: ["linkTypes"],
+                value: workItem.object.linkTypes
+            });
+        },
+
         saveLinksInWorkItem: function (workItem, successCallbackFunction, failureCallbackFunction) {
             var onChangeFunc = {
                 // Create a function to run after the linkType change

@@ -218,8 +218,7 @@ define([
             if (this.mainDataStore.newWorkItemMode) {
                 domStyle.set("rtcGitConnectorSaveButton", "display", "none");
                 on(dom.byId("rtcGitConnectorSaveAndCloseButton"), "click", function () {
-                    alert("Save new work items");
-                    self._hideMainDialog();
+                    self.saveNewWorkItemsButtonClick();
                 });
             } else {
                 on(dom.byId("rtcGitConnectorSaveButton"), "click", saveButtonClick);
@@ -368,6 +367,35 @@ define([
             var repositoryUrl = new url(selectedRepository.url);
 
             this.jazzRestService.saveAccessTokenByHost(repositoryUrl.host, accessToken);
+        },
+
+        // Save function for new work item mode
+        saveNewWorkItemsButtonClick: function () {
+            if (!this.mainDataStore.newWorkItemMode) {
+                return;
+            }
+
+            if (this.mainDataStore.selectedRepositoryData.issuesToLink.length > 0) {
+                // Show a loading overlay to disable the view until the save is complete
+                domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
+
+                this.jazzRestService.createNewWorkItems(
+                    this.mainDataStore.workItem,
+                    this.mainDataStore.selectedRepositoryData.issuesToLink,
+                    function () {
+                        console.log("save new work items add back links function");
+                    },
+                    function () {
+                        console.log("save new work items failure callback function");
+                    }
+                );
+
+                // Hide the loading overlay
+                domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
+                this._hideMainDialog();
+            } else {
+                this._hideMainDialog();
+            }
         },
 
         // Sorts an array of objects alphabetically by their name property
