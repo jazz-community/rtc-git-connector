@@ -43,7 +43,9 @@ define([
             this.viewAndSelectIssues.startup();
             this.viewIssuesToLink.startup();
 
-            if (!this.mainDataStore.newWorkItemMode) {
+            if (this.mainDataStore.newWorkItemMode) {
+                this.onlyShowIssuesTab();
+            } else {
                 this.viewAndSelectCommits.startup();
                 this.viewAndSelectRequests.startup();
                 this.viewCommitsToLink.startup();
@@ -168,14 +170,30 @@ define([
             });
         },
 
+        // Hide all tabs except for issues
+        onlyShowIssuesTab: function () {
+            this._queryLinkTypeItems(function (node) {
+                if (node.getAttribute("data-link-type") !== "ISSUE") {
+                    domStyle.set(node, "display", "none");
+                }
+            });
+        },
+
         // Add the selected class to the specified type. Remove it from the other types
         setSelectedLinkType: function (linkType) {
-            query(".rtcGitConnectorSelectLinkType .linkTypeItem").forEach(function (node) {
+            this._queryLinkTypeItems(function (node) {
                 if (node.getAttribute("data-link-type") === linkType) {
                     domClass.add(node, "selected");
                 } else {
                     domClass.remove(node, "selected");
                 }
+            });
+        },
+
+        // Run a function on each linkTypeItem node
+        _queryLinkTypeItems: function (handleItem) {
+            query(".rtcGitConnectorSelectLinkType .linkTypeItem").forEach(function (node) {
+                handleItem(node);
             });
         },
 
