@@ -37,6 +37,10 @@ define([
                 .moveOldLinksToNewLinkTypes(this.mainDataStore.workItem);
             this.setEventHandlers();
 
+            if (this.mainDataStore.newWorkItemMode) {
+                this.mainDialog.set("title", "Create Work Items from Git Issues");
+            }
+
             // Show the error dialog in Internet Explorer (better than nothing happening)
             if (this.isInternetExplorer()) {
                 this.mainErrorDialog.startup();
