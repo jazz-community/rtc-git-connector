@@ -91,6 +91,15 @@ define([
         // Adds links to the workItem object and saves them
         // The addBackLinksFunction is run on success without any parameters
         addLinksToWorkItem: function (workItem, registeredGitRepository, commitsToLink, issuesToLink, requestsToLink, addBackLinksFunction, failureCallbackFunction) {
+            this.addCommitLinksToWorkItemObject(workItem, commitsToLink, registeredGitRepository);
+            this.addIssueLinksToWorkItemObject(workItem, issuesToLink);
+            this.addRequestLinksToWorkItemObject(workItem, requestsToLink);
+
+            this.saveLinksInWorkItem(workItem, addBackLinksFunction, failureCallbackFunction);
+        },
+
+        // Save the specified commits to link as links in the passed work item object
+        addCommitLinksToWorkItemObject: function (workItem, commitsToLink, registeredGitRepository) {
             var self = this;
 
             // Add links to commits
@@ -107,7 +116,10 @@ define([
                     });
                 });
             }
+        },
 
+        // Save the specified issues to link as links in the passed work item object
+        addIssueLinksToWorkItemObject: function (workItem, issuesToLink) {
             // Add links to issues
             if (issuesToLink && issuesToLink.length > 0) {
                 // Get the issue link type container
@@ -128,7 +140,10 @@ define([
                     });
                 });
             }
+        },
 
+        // Save the specified requests to link as links in the passed work item object
+        addRequestLinksToWorkItemObject: function (workItem, requestsToLink) {
             // Add links to requests
             if (requestsToLink && requestsToLink.length > 0) {
                 // Get the request link type container
@@ -149,8 +164,6 @@ define([
                     });
                 });
             }
-
-            this.saveLinksInWorkItem(workItem, addBackLinksFunction, failureCallbackFunction);
         },
 
         // Move issue and request links that were created as related artifacts to their own custom link types
