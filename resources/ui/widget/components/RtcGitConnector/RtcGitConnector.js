@@ -27,6 +27,7 @@ define([
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
             this.jazzRestService = JazzRestService.getInstance();
+            this.mainDataStore.newWorkItemMode = this.workItem.isNewWorkItem();
             this.mainDataStore.workItem = this.workItem;
             this.mainDataStore.projectArea = this.workItem.object.attributes.projectArea;
         },

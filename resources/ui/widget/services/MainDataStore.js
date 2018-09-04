@@ -5,6 +5,7 @@ define([
 ], function (declare, Stateful, StatefulArray) {
     var _instance = null;
     var MainDataStore = declare(null, {
+        newWorkItemMode: null,
         workItem: null,
         projectArea: null,
         registeredGitRepositories: null,
