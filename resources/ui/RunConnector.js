@@ -2,9 +2,9 @@ define([
     "dojo/_base/declare",
     "dojo/request/script",
     "dijit/focus",
-    "./widget/RtcGitConnector",
-    "../library/ActionNode",
-    "../library/HoverViewWrapper"
+    "./widget/components/RtcGitConnector/RtcGitConnector",
+    "./library/ActionNode",
+    "./library/HoverViewWrapper"
 ], function(declare, script, focus, RtcGitConnector, ActionNode, HoverViewWrapper) {
     var cssSelector = "img.button-img";
     script.get(net.jazz.ajax._contextRoot + net.jazz.ajax._webuiPrefix + "com.siemens.bt.jazz.workitemeditor.rtcGitConnector/dist/modules-bundle.js");

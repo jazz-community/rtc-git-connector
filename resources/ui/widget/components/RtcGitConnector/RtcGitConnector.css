@@ -1,0 +1,274 @@
+/*
+    Don't depend on the styles being within this container style (or any container really).
+    Dojo can and does place the elements at different places in the dom from where they were defined.
+
+    If you try something like this:
+
+        .rtcGitConnectorMainLayout .span {
+            some style rule...
+        }
+
+    You would expect all spans under the element with the "rtcGitConnectorMainLayout" class
+    to have the specified style rules. Because the spans may have been moved by dojo this might
+    not be the case (e.g. Dialog, Select, ...).
+
+    Just use long descriptive names and apply the classes to the elements directly.
+*/
+
+/*
+    Set the height and width of the widget in percentage of the window height / width.
+*/
+#connectWithGitMainDialog .dijitDialogPaneContent {
+    background-color: #f5f5f5;
+}
+
+.rtcGitConnectorMainLayout {
+    box-sizing: border-box;
+    width: 80vw;
+    min-width: 800px;
+    min-height: 80vh;
+    margin: 5px;
+    position: relative;
+    padding-bottom: 1em;
+    overflow: hidden;
+}
+
+.rtcGitConnectorSelectRegisteredGitRepository {
+    display: flex;
+    background-color: white;
+    border: 1px solid #cacaca;
+    padding-left: 10px;
+}
+
+.rtcGitConnectorActionButtons {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 1em;
+}
+
+.rtcGitConnectorError {
+    color: red;
+}
+
+.rtcGitConnectorMessage {
+    display: block;
+    padding: 6px;
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.rtcGitConnectorMessageInfo {
+    background-color: #d9edf7;
+    /* border-color: #bce8f1; */
+    color: #31708f;
+}
+
+.rtcGitConnectorMessageWarning {
+    background-color: #fcf8e3;
+    /* border-color: #faebcc; */
+    color: #8a6d3b;
+}
+
+.rtcGitConnectorMessageError {
+    background-color: #f2dede;
+    /* border-color: #ebccd1; */
+    color: #a94442;
+}
+
+.rtcGitConnectorLabelText {
+    display: inline-block;
+    margin-bottom: .5em;
+    font-size: 1em;
+    font-weight: bold;
+    color: #666666;
+    width: 200px;
+}
+
+.rtcGitConnectorSelectRegisteredGitRepository .rtcGitConnectorLabelText {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.rtcGitConnectorSelectList {
+    width: calc(100% - 201px);
+    flex-grow: 1;
+    border-top: 0px;
+    border-bottom: 0px;
+    border-right: 0px;
+}
+
+/* Limit the size of the dojo select list drop-down arrow. It looks bad when any larger. */
+.rtcGitConnectorSelectList .dijitArrowButton {
+    width: 1em;
+}
+
+.rtcGitConnectorSelectListSpan {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: .2em;
+    font-size: 1em;
+}
+
+/* Add a light blue background to the selected option in the drop-down list. */
+.dijitSelectSelectedOption .rtcGitConnectorSelectListSpan {
+    background-color: #cfe5fa;
+}
+
+.rtcGitConnectorSelectListFirstLine {
+    /* font-weight: bold; */
+}
+
+.rtcGitConnectorSelectListSecondLine {
+    color: gray;
+}
+
+#rtcGitConnectorSelectLinkTypeContainer {
+    margin-bottom: 10px;
+}
+
+.rtcGitConnectorSelectLinkType {
+    display: flex;
+    background-color: white;
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-top-width: 0px;
+    border-right-width: 1px;
+    border-style: solid;
+    border-color: #cacaca;
+}
+
+.rtcGitConnectorSelectLinkType .linkTypeItem {
+    display: inline-block;
+    /* flex-grow: 1; */
+    font-size: 1em;
+    cursor: pointer;
+    height: 2.75em;
+    line-height: 2em;
+    text-decoration: none;
+    color: black;
+    padding: 4px 20px;
+    margin: 0px;
+    overflow: hidden;
+    border-bottom: 0px solid #3087b3;
+    box-sizing: border-box;
+    transition: all 0.1s ease-out;
+}
+
+.rtcGitConnectorSelectLinkType .linkTypeItem:hover {
+    border-bottom-width: 3px;
+}
+
+.rtcGitConnectorSelectLinkType .linkTypeItem.selected {
+    border-bottom-width: 3px;
+    cursor: default;
+}
+
+.viewAndSelectSearchInput {
+    flex-grow: 1;
+    margin-right: .5em;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.viewAndSelectSearchButton {
+    margin-right: .5em !important;
+}
+
+.viewAndSelectFilterInput {
+    flex-grow: 1;
+    margin-right: .5em;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.rtcGitConnectorViewAndSelectContainer {
+    background-color: white;
+    border: 1px solid #cacaca;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.rtcGitConnectorViewAndSelectWrapper {
+    display: flex;
+    width: 100%;
+}
+
+.rtcGitConnectorViewAndSelectList {
+    box-sizing: border-box;
+    flex-grow: 1;
+    width: 100%;
+    height: 250px;
+    margin-right: 10px;
+    border: 1px solid #cacaca;
+    overflow-y: scroll;
+}
+
+.rtcGitConnectorViewAndSelectListControl {
+    display: flex;
+    border-bottom: 1px solid #cacaca;
+    padding: .5em;
+}
+
+.viewAndSelectControlLabel {
+    color: #666666;
+    width: 75px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.rtcGitConnectorViewItemsToLinkList .rtcGitConnectorViewAndSelectListItem:last-child {
+    border-bottom-width: 0px;
+}
+
+.rtcGitConnectorListsToLinkContainer {
+    display: flex;
+    margin-right: -10px;
+}
+
+.rtcGitConnectorListsToLinkContainer .rtcGitConnectorListToLink {
+    flex-grow: 1;
+    width: 0;
+    transition: all 0.3s ease-out;
+}
+
+.viewItemsToLinkContainer {
+    background-color: white;
+    border: 1px solid #cacaca;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.rtcGitConnectorViewItemsToLinkList {
+    width: 100%;
+    border: 1px solid #cacaca;
+}
+
+.rtcGitConnectorHighlightText {
+    background-color: yellowgreen;
+}
+
+#rtcGitConnectorFullPageLoadingOverlay {
+    position: absolute;
+    top: -1em;
+    bottom: -1em;
+    left: -1em;
+    right: -1em;
+    background-color: white;
+    z-index: 10000;
+    text-align: center;
+    line-height: 20vh;
+}
+
+#rtcGitConnectorFullPageLoadingOverlayContent {
+    position: fixed;
+    width: 80vw;
+    bottom: 0;
+}
+
+#rtcGitConnectorFullPageLoadingOverlayContent span {
+    display: block;
+}

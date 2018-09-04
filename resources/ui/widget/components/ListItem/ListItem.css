@@ -1,0 +1,63 @@
+.rtcGitConnectorViewAndSelectListItem {
+    display: flex;
+    border-bottom: 1px solid #cacaca;
+    padding: .2em;
+    font-size: 1em;
+    transition: all 0.3s ease-out;
+}
+
+.rtcGitConnectorViewAndSelectListItem:hover {
+    background-color: #cacaca;
+}
+
+.rtcGitConnectorViewAndSelectListItem.selected {
+    background-color: #cfe5fa;
+}
+
+.rtcGitConnectorViewAndSelectListItemContent {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.rtcGitConnectorViewAndSelectListItem.selected .rtcGitConnectorViewAndSelectListItemContent {
+    cursor: default;
+}
+
+.rtcGitConnectorViewAndSelectListItemContent.notClickable {
+    cursor: default;
+}
+
+.rtcGitConnectorViewAndSelectListItemButton {
+    width: 2em;
+    height: 100%;
+    margin: auto .3em;
+    font-size: 1.5em;
+    text-align: center;
+    cursor: pointer;
+}
+
+.rtcGitConnectorViewAndSelectListItem.linkButton .rtcGitConnectorViewAndSelectListItemButton {
+    color: #0645AD;
+}
+
+.rtcGitConnectorViewAndSelectListItem.plusButton .rtcGitConnectorViewAndSelectListItemButton {
+    color: green;
+}
+
+.rtcGitConnectorViewAndSelectListItem.trashButton .rtcGitConnectorViewAndSelectListItemButton {
+    color: darkorange;
+}
+
+.rtcGitConnectorViewAndSelectListItem.timesButton .rtcGitConnectorViewAndSelectListItemButton {
+    color: #CC2200;
+}
+
+.rtcGitConnectorViewAndSelectListItem.checkButton {
+    opacity: 0.6;
+}
+
+.rtcGitConnectorViewAndSelectListItem.checkButton .rtcGitConnectorViewAndSelectListItemButton {
+    color: #555;
+    cursor: default;
+}

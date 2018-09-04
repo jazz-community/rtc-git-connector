@@ -1,0 +1,39 @@
+<div>
+    <label class="rtcGitConnectorLabelText">Recent Requests</label>
+    <div class="rtcGitConnectorViewAndSelectWrapper" id="viewAndSelectRequestsWrapper">
+        <div class="rtcGitConnectorViewAndSelectList">
+            <div class="rtcGitConnectorViewAndSelectListControls">
+                <div class="rtcGitConnectorViewAndSelectListControl">
+                    <div class="viewAndSelectControlLabel">Search: </div>
+                    <input id="viewAndSelectRequestsSearchInput"
+                        class="viewAndSelectSearchInput"
+                        placeholder="Search requests by id..."
+                        data-dojo-type="dijit/form/TextBox"
+                        data-dojo-attach-point="requestsSearchInput"
+                        data-dojo-props="trim:true">
+                    <button id="viewAndSelectRequestsSearchButton"
+                            class="primary-button viewAndSelectSearchButton"
+                            type="button">Search</button>
+                    <button id="viewAndSelectRequestsSearchClearButton"
+                            class="secondary-button"
+                            type="button">Clear</button>
+                </div>
+                <div class="rtcGitConnectorViewAndSelectListControl">
+                    <div class="viewAndSelectControlLabel">Filter: </div>
+                    <input id="viewAndSelectRequestsFilterInput"
+                        class="viewAndSelectFilterInput"
+                        placeholder="Filter requests by title, author, state, id..."
+                        data-dojo-type="dijit/form/TextBox"
+                        data-dojo-attach-point="requestsFilterInput"
+                        data-dojo-props="trim:true, intermediateChanges:true">
+                    <button id="viewAndSelectRequestsFilterClearButton"
+                        class="secondary-button"
+                        type="button">Clear</button>
+                </div>
+            </div>
+            <div class="rtcGitConnectorViewAndSelectListItems" data-dojo-attach-point="listItemsContainer"></div>
+        </div>
+        <div data-dojo-attach-point="detailsPane"
+            data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.detailsPane"></div>
+    </div>
+</div>
