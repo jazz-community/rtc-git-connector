@@ -40,12 +40,15 @@ define([
 
         startup: function () {
             // Manually call the startup method of custom widgets used in the template
-            this.viewAndSelectCommits.startup();
             this.viewAndSelectIssues.startup();
-            this.viewAndSelectRequests.startup();
-            this.viewCommitsToLink.startup();
             this.viewIssuesToLink.startup();
-            this.viewRequestsToLink.startup();
+
+            if (!this.mainDataStore.newWorkItemMode) {
+                this.viewAndSelectCommits.startup();
+                this.viewAndSelectRequests.startup();
+                this.viewCommitsToLink.startup();
+                this.viewRequestsToLink.startup();
+            }
 
             this.watchDataStore();
             this.setEventHandlers();
