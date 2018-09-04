@@ -5,6 +5,7 @@ define([
         id: null,           // The issue id in the web UI
         title: null,        // The title of the issue
         description: null,  // The description of the issue
+        labels: null,       // A comma separated string with all the labels
         state: null,        // The state of the issue
         openedBy: null,     // The user that opened the issue (user name or real name)
         openedDate: null,   // The date & time when the issue was opened
@@ -35,6 +36,12 @@ define([
             issueModel.alreadyLinked = alreadyLinkedUrls.indexOf(issueModel.webUrl.toLowerCase()) > -1;
             issueModel.service = 'github';
 
+            if (gitHubIssue.labels && gitHubIssue.labels.length) {
+                issueModel.labels = gitHubIssue.labels.map(function (label) {
+                    return label.name;
+                }).join(", ");
+            }
+
             return issueModel;
         };
 
@@ -61,6 +68,10 @@ define([
             issueModel.alreadyLinked = alreadyLinkedUrls.some(function (alreadyLinkedUrl) {
                 return alreadyLinkedUrl.indexOf(lowerCaseLinkUrl) > -1;
             });
+
+            if (gitLabIssue.labels && gitLabIssue.labels.length) {
+                issueModel.labels = gitLabIssue.labels.join(", ");
+            }
 
             return issueModel;
         };
