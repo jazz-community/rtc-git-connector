@@ -45,14 +45,52 @@ define([
 
         // Create and fill work items from the git issues.
         createNewWorkItems: function (currentWorkItem, gitIssues, addBackLinksFunction, failureCallbackFunction) {
-            for (var i = 0; i < gitIssues.length; i++) {
-                if (i === 0) {
-                    this.setWorkItemValuesFromGitIssue(currentWorkItem, gitIssues[0]);
-                } else {
-                    // Create work item
-                    // Set values on new work item with git issue
+            var self = this;
+
+            if (gitIssues && gitIssues.length) {
+                // Set the first issue in the current work item
+                this.setWorkItemValuesFromGitIssue(currentWorkItem, gitIssues[0]);
+            }
+
+            if (gitIssues && gitIssues.length > 1) {
+                // A function for creating a work item and setting the values when it's ready
+                var createWorkItemAndSetValue = function (currentGitIssue) {
+                    var newWorkItem = self.createNewEmptyWorkItem(currentWorkItem);
+
+                    (function (newWorkItem, currentGitIssue) {
+                        // Only set the values after the work item has been initialized
+                        var interval = setInterval(function () {
+                            if (newWorkItem.isInitialized) {
+                                clearInterval(interval);
+
+                                // Wait a bit more because it's still not ready for some reason...
+                                setTimeout(function () {
+                                    self.setWorkItemValuesFromGitIssue(newWorkItem, currentGitIssue);
+                                }, 100);
+                            }
+                        }, 100);
+                    })(newWorkItem, currentGitIssue);
+                };
+
+                // Create work items and set values for any additional git issues
+                for (var i = 1; i < gitIssues.length; i++) {
+                    (function (currentGitIssue) {
+                        createWorkItemAndSetValue(currentGitIssue);
+                    })(gitIssues[i]);
                 }
             }
+        },
+
+        // Create a new empty work item with the same type as the original work item
+        createNewEmptyWorkItem: function (originalWorkItem) {
+            var currentTimeStamp = new Date().getTime() + "0";
+            var newWorkItemParams = {
+                action: "com.ibm.team.workitem.newWorkItem",
+                ts: currentTimeStamp,
+                type: originalWorkItem.object.attributes.workItemType.id
+            };
+            jazz.app.currentApplication.workbench._pageWidgetCache["com.ibm.team.workitem"].controller.newWorkItem(newWorkItemParams);
+            return com.ibm.team.workitem.web.cache.internal.Cache.getCache()["-" + currentTimeStamp];
         },
 
         // Set values in the work item from the git issue. Also add a link to the git issue.
