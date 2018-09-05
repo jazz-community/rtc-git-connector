@@ -1,0 +1,13 @@
+.rtcGitConnectorNewWorkItemList {
+    background-color: white;
+    border: 1px solid #cacaca;
+    padding: 10px;
+    margin: 7px 10px;
+}
+
+.rtcGitConnectorNewWorkItemListTitle {
+    margin-bottom: .5em;
+    font-size: 1em;
+    font-weight: bold;
+    color: #666666;
+}

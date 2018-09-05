@@ -3,8 +3,9 @@ define([
     "dojo/_base/array",
     "dojo/json",
     "dojo/request/xhr",
-    "dojo/Deferred"
-], function (declare, array, json, xhr, Deferred) {
+    "dojo/Deferred",
+    "../components/NewWorkItemList/NewWorkItemList"
+], function (declare, array, json, xhr, Deferred, NewWorkItemList) {
     var _instance = null;
     var JazzRestService = declare(null, {
         commitLinkEncoder: null,
@@ -50,6 +51,9 @@ define([
             if (gitIssues && gitIssues.length) {
                 // Set the first issue in the current work item
                 this.setWorkItemValuesFromGitIssue(currentWorkItem, gitIssues[0]);
+
+                var newWorkItemList = new NewWorkItemList();
+                newWorkItemList.addToPage();
             }
 
             if (gitIssues && gitIssues.length > 1) {
