@@ -71,6 +71,7 @@ define([
 
                                 // Wait a bit more because it's still not ready for some reason...
                                 setTimeout(function () {
+                                    self.setWorkItemValuesFromOriginalWorkItem(newWorkItem, currentWorkItem);
                                     self.setWorkItemValuesFromGitIssue(newWorkItem, currentGitIssue);
                                     newWorkItemList.updateContent();
                                 }, 100);
@@ -98,6 +99,38 @@ define([
             };
             jazz.app.currentApplication.workbench._pageWidgetCache["com.ibm.team.workitem"].controller.newWorkItem(newWorkItemParams);
             return com.ibm.team.workitem.web.cache.internal.Cache.getCache()["-" + currentTimeStamp];
+        },
+
+        // Copy a the values of a few attributes from the first work item
+        // ["category", "owner", "target", "foundIn"]
+        setWorkItemValuesFromOriginalWorkItem: function (newWorkItem, originalWorkItem) {
+            // Set the category
+            newWorkItem.setValue({
+                path: ["attributes", "category"],
+                attributeId: "category",
+                value: originalWorkItem.object.attributes.category
+            });
+
+            // Set the owner
+            newWorkItem.setValue({
+                path: ["attributes", "owner"],
+                attributeId: "owner",
+                value: originalWorkItem.object.attributes.owner
+            });
+
+            // Set the planned for
+            newWorkItem.setValue({
+                path: ["attributes", "target"],
+                attributeId: "target",
+                value: originalWorkItem.object.attributes.target
+            });
+
+            // Set the found in
+            newWorkItem.setValue({
+                path: ["attributes", "foundIn"],
+                attributeId: "foundIn",
+                value: originalWorkItem.object.attributes.foundIn
+            });
         },
 
         // Set values in the work item from the git issue. Also add a link to the git issue.
