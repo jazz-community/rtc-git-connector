@@ -46,6 +46,7 @@ define([
 
             if (this.mainDataStore.newWorkItemMode) {
                 this.onlyShowIssuesTab();
+                this.setNewWorkItemAttributes.startup();
             } else {
                 this.viewAndSelectCommits.startup();
                 this.viewAndSelectRequests.startup();
