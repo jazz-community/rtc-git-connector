@@ -48,7 +48,6 @@ define([
 
             if (this.newWorkItems && this.newWorkItems.length) {
                 array.forEach(this.newWorkItems, function (newWorkItem) {
-                    console.log("newWorkItem", newWorkItem);
                     self._addNewWorkItemToView(newWorkItem);
                 });
             }
