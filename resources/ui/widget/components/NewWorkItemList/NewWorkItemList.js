@@ -4,22 +4,24 @@ define([
     "dojo/dom-construct",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
+    "dijit/registry",
     "dojo/text!./NewWorkItemList.html",
     "jazz/css!./NewWorkItemList.css"
 ], function (declare, array, domConstruct,
-    _WidgetBase, _TemplatedMixin,
+    _WidgetBase, _TemplatedMixin, registry,
     template) {
-    return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.newWorkItemList",
+    var NewWorkItemList = declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.newWorkItemList",
         [_WidgetBase, _TemplatedMixin,],
     {
         templateString: template,
+        id: "rtcGitConnectorNewWorkItemListWidget",
         newWorkItems: [],
 
         // Add the widget above the work item editor on the work item editor page.
         addToPage: function () {
             try {
                 jazz.app.currentApplication.workbench._pageWidgetCache["com.ibm.team.workitem"]
-                    .domNode.lastChild.insertAdjacentElement('beforebegin', this.domNode);
+                    .domNode.lastElementChild.insertAdjacentElement('beforebegin', this.domNode);
             } catch (e) {
                 console.log("Error placing NewWorkItemList on the page.");
             }
@@ -28,8 +30,15 @@ define([
         // Update from the current list of new work items.
         updateContent: function () {
             this._getNewWorkItems();
-            this._clearContent();
-            this._addNewWorkItemsToView();
+
+            if (this.newWorkItems.length) {
+                // Set the updated list in the view
+                this._clearContent();
+                this._addNewWorkItemsToView();
+            } else {
+                // Destroy the widget when when the list is empty
+                this.destroyRecursive(false);
+            }
         },
 
         _getNewWorkItems: function () {
@@ -67,4 +76,22 @@ define([
             }, newWorkItemRow);
         }
     });
+
+    // Don't expose the class directly but rather just the update function.
+    return new function () {
+        // Updates the list of new work items. Creates and places the widget in the dom
+        // if it doesn't exist. Removes and destroys the widget if the list is empty.
+        this.UpdateNewWorkItemList = function () {
+            // Get the existing widget by id
+            var newWorkItemListWidget = registry.byId('rtcGitConnectorNewWorkItemListWidget');
+
+            if (!newWorkItemListWidget) {
+                // Create a new instance if the widget wasn't found
+                newWorkItemListWidget = new NewWorkItemList();
+                newWorkItemListWidget.addToPage();
+            }
+
+            newWorkItemListWidget.updateContent();
+        };
+    };
 });

@@ -47,15 +47,13 @@ define([
         // Create and fill work items from the git issues.
         createNewWorkItems: function (currentWorkItem, gitIssues, addBackLinksFunction, failureCallbackFunction) {
             var self = this;
-            var newWorkItemList = null;
 
             if (gitIssues && gitIssues.length) {
                 // Set the first issue in the current work item
                 this.setWorkItemValuesFromGitIssue(currentWorkItem, gitIssues[0]);
 
-                newWorkItemList = new NewWorkItemList();
-                newWorkItemList.addToPage();
-                newWorkItemList.updateContent();
+                // Update the new work item list
+                NewWorkItemList.UpdateNewWorkItemList();
             }
 
             if (gitIssues && gitIssues.length > 1) {
@@ -73,7 +71,9 @@ define([
                                 setTimeout(function () {
                                     self.setWorkItemValuesFromOriginalWorkItem(newWorkItem, currentWorkItem);
                                     self.setWorkItemValuesFromGitIssue(newWorkItem, currentGitIssue);
-                                    newWorkItemList.updateContent();
+
+                                    // Update the new work item list
+                                    NewWorkItemList.UpdateNewWorkItemList();
                                 }, 100);
                             }
                         }, 100);
