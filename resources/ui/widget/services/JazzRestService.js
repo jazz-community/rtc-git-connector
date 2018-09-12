@@ -171,7 +171,27 @@ define([
             });
         },
 
+        // Save the changes in the specified work item.
+        // Calls the respective callback functions on success or error.
+        saveWorkItem: function (workItem, successCallbackFunction, failureCallbackFunction) {
+            workItem.storeWorkItem({
+                operationMsg: 'Saving',
+                applyDelta: true,
+                onSuccess: function(params) {
+                    console.log("Save Success");
+                    successCallbackFunction();
+                },
+                onError: function(error) {
+                    console.log("Save Error: ", error);
+                    failureCallbackFunction(error);
+                }
+            });
+        },
+
+        // Trigger the work item save for the link types that have been changed
         saveLinksInWorkItem: function (workItem, successCallbackFunction, failureCallbackFunction) {
+            var self = this;
+
             var onChangeFunc = {
                 // Create a function to run after the linkType change
                 changeFunc: function (event) {
@@ -179,18 +199,7 @@ define([
                     workItem.removeListener(listener);
 
                     // Save the changes
-                    workItem.storeWorkItem({
-                        operationMsg: 'Saving',
-                        applyDelta: true,
-                        onSuccess: function(params) {
-                            console.log("Save Success");
-                            successCallbackFunction();
-                        },
-                        onError: function(error) {
-                            console.log("Save Error: ", error);
-                            failureCallbackFunction(error);
-                        }
-                    });
+                    self.saveWorkItem(workItem, successCallbackFunction, failureCallbackFunction);
                 }
             };
 
