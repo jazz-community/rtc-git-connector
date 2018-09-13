@@ -19,6 +19,7 @@ define([
         relatedArtifactLinkTypeId: "com.ibm.team.workitem.linktype.relatedartifact",
         issueLinkTypeId: "org.jazzcommunity.git.link.git_issue",
         requestLinkTypeId: "org.jazzcommunity.git.link.git_mergerequest",
+        attributesToShow: ["category", "owner", "target", "foundIn"],
 
         constructor: function () {
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
@@ -101,36 +102,45 @@ define([
             return com.ibm.team.workitem.web.cache.internal.Cache.getCache()["-" + currentTimeStamp];
         },
 
-        // Copy a the values of a few attributes from the first work item
-        // ["category", "owner", "target", "foundIn"]
+        // Copy the values of the attributes shown in the view from the first work item
         setWorkItemValuesFromOriginalWorkItem: function (newWorkItem, originalWorkItem) {
-            // Set the category
-            newWorkItem.setValue({
-                path: ["attributes", "category"],
-                attributeId: "category",
-                value: originalWorkItem.object.attributes.category
-            });
+            var self = this;
 
-            // Set the owner
-            newWorkItem.setValue({
-                path: ["attributes", "owner"],
-                attributeId: "owner",
-                value: originalWorkItem.object.attributes.owner
+            this.attributesToShow.forEach(function (attributeId) {
+                self.copyWorkItemAttributeValue(attributeId, newWorkItem, originalWorkItem);
             });
+        },
 
-            // Set the planned for
-            newWorkItem.setValue({
-                path: ["attributes", "target"],
-                attributeId: "target",
-                value: originalWorkItem.object.attributes.target
-            });
+        // Copy the value of the specified attribute from one work item to another
+        copyWorkItemAttributeValue: function (attributeId, copyToWorkItem, copyFromWorkItem) {
+            var copyFromValue = copyFromWorkItem.getValue({ path: ["attributes", attributeId] });
 
-            // Set the found in
-            newWorkItem.setValue({
-                path: ["attributes", "foundIn"],
-                attributeId: "foundIn",
-                value: originalWorkItem.object.attributes.foundIn
-            });
+            /**
+            * Only copy the attribute value if the current value has a different id. This prevents
+            * copying unchanged values.
+            *
+            * Fixes the case where the value is "Unassigned". The object loaded from the server will
+            * not have an id attribute in this case. Setting the value to what it already is
+            * ("Unassigned" without an id) will cause the work item editor to mark the attribute as
+            * changed (even though it hasn't) and attempt to include it in the payload that's sent
+            * to the server. This causes an error because the original value without an id property
+            * is considered to be an invalid value for a work item attribute.
+            *
+            * In other words, the values that are given to you by the server are not necessarily in
+            * a format that is considered to be valid by the server. Go figure.
+            *
+            * To work around this the work item editor adds an id attribute with an empty string
+            * when setting the value to "Unassigned".
+            *
+            * We prevent it from being marked as changed by not calling setValue.
+            **/
+            if (copyToWorkItem.getValue({ path: ["attributes", attributeId] }).id !== copyFromValue.id) {
+                copyToWorkItem.setValue({
+                    path: ["attributes", attributeId],
+                    attributeId: attributeId,
+                    value: copyFromValue
+                });
+            }
         },
 
         // Set values in the work item from the git issue. Also add a link to the git issue.
