@@ -48,8 +48,9 @@ define([
         },
 
         // Create and fill work items from the git issues.
-        createNewWorkItems: function (currentWorkItem, gitIssues, addBackLinksFunction, failureCallbackFunction) {
+        createNewWorkItems: function (currentWorkItem, gitIssues, finishedLoadingFunction, addBackLinksFunction, failureCallbackFunction) {
             var self = this;
+            var remainingWorkItemsToCreate = (gitIssues && gitIssues.length) ? gitIssues.length : 0;
 
             // Update the list of new work items to save using the menu refresh event.
             // This event is called both when the save and when the cancel button is clicked.
@@ -66,6 +67,11 @@ define([
 
                 // Set the handler to run when the work item has been saved
                 this.setEventHandlerForWorkItem(currentWorkItem, this.workItemStoredEventName, this.handleWorkItemSavedEvent);
+
+                // Check if this was the last work item to create
+                if (--remainingWorkItemsToCreate <= 0) {
+                    finishedLoadingFunction();
+                }
             }
 
             if (gitIssues && gitIssues.length > 1) {
@@ -89,6 +95,11 @@ define([
 
                                     // Set the handler to run when the work item has been saved
                                     self.setEventHandlerForWorkItem(newWorkItem, self.workItemStoredEventName, self.handleWorkItemSavedEvent);
+
+                                    // Check if this was the last work item to create
+                                    if (--remainingWorkItemsToCreate <= 0) {
+                                        finishedLoadingFunction();
+                                    }
                                 }, 100);
                             }
                         }, 100);

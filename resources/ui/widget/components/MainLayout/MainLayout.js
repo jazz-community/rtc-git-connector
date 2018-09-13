@@ -371,6 +371,8 @@ define([
 
         // Save function for new work item mode
         saveNewWorkItemsButtonClick: function () {
+            var self = this;
+
             if (!this.mainDataStore.newWorkItemMode) {
                 return;
             }
@@ -383,16 +385,17 @@ define([
                     this.mainDataStore.workItem,
                     this.mainDataStore.selectedRepositoryData.issuesToLink,
                     function () {
+                        // Hide the loading overlay
+                        domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
+                        self._hideMainDialog();
+                    },
+                    function () {
                         console.log("save new work items add back links function");
                     },
                     function () {
                         console.log("save new work items failure callback function");
                     }
                 );
-
-                // Hide the loading overlay
-                domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
-                this._hideMainDialog();
             } else {
                 this._hideMainDialog();
             }
