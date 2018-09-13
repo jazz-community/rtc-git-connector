@@ -162,6 +162,10 @@ define([
 
             // Check if this was the last work item to create
             if (--progressOptions.remainingWorkItemsToCreate <= 0) {
+                // Set the url of the last created work item in the address bar
+                window.location.href = newWorkItem.url;
+
+                // Call the finished loading callback function
                 progressOptions.finishedLoadingFunction();
             }
         },
