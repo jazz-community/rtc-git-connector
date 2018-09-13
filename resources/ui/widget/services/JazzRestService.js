@@ -19,6 +19,7 @@ define([
         relatedArtifactLinkTypeId: "com.ibm.team.workitem.linktype.relatedartifact",
         issueLinkTypeId: "org.jazzcommunity.git.link.git_issue",
         requestLinkTypeId: "org.jazzcommunity.git.link.git_mergerequest",
+        workItemStoredEventName: "workitem/stored",
         attributesToShow: ["category", "owner", "target", "foundIn"],
 
         constructor: function () {
@@ -55,6 +56,9 @@ define([
 
                 // Update the new work item list
                 NewWorkItemList.UpdateNewWorkItemList();
+
+                // Set the handler to run when the work item has been saved
+                this.setEventHandlerForWorkItem(currentWorkItem, this.workItemStoredEventName, this.handleWorkItemSavedEvent);
             }
 
             if (gitIssues && gitIssues.length > 1) {
@@ -75,6 +79,9 @@ define([
 
                                     // Update the new work item list
                                     NewWorkItemList.UpdateNewWorkItemList();
+
+                                    // Set the handler to run when the work item has been saved
+                                    self.setEventHandlerForWorkItem(newWorkItem, self.workItemStoredEventName, self.handleWorkItemSavedEvent);
                                 }, 100);
                             }
                         }, 100);
@@ -179,6 +186,28 @@ define([
                 path: ["linkTypes"],
                 value: workItem.object.linkTypes
             });
+        },
+
+        // Set a handler from this object to run when the specified event is published.
+        // Only run the handler if the event is being run for the specified work item.
+        // The handler will only run once.
+        setEventHandlerForWorkItem: function (workItem, event, handler) {
+            var subscription = dojo.subscribe(event, this, function (workItemFromEvent) {
+                console.log("work item store event with data", workItemFromEvent);
+                if (workItemFromEvent && workItemFromEvent._priorFetchEditablePropertiesWorkItemItemId
+                    && workItemFromEvent._priorFetchEditablePropertiesWorkItemItemId === workItem._priorFetchEditablePropertiesWorkItemItemId) {
+                        dojo.unsubscribe(subscription);
+                        handler.call(this, workItemFromEvent);
+                }
+            });
+        },
+
+        // Handle the event run after a work item has been saved
+        handleWorkItemSavedEvent: function (workItemFromEvent) {
+            console.log("Save event for work item", workItemFromEvent);
+
+            // Update the list after the work item was saved (it should be removed)
+            NewWorkItemList.UpdateNewWorkItemList();
         },
 
         // Save the changes in the specified work item.
