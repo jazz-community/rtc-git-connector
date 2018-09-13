@@ -50,7 +50,10 @@ define([
         // Create and fill work items from the git issues.
         createNewWorkItems: function (currentWorkItem, gitIssues, finishedLoadingFunction, addBackLinksFunction, failureCallbackFunction) {
             var self = this;
-            var remainingWorkItemsToCreate = (gitIssues && gitIssues.length) ? gitIssues.length : 0;
+            var progressOptions = {
+                remainingWorkItemsToCreate: (gitIssues && gitIssues.length) ? gitIssues.length : 0,
+                finishedLoadingFunction: finishedLoadingFunction
+            };
 
             // Update the list of new work items to save using the menu refresh event.
             // This event is called both when the save and when the cancel button is clicked.
@@ -59,19 +62,8 @@ define([
             });
 
             if (gitIssues && gitIssues.length) {
-                // Set the first issue in the current work item
-                this.setWorkItemValuesFromGitIssue(currentWorkItem, gitIssues[0]);
-
-                // Update the new work item list manually to add the new work item
-                NewWorkItemList.UpdateNewWorkItemList();
-
-                // Set the handler to run when the work item has been saved
-                this.setEventHandlerForWorkItem(currentWorkItem, this.workItemStoredEventName, this.handleWorkItemSavedEvent);
-
-                // Check if this was the last work item to create
-                if (--remainingWorkItemsToCreate <= 0) {
-                    finishedLoadingFunction();
-                }
+                // Setup the new work item
+                this.setupNewWorkItem(currentWorkItem, gitIssues[0], progressOptions);
             }
 
             if (gitIssues && gitIssues.length > 1) {
@@ -88,18 +80,7 @@ define([
                                 // Wait a bit more because it's still not ready for some reason...
                                 setTimeout(function () {
                                     self.setWorkItemValuesFromOriginalWorkItem(newWorkItem, currentWorkItem);
-                                    self.setWorkItemValuesFromGitIssue(newWorkItem, currentGitIssue);
-
-                                    // Update the new work item list manually to add the new work item
-                                    NewWorkItemList.UpdateNewWorkItemList();
-
-                                    // Set the handler to run when the work item has been saved
-                                    self.setEventHandlerForWorkItem(newWorkItem, self.workItemStoredEventName, self.handleWorkItemSavedEvent);
-
-                                    // Check if this was the last work item to create
-                                    if (--remainingWorkItemsToCreate <= 0) {
-                                        finishedLoadingFunction();
-                                    }
+                                    self.setupNewWorkItem(newWorkItem, currentGitIssue, progressOptions);
                                 }, 100);
                             }
                         }, 100);
@@ -165,6 +146,23 @@ define([
                     attributeId: attributeId,
                     value: copyFromValue
                 });
+            }
+        },
+
+        // Run some setup for the newly created work item
+        setupNewWorkItem: function (newWorkItem, gitIssue, progressOptions) {
+            // Set the values from the git issue to the current work item
+            this.setWorkItemValuesFromGitIssue(newWorkItem, gitIssue);
+
+            // Update the new work item list manually to add the new work item
+            NewWorkItemList.UpdateNewWorkItemList();
+
+            // Set the handler to run when the work item has been saved
+            this.setEventHandlerForWorkItem(newWorkItem, this.workItemStoredEventName, this.handleWorkItemSavedEvent);
+
+            // Check if this was the last work item to create
+            if (--progressOptions.remainingWorkItemsToCreate <= 0) {
+                progressOptions.finishedLoadingFunction();
             }
         },
 
