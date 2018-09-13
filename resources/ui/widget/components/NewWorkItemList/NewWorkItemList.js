@@ -28,7 +28,9 @@ define([
         },
 
         // Update from the current list of new work items.
-        updateContent: function () {
+        // If there are no more items in the list the specified handle
+        // is unsubscribed and the widget is destroyed.
+        updateContent: function (subscribeHandle) {
             this._getNewWorkItems();
 
             if (this.newWorkItems.length) {
@@ -36,6 +38,9 @@ define([
                 this._clearContent();
                 this._addNewWorkItemsToView();
             } else {
+                // Unsubscribe from the passed in handle before destroying
+                dojo.unsubscribe(subscribeHandle);
+
                 // Destroy the widget when when the list is empty
                 this.destroyRecursive(false);
             }
@@ -83,7 +88,8 @@ define([
     return new function () {
         // Updates the list of new work items. Creates and places the widget in the dom
         // if it doesn't exist. Removes and destroys the widget if the list is empty.
-        this.UpdateNewWorkItemList = function () {
+        // Also unsubscribes the specified handle when destroying the widget.
+        this.UpdateNewWorkItemList = function (subscribeHandle) {
             // Get the existing widget by id
             var newWorkItemListWidget = registry.byId('rtcGitConnectorNewWorkItemListWidget');
 
@@ -93,7 +99,7 @@ define([
                 newWorkItemListWidget.addToPage();
             }
 
-            newWorkItemListWidget.updateContent();
+            newWorkItemListWidget.updateContent(subscribeHandle);
         };
     };
 });

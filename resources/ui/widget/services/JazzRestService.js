@@ -20,6 +20,7 @@ define([
         issueLinkTypeId: "org.jazzcommunity.git.link.git_issue",
         requestLinkTypeId: "org.jazzcommunity.git.link.git_mergerequest",
         workItemStoredEventName: "workitem/stored",
+        menuRefreshEventName: "rtc/workitems/page/menu/refresh",
         attributesToShow: ["category", "owner", "target", "foundIn"],
 
         constructor: function () {
@@ -50,11 +51,17 @@ define([
         createNewWorkItems: function (currentWorkItem, gitIssues, addBackLinksFunction, failureCallbackFunction) {
             var self = this;
 
+            // Update the list of new work items to save using the menu refresh event.
+            // This event is called both when the save and when the cancel button is clicked.
+            var subscription = dojo.subscribe(this.menuRefreshEventName, this, function () {
+                NewWorkItemList.UpdateNewWorkItemList(subscription);
+            });
+
             if (gitIssues && gitIssues.length) {
                 // Set the first issue in the current work item
                 this.setWorkItemValuesFromGitIssue(currentWorkItem, gitIssues[0]);
 
-                // Update the new work item list
+                // Update the new work item list manually to add the new work item
                 NewWorkItemList.UpdateNewWorkItemList();
 
                 // Set the handler to run when the work item has been saved
@@ -77,7 +84,7 @@ define([
                                     self.setWorkItemValuesFromOriginalWorkItem(newWorkItem, currentWorkItem);
                                     self.setWorkItemValuesFromGitIssue(newWorkItem, currentGitIssue);
 
-                                    // Update the new work item list
+                                    // Update the new work item list manually to add the new work item
                                     NewWorkItemList.UpdateNewWorkItemList();
 
                                     // Set the handler to run when the work item has been saved
@@ -206,8 +213,7 @@ define([
         handleWorkItemSavedEvent: function (workItemFromEvent) {
             console.log("Save event for work item", workItemFromEvent);
 
-            // Update the list after the work item was saved (it should be removed)
-            NewWorkItemList.UpdateNewWorkItemList();
+            // Save the back link in git here.
         },
 
         // Save the changes in the specified work item.
