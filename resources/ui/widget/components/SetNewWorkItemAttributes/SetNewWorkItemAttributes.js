@@ -17,6 +17,7 @@ define([
         templateString: template,
         mainDataStore: null,
         hasOverview: false,
+        attributesToShow: ["category", "owner", "target", "foundIn"],
 
         visible: false,
         _setVisibleAttr: function (visible) {
@@ -54,7 +55,6 @@ define([
         // If the attribute is not available for the current work item presentation
         // it will just be left out.
         createOverview: function () {
-            var attributesToKeep = ["category", "owner", "target", "foundIn"];
             var workItem = this.mainDataStore.workItem;
             var workItemEditorWidget = this._getWorkItemEditorWidget(workItem);
             var page = this._getOverviewPage(workItem);
@@ -72,7 +72,7 @@ define([
                 return;
             }
 
-            this._filterSectionPresentationsByAttributes(section, attributesToKeep);
+            this._filterSectionPresentationsByAttributes(section, this.attributesToShow);
             this._setSectionTitle(section, "Some values for the new work items");
 
             // Remove all other sections from the page
