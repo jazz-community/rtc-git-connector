@@ -73,6 +73,10 @@ define([
 
         _addNewWorkItemToView: function (workItem) {
             var workItemSummary = workItem.object.attributes.summary;
+
+            if (typeof workItemSummary.content === "string") {
+                workItemSummary = workItemSummary.content;
+            }
             var newWorkItemRow = domConstruct.create("a", {
                 "class": "rtcGitConnectorNewWorkItemListRow",
                 href: workItem.url
@@ -83,7 +87,7 @@ define([
             }, newWorkItemRow);
             domConstruct.create("span", {
                 innerHTML: " * [New " + workItem.object.attributes.workItemType.label + "] "
-                    + (workItemSummary.content || workItemSummary)
+                    + workItemSummary
             }, newWorkItemRow);
         },
 
