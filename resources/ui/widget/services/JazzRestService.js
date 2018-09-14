@@ -237,11 +237,12 @@ define([
                 applyDelta: true,
                 onSuccess: function(params) {
                     console.log("Save Success");
-                    successCallbackFunction();
+                    successCallbackFunction(params);
                 },
-                onError: function(error) {
+                onError: function(error, params) {
                     console.log("Save Error: ", error);
-                    failureCallbackFunction(error);
+                    console.log("Save Error params: ", params);
+                    failureCallbackFunction(error, params);
                 }
             });
         },
