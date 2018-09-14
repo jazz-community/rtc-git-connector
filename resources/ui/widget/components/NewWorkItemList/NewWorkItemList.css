@@ -14,9 +14,22 @@
 
 .rtcGitConnectorNewWorkItemListRow {
     display: block;
-    padding-bottom: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .rtcGitConnectorNewWorkItemListRow:hover {
     background-color: #fedda8;
+}
+
+.rtcGitConnectorNewWorkItemListRow > img {
+    float: left;
+    margin-top: 1px;
+    margin-left: 20px;
+    margin-right: 6px;
+}
+
+.rtcGitConnectorNewWorkItemListRow > span {
+    display: block;
+    padding-top: 2px;
 }

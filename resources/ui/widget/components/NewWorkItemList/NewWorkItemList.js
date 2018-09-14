@@ -21,7 +21,7 @@ define([
         addToPage: function () {
             try {
                 jazz.app.currentApplication.workbench._pageWidgetCache["com.ibm.team.workitem"]
-                    .domNode.lastElementChild.insertAdjacentElement('beforebegin', this.domNode);
+                    .domNode.lastElementChild.insertAdjacentElement("beforebegin", this.domNode);
             } catch (e) {
                 console.log("Error placing NewWorkItemList on the page.");
             }
@@ -40,6 +40,9 @@ define([
             } else {
                 // Unsubscribe from the passed in handle before destroying
                 dojo.unsubscribe(subscribeHandle);
+
+                // Add success message with query for new work items created from git issues
+                this._createSuccessMessage();
 
                 // Destroy the widget when when the list is empty
                 this.destroyRecursive(false);
@@ -81,6 +84,81 @@ define([
                 innerHTML: " * [New " + workItem.object.attributes.workItemType.label + "] "
                     + (workItemSummary.content || workItemSummary)
             }, newWorkItemRow);
+        },
+
+        // Add success message with query for new work items created from git issues
+        _createSuccessMessage: function () {
+            var newWorkItemsQuery = this._createNewWorkItemsQuery();
+            var successMessageDiv = domConstruct.create("div", {
+                "class": "rtcGitConnectorNewWorkItemList"
+            });
+            domConstruct.create("div", {
+                "class": "rtcGitConnectorNewWorkItemListTitle",
+                innerHTML: "Finished creating work items from git issues"
+            }, successMessageDiv);
+            var queryRow = domConstruct.create("a", {
+                "class": "rtcGitConnectorNewWorkItemListRow",
+                href: this._getQueryNewWorkItemsUrl(newWorkItemsQuery)
+            }, successMessageDiv);
+            domConstruct.create("img", {
+                "src": this._getQueryIconUrl(newWorkItemsQuery),
+                "alt": "Query for all new work items created from git issues"
+            }, queryRow);
+            domConstruct.create("span", {
+                innerHTML: "Click here to view all new work items created from git issues"
+            }, queryRow);
+            this.domNode.insertAdjacentElement("beforebegin", successMessageDiv);
+        },
+
+        // Get the url of the query for all new work items created from git issues
+        _getQueryNewWorkItemsUrl: function (query) {
+            return window.location.pathname +
+                com.ibm.team.workitem.web.client.util.getRunNewQueryUri(query);
+        },
+
+        // Get the url of the query icon
+        _getQueryIconUrl: function (query) {
+            var QueryProxy = com.ibm.team.workitem.web.cache.internal.QueryProxy;
+
+            var queryProxy = new QueryProxy({
+                query: query
+            });
+
+            return queryProxy.getMenuIconUri();
+        },
+
+        // Create a query for all work items with the tag "from-git-issue" and
+        // created today and created by the current user.
+        _createNewWorkItemsQuery: function () {
+            var Term = com.ibm.team.workitem.web.client.internal.query.Term;
+            var UIItem= com.ibm.team.workitem.web.client.internal.query.UIItem;
+            var Operator= com.ibm.team.workitem.web.client.internal.query.Operator;
+            var Variable= com.ibm.team.workitem.web.client.internal.query.Variable;
+            var AttributeExpression= com.ibm.team.workitem.web.client.internal.query.AttributeExpression;
+            var QueryDescriptor = com.ibm.team.workitem.web.client.internal.query.QueryDescriptor;
+
+            var term = new Term(Operator.AND);
+            var tagsExpression = new AttributeExpression("internalTags", new Operator("is", null), [new UIItem("from-git-issue")]);
+            term.addAttributeExpression(tagsExpression);
+
+            var creationExpression = new AttributeExpression("creationDate", new Operator("is", null));
+            var creationVariable = new Variable("now", "0d");
+            creationExpression.setVariables([creationVariable]);
+            term.addAttributeExpression(creationExpression);
+
+            var creatorExpression = new AttributeExpression("creator", new Operator("is", null));
+            var creatorVariable = new Variable("currentUser", "");
+            creatorExpression.setVariables([creatorVariable]);
+            term.addAttributeExpression(creatorExpression);
+
+            var queryDto = {
+                name: "My new work items from git issues (created today)",
+                itemId: "",
+                expression: term.createDTO()
+            };
+            var query = QueryDescriptor.createFromEditableQueryDTO(queryDto);
+
+            return query;
         }
     });
 
