@@ -175,11 +175,12 @@ define([
             this.setEventHandlerForWorkItem(newWorkItem, this.workItemStoredEventName, this.handleWorkItemSavedEvent);
 
             // Get the work item editor widget for the new work item
-            var workItemEditorWidget = jazz.app.currentApplication.workbench._pageWidgetCache["com.ibm.team.workitem"]
-                ._multipaneContentWidget.getCachedWidget("__jazzWorkItemEditor", newWorkItem.getId());
+            var workItemEditorWidget = this._getWorkItemEditorWidget(newWorkItem);
 
             // Attempt to save the new work item
-            workItemEditorWidget.save();
+            if (workItemEditorWidget) {
+                workItemEditorWidget.save();
+            }
 
             // Check if this was the last work item to create
             if (--progressOptions.remainingWorkItemsToCreate <= 0) {
@@ -677,6 +678,23 @@ define([
                 "/project/" + artifact.projectId +
                 "/" + artifact.type + "/" + artifact.iid +
                 "/link";
+        },
+
+        // Get the work item editor widget instance from the work item page instance
+        // taken from the cache
+        _getWorkItemEditorWidget: function (workItem) {
+            var workItemEditorWidget;
+
+            try {
+                workItemEditorWidget = jazz.app.currentApplication.workbench
+                    ._pageWidgetCache["com.ibm.team.workitem"]
+                    ._multipaneContentWidget
+                    .getCachedWidget("__jazzWorkItemEditor", workItem.getId());
+            } catch (e) {
+                workItemEditorWidget = null;
+            }
+
+            return workItemEditorWidget;
         }
     });
 
