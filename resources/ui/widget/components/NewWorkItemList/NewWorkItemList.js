@@ -113,7 +113,7 @@ define([
                 innerHTML: "Click here to view all new work items created from git issues"
             }, queryRow);
             var removeButton = domConstruct.create("button", {
-                "class": "rtcGitConnectorNewWorkItemListButton secondary-button",
+                "class": "rtcGitConnectorNewWorkItemListButton",
                 type: "button",
                 innerHTML: "Hide"
             }, flexContainer);

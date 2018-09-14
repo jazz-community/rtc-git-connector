@@ -39,6 +39,20 @@
     padding-top: 2px;
 }
 
+/* Copy the styles from secondary-button because they are not available on the welcome page */
 .rtcGitConnectorNewWorkItemListButton {
     flex-grow: 0;
+
+    color: #333;
+    background-color: #fbfbfb;
+    border-color: #ccc !important;
+
+    padding: 6px 12px;
+    margin: 0;
+    border: 1px solid;
+    cursor: pointer;
+    line-height: 12px;
+    border-radius: 3px;
+    box-sizing: border-box;
+    transition: opacity 150ms ease-out;
 }
