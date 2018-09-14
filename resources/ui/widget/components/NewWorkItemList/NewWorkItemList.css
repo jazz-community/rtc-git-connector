@@ -12,10 +12,15 @@
     color: #666666;
 }
 
+.rtcGitConnectorNewWorkItemListFlex {
+    display: flex;
+}
+
 .rtcGitConnectorNewWorkItemListRow {
     display: block;
     padding-top: 2px;
     padding-bottom: 2px;
+    flex-grow: 1;
 }
 
 .rtcGitConnectorNewWorkItemListRow:hover {
@@ -32,4 +37,8 @@
 .rtcGitConnectorNewWorkItemListRow > span {
     display: block;
     padding-top: 2px;
+}
+
+.rtcGitConnectorNewWorkItemListButton {
+    flex-grow: 0;
 }

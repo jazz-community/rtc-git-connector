@@ -2,12 +2,13 @@ define([
     "dojo/_base/declare",
     "dojo/_base/array",
     "dojo/dom-construct",
+    "dojo/on",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/registry",
     "dojo/text!./NewWorkItemList.html",
     "jazz/css!./NewWorkItemList.css"
-], function (declare, array, domConstruct,
+], function (declare, array, domConstruct, on,
     _WidgetBase, _TemplatedMixin, registry,
     template) {
     var NewWorkItemList = declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.newWorkItemList",
@@ -90,16 +91,20 @@ define([
         _createSuccessMessage: function () {
             var newWorkItemsQuery = this._createNewWorkItemsQuery();
             var successMessageDiv = domConstruct.create("div", {
+                "id": "rtcGitConnectorNewWorkItemListSuccessMessageDiv",
                 "class": "rtcGitConnectorNewWorkItemList"
             });
             domConstruct.create("div", {
                 "class": "rtcGitConnectorNewWorkItemListTitle",
                 innerHTML: "Finished creating work items from git issues"
             }, successMessageDiv);
+            var flexContainer = domConstruct.create("div", {
+                "class": "rtcGitConnectorNewWorkItemListFlex"
+            }, successMessageDiv);
             var queryRow = domConstruct.create("a", {
                 "class": "rtcGitConnectorNewWorkItemListRow",
                 href: this._getQueryNewWorkItemsUrl(newWorkItemsQuery)
-            }, successMessageDiv);
+            }, flexContainer);
             domConstruct.create("img", {
                 "src": this._getQueryIconUrl(newWorkItemsQuery),
                 "alt": "Query for all new work items created from git issues"
@@ -107,7 +112,21 @@ define([
             domConstruct.create("span", {
                 innerHTML: "Click here to view all new work items created from git issues"
             }, queryRow);
+            var removeButton = domConstruct.create("button", {
+                "class": "rtcGitConnectorNewWorkItemListButton secondary-button",
+                type: "button",
+                innerHTML: "Hide"
+            }, flexContainer);
+
+            on(queryRow, "click", this._removeSuccessMessageFromPage);
+            on(removeButton, "click", this._removeSuccessMessageFromPage);
+
             this.domNode.insertAdjacentElement("beforebegin", successMessageDiv);
+        },
+
+        // Remove the success message div from the page
+        _removeSuccessMessageFromPage: function () {
+            domConstruct.destroy("rtcGitConnectorNewWorkItemListSuccessMessageDiv");
         },
 
         // Get the url of the query for all new work items created from git issues
@@ -174,6 +193,11 @@ define([
             if (!newWorkItemListWidget) {
                 // Create a new instance if the widget wasn't found
                 newWorkItemListWidget = new NewWorkItemList();
+
+                // Remove the success message if it exists before adding the new widget to the page
+                newWorkItemListWidget._removeSuccessMessageFromPage();
+
+                // Add the new widget to the page
                 newWorkItemListWidget.addToPage();
             }
 
