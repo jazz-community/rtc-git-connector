@@ -50,6 +50,7 @@ define([
         // Create and fill work items from the git issues.
         createNewWorkItems: function (currentWorkItem, gitIssues, finishedLoadingFunction, addBackLinksFunction, failureCallbackFunction) {
             var self = this;
+            var currentWorkItemValues = null;
             var progressOptions = {
                 remainingWorkItemsToCreate: (gitIssues && gitIssues.length) ? gitIssues.length : 0,
                 finishedLoadingFunction: finishedLoadingFunction
@@ -62,6 +63,10 @@ define([
             });
 
             if (gitIssues && gitIssues.length) {
+                // Copy some values from the work item before it's saved and they are no longer available.
+                // These values will be needed for setting up the other new work items.
+                currentWorkItemValues = this.getWorkItemValuesFromOriginalWorkItem(currentWorkItem);
+
                 // Setup the new work item
                 this.setupNewWorkItem(currentWorkItem, gitIssues[0], progressOptions);
             }
@@ -79,7 +84,7 @@ define([
 
                                 // Wait a bit more because it's still not ready for some reason...
                                 setTimeout(function () {
-                                    self.setWorkItemValuesFromOriginalWorkItem(newWorkItem, currentWorkItem);
+                                    self.setWorkItemValuesFromOriginalWorkItemValues(newWorkItem, currentWorkItemValues);
                                     self.setupNewWorkItem(newWorkItem, currentGitIssue, progressOptions);
                                 }, 100);
                             }
@@ -108,19 +113,28 @@ define([
             return com.ibm.team.workitem.web.cache.internal.Cache.getCache()["-" + currentTimeStamp];
         },
 
+        // Creates an object with properties for each attribute id containing the attribute value
+        getWorkItemValuesFromOriginalWorkItem: function (originalWorkItem) {
+            var attributeValues = {};
+
+            this.attributesToShow.forEach(function (attributeId) {
+                attributeValues[attributeId] = originalWorkItem.getValue({ path: ["attributes", attributeId] });
+            });
+
+            return attributeValues;
+        },
+
         // Copy the values of the attributes shown in the view from the first work item
-        setWorkItemValuesFromOriginalWorkItem: function (newWorkItem, originalWorkItem) {
+        setWorkItemValuesFromOriginalWorkItemValues: function (newWorkItem, originalWorkItemValues) {
             var self = this;
 
             this.attributesToShow.forEach(function (attributeId) {
-                self.copyWorkItemAttributeValue(attributeId, newWorkItem, originalWorkItem);
+                self.copyWorkItemAttributeValue(attributeId, originalWorkItemValues[attributeId], newWorkItem);
             });
         },
 
-        // Copy the value of the specified attribute from one work item to another
-        copyWorkItemAttributeValue: function (attributeId, copyToWorkItem, copyFromWorkItem) {
-            var copyFromValue = copyFromWorkItem.getValue({ path: ["attributes", attributeId] });
-
+        // Copy the value of the specified attribute value to the specified work item
+        copyWorkItemAttributeValue: function (attributeId, attributeValue, copyToWorkItem) {
             /**
             * Only copy the attribute value if the current value has a different id. This prevents
             * copying unchanged values.
@@ -140,11 +154,11 @@ define([
             *
             * We prevent it from being marked as changed by not calling setValue.
             **/
-            if (copyToWorkItem.getValue({ path: ["attributes", attributeId] }).id !== copyFromValue.id) {
+            if (copyToWorkItem.getValue({ path: ["attributes", attributeId] }).id !== attributeValue.id) {
                 copyToWorkItem.setValue({
                     path: ["attributes", attributeId],
                     attributeId: attributeId,
-                    value: copyFromValue
+                    value: attributeValue
                 });
             }
         },
@@ -159,6 +173,13 @@ define([
 
             // Set the handler to run when the work item has been saved
             this.setEventHandlerForWorkItem(newWorkItem, this.workItemStoredEventName, this.handleWorkItemSavedEvent);
+
+            // Get the work item editor widget for the new work item
+            var workItemEditorWidget = jazz.app.currentApplication.workbench._pageWidgetCache["com.ibm.team.workitem"]
+                ._multipaneContentWidget.getCachedWidget("__jazzWorkItemEditor", newWorkItem.getId());
+
+            // Attempt to save the new work item
+            workItemEditorWidget.save();
 
             // Check if this was the last work item to create
             if (--progressOptions.remainingWorkItemsToCreate <= 0) {
