@@ -48,7 +48,7 @@ define([
         },
 
         // Create and fill work items from the git issues.
-        createNewWorkItems: function (currentWorkItem, gitIssues, finishedLoadingFunction, addBackLinksFunction, failureCallbackFunction) {
+        createNewWorkItems: function (currentWorkItem, gitIssues, finishedLoadingFunction, addBackLinksFunction) {
             var self = this;
             var currentWorkItemValues = null;
             var progressOptions = {

@@ -391,9 +391,6 @@ define([
                     },
                     function () {
                         console.log("save new work items add back links function");
-                    },
-                    function () {
-                        console.log("save new work items failure callback function");
                     }
                 );
             } else {
