@@ -212,14 +212,12 @@ define([
                 });
             }
 
-            if (gitIssue.labels) {
-                // Set the git issue labels as tags
-                workItem.setValue({
-                    path: ["attributes", "internalTags"],
-                    attributeId: "internalTags",
-                    value: gitIssue.labels
-                });
-            }
+            // Set the git issue labels as tags
+            workItem.setValue({
+                path: ["attributes", "internalTags"],
+                attributeId: "internalTags",
+                value: (gitIssue.labels ? "from-git-issue, " + gitIssue.labels : "from-git-issue")
+            });
 
             // Add the git issue as a link
             this.addIssueLinksToWorkItemObject(workItem, [gitIssue]);
