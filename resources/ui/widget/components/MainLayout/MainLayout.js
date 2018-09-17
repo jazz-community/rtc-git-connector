@@ -389,8 +389,24 @@ define([
                         domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
                         self._hideMainDialog();
                     },
-                    function () {
-                        console.log("save new work items add back links function");
+                    function (workItem, gitIssue) {
+                        // Prepare the parameters and add the back link in the git issue pointing to the work item
+                        var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
+                        var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
+                        var accessToken = self.mainDataStore.selectedRepositorySettings.get("accessToken");
+
+                        var addBackLinksToGitHostParams = {
+                            selectedGitRepository: selectedRepository,
+                            gitHost: gitHost,
+                            accessToken: accessToken,
+                            currentUser: self.mainDataStore.currentUserId,
+                            workItem: workItem,
+                            commitsToLink: [],
+                            issuesToLink: [gitIssue],
+                            requestsToLink: []
+                        };
+
+                        self.gitRestService.addBackLinksToGitHost(addBackLinksToGitHostParams)
                     }
                 );
             } else {

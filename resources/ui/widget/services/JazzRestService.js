@@ -68,7 +68,7 @@ define([
                 currentWorkItemValues = this.getWorkItemValuesFromOriginalWorkItem(currentWorkItem);
 
                 // Setup the new work item
-                this.setupNewWorkItem(currentWorkItem, gitIssues[0], progressOptions);
+                this.setupNewWorkItem(currentWorkItem, gitIssues[0], progressOptions, addBackLinksFunction);
             }
 
             if (gitIssues && gitIssues.length > 1) {
@@ -85,7 +85,7 @@ define([
                                 // Wait a bit more because it's still not ready for some reason...
                                 setTimeout(function () {
                                     self.setWorkItemValuesFromOriginalWorkItemValues(newWorkItem, currentWorkItemValues);
-                                    self.setupNewWorkItem(newWorkItem, currentGitIssue, progressOptions);
+                                    self.setupNewWorkItem(newWorkItem, currentGitIssue, progressOptions, addBackLinksFunction);
                                 }, 100);
                             }
                         }, 100);
@@ -164,7 +164,9 @@ define([
         },
 
         // Run some setup for the newly created work item
-        setupNewWorkItem: function (newWorkItem, gitIssue, progressOptions) {
+        setupNewWorkItem: function (newWorkItem, gitIssue, progressOptions, addBackLinksFunction) {
+            var self = this;
+
             // Set the values from the git issue to the current work item
             this.setWorkItemValuesFromGitIssue(newWorkItem, gitIssue);
 
@@ -172,7 +174,9 @@ define([
             NewWorkItemList.UpdateNewWorkItemList();
 
             // Set the handler to run when the work item has been saved
-            this.setEventHandlerForWorkItem(newWorkItem, this.workItemStoredEventName, this.handleWorkItemSavedEvent);
+            this.setEventHandlerForWorkItem(newWorkItem, this.workItemStoredEventName, function (workItemFromEvent) {
+                self.handleWorkItemSavedEvent(workItemFromEvent, gitIssue, addBackLinksFunction);
+            });
 
             // Get the work item editor widget for the new work item
             var workItemEditorWidget = this._getWorkItemEditorWidget(newWorkItem);
@@ -233,7 +237,6 @@ define([
         // The handler will only run once.
         setEventHandlerForWorkItem: function (workItem, event, handler) {
             var subscription = dojo.subscribe(event, this, function (workItemFromEvent) {
-                console.log("work item store event with data", workItemFromEvent);
                 if (workItemFromEvent && workItemFromEvent._priorFetchEditablePropertiesWorkItemItemId
                     && workItemFromEvent._priorFetchEditablePropertiesWorkItemItemId === workItem._priorFetchEditablePropertiesWorkItemItemId) {
                         dojo.unsubscribe(subscription);
@@ -243,10 +246,17 @@ define([
         },
 
         // Handle the event run after a work item has been saved
-        handleWorkItemSavedEvent: function (workItemFromEvent) {
-            console.log("Save event for work item", workItemFromEvent);
+        handleWorkItemSavedEvent: function (workItemFromEvent, gitIssue, addBackLinksFunction) {
+            var windowContext = com.ibm.team.workitem.web.ui.internal.module.WindowContext;
+            var workItemData = {
+                object: {
+                    id: workItemFromEvent._cacheId,
+                    locationUri: windowContext.getFrontsideURL() + "/" + windowContext.NAME_PART + "/" + workItemFromEvent._cacheId
+                }
+            };
 
-            // Save the back link in git here.
+            // Add the back links in git
+            addBackLinksFunction(workItemData, gitIssue);
         },
 
         // Save the changes in the specified work item.
