@@ -50,6 +50,7 @@ define([
             }
         },
 
+        // Get all new work items from the work item cache
         _getNewWorkItems: function () {
             this.newWorkItems = com.ibm.team.workitem.web.cache.internal.Cache.getAllItems({
                 filterSelectors: [ "isNew" ],
@@ -57,10 +58,12 @@ define([
             });
         },
 
+        // Empty the links container so that in can be recreated
         _clearContent: function () {
             domConstruct.empty(this.linksContainer);
         },
 
+        // Add all new work items to the view in the form of links
         _addNewWorkItemsToView: function () {
             var self = this;
 
@@ -71,6 +74,7 @@ define([
             }
         },
 
+        // Add a link to a single work item to the view
         _addNewWorkItemToView: function (workItem) {
             var workItemSummary = workItem.object.attributes.summary;
 
@@ -154,6 +158,7 @@ define([
         // Create a query for all work items with the tag "from-git-issue" and
         // created today and created by the current user.
         _createNewWorkItemsQuery: function () {
+            // Use some classes provided by Jazz. Hopefully they always loaded here :)
             var Term = com.ibm.team.workitem.web.client.internal.query.Term;
             var UIItem= com.ibm.team.workitem.web.client.internal.query.UIItem;
             var Operator= com.ibm.team.workitem.web.client.internal.query.Operator;
@@ -161,20 +166,26 @@ define([
             var AttributeExpression= com.ibm.team.workitem.web.client.internal.query.AttributeExpression;
             var QueryDescriptor = com.ibm.team.workitem.web.client.internal.query.QueryDescriptor;
 
+            // Create a query term with the "AND" operator
             var term = new Term(Operator.AND);
+
+            // Create an attribute expression that matches the tag "from-git-issue"
             var tagsExpression = new AttributeExpression("internalTags", new Operator("is", null), [new UIItem("from-git-issue")]);
             term.addAttributeExpression(tagsExpression);
 
+            // Create an attribute expression that matches the creationDate and the value of "today"
             var creationExpression = new AttributeExpression("creationDate", new Operator("is", null));
             var creationVariable = new Variable("now", "0d");
             creationExpression.setVariables([creationVariable]);
             term.addAttributeExpression(creationExpression);
 
+            // Create an attribute expression that matches the creator and the value "currentUser"
             var creatorExpression = new AttributeExpression("creator", new Operator("is", null));
             var creatorVariable = new Variable("currentUser", "");
             creatorExpression.setVariables([creatorVariable]);
             term.addAttributeExpression(creatorExpression);
 
+            // Create a query object with a title for the UI and the created query terms
             var queryDto = {
                 name: "My new work items from git issues (created today)",
                 itemId: "",
@@ -206,6 +217,7 @@ define([
                 newWorkItemListWidget.addToPage();
             }
 
+            // Create the list of new work items and add it to the view
             newWorkItemListWidget.updateContent(subscribeHandle);
         };
     };

@@ -214,9 +214,9 @@ define([
                 }
             };
 
-            // Save all other new work items using the storeWorkItem function.
+            // Save all new work items using the storeWorkItem function.
             // This is to prevent the work item editor view from being reconstructed
-            // after the save event and greatly improves performance.
+            // after the save event for hidden work items and greatly improves performance.
             newWorkItem.storeWorkItem({
                 operationMsg: 'Saving new work item',
                 applyDelta: true,
