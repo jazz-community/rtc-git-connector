@@ -77,20 +77,18 @@ define([
                 // A function for creating a work item and setting the values when it's ready
                 var createWorkItemAndSetValue = function (currentGitIssue) {
                     self.createNewEmptyWorkItem(currentWorkItem).then(function (newWorkItem) {
-                        (function (newWorkItem, currentGitIssue) {
-                            // Only set the values after the work item has been initialized
-                            var interval = setInterval(function () {
-                                if (newWorkItem.isInitialized) {
-                                    clearInterval(interval);
+                        // Only set the values after the work item has been initialized
+                        var interval = setInterval(function () {
+                            if (newWorkItem.isInitialized) {
+                                clearInterval(interval);
 
-                                    // Wait a bit more because it's still not ready for some reason...
-                                    setTimeout(function () {
-                                        self.setWorkItemValuesFromOriginalWorkItemValues(newWorkItem, currentWorkItemValues);
-                                        self.setupNewWorkItem(newWorkItem, currentGitIssue, progressOptions, addBackLinksFunction);
-                                    }, 100);
-                                }
-                            }, 100);
-                        })(newWorkItem, currentGitIssue);
+                                // Wait a bit more because it's still not ready for some reason...
+                                setTimeout(function () {
+                                    self.setWorkItemValuesFromOriginalWorkItemValues(newWorkItem, currentWorkItemValues);
+                                    self.setupNewWorkItem(newWorkItem, currentGitIssue, progressOptions, addBackLinksFunction);
+                                }, 100);
+                            }
+                        }, 100);
                     }, function (error) {
                         console.log("Error creating a new work item object: ", error);
 
