@@ -20,8 +20,10 @@ define([
         issueLinkTypeId: "org.jazzcommunity.git.link.git_issue",
         requestLinkTypeId: "org.jazzcommunity.git.link.git_mergerequest",
         workItemStoredEventName: "workitem/stored",
+        workItemViewChangedEventName: "workitem/view/changed",
         menuRefreshEventName: "rtc/workitems/page/menu/refresh",
         attributesToShow: ["category", "owner", "target", "foundIn"],
+        _newWorkItemIdSuffix: 0,
 
         constructor: function () {
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
@@ -74,22 +76,27 @@ define([
             if (gitIssues && gitIssues.length > 1) {
                 // A function for creating a work item and setting the values when it's ready
                 var createWorkItemAndSetValue = function (currentGitIssue) {
-                    var newWorkItem = self.createNewEmptyWorkItem(currentWorkItem);
+                    self.createNewEmptyWorkItem(currentWorkItem).then(function (newWorkItem) {
+                        (function (newWorkItem, currentGitIssue) {
+                            // Only set the values after the work item has been initialized
+                            var interval = setInterval(function () {
+                                if (newWorkItem.isInitialized) {
+                                    clearInterval(interval);
 
-                    (function (newWorkItem, currentGitIssue) {
-                        // Only set the values after the work item has been initialized
-                        var interval = setInterval(function () {
-                            if (newWorkItem.isInitialized) {
-                                clearInterval(interval);
+                                    // Wait a bit more because it's still not ready for some reason...
+                                    setTimeout(function () {
+                                        self.setWorkItemValuesFromOriginalWorkItemValues(newWorkItem, currentWorkItemValues);
+                                        self.setupNewWorkItem(newWorkItem, currentGitIssue, progressOptions, addBackLinksFunction);
+                                    }, 100);
+                                }
+                            }, 100);
+                        })(newWorkItem, currentGitIssue);
+                    }, function (error) {
+                        console.log("Error creating a new work item object: ", error);
 
-                                // Wait a bit more because it's still not ready for some reason...
-                                setTimeout(function () {
-                                    self.setWorkItemValuesFromOriginalWorkItemValues(newWorkItem, currentWorkItemValues);
-                                    self.setupNewWorkItem(newWorkItem, currentGitIssue, progressOptions, addBackLinksFunction);
-                                }, 100);
-                            }
-                        }, 100);
-                    })(newWorkItem, currentGitIssue);
+                        // Run the finished loading function to hide the widget
+                        finishedLoadingFunction();
+                    });
                 };
 
                 // Create work items and set values for any additional git issues
@@ -101,16 +108,37 @@ define([
             }
         },
 
-        // Create a new empty work item with the same type as the original work item
+        // Create a new empty work item with the same type as the original work item.
+        // This only creates the work item object and not the editor presentation for
+        // performance reasons. The editor presentation will be created automatically
+        // when navigating to the work item's corresponding url.
+        // Returns a promise that can be acted upon.
         createNewEmptyWorkItem: function (originalWorkItem) {
-            var currentTimeStamp = new Date().getTime() + "0";
-            var newWorkItemParams = {
-                action: "com.ibm.team.workitem.newWorkItem",
-                ts: currentTimeStamp,
-                type: originalWorkItem.object.attributes.workItemType.id
+            var deferred = new Deferred();
+
+            var workItemProxy = com.ibm.team.workitem.web.cache.internal.WorkItemProxyFactory.getWorkItemProxy({
+                // Create a unique id from the timestamp + a counter
+                id: -1 * new Date().getTime() + (this._newWorkItemIdSuffix++).toString(),
+                createIfNeeded: true
+            });
+
+            var initArgs = {
+                newWorkItem: true,
+                type: originalWorkItem.object.attributes.workItemType.id,
+                projectAreaItemId: originalWorkItem.object.attributes.projectArea.id
             };
-            jazz.app.currentApplication.workbench._pageWidgetCache["com.ibm.team.workitem"].controller.newWorkItem(newWorkItemParams);
-            return com.ibm.team.workitem.web.cache.internal.Cache.getCache()["-" + currentTimeStamp];
+
+            initArgs.onSuccess = function (result) {
+                deferred.resolve(result.workingCopy);
+            };
+
+            initArgs.onError = function (error) {
+                deferred.reject(error);
+            };
+
+            workItemProxy.initialize(initArgs);
+
+            return deferred.promise;
         },
 
         // Creates an object with properties for each attribute id containing the attribute value
@@ -170,30 +198,57 @@ define([
             // Set the values from the git issue to the current work item
             this.setWorkItemValuesFromGitIssue(newWorkItem, gitIssue);
 
-            // Update the new work item list manually to add the new work item
-            NewWorkItemList.UpdateNewWorkItemList();
-
             // Set the handler to run when the work item has been saved
             this.setEventHandlerForWorkItem(newWorkItem, this.workItemStoredEventName, function (workItemFromEvent) {
                 self.handleWorkItemSavedEvent(workItemFromEvent, gitIssue, addBackLinksFunction);
             });
 
-            // Get the work item editor widget for the new work item
-            var workItemEditorWidget = this._getWorkItemEditorWidget(newWorkItem);
+            // Do some things after calling the work item save function.
+            var afterSaveFunction = function () {
 
-            // Attempt to save the new work item
-            if (workItemEditorWidget) {
-                workItemEditorWidget.save();
-            }
+                // Check if this was the last work item to create
+                if (--progressOptions.remainingWorkItemsToCreate <= 0) {
+                    // Publish the refresh event manually
+                    dojo.publish(self.menuRefreshEventName);
 
-            // Check if this was the last work item to create
-            if (--progressOptions.remainingWorkItemsToCreate <= 0) {
-                // Set the url of the last created work item in the address bar
-                window.location.href = newWorkItem.url;
+                    // Call the finished loading callback function
+                    progressOptions.finishedLoadingFunction();
+                }
+            };
 
-                // Call the finished loading callback function
-                progressOptions.finishedLoadingFunction();
-            }
+            // Save all other new work items using the storeWorkItem function.
+            // This is to prevent the work item editor view from being reconstructed
+            // after the save event and greatly improves performance.
+            newWorkItem.storeWorkItem({
+                operationMsg: 'Saving new work item',
+                applyDelta: true,
+                skipErrorMessage: true,
+                onSuccess: function (result) {
+                    afterSaveFunction();
+                },
+                onError: function (error) {
+                    afterSaveFunction();
+
+                    // The work item editor widget may already be available (first work item)
+                    var workItemEditorWidget = self._getWorkItemEditorWidget(newWorkItem);
+
+                    if (workItemEditorWidget) {
+                        workItemEditorWidget._saveErrorCallback(error);
+                    } else {
+                        // Subscribe to the work item view changed event to and try to get the the work item
+                        // editor widget for the current work item. If we got an instance then use it to show
+                        // the save error message in the work item editor.
+                        var subscription = dojo.subscribe(self.workItemViewChangedEventName, function () {
+                            var workItemEditorWidget = self._getWorkItemEditorWidget(newWorkItem);
+
+                            if (workItemEditorWidget) {
+                                dojo.unsubscribe(subscription);
+                                workItemEditorWidget._saveErrorCallback(error);
+                            }
+                        });
+                    }
+                }
+            });
         },
 
         // Set values in the work item from the git issue. Also add a link to the git issue.
@@ -201,7 +256,7 @@ define([
             if (gitIssue.title) {
                 // Set the work item summary
                 workItem.setValue({
-                    path: ["attributes", "summary"],
+                    path: ["attributes", "summary", "content"],
                     attributeId: "summary",
                     value: gitIssue.title
                 });
@@ -210,7 +265,7 @@ define([
             if (gitIssue.description) {
                 // Set the work item description. Use <br /> instead of end line characters.
                 workItem.setValue({
-                    path: ["attributes", "description"],
+                    path: ["attributes", "description", "content"],
                     attributeId: "description",
                     value: gitIssue.description.replace(/(\r\n|\n|\r)/gm, "<br />")
                 });

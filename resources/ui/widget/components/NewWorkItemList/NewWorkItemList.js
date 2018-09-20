@@ -77,9 +77,10 @@ define([
             if (typeof workItemSummary.content === "string") {
                 workItemSummary = workItemSummary.content;
             }
+
             var newWorkItemRow = domConstruct.create("a", {
                 "class": "rtcGitConnectorNewWorkItemListRow",
-                href: workItem.url
+                href: workItem.getUrl(true)
             }, this.linksContainer);
             domConstruct.create("img", {
                 "src": workItem.getTypeIconUrl(),
