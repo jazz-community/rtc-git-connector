@@ -17,6 +17,7 @@ define([
         templateString: template,
         id: "rtcGitConnectorNewWorkItemListWidget",
         newWorkItems: [],
+        subscriptionHandles: [],
 
         // Add the widget above the work item editor on the work item editor page.
         addToPage: function () {
@@ -29,9 +30,10 @@ define([
         },
 
         // Update from the current list of new work items.
-        // If there are no more items in the list the specified handle
-        // is unsubscribed and the widget is destroyed.
-        updateContent: function (subscribeHandle) {
+        // If there are no more items in the list the specified handles
+        // are unsubscribed and the widget is destroyed.
+        updateContent: function (subscriptionHandles) {
+            this._updateSubscriptions(subscriptionHandles);
             this._getNewWorkItems();
 
             if (this.newWorkItems.length) {
@@ -39,8 +41,8 @@ define([
                 this._clearContent();
                 this._addNewWorkItemsToView();
             } else {
-                // Unsubscribe from the passed in handle before destroying
-                dojo.unsubscribe(subscribeHandle);
+                // Unsubscribe from all handles before destroying
+                this._updateSubscriptions();
 
                 // Add success message with query for new work items created from git issues
                 this._createSuccessMessage();
@@ -56,6 +58,26 @@ define([
                 filterSelectors: [ "isNew" ],
                 filterAttributes: [ "isWorkItem"]
             });
+        },
+
+        // Only keep the current subscriptions. Unsubscribe any old ones.
+        // Unsubscribes all handles if the new list of handles is empty or not present.
+        _updateSubscriptions: function (newSubscriptionHandles) {
+            if (!newSubscriptionHandles) {
+                newSubscriptionHandles = [];
+            }
+
+            if (this.subscriptionHandles.length) {
+                this.subscriptionHandles.forEach(function (oldSubscriptionHandle) {
+                    if (!newSubscriptionHandles.some(function (newSubscriptionHandle) {
+                        return newSubscriptionHandle === oldSubscriptionHandle;
+                    })) {
+                        dojo.unsubscribe(oldSubscriptionHandle);
+                    }
+                });
+            }
+
+            this.subscriptionHandles = newSubscriptionHandles;
         },
 
         // Empty the links container so that in can be recreated
@@ -76,6 +98,7 @@ define([
 
         // Add a link to a single work item to the view
         _addNewWorkItemToView: function (workItem) {
+            var workItemUrl = workItem.getUrl(true);
             var workItemSummary = workItem.object.attributes.summary;
 
             if (typeof workItemSummary.content === "string") {
@@ -84,8 +107,18 @@ define([
 
             var newWorkItemRow = domConstruct.create("a", {
                 "class": "rtcGitConnectorNewWorkItemListRow",
-                href: workItem.getUrl(true)
+                href: workItemUrl
             }, this.linksContainer);
+
+            if (window.location.href === workItemUrl) {
+                var bulletSpan = domConstruct.create("span", {
+                    "class": "rtcGitConnectorNewWorkItemListRowBullet"
+                }, newWorkItemRow);
+                domConstruct.create("span", {
+                    innerHTML: "•"
+                }, bulletSpan);
+            }
+
             domConstruct.create("img", {
                 "src": workItem.getTypeIconUrl(),
                 "alt": workItem.object.attributes.workItemType.label
@@ -115,6 +148,7 @@ define([
                 href: this._getQueryNewWorkItemsUrl(newWorkItemsQuery)
             }, flexContainer);
             domConstruct.create("img", {
+                "class": "rtcGitConnectorNewWorkItemQueryIcon",
                 "src": this._getQueryIconUrl(newWorkItemsQuery),
                 "alt": "Query for all new work items created from git issues"
             }, queryRow);
@@ -201,8 +235,8 @@ define([
     return new function () {
         // Updates the list of new work items. Creates and places the widget in the dom
         // if it doesn't exist. Removes and destroys the widget if the list is empty.
-        // Also unsubscribes the specified handle when destroying the widget.
-        this.UpdateNewWorkItemList = function (subscribeHandle) {
+        // Also unsubscribes from the specified handles when destroying the widget.
+        this.UpdateNewWorkItemList = function (subscriptionHandles) {
             // Get the existing widget by id
             var newWorkItemListWidget = registry.byId('rtcGitConnectorNewWorkItemListWidget');
 
@@ -218,7 +252,7 @@ define([
             }
 
             // Create the list of new work items and add it to the view
-            newWorkItemListWidget.updateContent(subscribeHandle);
+            newWorkItemListWidget.updateContent(subscriptionHandles);
         };
     };
 });

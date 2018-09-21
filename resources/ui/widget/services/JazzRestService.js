@@ -57,12 +57,18 @@ define([
                 remainingWorkItemsToCreate: (gitIssues && gitIssues.length) ? gitIssues.length : 0,
                 finishedLoadingFunction: finishedLoadingFunction
             };
+            var updateNewWorkItemListSubscriptions = [];
 
             // Update the list of new work items to save using the menu refresh event.
             // This event is called both when the save and when the cancel button is clicked.
-            var subscription = dojo.subscribe(this.menuRefreshEventName, this, function () {
-                NewWorkItemList.UpdateNewWorkItemList(subscription);
-            });
+            updateNewWorkItemListSubscriptions.push(dojo.subscribe(this.menuRefreshEventName, this, function () {
+                NewWorkItemList.UpdateNewWorkItemList(updateNewWorkItemListSubscriptions);
+            }));
+
+            // Also update the new work item list when the view is changed. This is for the current work item marker.
+            updateNewWorkItemListSubscriptions.push(dojo.subscribe(this.workItemViewChangedEventName, this, function () {
+                NewWorkItemList.UpdateNewWorkItemList(updateNewWorkItemListSubscriptions);
+            }));
 
             if (gitIssues && gitIssues.length) {
                 // Copy some values from the work item before it's saved and they are no longer available.
@@ -236,8 +242,8 @@ define([
                         // Subscribe to the work item view changed event to and try to get the the work item
                         // editor widget for the current work item. If we got an instance then use it to show
                         // the save error message in the work item editor.
-                        var subscription = dojo.subscribe(self.workItemViewChangedEventName, function () {
-                            var workItemEditorWidget = self._getWorkItemEditorWidget(newWorkItem);
+                        var subscription = dojo.subscribe(self.workItemViewChangedEventName, self, function () {
+                            var workItemEditorWidget = this._getWorkItemEditorWidget(newWorkItem);
 
                             if (workItemEditorWidget) {
                                 dojo.unsubscribe(subscription);

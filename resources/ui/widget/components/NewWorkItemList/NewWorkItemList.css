@@ -37,6 +37,28 @@
 .rtcGitConnectorNewWorkItemListRow > span {
     display: block;
     padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+span.rtcGitConnectorNewWorkItemListRowBullet {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    padding: 0;
+}
+
+span.rtcGitConnectorNewWorkItemListRowBullet > span {
+	color: black;
+    font-size: 24px;
+    position: relative;
+    top: 1px;
+    line-height: 16px;
+}
+
+img.rtcGitConnectorNewWorkItemQueryIcon {
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 /* Copy the styles from secondary-button because they are not available on the welcome page */
