@@ -2,6 +2,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const moment = require('moment');
 const packageJson = require('./package.json');
 const JazzUpdateSitePlugin = require('jazz-update-site-webpack-plugin');
+const ZipPlugin = require('zip-webpack-plugin');
 
 module.exports = (env) => {
     const timestamp = moment().format('[_]YYYYMMDD[-]HHmm');
@@ -60,5 +61,21 @@ module.exports = (env) => {
             new UglifyJsPlugin()
         ]
     };
-    return config;
+
+    const themeConfig = {
+        entry: './src/theme/customMenuItems.js',
+
+        output: {
+            filename: 'com.siemens.bt.jazz.workitemeditor.rtcGitConnector_theme_' + version + ".js"
+        },
+
+        plugins: [
+            new ZipPlugin({
+                path: __dirname,
+                filename: 'com.siemens.bt.jazz.workitemeditor.rtcGitConnector_theme_' + version + ".zip"
+            })
+        ]
+    };
+
+    return [config, themeConfig]
 };
