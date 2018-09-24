@@ -306,6 +306,8 @@ define([
 
         // Handle the event run after a work item has been saved
         handleWorkItemSavedEvent: function (workItemFromEvent, gitIssue, addBackLinksFunction) {
+            dojo.require("com.ibm.team.workitem.web.ui.internal.module.WindowContext");
+
             var windowContext = com.ibm.team.workitem.web.ui.internal.module.WindowContext;
             var workItemData = {
                 object: {

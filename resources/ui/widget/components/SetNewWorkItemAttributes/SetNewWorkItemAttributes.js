@@ -55,6 +55,8 @@ define([
         // If the attribute is not available for the current work item presentation
         // it will just be left out.
         createOverview: function () {
+            dojo.require("com.ibm.team.workitem.web.ui.internal.view.editor.WorkItemOverview");
+
             var workItem = this.mainDataStore.workItem;
             var workItemEditorWidget = this._getWorkItemEditorWidget(workItem);
             var page = this._getOverviewPage(workItem);
