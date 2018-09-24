@@ -21,6 +21,12 @@ function customAddGroup(id, title, groupIndex) {
 
 function addNewGroupToMenu(menuPopupConfig) {
 	menuPopupConfig.addGroups.forEach(function (groupToAdd) {
+		var menuItems = groupToAdd.createMenuItems();
+
+		if (!menuItems || !menuItems.length) {
+			return;
+		}
+
 		if (jazz.app.currentApplication.ui.navbar._pageList._menuPopupsById[menuPopupConfig.id]._currentMenu._wrappedInstance._groups.findIndex(function (group) {
 			return group.id === groupToAdd.id;
 		}) > -1) {
@@ -45,7 +51,7 @@ function addNewGroupToMenu(menuPopupConfig) {
 			}
 		}
 
-		groupToAdd.createMenuItems().forEach(function (newItem) {
+		menuItems.forEach(function (newItem) {
 			jazz.app.currentApplication.ui.navbar._pageList._menuPopupsById[menuPopupConfig.id]._currentMenu._wrappedInstance.addItemToGroup(groupToAdd.id, {
 				label: newItem.label,
 				iconClass: newItem.iconClass,
