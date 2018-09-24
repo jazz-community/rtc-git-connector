@@ -1,11 +1,8 @@
 define([
     "dojo/_base/declare",
     "dojo/request/script",
-    "dijit/focus",
-    "./widget/components/RtcGitConnector/RtcGitConnector",
-    "./library/ActionNode",
-    "./library/HoverViewWrapper"
-], function(declare, script, focus, RtcGitConnector, ActionNode, HoverViewWrapper) {
+    "./widget/components/RtcGitConnector/RtcGitConnector"
+], function(declare, script, RtcGitConnector) {
     window.autoOpenRtcGitConnector = function () {
         console.log("window.autoOpenRtcGitConnector is not set");
     };
@@ -41,8 +38,6 @@ define([
             window.autoOpenRtcGitConnector = function () {
                 self.autoOpen();
             };
-            var nodeLabel = params.actionSpec.label;
-            this._buttonNode = new ActionNode("img.button-img", nodeLabel);
             this.autoOpen();
         },
 
@@ -57,14 +52,8 @@ define([
         //  params: {actionSpec, workingCopy}
         //      Same as the params passed to the constructor.
         run: function () {
-            var widget = this.makeWidget();
-            var hoverViewWrapper = new HoverViewWrapper(this._buttonNode.getPosition(), widget);
-            focus.focus(hoverViewWrapper.getDomNode());
-        },
-
-        makeWidget: function () {
-            var minWidth = this._buttonNode.calculateMinWidth();
-            return new RtcGitConnector(minWidth, this.workingCopy);
+            var rtcGitConnector = new RtcGitConnector({ workItem: this.workingCopy });
+            rtcGitConnector.startup();
         },
 
         // Open the widget if the auto open parameter is set and the modules bundle is loaded.
