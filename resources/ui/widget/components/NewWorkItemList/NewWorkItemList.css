@@ -1,0 +1,80 @@
+.rtcGitConnectorNewWorkItemList {
+    background-color: white;
+    border: 1px solid #cacaca;
+    padding: 10px;
+    margin: 7px 10px;
+}
+
+.rtcGitConnectorNewWorkItemListTitle {
+    margin-bottom: .5em;
+    font-size: 1em;
+    font-weight: bold;
+    color: #666666;
+}
+
+.rtcGitConnectorNewWorkItemListFlex {
+    display: flex;
+}
+
+.rtcGitConnectorNewWorkItemListRow {
+    display: block;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    flex-grow: 1;
+}
+
+.rtcGitConnectorNewWorkItemListRow:hover {
+    background-color: #fedda8;
+}
+
+.rtcGitConnectorNewWorkItemListRow > img {
+    float: left;
+    margin-top: 1px;
+    margin-left: 20px;
+    margin-right: 6px;
+}
+
+.rtcGitConnectorNewWorkItemListRow > span {
+    display: block;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+span.rtcGitConnectorNewWorkItemListRowBullet {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    padding: 0;
+}
+
+span.rtcGitConnectorNewWorkItemListRowBullet > span {
+	color: black;
+    font-size: 24px;
+    position: relative;
+    top: 1px;
+    line-height: 16px;
+}
+
+img.rtcGitConnectorNewWorkItemQueryIcon {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+/* Copy the styles from secondary-button because they are not available on the welcome page */
+.rtcGitConnectorNewWorkItemListButton {
+    flex-grow: 0;
+
+    color: #333;
+    background-color: #fbfbfb;
+    border-color: #ccc !important;
+
+    padding: 6px 12px;
+    margin: 0;
+    border: 1px solid;
+    cursor: pointer;
+    line-height: 12px;
+    border-radius: 3px;
+    box-sizing: border-box;
+    transition: opacity 150ms ease-out;
+}

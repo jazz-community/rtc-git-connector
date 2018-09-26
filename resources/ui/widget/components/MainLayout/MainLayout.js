@@ -215,8 +215,15 @@ define([
                 }
             };
 
-            on(dom.byId("rtcGitConnectorSaveButton"), "click", saveButtonClick);
-            on(dom.byId("rtcGitConnectorSaveAndCloseButton"), "click", saveButtonClick);
+            if (this.mainDataStore.newWorkItemMode) {
+                domStyle.set("rtcGitConnectorSaveButton", "display", "none");
+                on(dom.byId("rtcGitConnectorSaveAndCloseButton"), "click", function () {
+                    self.saveNewWorkItemsButtonClick();
+                });
+            } else {
+                on(dom.byId("rtcGitConnectorSaveButton"), "click", saveButtonClick);
+                on(dom.byId("rtcGitConnectorSaveAndCloseButton"), "click", saveButtonClick);
+            }
 
             on(dom.byId("rtcGitConnectorCancelButton"), "click", function (event) {
                 self._hideMainDialog();
@@ -360,6 +367,51 @@ define([
             var repositoryUrl = new url(selectedRepository.url);
 
             this.jazzRestService.saveAccessTokenByHost(repositoryUrl.host, accessToken);
+        },
+
+        // Save function for new work item mode
+        saveNewWorkItemsButtonClick: function () {
+            var self = this;
+
+            if (!this.mainDataStore.newWorkItemMode) {
+                return;
+            }
+
+            if (this.mainDataStore.selectedRepositoryData.issuesToLink.length > 0) {
+                // Show a loading overlay to disable the view until the save is complete
+                domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
+
+                this.jazzRestService.createNewWorkItems(
+                    this.mainDataStore.workItem,
+                    this.mainDataStore.selectedRepositoryData.issuesToLink,
+                    function () {
+                        // Hide the loading overlay
+                        domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
+                        self._hideMainDialog();
+                    },
+                    function (workItem, gitIssue) {
+                        // Prepare the parameters and add the back link in the git issue pointing to the work item
+                        var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
+                        var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
+                        var accessToken = self.mainDataStore.selectedRepositorySettings.get("accessToken");
+
+                        var addBackLinksToGitHostParams = {
+                            selectedGitRepository: selectedRepository,
+                            gitHost: gitHost,
+                            accessToken: accessToken,
+                            currentUser: self.mainDataStore.currentUserId,
+                            workItem: workItem,
+                            commitsToLink: [],
+                            issuesToLink: [gitIssue],
+                            requestsToLink: []
+                        };
+
+                        self.gitRestService.addBackLinksToGitHost(addBackLinksToGitHostParams)
+                    }
+                );
+            } else {
+                this._hideMainDialog();
+            }
         },
 
         // Sorts an array of objects alphabetically by their name property

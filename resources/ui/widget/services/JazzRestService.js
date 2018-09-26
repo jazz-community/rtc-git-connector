@@ -3,8 +3,9 @@ define([
     "dojo/_base/array",
     "dojo/json",
     "dojo/request/xhr",
-    "dojo/Deferred"
-], function (declare, array, json, xhr, Deferred) {
+    "dojo/Deferred",
+    "../components/NewWorkItemList/NewWorkItemList"
+], function (declare, array, json, xhr, Deferred, NewWorkItemList) {
     var _instance = null;
     var JazzRestService = declare(null, {
         commitLinkEncoder: null,
@@ -18,6 +19,11 @@ define([
         relatedArtifactLinkTypeId: "com.ibm.team.workitem.linktype.relatedartifact",
         issueLinkTypeId: "org.jazzcommunity.git.link.git_issue",
         requestLinkTypeId: "org.jazzcommunity.git.link.git_mergerequest",
+        workItemStoredEventName: "workitem/stored",
+        workItemViewChangedEventName: "workitem/view/changed",
+        menuRefreshEventName: "rtc/workitems/page/menu/refresh",
+        attributesToShow: ["category", "owner", "target", "foundIn"],
+        _newWorkItemIdSuffix: 0,
 
         constructor: function () {
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
@@ -43,7 +49,299 @@ define([
             this._createLinkTypeContainerGetters();
         },
 
+        // Create and fill work items from the git issues.
+        createNewWorkItems: function (currentWorkItem, gitIssues, finishedLoadingFunction, addBackLinksFunction) {
+            var self = this;
+            var currentWorkItemValues = null;
+            var progressOptions = {
+                remainingWorkItemsToCreate: (gitIssues && gitIssues.length) ? gitIssues.length : 0,
+                finishedLoadingFunction: finishedLoadingFunction
+            };
+            var updateNewWorkItemListSubscriptions = [];
+
+            // Update the list of new work items to save using the menu refresh event.
+            // This event is called both when the save and when the cancel button is clicked.
+            updateNewWorkItemListSubscriptions.push(dojo.subscribe(this.menuRefreshEventName, this, function () {
+                NewWorkItemList.UpdateNewWorkItemList(updateNewWorkItemListSubscriptions);
+            }));
+
+            // Also update the new work item list when the view is changed. This is for the current work item marker.
+            updateNewWorkItemListSubscriptions.push(dojo.subscribe(this.workItemViewChangedEventName, this, function () {
+                NewWorkItemList.UpdateNewWorkItemList(updateNewWorkItemListSubscriptions);
+            }));
+
+            if (gitIssues && gitIssues.length) {
+                // Copy some values from the work item before it's saved and they are no longer available.
+                // These values will be needed for setting up the other new work items.
+                currentWorkItemValues = this.getWorkItemValuesFromOriginalWorkItem(currentWorkItem);
+
+                // Setup the new work item
+                this.setupNewWorkItem(currentWorkItem, gitIssues[0], progressOptions, addBackLinksFunction);
+            }
+
+            if (gitIssues && gitIssues.length > 1) {
+                // A function for creating a work item and setting the values when it's ready
+                var createWorkItemAndSetValue = function (currentGitIssue) {
+                    self.createNewEmptyWorkItem(currentWorkItem).then(function (newWorkItem) {
+                        // Only set the values after the work item has been initialized
+                        var interval = setInterval(function () {
+                            if (newWorkItem.isInitialized) {
+                                clearInterval(interval);
+
+                                // Wait a bit more because it's still not ready for some reason...
+                                setTimeout(function () {
+                                    self.setWorkItemValuesFromOriginalWorkItemValues(newWorkItem, currentWorkItemValues);
+                                    self.setupNewWorkItem(newWorkItem, currentGitIssue, progressOptions, addBackLinksFunction);
+                                }, 100);
+                            }
+                        }, 100);
+                    }, function (error) {
+                        console.log("Error creating a new work item object: ", error);
+
+                        // Run the finished loading function to hide the widget
+                        finishedLoadingFunction();
+                    });
+                };
+
+                // Create work items and set values for any additional git issues
+                for (var i = 1; i < gitIssues.length; i++) {
+                    (function (currentGitIssue) {
+                        createWorkItemAndSetValue(currentGitIssue);
+                    })(gitIssues[i]);
+                }
+            }
+        },
+
+        // Create a new empty work item with the same type as the original work item.
+        // This only creates the work item object and not the editor presentation for
+        // performance reasons. The editor presentation will be created automatically
+        // when navigating to the work item's corresponding url.
+        // Returns a promise that can be acted upon.
+        createNewEmptyWorkItem: function (originalWorkItem) {
+            var deferred = new Deferred();
+
+            var workItemProxy = com.ibm.team.workitem.web.cache.internal.WorkItemProxyFactory.getWorkItemProxy({
+                // Create a unique id from the timestamp + a counter
+                id: -1 * new Date().getTime() + (this._newWorkItemIdSuffix++).toString(),
+                createIfNeeded: true
+            });
+
+            var initArgs = {
+                newWorkItem: true,
+                type: originalWorkItem.object.attributes.workItemType.id,
+                projectAreaItemId: originalWorkItem.object.attributes.projectArea.id
+            };
+
+            initArgs.onSuccess = function (result) {
+                deferred.resolve(result.workingCopy);
+            };
+
+            initArgs.onError = function (error) {
+                deferred.reject(error);
+            };
+
+            workItemProxy.initialize(initArgs);
+
+            return deferred.promise;
+        },
+
+        // Creates an object with properties for each attribute id containing the attribute value
+        getWorkItemValuesFromOriginalWorkItem: function (originalWorkItem) {
+            var attributeValues = {};
+
+            this.attributesToShow.forEach(function (attributeId) {
+                attributeValues[attributeId] = originalWorkItem.getValue({ path: ["attributes", attributeId] });
+            });
+
+            return attributeValues;
+        },
+
+        // Copy the values of the attributes shown in the view from the first work item
+        setWorkItemValuesFromOriginalWorkItemValues: function (newWorkItem, originalWorkItemValues) {
+            var self = this;
+
+            this.attributesToShow.forEach(function (attributeId) {
+                self.copyWorkItemAttributeValue(attributeId, originalWorkItemValues[attributeId], newWorkItem);
+            });
+        },
+
+        // Copy the value of the specified attribute value to the specified work item
+        copyWorkItemAttributeValue: function (attributeId, attributeValue, copyToWorkItem) {
+            /**
+            * Only copy the attribute value if the current value has a different id. This prevents
+            * copying unchanged values.
+            *
+            * Fixes the case where the value is "Unassigned". The object loaded from the server will
+            * not have an id attribute in this case. Setting the value to what it already is
+            * ("Unassigned" without an id) will cause the work item editor to mark the attribute as
+            * changed (even though it hasn't) and attempt to include it in the payload that's sent
+            * to the server. This causes an error because the original value without an id property
+            * is considered to be an invalid value for a work item attribute.
+            *
+            * In other words, the values that are given to you by the server are not necessarily in
+            * a format that is considered to be valid by the server. Go figure.
+            *
+            * To work around this the work item editor adds an id attribute with an empty string
+            * when setting the value to "Unassigned".
+            *
+            * We prevent it from being marked as changed by not calling setValue.
+            **/
+            if (copyToWorkItem.getValue({ path: ["attributes", attributeId] }).id !== attributeValue.id) {
+                copyToWorkItem.setValue({
+                    path: ["attributes", attributeId],
+                    attributeId: attributeId,
+                    value: attributeValue
+                });
+            }
+        },
+
+        // Run some setup for the newly created work item
+        setupNewWorkItem: function (newWorkItem, gitIssue, progressOptions, addBackLinksFunction) {
+            var self = this;
+
+            // Set the values from the git issue to the current work item
+            this.setWorkItemValuesFromGitIssue(newWorkItem, gitIssue);
+
+            // Set the handler to run when the work item has been saved
+            this.setEventHandlerForWorkItem(newWorkItem, this.workItemStoredEventName, function (workItemFromEvent) {
+                self.handleWorkItemSavedEvent(workItemFromEvent, gitIssue, addBackLinksFunction);
+            });
+
+            // Do some things after calling the work item save function.
+            var afterSaveFunction = function () {
+
+                // Check if this was the last work item to create
+                if (--progressOptions.remainingWorkItemsToCreate <= 0) {
+                    // Publish the refresh event manually
+                    dojo.publish(self.menuRefreshEventName);
+
+                    // Call the finished loading callback function
+                    progressOptions.finishedLoadingFunction();
+                }
+            };
+
+            // Save all new work items using the storeWorkItem function.
+            // This is to prevent the work item editor view from being reconstructed
+            // after the save event for hidden work items and greatly improves performance.
+            newWorkItem.storeWorkItem({
+                operationMsg: 'Saving new work item',
+                applyDelta: true,
+                skipErrorMessage: true,
+                onSuccess: function (result) {
+                    afterSaveFunction();
+                },
+                onError: function (error) {
+                    afterSaveFunction();
+
+                    // The work item editor widget may already be available (first work item)
+                    var workItemEditorWidget = self._getWorkItemEditorWidget(newWorkItem);
+
+                    if (workItemEditorWidget) {
+                        workItemEditorWidget._saveErrorCallback(error);
+                    } else {
+                        // Subscribe to the work item view changed event to and try to get the the work item
+                        // editor widget for the current work item. If we got an instance then use it to show
+                        // the save error message in the work item editor.
+                        var subscription = dojo.subscribe(self.workItemViewChangedEventName, self, function () {
+                            var workItemEditorWidget = this._getWorkItemEditorWidget(newWorkItem);
+
+                            if (workItemEditorWidget) {
+                                dojo.unsubscribe(subscription);
+                                workItemEditorWidget._saveErrorCallback(error);
+                            }
+                        });
+                    }
+                }
+            });
+        },
+
+        // Set values in the work item from the git issue. Also add a link to the git issue.
+        setWorkItemValuesFromGitIssue: function (workItem, gitIssue) {
+            if (gitIssue.title) {
+                // Set the work item summary
+                workItem.setValue({
+                    path: ["attributes", "summary", "content"],
+                    attributeId: "summary",
+                    value: gitIssue.title
+                });
+            }
+
+            if (gitIssue.description) {
+                // Set the work item description. Use <br /> instead of end line characters.
+                workItem.setValue({
+                    path: ["attributes", "description", "content"],
+                    attributeId: "description",
+                    value: gitIssue.description.replace(/(\r\n|\n|\r)/gm, "<br />")
+                });
+            }
+
+            // Set the git issue labels as tags
+            workItem.setValue({
+                path: ["attributes", "internalTags"],
+                attributeId: "internalTags",
+                value: (gitIssue.labels ? "from-git-issue, " + gitIssue.labels : "from-git-issue")
+            });
+
+            // Add the git issue as a link
+            this.addIssueLinksToWorkItemObject(workItem, [gitIssue]);
+
+            workItem.setValue({
+                path: ["linkTypes"],
+                value: workItem.object.linkTypes
+            });
+        },
+
+        // Set a handler from this object to run when the specified event is published.
+        // Only run the handler if the event is being run for the specified work item.
+        // The handler will only run once.
+        setEventHandlerForWorkItem: function (workItem, event, handler) {
+            var subscription = dojo.subscribe(event, this, function (workItemFromEvent) {
+                if (workItemFromEvent && workItemFromEvent._priorFetchEditablePropertiesWorkItemItemId
+                    && workItemFromEvent._priorFetchEditablePropertiesWorkItemItemId === workItem._priorFetchEditablePropertiesWorkItemItemId) {
+                        dojo.unsubscribe(subscription);
+                        handler.call(this, workItemFromEvent);
+                }
+            });
+        },
+
+        // Handle the event run after a work item has been saved
+        handleWorkItemSavedEvent: function (workItemFromEvent, gitIssue, addBackLinksFunction) {
+            dojo.require("com.ibm.team.workitem.web.ui.internal.module.WindowContext");
+
+            var windowContext = com.ibm.team.workitem.web.ui.internal.module.WindowContext;
+            var workItemData = {
+                object: {
+                    id: workItemFromEvent._cacheId,
+                    locationUri: windowContext.getFrontsideURL() + "/" + windowContext.NAME_PART + "/" + workItemFromEvent._cacheId
+                }
+            };
+
+            // Add the back links in git
+            addBackLinksFunction(workItemData, gitIssue);
+        },
+
+        // Save the changes in the specified work item.
+        // Calls the respective callback functions on success or error.
+        saveWorkItem: function (workItem, successCallbackFunction, failureCallbackFunction) {
+            workItem.storeWorkItem({
+                operationMsg: 'Saving',
+                applyDelta: true,
+                onSuccess: function(params) {
+                    console.log("Save Success");
+                    successCallbackFunction(params);
+                },
+                onError: function(error, params) {
+                    console.log("Save Error: ", error);
+                    console.log("Save Error params: ", params);
+                    failureCallbackFunction(error, params);
+                }
+            });
+        },
+
+        // Trigger the work item save for the link types that have been changed
         saveLinksInWorkItem: function (workItem, successCallbackFunction, failureCallbackFunction) {
+            var self = this;
+
             var onChangeFunc = {
                 // Create a function to run after the linkType change
                 changeFunc: function (event) {
@@ -51,18 +349,7 @@ define([
                     workItem.removeListener(listener);
 
                     // Save the changes
-                    workItem.storeWorkItem({
-                        operationMsg: 'Saving',
-                        applyDelta: true,
-                        onSuccess: function(params) {
-                            console.log("Save Success");
-                            successCallbackFunction();
-                        },
-                        onError: function(error) {
-                            console.log("Save Error: ", error);
-                            failureCallbackFunction(error);
-                        }
-                    });
+                    self.saveWorkItem(workItem, successCallbackFunction, failureCallbackFunction);
                 }
             };
 
@@ -91,6 +378,15 @@ define([
         // Adds links to the workItem object and saves them
         // The addBackLinksFunction is run on success without any parameters
         addLinksToWorkItem: function (workItem, registeredGitRepository, commitsToLink, issuesToLink, requestsToLink, addBackLinksFunction, failureCallbackFunction) {
+            this.addCommitLinksToWorkItemObject(workItem, commitsToLink, registeredGitRepository);
+            this.addIssueLinksToWorkItemObject(workItem, issuesToLink);
+            this.addRequestLinksToWorkItemObject(workItem, requestsToLink);
+
+            this.saveLinksInWorkItem(workItem, addBackLinksFunction, failureCallbackFunction);
+        },
+
+        // Save the specified commits to link as links in the passed work item object
+        addCommitLinksToWorkItemObject: function (workItem, commitsToLink, registeredGitRepository) {
             var self = this;
 
             // Add links to commits
@@ -107,7 +403,10 @@ define([
                     });
                 });
             }
+        },
 
+        // Save the specified issues to link as links in the passed work item object
+        addIssueLinksToWorkItemObject: function (workItem, issuesToLink) {
             // Add links to issues
             if (issuesToLink && issuesToLink.length > 0) {
                 // Get the issue link type container
@@ -128,7 +427,10 @@ define([
                     });
                 });
             }
+        },
 
+        // Save the specified requests to link as links in the passed work item object
+        addRequestLinksToWorkItemObject: function (workItem, requestsToLink) {
             // Add links to requests
             if (requestsToLink && requestsToLink.length > 0) {
                 // Get the request link type container
@@ -149,8 +451,6 @@ define([
                     });
                 });
             }
-
-            this.saveLinksInWorkItem(workItem, addBackLinksFunction, failureCallbackFunction);
         },
 
         // Move issue and request links that were created as related artifacts to their own custom link types
@@ -447,6 +747,23 @@ define([
                 "/project/" + artifact.projectId +
                 "/" + artifact.type + "/" + artifact.iid +
                 "/link";
+        },
+
+        // Get the work item editor widget instance from the work item page instance
+        // taken from the cache
+        _getWorkItemEditorWidget: function (workItem) {
+            var workItemEditorWidget;
+
+            try {
+                workItemEditorWidget = jazz.app.currentApplication.workbench
+                    ._pageWidgetCache["com.ibm.team.workitem"]
+                    ._multipaneContentWidget
+                    .getCachedWidget("__jazzWorkItemEditor", workItem.getId());
+            } catch (e) {
+                workItemEditorWidget = null;
+            }
+
+            return workItemEditorWidget;
         }
     });
 

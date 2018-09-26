@@ -9,3 +9,4 @@ resources/dist/
 jbe-build-wrapper.xml
 deployment-properties.ini
 *.swp
+dist/

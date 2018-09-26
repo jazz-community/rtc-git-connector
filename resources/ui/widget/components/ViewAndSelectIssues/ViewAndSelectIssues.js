@@ -185,6 +185,11 @@ define([
             domConstruct.empty(this.listItemsContainer);
 
             array.forEach(this.viewIssues, function (issue) {
+                // Don't add the create a new issue row when in new work item mode
+                if (issue.originalId < 0 && self.mainDataStore.newWorkItemMode) {
+                    return;
+                }
+
                 var details;
                 var buttonType;
 
@@ -241,7 +246,7 @@ define([
                 if (issue.originalId && issue.originalId === itemId) {
                     issue.listItem.set("selected", true);
                     self.drawDetailsView(issue);
-                } else {
+                } else if (issue.listItem) {
                     issue.listItem.set("selected", false);
                 }
             });

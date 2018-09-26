@@ -14,6 +14,7 @@ define([
     "../ViewCommitsToLink/ViewCommitsToLink",
     "../ViewIssuesToLink/ViewIssuesToLink",
     "../ViewRequestsToLink/ViewRequestsToLink",
+    "../SetNewWorkItemAttributes/SetNewWorkItemAttributes",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
@@ -21,7 +22,7 @@ define([
 ], function (declare, dom, domClass, domStyle, on, query,
     MainDataStore, JazzRestService, GitRestService,
     ViewAndSelectCommits, ViewAndSelectIssues, ViewAndSelectRequests,
-    ViewCommitsToLink, ViewIssuesToLink, ViewRequestsToLink,
+    ViewCommitsToLink, ViewIssuesToLink, ViewRequestsToLink, SetNewWorkItemAttributes,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectLinkType",
@@ -40,12 +41,18 @@ define([
 
         startup: function () {
             // Manually call the startup method of custom widgets used in the template
-            this.viewAndSelectCommits.startup();
             this.viewAndSelectIssues.startup();
-            this.viewAndSelectRequests.startup();
-            this.viewCommitsToLink.startup();
             this.viewIssuesToLink.startup();
-            this.viewRequestsToLink.startup();
+
+            if (this.mainDataStore.newWorkItemMode) {
+                this.onlyShowIssuesTab();
+                this.setNewWorkItemAttributes.startup();
+            } else {
+                this.viewAndSelectCommits.startup();
+                this.viewAndSelectRequests.startup();
+                this.viewCommitsToLink.startup();
+                this.viewRequestsToLink.startup();
+            }
 
             this.watchDataStore();
             this.setEventHandlers();
@@ -77,6 +84,7 @@ define([
 
                 // Set the selected type in the view
                 self.setSelectedLinkType(value);
+                self.setIssuesText();
                 self.setRequestsText(gitHost);
 
                 if (loadingError) {
@@ -108,7 +116,8 @@ define([
                     });
                 }
 
-                if (!self.mainDataStore.selectedRepositorySettings.get("requestsLoaded") &&
+                if (!self.mainDataStore.newWorkItemMode &&
+                        !self.mainDataStore.selectedRepositorySettings.get("requestsLoaded") &&
                         !self.mainDataStore.selectedRepositorySettings.get("requestsLoading")) {
                     // Set the requestsLoading to true to prevent multiple requests
                     self.mainDataStore.selectedRepositorySettings.set("requestsLoading", true);
@@ -130,7 +139,8 @@ define([
                     });
                 }
 
-                if (!self.mainDataStore.selectedRepositorySettings.get("commitsLoaded") &&
+                if (!self.mainDataStore.newWorkItemMode &&
+                        !self.mainDataStore.selectedRepositorySettings.get("commitsLoaded") &&
                         !self.mainDataStore.selectedRepositorySettings.get("commitsLoading")) {
                     // Set the commitsLoading to true to prevent multiple requests
                     self.mainDataStore.selectedRepositorySettings.set("commitsLoading", true);
@@ -163,15 +173,39 @@ define([
             });
         },
 
+        // Hide all tabs except for issues
+        onlyShowIssuesTab: function () {
+            this._queryLinkTypeItems(function (node) {
+                if (node.getAttribute("data-link-type") !== "ISSUE") {
+                    domStyle.set(node, "display", "none");
+                }
+            });
+        },
+
         // Add the selected class to the specified type. Remove it from the other types
         setSelectedLinkType: function (linkType) {
-            query(".rtcGitConnectorSelectLinkType .linkTypeItem").forEach(function (node) {
+            this._queryLinkTypeItems(function (node) {
                 if (node.getAttribute("data-link-type") === linkType) {
                     domClass.add(node, "selected");
                 } else {
                     domClass.remove(node, "selected");
                 }
             });
+        },
+
+        // Run a function on each linkTypeItem node
+        _queryLinkTypeItems: function (handleItem) {
+            query(".rtcGitConnectorSelectLinkType .linkTypeItem").forEach(function (node) {
+                handleItem(node);
+            });
+        },
+
+        // Change the issues to link text if in new work item mode
+        setIssuesText: function () {
+            if (this.mainDataStore.newWorkItemMode) {
+                query("#rtcGitConnectorIssuesListToLink .rtcGitConnectorLabelText")[0].innerHTML =
+                    "Issues to create as work items";
+            }
         },
 
         // Set the requests text to Pull Requests for GitHub or Merge Requests for GitLab

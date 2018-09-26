@@ -6,7 +6,7 @@ define([
     "../../services/MainDataStore",
     "../../services/JazzRestService",
     "../../services/GitRestService",
-    "../../../library/_AbstractActionWidget",
+    "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dijit/registry",
@@ -15,26 +15,35 @@ define([
     "dojo/domReady!"
 ], function (declare, dom, domStyle,
     MainLayout, MainDataStore, JazzRestService, GitRestService,
-    _AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin,
+    _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     registry, Dialog, template) {
-    return declare([_AbstractActionWidget, _TemplatedMixin, _WidgetsInTemplateMixin], {
+    return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
         mainDataStore: null,
         jazzRestService: null,
 
         // Set the work item and project area properties in the
-        // data store so that other classes can access them
-        constructor: function () {
+        // data store so that other classes can access them.
+        // Important: wrap all constructor parameters in an object
+        // to prevent the creation of the widget from failing at the
+        // lifecycle event that mixes the parameters into the widget instance.
+        constructor: function (params) {
             this.mainDataStore = MainDataStore.getInstance();
             this.jazzRestService = JazzRestService.getInstance();
-            this.mainDataStore.workItem = this.workItem;
-            this.mainDataStore.projectArea = this.workItem.object.attributes.projectArea;
+            this.mainDataStore.newWorkItemMode = params.workItem.isNewWorkItem();
+            this.mainDataStore.workItem = params.workItem;
+            this.mainDataStore.projectArea = params.workItem.object.attributes.projectArea;
         },
 
         startup: function () {
             this.mainDataStore.hasHiddenChanges = this.jazzRestService
                 .moveOldLinksToNewLinkTypes(this.mainDataStore.workItem);
             this.setEventHandlers();
+
+            // Change the popup title in new work item mode
+            if (this.mainDataStore.newWorkItemMode) {
+                this.mainDialog.set("title", "Create Work Items from Git Issues");
+            }
 
             // Show the error dialog in Internet Explorer (better than nothing happening)
             if (this.isInternetExplorer()) {
