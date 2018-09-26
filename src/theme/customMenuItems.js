@@ -67,6 +67,18 @@ function addNewGroupToMenu(menuPopupConfig) {
 	});
 };
 
+function addGroupWhenTypesAreLoaded(menuPopupConfig) {
+	(function tryToAdd (menuPopupConfig) {
+		if (jazz.app.currentApplication.ui.navbar._pageList._menuPopupsById[menuPopupConfig.id]._currentMenu._wrappedInstance.isTypesLoaded) {
+			addNewGroupToMenu(menuPopupConfig);
+		} else {
+			setTimeout(function () {
+				tryToAdd(menuPopupConfig);
+			}, 100);
+		}
+	})(menuPopupConfig);
+};
+
 dojo.connect(dijit.popup, "open", function (arg) {
 	var config = CustomMenuItemsConfig.getCustomMenuItemsConfig();
 
@@ -86,10 +98,10 @@ dojo.connect(dijit.popup, "open", function (arg) {
 		if (typeofCurrentMenu !== 'undefined' &&
 			arg.popup === jazz.app.currentApplication.ui.navbar._pageList._menuPopupsById[menuPopupConfig.id]._currentMenu) {
 			if (jazz.app.currentApplication.ui.navbar._pageList._menuPopupsById[menuPopupConfig.id]._currentMenu._wrappedInstance) {
-				addNewGroupToMenu(menuPopupConfig);
+				addGroupWhenTypesAreLoaded(menuPopupConfig);
 			} else {
 				jazz.app.currentApplication.ui.navbar._pageList._menuPopupsById[menuPopupConfig.id]._currentMenu._loaded.then(function () {
-					addNewGroupToMenu(menuPopupConfig);
+					addGroupWhenTypesAreLoaded(menuPopupConfig);
 				});
 			}
 		}

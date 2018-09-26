@@ -10,7 +10,7 @@ export default {
 					title: "Create Work Item from Git Issue",
 					addAfterGroupId: "create-workitem-group",
 					createMenuItems: function () {
-						return createMenuItems(VisibleWorkItemTypeIds.getVisibleWorkItemTypeIds());
+						return createGitIssueMenuItems(VisibleWorkItemTypeIds.getVisibleWorkItemTypeIds());
 					}
 				}]
 			}]
@@ -18,7 +18,7 @@ export default {
 	}
 };
 
-function createMenuItems(visibleWorkItemTypeIds) {
+function createGitIssueMenuItems(visibleWorkItemTypeIds) {
 	var workItemTypesFromCache = getItemTypes();
 
 	if (!workItemTypesFromCache) {
