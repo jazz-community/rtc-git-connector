@@ -1,8 +1,14 @@
+import ArrayFindPolyfill from "./arrayFindPolyfill";
+import ArrayFindIndexPolyfill from "./arrayFindIndexPolyfill";
 import CustomMenuItemsConfig from "./customMenuItemsConfig";
 
 // This method only works for the work item menu for now.
 // Other menus use the _currentMenu._menu property instead of the _currentMenu._wrappedInstance (and not in the same way).
 // This could easily be extended to support such menus as well.
+
+// Add some lightweight polyfills to support IE11.
+ArrayFindPolyfill.addArrayFindPolyfill();
+ArrayFindIndexPolyfill.addArrayFindIndexPolyfill();
 
 function customAddGroup(id, title, groupIndex) {
 	var titleFunc = title == null ? null : function () {
