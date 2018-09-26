@@ -25,15 +25,21 @@ function createMenuItems(visibleWorkItemTypeIds) {
 		workItemTypesFromCache = [];
 	}
 
-	var visibleWorkItemTypes = workItemTypesFromCache.filter(function (workItemType) {
-		return visibleWorkItemTypeIds.some(function (workItemTypeId) {
-			return workItemTypeId === workItemType.id;
-		});
-	});
+	var visibleWorkItemTypes = visibleWorkItemTypeIds.reduce(function (output, workItemTypeId) {
+		var workItemType = workItemTypesFromCache.find(function (workItemType) {
+			return workItemType.id === workItemTypeId;
+		})
+
+		if (workItemType) {
+			output.push(workItemType);
+		}
+
+		return output;
+	}, []);
 
 	return visibleWorkItemTypes.map(function (workItemType) {
 		return {
-			label: "Create " + workItemType.label + " from Git Issue",
+			label: workItemType.label + " From Git Issue",
 			iconClass: getIconClass(workItemType.iconUrl),
 			href: jazz.app.currentApplication.ui.navbar._pageList
 				._menuPopupsById["com.ibm.team.workitem"]._currentMenu._wrappedInstance

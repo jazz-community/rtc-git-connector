@@ -66,6 +66,7 @@ module.exports = (env) => {
         entry: './src/theme/customMenuItems.js',
 
         output: {
+            path: __dirname + "/dist",
             filename: 'com.siemens.bt.jazz.workitemeditor.rtcGitConnector_theme_' + version + ".js"
         },
 

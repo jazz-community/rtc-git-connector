@@ -11,6 +11,7 @@ export default {
     getVisibleWorkItemTypeIds() {
         return [
             "defect",
+            "com.ibm.team.workitem.workItemType.defect",
             "com.ibm.team.apt.workItemType.story"
         ];
     }
