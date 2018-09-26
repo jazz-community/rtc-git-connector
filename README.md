@@ -6,6 +6,7 @@ The _RTC Git Connector_ is a plugin for IBM Rational Team Concert (RTC) that ena
 **Key features**
 - Link RTC work items with Git commits, issues and pull/merge requests
 - Create Git issues out of RTC
+- Create RTC work items from Git issues
 - View selected issue and pull/merge request information when hovering the link in RTC
 
 ![Introduction](https://github.com/jazz-community/rtc-git-connector/blob/master/documentation/wiki/introduction.png)
