@@ -1,8 +1,9 @@
+const JazzUpdateSitePlugin = require('jazz-update-site-webpack-plugin');
+const RemovePlugin = require('remove-files-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const ZipPlugin = require('zip-webpack-plugin');
 const moment = require('moment');
 const packageJson = require('./package.json');
-const JazzUpdateSitePlugin = require('jazz-update-site-webpack-plugin');
-const ZipPlugin = require('zip-webpack-plugin');
 
 module.exports = (env) => {
     const timestamp = moment().format('[_]YYYYMMDD[-]HHmm');
@@ -58,7 +59,25 @@ module.exports = (env) => {
                 },
             }),
 
-            new UglifyJsPlugin()
+            new UglifyJsPlugin(),
+
+            new RemovePlugin({
+                before: {
+                    root: __dirname,
+                    test: [
+                        {
+                            folder: './',
+                            method: (filePath) => {
+                                return new RegExp(/com\.siemens\.bt\.jazz\.workitemeditor\.rtcGitConnector.*\.zip$/, 'i').test(filePath);
+                            }
+                        }
+                    ]
+                },
+                after: {
+                    root: __dirname,
+                    include: ['dist']
+                }
+            })
         ]
     };
 
@@ -89,6 +108,12 @@ module.exports = (env) => {
             new ZipPlugin({
                 path: __dirname,
                 filename: 'com.siemens.bt.jazz.workitemeditor.rtcGitConnector_theme_' + version + ".zip"
+            }),
+            new RemovePlugin({
+                after: {
+                    root: __dirname,
+                    include: ['dist']
+                }
             })
         ]
     };

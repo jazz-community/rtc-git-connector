@@ -21,6 +21,7 @@
         "babel-loader": "^8.0.2",
         "jazz-update-site-webpack-plugin": "^0.4.1",
         "moment": "^2.22.2",
+        "remove-files-webpack-plugin": "^1.0.0",
         "string-replace-loader": "^2.1.1",
         "uglifyjs-webpack-plugin": "^1.2.7",
         "webpack": "^4.16.2",
