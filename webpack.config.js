@@ -108,12 +108,6 @@ module.exports = (env) => {
             new ZipPlugin({
                 path: __dirname,
                 filename: 'com.siemens.bt.jazz.workitemeditor.rtcGitConnector_theme_' + version + ".zip"
-            }),
-            new RemovePlugin({
-                after: {
-                    root: __dirname,
-                    include: ['dist']
-                }
             })
         ]
     };
