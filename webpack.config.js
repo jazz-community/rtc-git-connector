@@ -93,5 +93,5 @@ module.exports = (env) => {
         ]
     };
 
-    return [config, themeConfig]
+    return [config, themeConfig];
 };
