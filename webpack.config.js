@@ -1,6 +1,6 @@
 const JazzUpdateSitePlugin = require('jazz-update-site-webpack-plugin');
 const RemovePlugin = require('remove-files-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
 const moment = require('moment');
 const packageJson = require('./package.json');
@@ -24,6 +24,10 @@ module.exports = (env) => {
             library: 'com_siemens_bt_jazz_rtcgitconnector_modules',
             filename: 'modules-bundle.js',
             path: __dirname + '/resources/dist'
+        },
+
+        optimization: {
+            minimizer: [new TerserPlugin()]
         },
 
         module: {
@@ -58,8 +62,6 @@ module.exports = (env) => {
                     version: version,
                 },
             }),
-
-            new UglifyJsPlugin(),
 
             new RemovePlugin({
                 before: {
