@@ -7,7 +7,7 @@ const packageJson = require('./package.json');
 
 module.exports = (env) => {
     const timestamp = moment().format('[_]YYYYMMDD[-]HHmm');
-    const version = (typeof env !== 'undefined' && (packageJson.version + "_" + env.buildUUID)) || packageJson.version + timestamp;
+    const version = (typeof env !== 'undefined' && (packageJson.version + '_' + env.buildUUID)) || packageJson.version + timestamp;
     const config = {
         node: {
             fs: 'empty',
@@ -40,6 +40,21 @@ module.exports = (env) => {
                         replace: version,
                         flags: 'i',
                         strict: true
+                    }
+                },
+                {
+                    test: /\.js$/,
+                    exclude: /node_modules(\/|\\)@babel/,
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['@babel/preset-env'],
+                            plugins: [
+                                '@babel/plugin-transform-runtime',
+                                '@babel/plugin-transform-template-literals'
+                            ],
+                            sourceType: 'unambiguous'
+                        }
                     }
                 }
             ]
@@ -87,8 +102,8 @@ module.exports = (env) => {
         entry: './src/theme/customMenuItems.js',
 
         output: {
-            path: __dirname + "/dist",
-            filename: 'com.siemens.bt.jazz.workitemeditor.rtcGitConnector_theme_' + version + ".js"
+            path: __dirname + '/dist',
+            filename: 'com.siemens.bt.jazz.workitemeditor.rtcGitConnector_theme_' + version + '.js'
         },
 
         module: {
@@ -109,7 +124,7 @@ module.exports = (env) => {
         plugins: [
             new ZipPlugin({
                 path: __dirname,
-                filename: 'com.siemens.bt.jazz.workitemeditor.rtcGitConnector_theme_' + version + ".zip"
+                filename: 'com.siemens.bt.jazz.workitemeditor.rtcGitConnector_theme_' + version + '.zip'
             })
         ]
     };
