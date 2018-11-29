@@ -15,9 +15,10 @@ module.exports = (env) => {
             tls: 'empty'
         },
 
-        entry: {
-            app: './src/RtcGitConnectorModules.js',
-        },
+        entry: [
+            'whatwg-fetch',
+            './src/RtcGitConnectorModules.js',
+        ],
 
         output: {
             libraryTarget: 'var',

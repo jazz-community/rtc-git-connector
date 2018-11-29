@@ -14,7 +14,8 @@
         "gitlab": "^5.0.0-rc.3",
         "gzip-js": "^0.3.2",
         "handlebars": "^4.0.12",
-        "turndown": "^4.0.2"
+        "turndown": "^4.0.2",
+        "whatwg-fetch": "^3.0.0"
     },
     "devDependencies": {
         "@babel/core": "^7.1.6",
