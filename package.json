@@ -29,7 +29,7 @@
         "zip-webpack-plugin": "^3.0.0"
     },
     "scripts": {
-        "build": "node ./node_modules/webpack/bin/webpack.js"
+        "build": "webpack --config ./webpack.config.js --mode production"
     },
     "repository": {
         "type": "git",
