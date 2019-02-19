@@ -35,6 +35,15 @@
     font-size: 1.5em;
     text-align: center;
     cursor: pointer;
+    transition: transform 500ms;
+}
+
+.rtcGitConnectorViewAndSelectListItem:hover .rtcGitConnectorViewAndSelectListItemButton {
+    transform: scale(1.5) rotate(360deg);
+}
+
+.rtcGitConnectorViewAndSelectListItem.selected .rtcGitConnectorViewAndSelectListItemButton {
+    transform: scale(1.5) rotate(720deg);
 }
 
 .rtcGitConnectorViewAndSelectListItem.linkButton .rtcGitConnectorViewAndSelectListItemButton {
@@ -60,4 +69,5 @@
 .rtcGitConnectorViewAndSelectListItem.checkButton .rtcGitConnectorViewAndSelectListItemButton {
     color: #555;
     cursor: default;
+    transform: none;
 }
