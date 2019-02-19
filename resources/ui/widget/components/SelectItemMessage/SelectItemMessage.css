@@ -1,0 +1,10 @@
+.rtcGitConnectorSelectItemMessage:before {
+    position: absolute;
+    top: 0;
+    left: 50px;
+    height: 10px;
+    width: 15px;
+    content: '';
+    background-color: #cacaca;
+    z-index: -1;
+}
