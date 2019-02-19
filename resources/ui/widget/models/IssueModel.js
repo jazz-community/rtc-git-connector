@@ -38,7 +38,7 @@ define([
 
             if (gitHubIssue.labels && gitHubIssue.labels.length) {
                 issueModel.labels = gitHubIssue.labels.map(function (label) {
-                    return label.name;
+                    return label.name.replace(/ /g, "-");
                 }).join(", ");
             }
 
@@ -70,7 +70,9 @@ define([
             });
 
             if (gitLabIssue.labels && gitLabIssue.labels.length) {
-                issueModel.labels = gitLabIssue.labels.join(", ");
+                issueModel.labels = gitLabIssue.labels.map(function (label) {
+                    return label.replace(/ /g, "-");
+                }).join(", ");
             }
 
             return issueModel;
