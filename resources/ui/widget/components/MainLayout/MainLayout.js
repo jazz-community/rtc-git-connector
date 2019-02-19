@@ -297,6 +297,14 @@ define([
                     self.mainDataStore.selectedRepositorySettings.set("linkType", "ISSUE");
                 }
             });
+
+            var listToLinkChanged = function () {
+                self._listToLinkChanged();
+            };
+
+            this.mainDataStore.selectedRepositoryData.commitsToLink.watchElements(listToLinkChanged);
+            this.mainDataStore.selectedRepositoryData.issuesToLink.watchElements(listToLinkChanged);
+            this.mainDataStore.selectedRepositoryData.requestsToLink.watchElements(listToLinkChanged);
         },
 
         // Find out if the selected git repository is hosted on GitHub, GitLab, or neither of the two
@@ -445,6 +453,28 @@ define([
             } else {
                 mainDialog.hide();
             }
+        },
+
+        // Run whenever a list of items to link has changed
+        // Will enable / disable the save buttons
+        _listToLinkChanged: function () {
+            var buttonsEnabled = false;
+
+            // Check if any of the lists contain data
+            if (this.mainDataStore.selectedRepositoryData.commitsToLink.length > 0 ||
+                this.mainDataStore.selectedRepositoryData.issuesToLink.length > 0 ||
+                this.mainDataStore.selectedRepositoryData.requestsToLink.length > 0) {
+                // Enable the save buttons
+                buttonsEnabled = true;
+            }
+
+            this._setSaveButtonsState(buttonsEnabled);
+        },
+
+        // Set the enabled/disabled state for both save buttons (true = enabled)
+        _setSaveButtonsState: function (enabled) {
+            dom.byId("rtcGitConnectorSaveButton").disabled = !enabled;
+            dom.byId("rtcGitConnectorSaveAndCloseButton").disabled = !enabled;
         }
     });
 });
