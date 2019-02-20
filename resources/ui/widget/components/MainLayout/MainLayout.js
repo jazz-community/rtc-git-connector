@@ -296,18 +296,22 @@ define([
                 }
             });
 
+            // Encapsulate scope for _listToLinkChanged
             var listToLinkChanged = function () {
                 self._listToLinkChanged();
             };
 
+            // Run listToLinkChanged when any of the lists of items to link change
             this.mainDataStore.selectedRepositoryData.commitsToLink.watchElements(listToLinkChanged);
             this.mainDataStore.selectedRepositoryData.issuesToLink.watchElements(listToLinkChanged);
             this.mainDataStore.selectedRepositoryData.requestsToLink.watchElements(listToLinkChanged);
 
+            // Encapsulate scope for _itemsLoadedChanged
             var itemsLoadedChanged = function () {
                 self._itemsLoadedChanged();
             };
 
+            // Run itemsLoadedChanged when the loaded status of any of the lists of items changes
             this.mainDataStore.selectedRepositorySettings.watch("issuesLoaded", itemsLoadedChanged);
             this.mainDataStore.selectedRepositorySettings.watch("requestsLoaded", itemsLoadedChanged);
             this.mainDataStore.selectedRepositorySettings.watch("commitsLoaded", itemsLoadedChanged);
@@ -479,7 +483,9 @@ define([
         _itemsLoadedChanged: function () {
             var showSelectItemMessage = false;
 
+            // Check if all lists are loaded and there aren't any items to link
             if (this._allListsLoaded() && !this._anyItemsToLink()) {
+                // Show the select item message
                 showSelectItemMessage = true;
             }
 
@@ -488,7 +494,10 @@ define([
 
         // Set the enabled/disabled state for both save buttons (true = enabled)
         _setSaveButtonsState: function (enabled) {
+            // Check if all lists are loaded
+            // (don't show the select item message before that)
             if (this._allListsLoaded()) {
+                // Also show/hide the select item message if all links are loaded
                 this._showSelectItemMessage(!enabled);
             }
 
