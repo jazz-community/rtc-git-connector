@@ -15,7 +15,7 @@ define([
 
         hidden: true,
         _setHiddenAttr: function (hidden) {
-            domStyle.set(this.domNode, "display", hidden ? "none" : "block");
+            domStyle.set(this.messageNode, "display", hidden ? "none" : "block");
             this._set("hidden", hidden);
         },
 
