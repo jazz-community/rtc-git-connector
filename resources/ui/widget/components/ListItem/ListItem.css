@@ -30,11 +30,22 @@
 
 .rtcGitConnectorViewAndSelectListItemButton {
     width: 2em;
-    height: 100%;
+    height: 1em;
     margin: auto .3em;
     font-size: 1.5em;
     text-align: center;
     cursor: pointer;
+    transition: transform 500ms;
+}
+
+/* Make the list item button grow and spin once when hovering over the list item. */
+.rtcGitConnectorViewAndSelectListItem:hover .rtcGitConnectorViewAndSelectListItemButton {
+    transform: scale(1.5) rotate(360deg);
+}
+
+/* Make the list item button spin once again when the list item is selected (attract attention). */
+.rtcGitConnectorViewAndSelectListItem.selected .rtcGitConnectorViewAndSelectListItemButton {
+    transform: scale(1.5) rotate(720deg);
 }
 
 .rtcGitConnectorViewAndSelectListItem.linkButton .rtcGitConnectorViewAndSelectListItemButton {
@@ -57,7 +68,9 @@
     opacity: 0.6;
 }
 
+/* Make the "checkButton" have a normal cursor and no animations (disabled). */
 .rtcGitConnectorViewAndSelectListItem.checkButton .rtcGitConnectorViewAndSelectListItemButton {
     color: #555;
     cursor: default;
+    transform: none;
 }

@@ -14,6 +14,7 @@ define([
     "../ViewCommitsToLink/ViewCommitsToLink",
     "../ViewIssuesToLink/ViewIssuesToLink",
     "../ViewRequestsToLink/ViewRequestsToLink",
+    "../SelectItemMessage/SelectItemMessage",
     "../SetNewWorkItemAttributes/SetNewWorkItemAttributes",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
@@ -22,7 +23,8 @@ define([
 ], function (declare, dom, domClass, domStyle, on, query,
     MainDataStore, JazzRestService, GitRestService,
     ViewAndSelectCommits, ViewAndSelectIssues, ViewAndSelectRequests,
-    ViewCommitsToLink, ViewIssuesToLink, ViewRequestsToLink, SetNewWorkItemAttributes,
+    ViewCommitsToLink, ViewIssuesToLink, ViewRequestsToLink,
+    SelectItemMessage, SetNewWorkItemAttributes,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectLinkType",
@@ -77,7 +79,7 @@ define([
                     return;
                 }
 
-                // Hide the hole widget if the linkType is null
+                // Hide the whole widget if the linkType is null
                 domStyle.set("rtcGitConnectorSelectLinkTypeContainer", "display", "block");
 
                 loadingError = self.mainDataStore.selectedRepositorySettings.get(value.toLowerCase() + "sLoadError");

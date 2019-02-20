@@ -117,9 +117,7 @@ define([
 
             var saveButtonClick = function (event) {
                 // Check if there is anything to save
-                if (self.mainDataStore.selectedRepositoryData.commitsToLink.length > 0 ||
-                    self.mainDataStore.selectedRepositoryData.issuesToLink.length > 0 ||
-                    self.mainDataStore.selectedRepositoryData.requestsToLink.length > 0) {
+                if (self._anyItemsToLink()) {
                     var selectedRepository = self.mainDataStore.selectedRepositorySettings.get("repository");
                     var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
                     var accessToken = self.mainDataStore.selectedRepositorySettings.get("accessToken");
@@ -297,6 +295,26 @@ define([
                     self.mainDataStore.selectedRepositorySettings.set("linkType", "ISSUE");
                 }
             });
+
+            // Encapsulate scope for _listToLinkChanged
+            var listToLinkChanged = function () {
+                self._listToLinkChanged();
+            };
+
+            // Run listToLinkChanged when any of the lists of items to link change
+            this.mainDataStore.selectedRepositoryData.commitsToLink.watchElements(listToLinkChanged);
+            this.mainDataStore.selectedRepositoryData.issuesToLink.watchElements(listToLinkChanged);
+            this.mainDataStore.selectedRepositoryData.requestsToLink.watchElements(listToLinkChanged);
+
+            // Encapsulate scope for _itemsLoadedChanged
+            var itemsLoadedChanged = function () {
+                self._itemsLoadedChanged();
+            };
+
+            // Run itemsLoadedChanged when the loaded status of any of the lists of items changes
+            this.mainDataStore.selectedRepositorySettings.watch("issuesLoaded", itemsLoadedChanged);
+            this.mainDataStore.selectedRepositorySettings.watch("requestsLoaded", itemsLoadedChanged);
+            this.mainDataStore.selectedRepositorySettings.watch("commitsLoaded", itemsLoadedChanged);
         },
 
         // Find out if the selected git repository is hosted on GitHub, GitLab, or neither of the two
@@ -445,6 +463,69 @@ define([
             } else {
                 mainDialog.hide();
             }
+        },
+
+        // Run whenever a list of items to link has changed
+        // Will enable / disable the save buttons
+        _listToLinkChanged: function () {
+            var buttonsEnabled = false;
+
+            // Check if any of the lists contain data
+            if (this._anyItemsToLink()) {
+                // Enable the save buttons
+                buttonsEnabled = true;
+            }
+
+            this._setSaveButtonsState(buttonsEnabled);
+        },
+
+        // Run whenever the "loaded" property changes for any of the lists
+        _itemsLoadedChanged: function () {
+            var showSelectItemMessage = false;
+
+            // Check if all lists are loaded and there aren't any items to link
+            if (this._allListsLoaded() && !this._anyItemsToLink()) {
+                // Show the select item message
+                showSelectItemMessage = true;
+            }
+
+            this._showSelectItemMessage(showSelectItemMessage);
+        },
+
+        // Set the enabled/disabled state for both save buttons (true = enabled)
+        _setSaveButtonsState: function (enabled) {
+            // Check if all lists are loaded
+            // (don't show the select item message before that)
+            if (this._allListsLoaded()) {
+                // Also show/hide the select item message if all links are loaded
+                this._showSelectItemMessage(!enabled);
+            }
+
+            dom.byId("rtcGitConnectorSaveButton").disabled = !enabled;
+            dom.byId("rtcGitConnectorSaveAndCloseButton").disabled = !enabled;
+        },
+
+        // Set whether to show the select item message or not (show when show = true)
+        _showSelectItemMessage: function (show) {
+            this.selectLinkType.selectItemMessage.set("hidden", !show);
+        },
+
+        // Checks if any of the lists of items to link contains at least one item
+        // returns true if there is at least one item to link, otherwise false
+        _anyItemsToLink: function () {
+            return this.mainDataStore.selectedRepositoryData.commitsToLink.length > 0 ||
+                this.mainDataStore.selectedRepositoryData.issuesToLink.length > 0 ||
+                this.mainDataStore.selectedRepositoryData.requestsToLink.length > 0;
+        },
+
+        // Checks if all the lists of items have finished loading
+        // (only issues are needed in new work item mode)
+        // returns true if all lists of items are finished loading
+        _allListsLoaded: function () {
+            return this.mainDataStore.selectedRepositorySettings.get("issuesLoaded") &&
+                (this.mainDataStore.newWorkItemMode ||
+                this.mainDataStore.selectedRepositorySettings.get("requestsLoaded") &&
+                this.mainDataStore.selectedRepositorySettings.get("commitsLoaded"));
         }
     });
 });
