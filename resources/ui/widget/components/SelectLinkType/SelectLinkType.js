@@ -79,7 +79,7 @@ define([
                     return;
                 }
 
-                // Hide the hole widget if the linkType is null
+                // Hide the whole widget if the linkType is null
                 domStyle.set("rtcGitConnectorSelectLinkTypeContainer", "display", "block");
 
                 loadingError = self.mainDataStore.selectedRepositorySettings.get(value.toLowerCase() + "sLoadError");
