@@ -1,4 +1,9 @@
 /* See: http://www.cssarrowplease.com/ */
+
+/*
+    Make the message div about the same width as a list item.
+    Add extra margin top so that there is space for the arrow.
+*/
 .rtcGitConnectorSelectItemMessage {
     position: relative;
     width: calc(50% - 35px);
@@ -7,6 +12,9 @@
     margin-left: 11px;
 }
 
+/*
+    Use before and after to create and position zero size elements in the same spot.
+*/
 .rtcGitConnectorSelectItemMessage::after, .rtcGitConnectorSelectItemMessage::before {
     position: absolute;
     bottom: 100%;
@@ -18,14 +26,31 @@
     pointer-events: none;
 }
 
+/*
+    Use the after element as the inner triangle.
+    Looks like an extension of the div.
+    The border width defines the height of the triangle.
+    The triangle is created by making only the bottom border visible.
+    Margin is used for positioning the tip of the triangle in the
+    center (should equal border width).
+*/
 .rtcGitConnectorSelectItemMessage::after {
     border-bottom-color: #d9edf7; /* backgroundColor */
     border-width: 15px; /* arrowHeight */
     margin-left: -15px;
 }
 
+/*
+    Use the before element as the outer triangle.
+    Looks like an extension of the border around the div.
+    The border width should use the formula commented below.
+    This is important when the div has a wider border, otherwise
+    the border on the triangle part will be too small.
+    Margin is used for positioning the tip of the triangle in the
+    center (should equal border width).
+*/
 .rtcGitConnectorSelectItemMessage::before {
     border-bottom-color: #31708f; /* borderColor */
-    border-width: 17px; /* Math.round(borderWidth * Math.sqrt(2)) */
+    border-width: 17px; /* afterBorderWidth + Math.round(divBorderWidth * Math.sqrt(2)) */
     margin-left: -17px;
 }
