@@ -13,12 +13,16 @@ define([
     {
         templateString: template,
 
+        // Hide the message by default
+        // Set to false to show the message
         hidden: true,
         _setHiddenAttr: function (hidden) {
             domStyle.set(this.messageNode, "display", hidden ? "none" : "block");
             this._set("hidden", hidden);
         },
 
+        // Define the default message to show
+        // Set to a different string to change the message
         message: "Click the colorful icon on the left to select an item to be saved.",
         _setMessageAttr: { node: "messageNode", type: "innerHTML" }
     });
