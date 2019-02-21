@@ -94,8 +94,17 @@ define([
                 });
 
                 var createIssue = function (templateString) {
-                    var renderedTemplate = new TemplateService()
-                        .renderTemplateWithWorkItem(templateString, workItem);
+                    var renderedTemplate = null;
+
+                    try {
+                        renderedTemplate = new TemplateService()
+                            .renderTemplateWithWorkItem(templateString, workItem);
+                    } catch (error) {
+                        deferred.reject("There was an error when parsing the issue template. Error: " + error);
+
+                        // Don't try to create the issue if the template rendering failed
+                        return;
+                    }
 
                     github.issues.create({
                         owner: urlParts[0],
@@ -165,8 +174,17 @@ define([
                 });
 
                 var createIssue = function (templateString) {
-                    var renderedTemplate = new TemplateService()
-                        .renderTemplateWithWorkItem(templateString, workItem);
+                    var renderedTemplate = null;
+
+                    try {
+                        renderedTemplate = new TemplateService()
+                            .renderTemplateWithWorkItem(templateString, workItem);
+                    } catch (error) {
+                        deferred.reject("There was an error when parsing the issue template. Error: " + error);
+
+                        // Don't try to create the issue if the template rendering failed
+                        return;
+                    }
 
                     gitlab.Issues.create(giturl.joined, {
                         title: workItem.object.attributes.summary.content,
