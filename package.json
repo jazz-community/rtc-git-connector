@@ -14,7 +14,7 @@
         "gzip-js": "^0.3.2",
         "handlebars": "^4.1.0",
         "just-handlebars-helpers": "^1.0.14",
-        "turndown": "^4.0.2"
+        "turndown": "^5.0.3"
     },
     "devDependencies": {
         "@babel/core": "^7.3.3",
