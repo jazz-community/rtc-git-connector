@@ -7,10 +7,12 @@ define([
 
         constructor: function () {
             this.handlebars = com_siemens_bt_jazz_rtcgitconnector_modules.Handlebars;
+            this.handlebarsHelpers = com_siemens_bt_jazz_rtcgitconnector_modules.HandlebarsHelpers;
             this.turndownService = new com_siemens_bt_jazz_rtcgitconnector_modules.TurndownService();
 
             this._doNotEscapeMarkdown();
             this._registerHtmlToMarkdownHelper();
+            this._registerHandlebarsHelpers();
         },
 
         renderTemplateWithWorkItem: function (templateString, workItem) {
@@ -35,6 +37,11 @@ define([
                 // For the Markdown formatting to work correctly, these need to be normal spaces.
                 return inputString ? self.turndownService.turndown(inputString.replace(/&nbsp;/g, ' ')) : '';
             });
+        },
+
+        _registerHandlebarsHelpers: function () {
+            // Register all helpers imported from the handlebars-helpers package
+            this.handlebars.registerHelper(this.handlebarsHelpers());
         }
     });
 });
