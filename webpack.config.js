@@ -12,7 +12,8 @@ module.exports = (env) => {
         node: {
             fs: 'empty',
             net: 'empty',
-            tls: 'empty'
+            tls: 'empty',
+            readline: 'empty'
         },
 
         entry: {
@@ -24,6 +25,12 @@ module.exports = (env) => {
             library: 'com_siemens_bt_jazz_rtcgitconnector_modules',
             filename: 'modules-bundle.js',
             path: __dirname + '/resources/dist'
+        },
+
+        resolve: {
+            alias: {
+                handlebars: 'handlebars/dist/handlebars.min.js'
+            }
         },
 
         module: {

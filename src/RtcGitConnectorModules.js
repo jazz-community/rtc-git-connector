@@ -39,7 +39,10 @@ export function encoder () {
 }
 
 // Handlebars for the browser (templating)
-export const Handlebars = require('handlebars/dist/handlebars');
+export const Handlebars = require('handlebars');
+
+// Handlebars Helpers for complex handlebars templates
+export const HandlebarsHelpers = require('handlebars-helpers');
 
 // Turndown service for the browser (html to markdown)
 export const TurndownService = require('turndown/lib/turndown.browser.umd');
