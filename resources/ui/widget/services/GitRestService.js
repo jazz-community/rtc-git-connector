@@ -820,22 +820,19 @@ define([
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.pullRequests.getAll({
+                github.pulls.list({
                     owner: urlParts[0],
                     repo: urlParts[1],
                     state: "all",
                     per_page: 100
-                }, function (error, response) {
-                    if (error) {
-                        var errorObj = json.parse(error.message || error);
-                        deferred.reject("Couldn't get the pull requests from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
-                    } else {
-                        var convertedRequests = [];
-                        array.forEach(response.data, function (request) {
-                            convertedRequests.push(RequestModel.CreateFromGitHubRequest(request, alreadyLinkedUrls));
-                        });
-                        deferred.resolve(convertedRequests);
-                    }
+                }).then(function (response) {
+                    var convertedRequests = [];
+                    array.forEach(response.data, function (request) {
+                        convertedRequests.push(RequestModel.CreateFromGitHubRequest(request, alreadyLinkedUrls));
+                    });
+                    deferred.resolve(convertedRequests);
+                }, function (error) {
+                    deferred.reject("Couldn't get the pull requests from the GitHub repository. Error: " + (error.message || error));
                 });
             }
 
