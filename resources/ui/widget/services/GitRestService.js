@@ -929,12 +929,10 @@ define([
                 var github = new this.gitHubApi({
                     auth: accessToken
                 });
-                github.users.get({}, function (error, response) {
-                    if (error) {
-                        deferred.resolve(false);
-                    } else {
-                        deferred.resolve(true);
-                    }
+                github.users.getAuthenticated({}).then(function (response) {
+                    deferred.resolve(true);
+                }, function (error) {
+                    deferred.resolve(false);
                 });
             } else if (gitHost.name === this.gitLabString) {
                 // Check access token with GitLab
