@@ -725,23 +725,20 @@ define([
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.issues.getForRepo({
+                github.issues.listForRepo({
                     owner: urlParts[0],
                     repo: urlParts[1],
                     state: "all",
                     per_page: 100
-                }, function (error, response) {
-                    if (error) {
-                        var errorObj = json.parse(error.message || error);
-                        deferred.reject("Couldn't get the issues from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
-                    } else {
-                        var convertedIssues = [];
-                        array.forEach(self._removePullRequestsFromIssuesList(response.data), function (issue) {
-                            convertedIssues.push(IssueModel.CreateFromGitHubIssue(issue, alreadyLinkedUrls));
-                        });
-                        convertedIssues.push(self._createNewIssueElement(self.gitHosts.gitHubHost.displayName));
-                        deferred.resolve(convertedIssues);
-                    }
+                }).then(function (response) {
+                    var convertedIssues = [];
+                    array.forEach(self._removePullRequestsFromIssuesList(response.data), function (issue) {
+                        convertedIssues.push(IssueModel.CreateFromGitHubIssue(issue, alreadyLinkedUrls));
+                    });
+                    convertedIssues.push(self._createNewIssueElement(self.gitHosts.gitHubHost.displayName));
+                    deferred.resolve(convertedIssues);
+                }, function (error) {
+                    deferred.reject("Couldn't get the issues from the GitHub repository. Error: " + (error.message || error));
                 });
             }
 
