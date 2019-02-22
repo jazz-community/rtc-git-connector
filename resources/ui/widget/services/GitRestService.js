@@ -70,7 +70,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({
-                auth: accessToken
+                auth: this._createGitHubAuth(accessToken)
             });
 
             if (urlParts.length < 2) {
@@ -230,7 +230,7 @@ define([
             var repositoryUrl = new url(params.selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({
-                auth: accessToken
+                auth: this._createGitHubAuth(accessToken)
             });
             var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
                     "(" + params.workItem.object.locationUri + ")" +
@@ -406,7 +406,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({
-                auth: accessToken
+                auth: this._createGitHubAuth(accessToken)
             });
 
             if (urlParts.length < 2) {
@@ -477,7 +477,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({
-                auth: accessToken
+                auth: this._createGitHubAuth(accessToken)
             });
 
             if (urlParts.length < 2) {
@@ -549,7 +549,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({
-                auth: accessToken
+                auth: this._createGitHubAuth(accessToken)
             });
 
             if (urlParts.length < 2) {
@@ -619,7 +619,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({
-                auth: accessToken
+                auth: this._createGitHubAuth(accessToken)
             });
 
             if (urlParts.length < 2) {
@@ -717,7 +717,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({
-                auth: accessToken
+                auth: this._createGitHubAuth(accessToken)
             });
 
             if (urlParts.length < 2) {
@@ -812,7 +812,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({
-                auth: accessToken
+                auth: this._createGitHubAuth(accessToken)
             });
 
             if (urlParts.length < 2) {
@@ -927,7 +927,7 @@ define([
             if (gitHost.name === this.gitHubString) {
                 // Check access token with GitHub
                 var github = new this.gitHubApi({
-                    auth: accessToken
+                    auth: this._createGitHubAuth(accessToken)
                 });
                 github.users.getAuthenticated({}).then(function (response) {
                     deferred.resolve(true);
@@ -981,6 +981,11 @@ define([
             return issues.filter(function (issue) {
                 return !issue.pull_request;
             });
+        },
+
+        // Create the value for the GitHub "auth" parameter
+        _createGitHubAuth: function (accessToken) {
+            return "token " + accessToken;
         }
     });
 
