@@ -125,19 +125,17 @@ define([
             var deferred = new Deferred();
             var filePath = ".github/ISSUE_TEMPLATE/" + this.issueTemplateName;
 
-            github.repos.getContent({
+            github.repos.getContents({
                 owner: urlParts[0],
                 repo: urlParts[1],
                 path: filePath,
                 headers: {
                     accept: "application/vnd.github.VERSION.raw"
                 }
-            }, function (error, response) {
-                if (error) {
-                    deferred.reject("Couldn't get the issue template from GitHub. Error: " + (error.message || error));
-                } else {
-                    deferred.resolve(response.data);
-                }
+            }).then(function (response) {
+                deferred.resolve(response.data);
+            }, function (error) {
+                deferred.reject("Couldn't get the issue template from GitHub. Error: " + (error.message || error));
             });
 
             return deferred.promise;
