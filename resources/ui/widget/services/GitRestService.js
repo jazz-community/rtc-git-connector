@@ -418,15 +418,13 @@ define([
                     owner: urlParts[0],
                     repo: urlParts[1],
                     sha: commitSha
-                }, function (error, response) {
-                    if (error) {
-                        // Just resolve with an empty array if not found
-                        deferred.resolve([]);
-                    } else {
-                        var convertedCommits = [];
-                        convertedCommits.push(CommitModel.CreateFromGitHubCommit(response.data, alreadyLinkedUrls));
-                        deferred.resolve(convertedCommits);
-                    }
+                }).then(function (response) {
+                    var convertedCommits = [];
+                    convertedCommits.push(CommitModel.CreateFromGitHubCommit(response.data, alreadyLinkedUrls));
+                    deferred.resolve(convertedCommits);
+                }, function (error) {
+                    // Just resolve with an empty array if not found
+                    deferred.resolve([]);
                 });
             }
 
