@@ -69,7 +69,9 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: this._createGitHubAuth(accessToken)
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
@@ -79,10 +81,6 @@ define([
                 tags.push("from-rtc-work-item");
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
                 this.getGitHubIssueTemplate(github, urlParts).then(function (result) {
                     createIssue(result);
                 }, function (error) {
@@ -112,12 +110,10 @@ define([
                         title: workItem.object.attributes.summary.content,
                         body: renderedTemplate,
                         labels: tags
-                    }, function (error, response) {
-                        if (error) {
-                            deferred.reject("Couldn't create an issue in the GitHub repository. Error: " + (error.message || error));
-                        } else {
-                            deferred.resolve(IssueModel.CreateFromGitHubIssue(response.data, []));
-                        }
+                    }).then(function (response) {
+                        deferred.resolve(IssueModel.CreateFromGitHubIssue(response.data, []));
+                    }, function (error) {
+                        deferred.reject("Couldn't create an issue in the GitHub repository. Error: " + (error.message || error));
                     });
                 };
             }
@@ -129,19 +125,17 @@ define([
             var deferred = new Deferred();
             var filePath = ".github/ISSUE_TEMPLATE/" + this.issueTemplateName;
 
-            github.repos.getContent({
+            github.repos.getContents({
                 owner: urlParts[0],
                 repo: urlParts[1],
                 path: filePath,
                 headers: {
                     accept: "application/vnd.github.VERSION.raw"
                 }
-            }, function (error, response) {
-                if (error) {
-                    deferred.reject("Couldn't get the issue template from GitHub. Error: " + (error.message || error));
-                } else {
-                    deferred.resolve(response.data);
-                }
+            }).then(function (response) {
+                deferred.resolve(response.data);
+            }, function (error) {
+                deferred.reject("Couldn't get the issue template from GitHub. Error: " + (error.message || error));
             });
 
             return deferred.promise;
@@ -235,7 +229,9 @@ define([
             var deferredArray = [];
             var repositoryUrl = new url(params.selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: this._createGitHubAuth(params.accessToken)
+            });
             var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
                     "(" + params.workItem.object.locationUri + ")" +
                     " on behalf of " + params.currentUser;
@@ -249,11 +245,6 @@ define([
                 deferredArray.push(deferred);
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
-
-                github.authenticate({
-                    type: 'token',
-                    token: params.accessToken
-                });
 
                 if (params.commitsToLink && params.commitsToLink.length > 0) {
                     array.forEach(params.commitsToLink, function (commit) {
@@ -285,12 +276,10 @@ define([
                 repo: repo,
                 sha: sha,
                 body: commentBody
-            }, function (error, response) {
-                if (error) {
-                    deferred.reject("Couldn't add a comment to the GitHub commit. Error: " + (error.message || error));
-                } else {
-                    deferred.resolve(response.data);
-                }
+            }).then(function (response) {
+                deferred.resolve(response.data);
+            }, function (error) {
+                deferred.reject("Couldn't add a comment to the GitHub commit. Error: " + (error.message || error));
             });
 
             return deferred;
@@ -304,12 +293,10 @@ define([
                 repo: repo,
                 number: id,
                 body: commentBody
-            }, function (error, response) {
-                if (error) {
-                    deferred.reject("Couldn't add a comment to the GitHub issue or pull request. Error: " + (error.message || error));
-                } else {
-                    deferred.resolve(response.data);
-                }
+            }).then(function (response) {
+                deferred.resolve(response.data);
+            }, function (error) {
+                deferred.reject("Couldn't add a comment to the GitHub issue or pull request. Error: " + (error.message || error));
             });
 
             return deferred;
@@ -418,30 +405,26 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: this._createGitHubAuth(accessToken)
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
                 github.repos.getCommit({
                     owner: urlParts[0],
                     repo: urlParts[1],
                     sha: commitSha
-                }, function (error, response) {
-                    if (error) {
-                        // Just resolve with an empty array if not found
-                        deferred.resolve([]);
-                    } else {
-                        var convertedCommits = [];
-                        convertedCommits.push(CommitModel.CreateFromGitHubCommit(response.data, alreadyLinkedUrls));
-                        deferred.resolve(convertedCommits);
-                    }
+                }).then(function (response) {
+                    var convertedCommits = [];
+                    convertedCommits.push(CommitModel.CreateFromGitHubCommit(response.data, alreadyLinkedUrls));
+                    deferred.resolve(convertedCommits);
+                }, function (error) {
+                    // Just resolve with an empty array if not found
+                    deferred.resolve([]);
                 });
             }
 
@@ -493,32 +476,28 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: this._createGitHubAuth(accessToken)
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
                 github.issues.get({
                     owner: urlParts[0],
                     repo: urlParts[1],
                     number: issueId
-                }, function (error, response) {
-                    if (error) {
-                        // Just resolve with an empty array if not found
-                        deferred.resolve([]);
-                    } else {
-                        var convertedIssues = [];
-                        if (!response.data.pull_request) {
-                            convertedIssues.push(IssueModel.CreateFromGitHubIssue(response.data, alreadyLinkedUrls));
-                        }
-                        deferred.resolve(convertedIssues);
+                }).then(function (response) {
+                    var convertedIssues = [];
+                    if (!response.data.pull_request) {
+                        convertedIssues.push(IssueModel.CreateFromGitHubIssue(response.data, alreadyLinkedUrls));
                     }
+                    deferred.resolve(convertedIssues);
+                }, function (error) {
+                    // Just resolve with an empty array if not found
+                    deferred.resolve([]);
                 });
             }
 
@@ -569,30 +548,26 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: this._createGitHubAuth(accessToken)
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
-                github.pullRequests.get({
+                github.pulls.get({
                     owner: urlParts[0],
                     repo: urlParts[1],
                     number: requestId
-                }, function (error, response) {
-                    if (error) {
-                        // Just resolve with an empty array if not found
-                        deferred.resolve([]);
-                    } else {
-                        var convertedRequests = [];
-                        convertedRequests.push(RequestModel.CreateFromGitHubRequest(response.data, alreadyLinkedUrls));
-                        deferred.resolve(convertedRequests);
-                    }
+                }).then(function (response) {
+                    var convertedRequests = [];
+                    convertedRequests.push(RequestModel.CreateFromGitHubRequest(response.data, alreadyLinkedUrls));
+                    deferred.resolve(convertedRequests);
+                }, function (error) {
+                    // Just resolve with an empty array if not found
+                    deferred.resolve([]);
                 });
             }
 
@@ -643,31 +618,27 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: this._createGitHubAuth(accessToken)
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
-                github.repos.getCommits({
+
+                github.repos.listCommits({
                     owner: urlParts[0],
                     repo: urlParts[1],
                     per_page: 100
-                }, function (error, response) {
-                    if (error) {
-                        var errorObj = json.parse(error.message || error);
-                        deferred.reject("Couldn't get the commits from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
-                    } else {
-                        var convertedCommits = [];
-                        array.forEach(response.data, function (commit) {
-                            convertedCommits.push(CommitModel.CreateFromGitHubCommit(commit, alreadyLinkedUrls));
-                        });
-                        deferred.resolve(convertedCommits);
-                    }
+                }).then(function (response) {
+                    var convertedCommits = [];
+                    array.forEach(response.data, function (commit) {
+                        convertedCommits.push(CommitModel.CreateFromGitHubCommit(commit, alreadyLinkedUrls));
+                    });
+                    deferred.resolve(convertedCommits);
+                }, function (error) {
+                    deferred.reject("Couldn't get the commits from the GitHub repository. Error: " + (error.message || error));
                 });
             }
 
@@ -745,34 +716,29 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: this._createGitHubAuth(accessToken)
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
-                github.issues.getForRepo({
+                github.issues.listForRepo({
                     owner: urlParts[0],
                     repo: urlParts[1],
                     state: "all",
                     per_page: 100
-                }, function (error, response) {
-                    if (error) {
-                        var errorObj = json.parse(error.message || error);
-                        deferred.reject("Couldn't get the issues from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
-                    } else {
-                        var convertedIssues = [];
-                        array.forEach(self._removePullRequestsFromIssuesList(response.data), function (issue) {
-                            convertedIssues.push(IssueModel.CreateFromGitHubIssue(issue, alreadyLinkedUrls));
-                        });
-                        convertedIssues.push(self._createNewIssueElement(self.gitHosts.gitHubHost.displayName));
-                        deferred.resolve(convertedIssues);
-                    }
+                }).then(function (response) {
+                    var convertedIssues = [];
+                    array.forEach(self._removePullRequestsFromIssuesList(response.data), function (issue) {
+                        convertedIssues.push(IssueModel.CreateFromGitHubIssue(issue, alreadyLinkedUrls));
+                    });
+                    convertedIssues.push(self._createNewIssueElement(self.gitHosts.gitHubHost.displayName));
+                    deferred.resolve(convertedIssues);
+                }, function (error) {
+                    deferred.reject("Couldn't get the issues from the GitHub repository. Error: " + (error.message || error));
                 });
             }
 
@@ -845,33 +811,28 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: this._createGitHubAuth(accessToken)
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
-                github.pullRequests.getAll({
+                github.pulls.list({
                     owner: urlParts[0],
                     repo: urlParts[1],
                     state: "all",
                     per_page: 100
-                }, function (error, response) {
-                    if (error) {
-                        var errorObj = json.parse(error.message || error);
-                        deferred.reject("Couldn't get the pull requests from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
-                    } else {
-                        var convertedRequests = [];
-                        array.forEach(response.data, function (request) {
-                            convertedRequests.push(RequestModel.CreateFromGitHubRequest(request, alreadyLinkedUrls));
-                        });
-                        deferred.resolve(convertedRequests);
-                    }
+                }).then(function (response) {
+                    var convertedRequests = [];
+                    array.forEach(response.data, function (request) {
+                        convertedRequests.push(RequestModel.CreateFromGitHubRequest(request, alreadyLinkedUrls));
+                    });
+                    deferred.resolve(convertedRequests);
+                }, function (error) {
+                    deferred.reject("Couldn't get the pull requests from the GitHub repository. Error: " + (error.message || error));
                 });
             }
 
@@ -965,17 +926,13 @@ define([
 
             if (gitHost.name === this.gitHubString) {
                 // Check access token with GitHub
-                var github = new this.gitHubApi({});
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
+                var github = new this.gitHubApi({
+                    auth: this._createGitHubAuth(accessToken)
                 });
-                github.users.get({}, function (error, response) {
-                    if (error) {
-                        deferred.resolve(false);
-                    } else {
-                        deferred.resolve(true);
-                    }
+                github.users.getAuthenticated({}).then(function (response) {
+                    deferred.resolve(true);
+                }, function (error) {
+                    deferred.resolve(false);
                 });
             } else if (gitHost.name === this.gitLabString) {
                 // Check access token with GitLab
@@ -1024,6 +981,11 @@ define([
             return issues.filter(function (issue) {
                 return !issue.pull_request;
             });
+        },
+
+        // Create the value for the GitHub "auth" parameter
+        _createGitHubAuth: function (accessToken) {
+            return "token " + accessToken;
         }
     });
 
