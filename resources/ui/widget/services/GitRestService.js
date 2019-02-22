@@ -293,12 +293,10 @@ define([
                 repo: repo,
                 number: id,
                 body: commentBody
-            }, function (error, response) {
-                if (error) {
-                    deferred.reject("Couldn't add a comment to the GitHub issue or pull request. Error: " + (error.message || error));
-                } else {
-                    deferred.resolve(response.data);
-                }
+            }).then(function (response) {
+                deferred.resolve(response.data);
+            }, function (error) {
+                deferred.reject("Couldn't add a comment to the GitHub issue or pull request. Error: " + (error.message || error));
             });
 
             return deferred;
