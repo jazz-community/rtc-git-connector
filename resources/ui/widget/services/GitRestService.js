@@ -489,17 +489,15 @@ define([
                     owner: urlParts[0],
                     repo: urlParts[1],
                     number: issueId
-                }, function (error, response) {
-                    if (error) {
-                        // Just resolve with an empty array if not found
-                        deferred.resolve([]);
-                    } else {
-                        var convertedIssues = [];
-                        if (!response.data.pull_request) {
-                            convertedIssues.push(IssueModel.CreateFromGitHubIssue(response.data, alreadyLinkedUrls));
-                        }
-                        deferred.resolve(convertedIssues);
+                }).then(function (response) {
+                    var convertedIssues = [];
+                    if (!response.data.pull_request) {
+                        convertedIssues.push(IssueModel.CreateFromGitHubIssue(response.data, alreadyLinkedUrls));
                     }
+                    deferred.resolve(convertedIssues);
+                }, function (error) {
+                    // Just resolve with an empty array if not found
+                    deferred.resolve([]);
                 });
             }
 
