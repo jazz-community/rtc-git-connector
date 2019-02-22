@@ -69,7 +69,9 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: accessToken
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
@@ -79,10 +81,6 @@ define([
                 tags.push("from-rtc-work-item");
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
                 this.getGitHubIssueTemplate(github, urlParts).then(function (result) {
                     createIssue(result);
                 }, function (error) {
@@ -235,7 +233,9 @@ define([
             var deferredArray = [];
             var repositoryUrl = new url(params.selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: accessToken
+            });
             var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
                     "(" + params.workItem.object.locationUri + ")" +
                     " on behalf of " + params.currentUser;
@@ -249,11 +249,6 @@ define([
                 deferredArray.push(deferred);
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
-
-                github.authenticate({
-                    type: 'token',
-                    token: params.accessToken
-                });
 
                 if (params.commitsToLink && params.commitsToLink.length > 0) {
                     array.forEach(params.commitsToLink, function (commit) {
@@ -418,17 +413,15 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: accessToken
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
                 github.repos.getCommit({
                     owner: urlParts[0],
                     repo: urlParts[1],
@@ -493,17 +486,15 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: accessToken
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
                 github.issues.get({
                     owner: urlParts[0],
                     repo: urlParts[1],
@@ -569,17 +560,15 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: accessToken
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
                 github.pullRequests.get({
                     owner: urlParts[0],
                     repo: urlParts[1],
@@ -643,16 +632,15 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: accessToken
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
+
                 github.repos.getCommits({
                     owner: urlParts[0],
                     repo: urlParts[1],
@@ -745,17 +733,15 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: accessToken
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
                 github.issues.getForRepo({
                     owner: urlParts[0],
                     repo: urlParts[1],
@@ -845,17 +831,15 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({});
+            var github = new this.gitHubApi({
+                auth: accessToken
+            });
 
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
-                });
                 github.pullRequests.getAll({
                     owner: urlParts[0],
                     repo: urlParts[1],
@@ -965,10 +949,8 @@ define([
 
             if (gitHost.name === this.gitHubString) {
                 // Check access token with GitHub
-                var github = new this.gitHubApi({});
-                github.authenticate({
-                    type: 'token',
-                    token: accessToken
+                var github = new this.gitHubApi({
+                    auth: accessToken
                 });
                 github.users.get({}, function (error, response) {
                     if (error) {
