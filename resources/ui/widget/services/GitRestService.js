@@ -230,7 +230,7 @@ define([
             var repositoryUrl = new url(params.selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new this.gitHubApi({
-                auth: this._createGitHubAuth(accessToken)
+                auth: this._createGitHubAuth(params.accessToken)
             });
             var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
                     "(" + params.workItem.object.locationUri + ")" +
