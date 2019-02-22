@@ -627,21 +627,18 @@ define([
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.repos.getCommits({
+                github.repos.listCommits({
                     owner: urlParts[0],
                     repo: urlParts[1],
                     per_page: 100
-                }, function (error, response) {
-                    if (error) {
-                        var errorObj = json.parse(error.message || error);
-                        deferred.reject("Couldn't get the commits from the GitHub repository. Error: " + ((errorObj && errorObj.message) || error.message || error));
-                    } else {
-                        var convertedCommits = [];
-                        array.forEach(response.data, function (commit) {
-                            convertedCommits.push(CommitModel.CreateFromGitHubCommit(commit, alreadyLinkedUrls));
-                        });
-                        deferred.resolve(convertedCommits);
-                    }
+                }).then(function (response) {
+                    var convertedCommits = [];
+                    array.forEach(response.data, function (commit) {
+                        convertedCommits.push(CommitModel.CreateFromGitHubCommit(commit, alreadyLinkedUrls));
+                    });
+                    deferred.resolve(convertedCommits);
+                }, function (error) {
+                    deferred.reject("Couldn't get the commits from the GitHub repository. Error: " + (error.message || error));
                 });
             }
 
