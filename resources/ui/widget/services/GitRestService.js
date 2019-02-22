@@ -557,19 +557,17 @@ define([
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.pullRequests.get({
+                github.pulls.get({
                     owner: urlParts[0],
                     repo: urlParts[1],
                     number: requestId
-                }, function (error, response) {
-                    if (error) {
-                        // Just resolve with an empty array if not found
-                        deferred.resolve([]);
-                    } else {
-                        var convertedRequests = [];
-                        convertedRequests.push(RequestModel.CreateFromGitHubRequest(response.data, alreadyLinkedUrls));
-                        deferred.resolve(convertedRequests);
-                    }
+                }).then(function (response) {
+                    var convertedRequests = [];
+                    convertedRequests.push(RequestModel.CreateFromGitHubRequest(response.data, alreadyLinkedUrls));
+                    deferred.resolve(convertedRequests);
+                }, function (error) {
+                    // Just resolve with an empty array if not found
+                    deferred.resolve([]);
                 });
             }
 
