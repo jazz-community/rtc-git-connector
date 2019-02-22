@@ -110,12 +110,10 @@ define([
                         title: workItem.object.attributes.summary.content,
                         body: renderedTemplate,
                         labels: tags
-                    }, function (error, response) {
-                        if (error) {
-                            deferred.reject("Couldn't create an issue in the GitHub repository. Error: " + (error.message || error));
-                        } else {
-                            deferred.resolve(IssueModel.CreateFromGitHubIssue(response.data, []));
-                        }
+                    }).then(function (response) {
+                        deferred.resolve(IssueModel.CreateFromGitHubIssue(response.data, []));
+                    }, function (error) {
+                        deferred.reject("Couldn't create an issue in the GitHub repository. Error: " + (error.message || error));
                     });
                 };
             }
