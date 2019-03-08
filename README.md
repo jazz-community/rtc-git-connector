@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/jazz-community/rtc-git-connector.svg?branch=master)](https://travis-ci.org/jazz-community/rtc-git-connector)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjazz-community%2Frtc-git-connector.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjazz-community%2Frtc-git-connector?ref=badge_shield)
 
 ## Introduction
 The _RTC Git Connector_ is a plugin for IBM Rational Team Concert (RTC) that enables you to connect RTC work items with Git commits, issues, and pull/merge requests. This plugin helps to bridge the workflow gap between RTC and Git platforms like GitHub and GitLab.
@@ -25,3 +26,6 @@ For general contribution guidelines, please refer to [CONTRIBUTING.md](https://g
 ## Licensing
 Copyright (c) Siemens AG. All rights reserved.<br>
 Licensed under the [MIT](https://github.com/jazz-community/rtc-git-connector/blob/master/LICENSE) License.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjazz-community%2Frtc-git-connector.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjazz-community%2Frtc-git-connector?ref=badge_large)
