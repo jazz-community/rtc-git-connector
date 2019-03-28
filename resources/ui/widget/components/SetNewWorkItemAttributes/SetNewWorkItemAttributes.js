@@ -17,7 +17,7 @@ define([
         templateString: template,
         mainDataStore: null,
         hasOverview: false,
-        attributesToShow: ["category", "owner", "target", "foundIn"],
+        attributesToShow: ["category", "owner", "target", "foundIn", "internalTags"],
 
         visible: false,
         _setVisibleAttr: function (visible) {
@@ -51,7 +51,7 @@ define([
         },
 
         // Create a work item editor with only the specified attributes.
-        // ["category", "owner", "target", "foundIn"]
+        // ["category", "owner", "target", "foundIn", "internalTags"]
         // If the attribute is not available for the current work item presentation
         // it will just be left out.
         createOverview: function () {
@@ -145,6 +145,7 @@ define([
 
         // Only keep the section presentations for the specified attributes
         _filterSectionPresentationsByAttributes: function (section, attributes) {
+            console.log("section: ", section);
             section.presentations = section.presentations.filter(function (presentation) {
                 return attributes.some(function (attribute) {
                     return attribute === presentation.attributeId;
