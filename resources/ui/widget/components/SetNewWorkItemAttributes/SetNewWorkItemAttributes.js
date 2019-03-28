@@ -145,7 +145,6 @@ define([
 
         // Only keep the section presentations for the specified attributes
         _filterSectionPresentationsByAttributes: function (section, attributes) {
-            console.log("section: ", section);
             section.presentations = section.presentations.filter(function (presentation) {
                 return attributes.some(function (attribute) {
                     return attribute === presentation.attributeId;
