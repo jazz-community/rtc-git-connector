@@ -22,7 +22,7 @@ define([
         workItemStoredEventName: "workitem/stored",
         workItemViewChangedEventName: "workitem/view/changed",
         menuRefreshEventName: "rtc/workitems/page/menu/refresh",
-        attributesToShow: ["category", "owner", "target", "foundIn"],
+        attributesToShow: ["category", "owner", "target", "foundIn", "internalTags"],
         _newWorkItemIdSuffix: 0,
 
         constructor: function () {
@@ -185,8 +185,15 @@ define([
             * when setting the value to "Unassigned".
             *
             * We prevent it from being marked as changed by not calling setValue.
+            *
+            * If the id is undefined, check if the attribute has content.
+            * If the content is different, set the value. This is used for tags.
             **/
-            if (copyToWorkItem.getValue({ path: ["attributes", attributeId] }).id !== attributeValue.id) {
+            var attributeValueFromWorkItem = copyToWorkItem.getValue({ path: ["attributes", attributeId] });
+            if (attributeValueFromWorkItem.id !== attributeValue.id ||
+                (typeof attributeValue.id === "undefined" &&
+                typeof attributeValue.content !== "undefined" &&
+                attributeValueFromWorkItem.content !== attributeValue.content)) {
                 copyToWorkItem.setValue({
                     path: ["attributes", attributeId],
                     attributeId: attributeId,
@@ -275,11 +282,29 @@ define([
                 });
             }
 
+            // Get the tags value. It might have been set by the user.
+            var tagsValue = workItem.getValue({
+                path: ["attributes", "internalTags", "content"]
+            });
+            var fromGitIssueTag = "from-git-issue";
+
+            // Add a custom tag to the new work item
+            if (tagsValue) {
+                tagsValue += ", " + fromGitIssueTag;
+            } else {
+                tagsValue = fromGitIssueTag;
+            }
+
+            // Add any git issue labels as tags
+            if (gitIssue.labels) {
+                tagsValue += ", " + gitIssue.labels;
+            }
+
             // Set the git issue labels as tags
             workItem.setValue({
-                path: ["attributes", "internalTags"],
+                path: ["attributes", "internalTags", "content"],
                 attributeId: "internalTags",
-                value: (gitIssue.labels ? "from-git-issue, " + gitIssue.labels : "from-git-issue")
+                value: tagsValue
             });
 
             // Add the git issue as a link
