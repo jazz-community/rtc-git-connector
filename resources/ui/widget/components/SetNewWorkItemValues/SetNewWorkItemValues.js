@@ -3,6 +3,7 @@ define([
     "dojo/dom-style",
     "../../services/MainDataStore",
     "../SetNewWorkItemAttributes/SetNewWorkItemAttributes",
+    "../SetNewWorkItemLinks/SetNewWorkItemLinks",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
@@ -10,7 +11,7 @@ define([
     "jazz/css!./SetNewWorkItemValues.css"
 ], function (declare, domStyle,
     MainDataStore,
-    SetNewWorkItemAttributes,
+    SetNewWorkItemAttributes, SetNewWorkItemLinks,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.setNewWorkItemValues",
@@ -41,7 +42,11 @@ define([
             this.mainDataStore.selectedRepositoryData.issuesToLink.watchElements(function () {
                 var hasItems = self.mainDataStore.selectedRepositoryData.issuesToLink.length > 0;
                 self.set("visible", hasItems);
-                self.setNewWorkItemAttributes.show();
+
+                if (hasItems) {
+                    self.setNewWorkItemAttributes.show();
+                    self.setNewWorkItemLinks.show();
+                }
             });
         }
     });
