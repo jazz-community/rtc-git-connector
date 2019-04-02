@@ -53,8 +53,6 @@ define([
             this.enabledEndpoints = new ArrayList();
             this.enabledEndpoints.add(WorkItemEndpoints.PARENT_WORK_ITEM);
 
-            this.enabledEndpoints.add(WorkItemEndpoints.DEPENDS_ON_WORK_ITEM);
-
             this.enabledEndpointsWithValues = new BindableList();
         },
 
@@ -90,9 +88,9 @@ define([
                 this._launchDialog(workingCopy, workItemReferences, chosenDescriptor);
             }));
 
-            // domStyle.set(actionsMenu._view._dropdownElement, "float", "none");
-            // domStyle.set(actionsMenu._view._dropdownElement, "border-right", "none");
-            // domStyle.set(actionsMenu._view._dropdownArrow, "display", "none");
+            if (this.enabledEndpoints.size() === 1) {
+                this._hideDropdown(actionsMenu._view);
+            }
 
             // Links pres
             var listViewDiv = domConstruct.create("div", null, this.linksContainer);
@@ -153,6 +151,12 @@ define([
                     self.enabledEndpointsWithValues.add(endpoint);
                 }
             });
+        },
+
+        _hideDropdown: function (actionsMenuView) {
+            domStyle.set(actionsMenuView._dropdownElement, "float", "none");
+            domStyle.set(actionsMenuView._dropdownElement, "border-right", "none");
+            domStyle.set(actionsMenuView._dropdownArrow, "display", "none");
         }
     });
 });
