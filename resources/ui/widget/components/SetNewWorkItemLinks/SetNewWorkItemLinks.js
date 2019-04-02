@@ -46,9 +46,11 @@ define([
         hasPresentation: false,
         enabledEndpoints: null,
         enabledEndpointsWithValues: null,
+        workingCopy: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
+            this.workingCopy = this.mainDataStore.workItem.getWorkingCopy();
 
             // Create the list of link types to show
             this.enabledEndpoints = new ArrayList();
@@ -64,23 +66,32 @@ define([
         show: function () {
             if (!this.hasPresentation) {
                 this.hasPresentation = true;
-                this.createPresentation();
+                this.createLinksDropdown();
+                this.createLinksList();
             }
         },
 
-        createPresentation: function () {
+        // Create the dropdown for selecting work items to link. Will be
+        // styled as a single button if there is only one item
+        createLinksDropdown: function () {
             var self = this;
-            var workingCopy = this.mainDataStore.workItem.getWorkingCopy();
-            var workItemReferences = workingCopy.getWorkItemReferences();
-            var endpointList = new BindableList();
-            var defaultEndpoint = new Bindable();
+            var workItemReferences = this.workingCopy.getWorkItemReferences();
 
+            // Create a list of endpoints to show in the dropdown
+            var endpointList = new BindableList();
             endpointList.add(this.enabledEndpoints);
+
+            // Set the first endpoint in the list to be the default
+            var defaultEndpoint = new Bindable();
             defaultEndpoint.setValue(this.enabledEndpoints.at(0));
 
+            // Create a div for placing the dropdown in
             var actionsMenuDiv = domConstruct.create("div", null, this.linksContainer);
+
+            // Create the ActionDropdown and place it
             var actionsMenu = ActionDropdown.create({}, actionsMenuDiv);
 
+            // Setup the ActionDropdown
             actionsMenu.renderer(lang.hitch(this, function (endpoint) {
                 return new MenuItem({
                     label: this._getEndpointLabel(endpoint),
@@ -88,39 +99,60 @@ define([
                 });
             })).values(endpointList).defaultValue(defaultEndpoint).bind();
 
+            // Open the links chooser dialog when a menu item is clicked
             actionsMenu.valueChosen.addListener(lang.hitch(this, function (chosenDescriptor) {
-                this._launchLinksDialog(workingCopy, workItemReferences, chosenDescriptor);
+                this._launchLinksDialog(self.workingCopy, workItemReferences, chosenDescriptor);
             }));
 
+            // Hide the menu dropdown part when there is only a single item
             if (this.enabledEndpoints.size() === 1) {
                 this._hideDropdown(actionsMenu._view);
             }
+        },
 
-            // Links pres
+        // Create the presentation of the set links. Can be used to remove the links
+        createLinksList: function () {
+            var self = this;
+            var workItemReferences = this.workingCopy.getWorkItemReferences();
+
+            // Create a div for placing the list view in
             var listViewDiv = domConstruct.create("div", null, this.linksContainer);
+
+            // Create the ArtifactMultiList and place it
             var listView = ArtifactMultiList.create(listViewDiv);
+
+            // Initialize empty BindableLists to bind with the enabledEndpointsWithValues later
             var headers= new BindableList();
             var readOnly= new BindableList();
             var typesMap= new BindableList();
 
+            // Bind the headers to the endpoint display names and icons
             ListBindings.bindWithAdapter(this.enabledEndpointsWithValues, headers, function (endpoint) {
                 return new Label(endpoint.getDisplayName()).iconUrl(endpoint.getIcon().toUri());
             });
 
+            // Bind the readOnly attribute to reflect whether links from this endpoint can be deleted or not
             ListBindings.bindWithAdapter(this.enabledEndpointsWithValues, readOnly, function (endpoint) {
                 return new Bindable(!endpoint.isUserDeleteable());
             });
 
+            // Bind the typesMap to the work item references for each endpoint
             ListBindings.bindWithAdapter(this.enabledEndpointsWithValues, typesMap, function (endpoint) {
                 var result = new BindableList();
                 var references = workItemReferences.getReferences(endpoint);
 
+                // Bind result to the work item references for this endpoint
                 ListBindings.bind(references, result);
 
+                // Listen for changes in the result list
                 result.onListChanged().addListener(function (callbackArg) {
+                    // Check if a reference has been removed from the result list
                     if (!JDojoX.isEqual(result, references) && callbackArg.type === 'remove') {
+                        // Remove the reference from the work item references
                         workItemReferences.remove(endpoint, callbackArg.elements[0]);
 
+                        // Remove the endpoint from the list of endpoints with values
+                        // if the endpoint doesn't have any more references
                         if (!workItemReferences.hasReferences(endpoint)) {
                             self.enabledEndpointsWithValues.remove(endpoint);
                         }
@@ -130,6 +162,7 @@ define([
                 return result;
             });
 
+            // Setup the ArtifactMultiList
             listView.renderer(function (itemReference) {
                 return new Label(itemReference.getComment()).iconUrl(itemReference.getIconUrl()).url(itemReference.getUrl());
             }).headers(headers).sections(typesMap).readOnly(readOnly).compact(new Bindable(false)).bind();
