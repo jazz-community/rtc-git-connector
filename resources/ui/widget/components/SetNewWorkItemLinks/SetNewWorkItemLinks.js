@@ -2,6 +2,7 @@ define([
     "dojo/_base/declare",
     "dojo/_base/lang",
     "dojo/dom-construct",
+    "dojo/dom-style",
     "dojo/string",
     "../../services/MainDataStore",
     "dijit/MenuItem",
@@ -16,7 +17,7 @@ define([
     "com.ibm.team.rtc.foundation.web.ui.views.controller.ActionDropdown",
     "com.ibm.team.workitem.web.model.links.WorkItemEndpoints",
     "com.ibm.team.workitem.web.ui.internal.view.editor.presentations.nonattribute.links.LinksDialogLauncher"
-], function (declare, lang, domConstruct, string,
+], function (declare, lang, domConstruct, domStyle, string,
     MainDataStore,
     MenuItem,
     _WidgetBase, _TemplatedMixin,
@@ -73,6 +74,10 @@ define([
             actionsMenu.valueChosen.addListener(lang.hitch(this, function(chosenDescriptor) {
                 this._launchDialog(workingCopy, workItemReferences, chosenDescriptor);
             }));
+
+            domStyle.set(actionsMenu._view._dropdownElement, "float", "none");
+            domStyle.set(actionsMenu._view._dropdownElement, "border-right", "none");
+            domStyle.set(actionsMenu._view._dropdownArrow, "display", "none");
         },
 
         _getEndpointLabel: function(endPoint) {
