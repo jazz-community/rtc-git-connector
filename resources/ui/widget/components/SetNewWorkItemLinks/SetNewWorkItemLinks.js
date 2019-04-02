@@ -50,9 +50,13 @@ define([
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
 
+            // Create the list of link types to show
             this.enabledEndpoints = new ArrayList();
             this.enabledEndpoints.add(WorkItemEndpoints.PARENT_WORK_ITEM);
 
+            // Create a list to keep track of what link types have links set
+            // This is used for the view to dynamically show/hide when links
+            // are added or removed
             this.enabledEndpointsWithValues = new BindableList();
         },
 
@@ -85,7 +89,7 @@ define([
             })).values(endpointList).defaultValue(defaultEndpoint).bind();
 
             actionsMenu.valueChosen.addListener(lang.hitch(this, function (chosenDescriptor) {
-                this._launchDialog(workingCopy, workItemReferences, chosenDescriptor);
+                this._launchLinksDialog(workingCopy, workItemReferences, chosenDescriptor);
             }));
 
             if (this.enabledEndpoints.size() === 1) {
@@ -131,28 +135,37 @@ define([
             }).headers(headers).sections(typesMap).readOnly(readOnly).compact(new Bindable(false)).bind();
         },
 
+        // Get the label for the specified endpoint
         _getEndpointLabel: function (endpoint) {
             return string.substitute(endpoint.isSingleValued() ? "Set ${0}" : "Add ${0}", [endpoint.getDisplayName()]);
         },
 
-        _launchDialog: function (workItem, workItemReferences, chosenDescriptor) {
+        // Launch a dialog for selecting links of a specific type for the specified work item
+        _launchLinksDialog: function (workItem, workItemReferences, chosenDescriptor) {
             var self = this;
 
             LinksDialogLauncher.launchDialog(workItem, chosenDescriptor, function (endpoint) {
+                // Get an array of all the endpoint references (passed as multiple arguments after endpoint)
                 var references = Array.prototype.slice.call(arguments, 1);
 
+                // Remove the existing reference if this is a single valued endpoint
+                // and the work item already has a reference
                 if (endpoint.isSingleValued() && workItemReferences.hasReferences(endpoint)) {
                     workItemReferences.remove(endpoint, workItemReferences.getReferences(endpoint).at(0));
                 }
 
+                // Add the new references to the endpoint
                 workItemReferences.add.apply(workItemReferences, [endpoint].concat(references));
 
+                // Add the endpoint to the custom list so that it will be shown in the view
+                // Only add each endpoint to the list once. The individual references will be added to the endpoint
                 if (!self.enabledEndpointsWithValues.contains(endpoint)) {
                     self.enabledEndpointsWithValues.add(endpoint);
                 }
             });
         },
 
+        // Hide the arrow drop down from the actions menu. This is useful when the menu only contains a single item
         _hideDropdown: function (actionsMenuView) {
             domStyle.set(actionsMenuView._dropdownElement, "float", "none");
             domStyle.set(actionsMenuView._dropdownElement, "border-right", "none");
