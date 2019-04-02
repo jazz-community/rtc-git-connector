@@ -44,9 +44,16 @@ define([
         templateString: template,
         mainDataStore: null,
         hasPresentation: false,
+        enabledEndpoints: null,
+        enabledEndpointsWithValues: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
+
+            this.enabledEndpoints = new ArrayList();
+            this.enabledEndpoints.add(WorkItemEndpoints.PARENT_WORK_ITEM);
+
+            this.enabledEndpointsWithValues = new BindableList();
         },
 
         // Only create the presentation once the show method is called
@@ -58,16 +65,14 @@ define([
         },
 
         createPresentation: function () {
+            var self = this;
             var workingCopy = this.mainDataStore.workItem.getWorkingCopy();
             var workItemReferences = workingCopy.getWorkItemReferences();
-            var parentEndpoint = WorkItemEndpoints.PARENT_WORK_ITEM;
             var endpointList = new BindableList();
             var defaultEndpoint = new Bindable();
-            var endpointArrayList = new ArrayList();
 
-            endpointArrayList.add(parentEndpoint);
-            endpointList.add(endpointArrayList);
-            defaultEndpoint.setValue(parentEndpoint);
+            endpointList.add(this.enabledEndpoints);
+            defaultEndpoint.setValue(this.enabledEndpoints.at(0));
 
             var actionsMenuDiv = domConstruct.create("div", null, this.linksContainer);
             var actionsMenu = ActionDropdown.create({}, actionsMenuDiv);
@@ -90,22 +95,19 @@ define([
             // Links pres
             var listViewDiv = domConstruct.create("div", null, this.linksContainer);
             var listView = ArtifactMultiList.create(listViewDiv);
-            var endpoints = new BindableList();
             var headers= new BindableList();
             var readOnly= new BindableList();
             var typesMap= new BindableList();
 
-            endpoints.add(parentEndpoint);
-
-            ListBindings.bindWithAdapter(endpoints, headers, function (endpoint) {
+            ListBindings.bindWithAdapter(this.enabledEndpointsWithValues, headers, function (endpoint) {
                 return new Label(endpoint.getDisplayName()).iconUrl(endpoint.getIcon().toUri());
             });
 
-            ListBindings.bindWithAdapter(endpoints, readOnly, function (endpoint) {
+            ListBindings.bindWithAdapter(this.enabledEndpointsWithValues, readOnly, function (endpoint) {
                 return new Bindable(!endpoint.isUserDeleteable());
             });
 
-            ListBindings.bindWithAdapter(endpoints, typesMap, function (endpoint) {
+            ListBindings.bindWithAdapter(this.enabledEndpointsWithValues, typesMap, function (endpoint) {
                 var result = new BindableList();
                 var references = workItemReferences.getReferences(endpoint);
 
@@ -114,6 +116,7 @@ define([
                 result.onListChanged().addListener(function (callbackArg) {
                     if (!JDojoX.isEqual(result, references) && callbackArg.type === 'remove') {
                         workItemReferences.remove(endpoint, callbackArg.elements[0]);
+                        self.enabledEndpointsWithValues.remove(endpoint);
                     }
                 });
 
@@ -130,14 +133,18 @@ define([
         },
 
         _launchDialog: function (workItem, workItemReferences, chosenDescriptor) {
+            var self = this;
+
             LinksDialogLauncher.launchDialog(workItem, chosenDescriptor, function (endpoint) {
                 var references = Array.prototype.slice.call(arguments, 1);
 
                 if (endpoint.isSingleValued() && workItemReferences.hasReferences(endpoint)) {
                     workItemReferences.remove(endpoint, workItemReferences.getReferences(endpoint).at(0));
+                    self.enabledEndpointsWithValues.remove(endpoint);
                 }
 
                 workItemReferences.add.apply(workItemReferences, [endpoint].concat(references));
+                self.enabledEndpointsWithValues.add(endpoint);
             });
         }
     });
