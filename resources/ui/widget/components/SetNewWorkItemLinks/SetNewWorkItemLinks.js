@@ -53,6 +53,8 @@ define([
             this.enabledEndpoints = new ArrayList();
             this.enabledEndpoints.add(WorkItemEndpoints.PARENT_WORK_ITEM);
 
+            this.enabledEndpoints.add(WorkItemEndpoints.DEPENDS_ON_WORK_ITEM);
+
             this.enabledEndpointsWithValues = new BindableList();
         },
 
@@ -88,9 +90,9 @@ define([
                 this._launchDialog(workingCopy, workItemReferences, chosenDescriptor);
             }));
 
-            domStyle.set(actionsMenu._view._dropdownElement, "float", "none");
-            domStyle.set(actionsMenu._view._dropdownElement, "border-right", "none");
-            domStyle.set(actionsMenu._view._dropdownArrow, "display", "none");
+            // domStyle.set(actionsMenu._view._dropdownElement, "float", "none");
+            // domStyle.set(actionsMenu._view._dropdownElement, "border-right", "none");
+            // domStyle.set(actionsMenu._view._dropdownArrow, "display", "none");
 
             // Links pres
             var listViewDiv = domConstruct.create("div", null, this.linksContainer);
@@ -116,7 +118,10 @@ define([
                 result.onListChanged().addListener(function (callbackArg) {
                     if (!JDojoX.isEqual(result, references) && callbackArg.type === 'remove') {
                         workItemReferences.remove(endpoint, callbackArg.elements[0]);
-                        self.enabledEndpointsWithValues.remove(endpoint);
+
+                        if (!workItemReferences.hasReferences(endpoint)) {
+                            self.enabledEndpointsWithValues.remove(endpoint);
+                        }
                     }
                 });
 
@@ -140,11 +145,13 @@ define([
 
                 if (endpoint.isSingleValued() && workItemReferences.hasReferences(endpoint)) {
                     workItemReferences.remove(endpoint, workItemReferences.getReferences(endpoint).at(0));
-                    self.enabledEndpointsWithValues.remove(endpoint);
                 }
 
                 workItemReferences.add.apply(workItemReferences, [endpoint].concat(references));
-                self.enabledEndpointsWithValues.add(endpoint);
+
+                if (!self.enabledEndpointsWithValues.contains(endpoint)) {
+                    self.enabledEndpointsWithValues.add(endpoint);
+                }
             });
         }
     });
