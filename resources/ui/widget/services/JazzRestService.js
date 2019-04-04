@@ -6,9 +6,11 @@ define([
     "dojo/request/xhr",
     "dojo/Deferred",
     "../components/NewWorkItemList/NewWorkItemList",
-    "com.ibm.team.workitem.web.model.links.WorkItemEndpoints"
+    "com.ibm.team.workitem.web.model.links.WorkItemEndpoints",
+    "com.ibm.team.workitem.web.ui.internal.module.WindowContext"
 ], function (declare, array, lang, json, xhr, Deferred, NewWorkItemList) {
     var WorkItemEndpoints = com.ibm.team.workitem.web.model.links.WorkItemEndpoints;
+    var WindowContext = com.ibm.team.workitem.web.ui.internal.module.WindowContext;
 
     var _instance = null;
     var JazzRestService = declare(null, {
@@ -368,13 +370,10 @@ define([
 
         // Handle the event run after a work item has been saved
         handleWorkItemSavedEvent: function (workItemFromEvent, gitIssue, addBackLinksFunction) {
-            dojo.require("com.ibm.team.workitem.web.ui.internal.module.WindowContext");
-
-            var windowContext = com.ibm.team.workitem.web.ui.internal.module.WindowContext;
             var workItemData = {
                 object: {
                     id: workItemFromEvent._cacheId,
-                    locationUri: windowContext.getFrontsideURL() + "/" + windowContext.NAME_PART + "/" + workItemFromEvent._cacheId
+                    locationUri: WindowContext.getFrontsideURL() + "/" + WindowContext.NAME_PART + "/" + workItemFromEvent._cacheId
                 }
             };
 
