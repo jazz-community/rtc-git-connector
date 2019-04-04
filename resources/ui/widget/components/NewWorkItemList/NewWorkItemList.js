@@ -7,10 +7,29 @@ define([
     "dijit/_TemplatedMixin",
     "dijit/registry",
     "dojo/text!./NewWorkItemList.html",
-    "jazz/css!./NewWorkItemList.css"
+    "jazz/css!./NewWorkItemList.css",
+    "com.ibm.team.workitem.web.cache.internal.Cache",
+    "com.ibm.team.workitem.web.cache.internal.QueryProxy",
+    "com.ibm.team.workitem.web.client.internal.query.AttributeExpression",
+    "com.ibm.team.workitem.web.client.internal.query.Operator",
+    "com.ibm.team.workitem.web.client.internal.query.QueryDescriptor",
+    "com.ibm.team.workitem.web.client.internal.query.Term",
+    "com.ibm.team.workitem.web.client.internal.query.UIItem",
+    "com.ibm.team.workitem.web.client.internal.query.Variable",
+    "com.ibm.team.workitem.web.client.util"
 ], function (declare, array, domConstruct, on,
     _WidgetBase, _TemplatedMixin, registry,
     template) {
+    var Cache = com.ibm.team.workitem.web.cache.internal.Cache;
+    var QueryProxy = com.ibm.team.workitem.web.cache.internal.QueryProxy;
+    var AttributeExpression = com.ibm.team.workitem.web.client.internal.query.AttributeExpression;
+    var Operator = com.ibm.team.workitem.web.client.internal.query.Operator;
+    var QueryDescriptor = com.ibm.team.workitem.web.client.internal.query.QueryDescriptor;
+    var Term = com.ibm.team.workitem.web.client.internal.query.Term;
+    var UIItem = com.ibm.team.workitem.web.client.internal.query.UIItem;
+    var Variable = com.ibm.team.workitem.web.client.internal.query.Variable;
+    var util = com.ibm.team.workitem.web.client.util;
+
     var NewWorkItemList = declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.newWorkItemList",
         [_WidgetBase, _TemplatedMixin,],
     {
@@ -54,9 +73,7 @@ define([
 
         // Get all new work items from the work item cache
         _getNewWorkItems: function () {
-            dojo.require("com.ibm.team.workitem.web.cache.internal.Cache");
-
-            this.newWorkItems = com.ibm.team.workitem.web.cache.internal.Cache.getAllItems({
+            this.newWorkItems = Cache.getAllItems({
                 filterSelectors: [ "isNew" ],
                 filterAttributes: [ "isWorkItem"]
             });
@@ -176,16 +193,11 @@ define([
 
         // Get the url of the query for all new work items created from git issues
         _getQueryNewWorkItemsUrl: function (query) {
-            dojo.require("com.ibm.team.workitem.web.client.util");
-
-            return window.location.pathname +
-                com.ibm.team.workitem.web.client.util.getRunNewQueryUri(query);
+            return window.location.pathname + util.getRunNewQueryUri(query);
         },
 
         // Get the url of the query icon
         _getQueryIconUrl: function (query) {
-            var QueryProxy = com.ibm.team.workitem.web.cache.internal.QueryProxy;
-
             var queryProxy = new QueryProxy({
                 query: query
             });
@@ -196,21 +208,6 @@ define([
         // Create a query for all work items with the tag "from-git-issue" and
         // created today and created by the current user.
         _createNewWorkItemsQuery: function () {
-            dojo.require("com.ibm.team.workitem.web.client.internal.query.Term");
-            dojo.require("com.ibm.team.workitem.web.client.internal.query.UIItem");
-            dojo.require("com.ibm.team.workitem.web.client.internal.query.Operator");
-            dojo.require("com.ibm.team.workitem.web.client.internal.query.Variable");
-            dojo.require("com.ibm.team.workitem.web.client.internal.query.AttributeExpression");
-            dojo.require("com.ibm.team.workitem.web.client.internal.query.QueryDescriptor");
-
-            var iQuery = com.ibm.team.workitem.web.client.internal.query;
-            var Term = iQuery.Term;
-            var UIItem= iQuery.UIItem;
-            var Operator= iQuery.Operator;
-            var Variable= iQuery.Variable;
-            var AttributeExpression= iQuery.AttributeExpression;
-            var QueryDescriptor = iQuery.QueryDescriptor;
-
             // Create a query term with the "AND" operator
             var term = new Term(Operator.AND);
 
