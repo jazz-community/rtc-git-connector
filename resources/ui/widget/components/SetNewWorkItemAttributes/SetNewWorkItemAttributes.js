@@ -1,13 +1,12 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/lang",
-    "dojo/dom-style",
     "../../services/MainDataStore",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dojo/text!./SetNewWorkItemAttributes.html",
     "jazz/css!./SetNewWorkItemAttributes.css"
-], function (declare, lang, domStyle,
+], function (declare, lang,
     MainDataStore,
     _WidgetBase, _TemplatedMixin,
     template) {
@@ -19,35 +18,16 @@ define([
         hasOverview: false,
         attributesToShow: ["category", "owner", "target", "foundIn", "internalTags"],
 
-        visible: false,
-        _setVisibleAttr: function (visible) {
-            domStyle.set(this.domNode, "display", visible ? "block" : "none");
-            this._set("visible", visible);
-        },
-
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
         },
 
-        startup: function () {
-            if (this.mainDataStore.newWorkItemMode) {
-                this.watchDataStore();
+        // Only create the overview once the show method is called
+        show: function () {
+            if (!this.hasOverview) {
+                this.hasOverview = true;
+                this.createOverview();
             }
-        },
-
-        watchDataStore: function () {
-            var self = this;
-
-            // Only show the attributes when the list of selected issues isn't empty
-            this.mainDataStore.selectedRepositoryData.issuesToLink.watchElements(function () {
-                var hasItems = self.mainDataStore.selectedRepositoryData.issuesToLink.length > 0;
-                self.set("visible", hasItems);
-
-                if (hasItems && !self.hasOverview) {
-                    self.hasOverview = true;
-                    self.createOverview();
-                }
-            });
         },
 
         // Create a work item editor with only the specified attributes.
@@ -145,7 +125,6 @@ define([
 
         // Only keep the section presentations for the specified attributes
         _filterSectionPresentationsByAttributes: function (section, attributes) {
-            console.log("section: ", section);
             section.presentations = section.presentations.filter(function (presentation) {
                 return attributes.some(function (attribute) {
                     return attribute === presentation.attributeId;

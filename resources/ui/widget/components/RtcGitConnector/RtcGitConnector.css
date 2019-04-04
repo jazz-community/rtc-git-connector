@@ -83,10 +83,10 @@
     font-size: 1em;
     font-weight: bold;
     color: #666666;
-    width: 200px;
 }
 
 .rtcGitConnectorSelectRegisteredGitRepository .rtcGitConnectorLabelText {
+    width: 200px;
     margin-top: auto;
     margin-bottom: auto;
 }

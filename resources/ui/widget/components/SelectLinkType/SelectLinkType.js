@@ -15,7 +15,7 @@ define([
     "../ViewIssuesToLink/ViewIssuesToLink",
     "../ViewRequestsToLink/ViewRequestsToLink",
     "../SelectItemMessage/SelectItemMessage",
-    "../SetNewWorkItemAttributes/SetNewWorkItemAttributes",
+    "../SetNewWorkItemValues/SetNewWorkItemValues",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
@@ -24,7 +24,7 @@ define([
     MainDataStore, JazzRestService, GitRestService,
     ViewAndSelectCommits, ViewAndSelectIssues, ViewAndSelectRequests,
     ViewCommitsToLink, ViewIssuesToLink, ViewRequestsToLink,
-    SelectItemMessage, SetNewWorkItemAttributes,
+    SelectItemMessage, SetNewWorkItemValues,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectLinkType",
@@ -48,7 +48,7 @@ define([
 
             if (this.mainDataStore.newWorkItemMode) {
                 this.onlyShowIssuesTab();
-                this.setNewWorkItemAttributes.startup();
+                this.setNewWorkItemValues.startup();
             } else {
                 this.viewAndSelectCommits.startup();
                 this.viewAndSelectRequests.startup();
