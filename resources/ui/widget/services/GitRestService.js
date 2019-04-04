@@ -59,9 +59,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.createNewGitLabIssue(selectedGitRepository, accessToken, workItem);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -419,9 +417,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.getGitLabCommitById(selectedGitRepository, accessToken, commitSha, alreadyLinkedUrls);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -490,9 +486,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.getGitLabIssueById(selectedGitRepository, accessToken, issueId, alreadyLinkedUrls);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -563,9 +557,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.getGitLabRequestById(selectedGitRepository, accessToken, requestId, alreadyLinkedUrls);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -632,9 +624,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.getRecentGitLabCommits(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -729,9 +719,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.getRecentGitLabIssues(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -825,9 +813,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.getRecentGitLabRequests(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -976,6 +962,12 @@ define([
                 deferred.reject("Invalid git host.");
             }
 
+            return deferred.promise;
+        },
+
+        _createInvalidHostPromise: function () {
+            var deferred = new Deferred();
+            deferred.reject("Invalid git host.");
             return deferred.promise;
         },
 
