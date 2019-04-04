@@ -1,11 +1,15 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/array",
+    "dojo/_base/lang",
     "dojo/json",
     "dojo/request/xhr",
     "dojo/Deferred",
-    "../components/NewWorkItemList/NewWorkItemList"
-], function (declare, array, json, xhr, Deferred, NewWorkItemList) {
+    "../components/NewWorkItemList/NewWorkItemList",
+    "com.ibm.team.workitem.web.model.links.WorkItemEndpoints"
+], function (declare, array, lang, json, xhr, Deferred, NewWorkItemList) {
+    var WorkItemEndpoints = com.ibm.team.workitem.web.model.links.WorkItemEndpoints;
+
     var _instance = null;
     var JazzRestService = declare(null, {
         commitLinkEncoder: null,
@@ -23,6 +27,7 @@ define([
         workItemViewChangedEventName: "workitem/view/changed",
         menuRefreshEventName: "rtc/workitems/page/menu/refresh",
         attributesToShow: ["category", "owner", "target", "foundIn", "internalTags"],
+        linkEndpointsToShow: [WorkItemEndpoints.PARENT_WORK_ITEM],
         _newWorkItemIdSuffix: 0,
 
         constructor: function () {
@@ -74,6 +79,10 @@ define([
                 // Copy some values from the work item before it's saved and they are no longer available.
                 // These values will be needed for setting up the other new work items.
                 currentWorkItemValues = this.getWorkItemValuesFromOriginalWorkItem(currentWorkItem);
+
+                // Keep a copy of the values from the first work item so that they are not changed
+                // when adding the values from the git issue
+                currentWorkItemValues = lang.clone(currentWorkItemValues);
 
                 // Setup the new work item
                 this.setupNewWorkItem(currentWorkItem, gitIssues[0], progressOptions, addBackLinksFunction);
@@ -146,22 +155,41 @@ define([
         },
 
         // Creates an object with properties for each attribute id containing the attribute value
+        // and an object with properties for each endpoint id containing the endpoint references
         getWorkItemValuesFromOriginalWorkItem: function (originalWorkItem) {
-            var attributeValues = {};
+            var originalValues = {
+                attributeValues: {},
+                endpointReferences: {}
+            };
+            var workItemReferences = originalWorkItem.getWorkingCopy().getWorkItemReferences();
 
             this.attributesToShow.forEach(function (attributeId) {
-                attributeValues[attributeId] = originalWorkItem.getValue({ path: ["attributes", attributeId] });
+                originalValues.attributeValues[attributeId] = originalWorkItem.getValue({ path: ["attributes", attributeId] });
             });
 
-            return attributeValues;
+            this.linkEndpointsToShow.forEach(function (endpoint) {
+                originalValues.endpointReferences[endpoint.getEndpointId()] = workItemReferences.getReferences(endpoint).toArray();
+            });
+
+            return originalValues;
         },
 
         // Copy the values of the attributes shown in the view from the first work item
+        // and the values of the links show in the view from the first work item
         setWorkItemValuesFromOriginalWorkItemValues: function (newWorkItem, originalWorkItemValues) {
             var self = this;
 
+            // Create a copy of the values before copying to the new work items. Otherwise,
+            // the objects would still be linked and changing the value in one work item might
+            // change it in the other one
+            originalWorkItemValues = lang.clone(originalWorkItemValues);
+
             this.attributesToShow.forEach(function (attributeId) {
-                self.copyWorkItemAttributeValue(attributeId, originalWorkItemValues[attributeId], newWorkItem);
+                self.copyWorkItemAttributeValue(attributeId, originalWorkItemValues.attributeValues[attributeId], newWorkItem);
+            });
+
+            this.linkEndpointsToShow.forEach(function (endpoint) {
+                self.copyWorkItemEndpointReferences(endpoint, originalWorkItemValues.endpointReferences[endpoint.getEndpointId()], newWorkItem);
             });
         },
 
@@ -199,6 +227,15 @@ define([
                     attributeId: attributeId,
                     value: attributeValue
                 });
+            }
+        },
+
+        // Copy the specified references to the specified endpoint in the specified work item if there are any
+        copyWorkItemEndpointReferences: function (endpoint, endpointReferences, copyToWorkItem) {
+            if (endpointReferences.length) {
+                var workItemReferences = copyToWorkItem.getWorkingCopy().getWorkItemReferences();
+
+                workItemReferences.add.apply(workItemReferences, [endpoint].concat(endpointReferences));
             }
         },
 
