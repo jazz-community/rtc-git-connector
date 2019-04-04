@@ -56,6 +56,12 @@ define([
             this._createLinkTypeContainerGetters();
         },
 
+        // Add a tag to the work item to indicate that it's been created as a git issue.
+        // This only sets the value in the object and doesn't save the work item.
+        addCreatedGitIssueTagToWorkItem: function (workItem) {
+            this.addTagsToWorkItem(workItem, "created-as-git-issue");
+        },
+
         // Adds the specified tags to the work item object. Doesn't save the work item!
         // Pass in the tags as a string of comma separated values.
         addTagsToWorkItem: function (workItem, tags) {
