@@ -5,11 +5,14 @@ define([
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dojo/text!./SetNewWorkItemAttributes.html",
-    "jazz/css!./SetNewWorkItemAttributes.css"
+    "jazz/css!./SetNewWorkItemAttributes.css",
+    "com.ibm.team.workitem.web.ui.internal.view.editor.WorkItemOverview"
 ], function (declare, lang,
     MainDataStore,
     _WidgetBase, _TemplatedMixin,
     template) {
+    var WorkItemOverview = com.ibm.team.workitem.web.ui.internal.view.editor.WorkItemOverview;
+
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.setNewWorkItemAttributes",
         [_WidgetBase, _TemplatedMixin,],
     {
@@ -35,8 +38,6 @@ define([
         // If the attribute is not available for the current work item presentation
         // it will just be left out.
         createOverview: function () {
-            dojo.require("com.ibm.team.workitem.web.ui.internal.view.editor.WorkItemOverview");
-
             var workItem = this.mainDataStore.workItem;
             var workItemEditorWidget = this._getWorkItemEditorWidget(workItem);
             var page = this._getOverviewPage(workItem);
@@ -70,7 +71,7 @@ define([
                 isCustomAttributeLayout: {}
             };
 
-            var workItemOverView = new com.ibm.team.workitem.web.ui.internal.view.editor.WorkItemOverview(createArgs);
+            var workItemOverView = new WorkItemOverview(createArgs);
 
             // Place the work item overview in the dom
             this.attributesContainer.insertAdjacentElement("afterBegin", workItemOverView.domNode);
