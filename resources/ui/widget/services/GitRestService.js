@@ -107,7 +107,7 @@ define([
                     github.issues.create({
                         owner: urlParts[0],
                         repo: urlParts[1],
-                        title: workItem.object.attributes.summary.content,
+                        title: workItem.object.attributes.summary.content.replace(/&nbsp;/g, ' '),
                         body: renderedTemplate,
                         labels: tags
                     }).then(function (response) {
@@ -181,7 +181,7 @@ define([
                     }
 
                     gitlab.Issues.create(giturl.joined, {
-                        title: workItem.object.attributes.summary.content,
+                        title: workItem.object.attributes.summary.content.replace(/&nbsp;/g, ' '),
                         description: renderedTemplate,
                         labels: tags
                     }).then(function (response) {
