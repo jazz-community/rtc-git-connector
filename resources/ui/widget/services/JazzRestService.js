@@ -56,6 +56,29 @@ define([
             this._createLinkTypeContainerGetters();
         },
 
+        // Adds the specified tags to the work item object. Doesn't save the work item!
+        // Pass in the tags as a string of comma separated values.
+        addTagsToWorkItem: function (workItem, tags) {
+            // Get the tags value. It might have been set by the user.
+            var tagsValue = workItem.getValue({
+                path: ["attributes", "internalTags", "content"]
+            });
+
+            // Add a custom tags to the new work item
+            if (tagsValue) {
+                tagsValue += ", " + tags;
+            } else {
+                tagsValue = tags;
+            }
+
+            // Set the tags in the work item object
+            workItem.setValue({
+                path: ["attributes", "internalTags", "content"],
+                attributeId: "internalTags",
+                value: tagsValue
+            });
+        },
+
         // Create and fill work items from the git issues.
         createNewWorkItems: function (currentWorkItem, gitIssues, finishedLoadingFunction, addBackLinksFunction) {
             var self = this;
@@ -321,30 +344,16 @@ define([
                 });
             }
 
-            // Get the tags value. It might have been set by the user.
-            var tagsValue = workItem.getValue({
-                path: ["attributes", "internalTags", "content"]
-            });
-            var fromGitIssueTag = "from-git-issue";
-
             // Add a custom tag to the new work item
-            if (tagsValue) {
-                tagsValue += ", " + fromGitIssueTag;
-            } else {
-                tagsValue = fromGitIssueTag;
-            }
+            var tagsToAdd = "from-git-issue";
 
             // Add any git issue labels as tags
             if (gitIssue.labels) {
-                tagsValue += ", " + gitIssue.labels;
+                tagsToAdd += ", " + gitIssue.labels;
             }
 
-            // Set the git issue labels as tags
-            workItem.setValue({
-                path: ["attributes", "internalTags", "content"],
-                attributeId: "internalTags",
-                value: tagsValue
-            });
+            // Add the custom tag + any git issue labels to the work item
+            this.addTagsToWorkItem(workItem, tagsToAdd);
 
             // Add the git issue as a link
             this.addIssueLinksToWorkItemObject(workItem, [gitIssue]);

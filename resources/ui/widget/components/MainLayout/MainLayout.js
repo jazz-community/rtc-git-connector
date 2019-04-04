@@ -197,6 +197,9 @@ define([
                             // Get the new issue and add it to the list of issues to link
                             self.mainDataStore.selectedRepositoryData.issuesToLink.push(result);
 
+                            // Add a tag to the work item so that it's clear that it's been created as a git issue
+                            self.jazzRestService.addTagsToWorkItem(self.mainDataStore.workItem, "created-as-git-issue");
+
                             // Continue with the normal saving.
                             saveTheLinks();
                         }, function (error) {
