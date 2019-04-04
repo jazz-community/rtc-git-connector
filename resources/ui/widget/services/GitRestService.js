@@ -76,9 +76,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                var tags = workItem.object.attributes.internalTags.content;
-                tags = (tags.length) ? tags.split(", ") : [];
-                tags.push("from-rtc-work-item");
+                var tagsArray = this.getTagsFromWorkItem(workItem, true);
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 this.getGitHubIssueTemplate(github, urlParts).then(function (result) {
@@ -109,7 +107,7 @@ define([
                         repo: urlParts[1],
                         title: workItem.object.attributes.summary.content.replace(/&nbsp;/g, ' '),
                         body: renderedTemplate,
-                        labels: tags
+                        labels: tagsArray
                     }).then(function (response) {
                         deferred.resolve(IssueModel.CreateFromGitHubIssue(response.data, []));
                     }, function (error) {
@@ -144,9 +142,7 @@ define([
         createNewGitLabIssue: function (selectedGitRepository, accessToken, workItem) {
             var deferred = new Deferred();
             var giturl = this._createUrlInformation(selectedGitRepository.url);
-            var tags = workItem.object.attributes.internalTags.content;
-            tags = (tags.length) ? tags + ", " : tags;
-            tags += "from-rtc-work-item";
+            var tags = this.getTagsFromWorkItem(workItem);
 
             var gitlab = new this.gitLabApi({
                 url: giturl.origin,
@@ -206,6 +202,35 @@ define([
             });
 
             return deferred.promise;
+        },
+
+        getTagsFromWorkItem: function (workItem, asArray) {
+            var tags = workItem.object.attributes.internalTags.content;
+            tags = (tags.length) ? tags + ", " : tags;
+            tags += "from-rtc-work-item";
+
+            return this.removeDuplicateTags(tags, asArray);;
+        },
+
+        removeDuplicateTags: function (tags, asArray) {
+            var tagsSeparator = ", ";
+            var tagsArray = [];
+
+            if (tags) {
+                tagsArray = tags.split(tagsSeparator);
+            }
+
+            var uniqueTags = [];
+            var seenTags = {};
+
+            array.forEach(tagsArray, function (tag) {
+                if (!seenTags[tag]) {
+                    seenTags[tag] = true;
+                    uniqueTags.push(tag);
+                }
+            });
+
+            return asArray ? uniqueTags : uniqueTags.join(tagsSeparator);
         },
 
         addBackLinksToGitHost: function (params) {
