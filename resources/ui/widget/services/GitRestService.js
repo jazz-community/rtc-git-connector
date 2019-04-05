@@ -410,6 +410,81 @@ define([
             return deferred;
         },
 
+        // Add a custom label to the git issue to show that it's been created as a work item in RTC
+        addCreatedWorkItemLabelToIssue: function (selectedGitRepository, gitHost, accessToken, gitIssue) {
+            var createdAsWorkItemLabel = "created-as-rtc-work-item";
+
+            if (!gitIssue.labels || gitIssue.labels.indexOf(createdAsWorkItemLabel) === -1) {
+                if (gitHost.name === this.gitHubString) {
+                    return this.addLabelToGitHubIssue(selectedGitRepository, accessToken, gitIssue, createdAsWorkItemLabel);
+                } else if (gitHost.name === this.gitLabString) {
+                    return this.addLabelToGitLabIssue(selectedGitRepository, accessToken, gitIssue, createdAsWorkItemLabel);
+                } else {
+                    return this._createInvalidHostPromise();
+                }
+            } else {
+                var deferred = new Deferred();
+                deferred.resolve("The git issue already has the label. Not adding it again.");
+                return deferred.promise;
+            }
+        },
+
+        addLabelToGitHubIssue: function (selectedGitRepository, accessToken, gitIssue, createdAsWorkItemLabel) {
+            var deferred = new Deferred();
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var github = new this.gitHubApi({
+                auth: this._createGitHubAuth(accessToken)
+            });
+
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
+
+                github.issues.addLabels({
+                    owner: urlParts[0],
+                    repo: urlParts[1],
+                    number: gitIssue.id,
+                    labels: [createdAsWorkItemLabel]
+                }).then(function (response) {
+                    deferred.resolve("Successfully added a label to GitHub issue #" + gitIssue.id);
+                }, function (error) {
+                    deferred.resolve("Error adding a label to GitHub issue #" + gitIssue.id);
+                });
+            }
+
+            return deferred.promise;
+        },
+
+        addLabelToGitLabIssue: function (selectedGitRepository, accessToken, gitIssue, createdAsWorkItemLabel) {
+            var deferred = new Deferred();
+            var giturl = this._createUrlInformation(selectedGitRepository.url);
+
+            var gitlab = new this.gitLabApi({
+                url: giturl.origin,
+                token: accessToken,
+                useXMLHttpRequest: true
+            });
+
+            if (giturl.parts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                var newLabels = gitIssue.labels ? gitIssue.labels + ", " : "";
+                newLabels += createdAsWorkItemLabel;
+
+                gitlab.Issues.edit(giturl.joined, gitIssue.id, {
+                    labels: newLabels
+                }).then(function (response) {
+                    deferred.resolve("Successfully added a label to GitLab issue #" + gitIssue.id);
+                }, function (error) {
+                    deferred.resolve("Error adding a label to GitLab issue #" + gitIssue.id);
+                });
+            }
+
+            return deferred.promise;
+        },
+
         // Try to get a commit by it's SHA
         getCommitById: function (selectedGitRepository, gitHost, accessToken, commitSha, alreadyLinkedUrls) {
             if (gitHost.name === this.gitHubString) {

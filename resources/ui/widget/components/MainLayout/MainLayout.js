@@ -427,7 +427,10 @@ define([
                             requestsToLink: []
                         };
 
-                        self.gitRestService.addBackLinksToGitHost(addBackLinksToGitHostParams)
+                        self.gitRestService.addBackLinksToGitHost(addBackLinksToGitHostParams).then(function (result) {
+                            // Add a label to the git issue to indicate that it's been created as a work item in RTC
+                            self.gitRestService.addCreatedWorkItemLabelToIssue(selectedRepository, gitHost, accessToken, gitIssue);
+                        });
                     }
                 );
             } else {
