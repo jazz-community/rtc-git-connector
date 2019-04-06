@@ -203,7 +203,9 @@ define([
         },
 
         getTagsFromWorkItem: function (workItem, asArray) {
-            var tags = workItem.object.attributes.internalTags.content;
+            var tags = workItem.getValue({
+                path: ["attributes", "internalTags", "content"]
+            });
             tags = (tags.length) ? tags + ", " : tags;
             tags += "from-rtc-work-item";
 
