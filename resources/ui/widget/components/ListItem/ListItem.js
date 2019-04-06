@@ -54,6 +54,17 @@ define([
             this._set("notClickable", notClickable);
         },
 
+        duplicate: false,
+        _setDuplicateAttr: function (duplicateText) {
+            if (duplicateText) {
+                domClass.add(this.listItem, "duplicate");
+            } else {
+                domClass.remove(this.listItem, "duplicate");
+            }
+
+            this._set("duplicate", !!duplicateText);
+        },
+
         _onButtonClick: function (e) {
             this.onButtonClick(this.itemId);
         },

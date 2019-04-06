@@ -6,6 +6,10 @@
     transition: all 0.3s ease-out;
 }
 
+.rtcGitConnectorViewAndSelectListItem.duplicate {
+    background-color: #fbbab7;
+}
+
 .rtcGitConnectorViewAndSelectListItem:hover {
     background-color: #cacaca;
 }
