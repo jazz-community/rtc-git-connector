@@ -12,6 +12,7 @@ define([
         [_WidgetBase, _TemplatedMixin,],
     {
         templateString: template,
+        baseClass: "rtcGitConnectorViewAndSelectListItem",
 
         itemId: "",
         _setItemIdAttr: { node: "listItem", type: "attribute", attribute: "data-item-id" },
