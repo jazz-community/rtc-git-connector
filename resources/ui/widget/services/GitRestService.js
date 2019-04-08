@@ -59,9 +59,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.createNewGitLabIssue(selectedGitRepository, accessToken, workItem);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -76,9 +74,7 @@ define([
             if (urlParts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                var tags = workItem.object.attributes.internalTags.content;
-                tags = (tags.length) ? tags.split(", ") : [];
-                tags.push("from-rtc-work-item");
+                var tagsArray = this.getTagsFromWorkItem(workItem, true);
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
                 this.getGitHubIssueTemplate(github, urlParts).then(function (result) {
@@ -109,7 +105,7 @@ define([
                         repo: urlParts[1],
                         title: workItem.object.attributes.summary.content.replace(/&nbsp;/g, ' '),
                         body: renderedTemplate,
-                        labels: tags
+                        labels: tagsArray
                     }).then(function (response) {
                         deferred.resolve(IssueModel.CreateFromGitHubIssue(response.data, []));
                     }, function (error) {
@@ -144,9 +140,7 @@ define([
         createNewGitLabIssue: function (selectedGitRepository, accessToken, workItem) {
             var deferred = new Deferred();
             var giturl = this._createUrlInformation(selectedGitRepository.url);
-            var tags = workItem.object.attributes.internalTags.content;
-            tags = (tags.length) ? tags + ", " : tags;
-            tags += "from-rtc-work-item";
+            var tags = this.getTagsFromWorkItem(workItem);
 
             var gitlab = new this.gitLabApi({
                 url: giturl.origin,
@@ -206,6 +200,37 @@ define([
             });
 
             return deferred.promise;
+        },
+
+        getTagsFromWorkItem: function (workItem, asArray) {
+            var tags = workItem.getValue({
+                path: ["attributes", "internalTags", "content"]
+            });
+            tags = (tags.length) ? tags + ", " : tags;
+            tags += "from-rtc-work-item";
+
+            return this.removeDuplicateTags(tags, asArray);;
+        },
+
+        removeDuplicateTags: function (tags, asArray) {
+            var tagsSeparator = ", ";
+            var tagsArray = [];
+
+            if (tags) {
+                tagsArray = tags.split(tagsSeparator);
+            }
+
+            var uniqueTags = [];
+            var seenTags = {};
+
+            array.forEach(tagsArray, function (tag) {
+                if (!seenTags[tag]) {
+                    seenTags[tag] = true;
+                    uniqueTags.push(tag);
+                }
+            });
+
+            return asArray ? uniqueTags : uniqueTags.join(tagsSeparator);
         },
 
         addBackLinksToGitHost: function (params) {
@@ -387,6 +412,81 @@ define([
             return deferred;
         },
 
+        // Add a custom label to the git issue to show that it's been created as a work item in RTC
+        addCreatedWorkItemLabelToIssue: function (selectedGitRepository, gitHost, accessToken, gitIssue) {
+            var createdAsWorkItemLabel = "created-as-rtc-work-item";
+
+            if (!gitIssue.labels || gitIssue.labels.indexOf(createdAsWorkItemLabel) === -1) {
+                if (gitHost.name === this.gitHubString) {
+                    return this.addLabelToGitHubIssue(selectedGitRepository, accessToken, gitIssue, createdAsWorkItemLabel);
+                } else if (gitHost.name === this.gitLabString) {
+                    return this.addLabelToGitLabIssue(selectedGitRepository, accessToken, gitIssue, createdAsWorkItemLabel);
+                } else {
+                    return this._createInvalidHostPromise();
+                }
+            } else {
+                var deferred = new Deferred();
+                deferred.resolve("The git issue already has the label. Not adding it again.");
+                return deferred.promise;
+            }
+        },
+
+        addLabelToGitHubIssue: function (selectedGitRepository, accessToken, gitIssue, createdAsWorkItemLabel) {
+            var deferred = new Deferred();
+            var repositoryUrl = new url(selectedGitRepository.url);
+            var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
+            var github = new this.gitHubApi({
+                auth: this._createGitHubAuth(accessToken)
+            });
+
+            if (urlParts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
+
+                github.issues.addLabels({
+                    owner: urlParts[0],
+                    repo: urlParts[1],
+                    number: gitIssue.id,
+                    labels: [createdAsWorkItemLabel]
+                }).then(function (response) {
+                    deferred.resolve("Successfully added a label to GitHub issue #" + gitIssue.id);
+                }, function (error) {
+                    deferred.resolve("Error adding a label to GitHub issue #" + gitIssue.id);
+                });
+            }
+
+            return deferred.promise;
+        },
+
+        addLabelToGitLabIssue: function (selectedGitRepository, accessToken, gitIssue, createdAsWorkItemLabel) {
+            var deferred = new Deferred();
+            var giturl = this._createUrlInformation(selectedGitRepository.url);
+
+            var gitlab = new this.gitLabApi({
+                url: giturl.origin,
+                token: accessToken,
+                useXMLHttpRequest: true
+            });
+
+            if (giturl.parts.length < 2) {
+                deferred.reject("Invalid repository URL.");
+            } else {
+                var newLabels = gitIssue.labels ? gitIssue.labels + ", " : "";
+                newLabels += createdAsWorkItemLabel;
+
+                gitlab.Issues.edit(giturl.joined, gitIssue.id, {
+                    labels: newLabels
+                }).then(function (response) {
+                    deferred.resolve("Successfully added a label to GitLab issue #" + gitIssue.id);
+                }, function (error) {
+                    deferred.resolve("Error adding a label to GitLab issue #" + gitIssue.id);
+                });
+            }
+
+            return deferred.promise;
+        },
+
         // Try to get a commit by it's SHA
         getCommitById: function (selectedGitRepository, gitHost, accessToken, commitSha, alreadyLinkedUrls) {
             if (gitHost.name === this.gitHubString) {
@@ -394,9 +494,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.getGitLabCommitById(selectedGitRepository, accessToken, commitSha, alreadyLinkedUrls);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -465,9 +563,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.getGitLabIssueById(selectedGitRepository, accessToken, issueId, alreadyLinkedUrls);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -538,9 +634,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.getGitLabRequestById(selectedGitRepository, accessToken, requestId, alreadyLinkedUrls);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -607,9 +701,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.getRecentGitLabCommits(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -704,9 +796,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.getRecentGitLabIssues(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -800,9 +890,7 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 return this.getRecentGitLabRequests(selectedGitRepository, accessToken, alreadyLinkedUrls);
             } else {
-                var deferred = new Deferred();
-                deferred.reject("Invalid git host.");
-                return deferred.promise;
+                return this._createInvalidHostPromise();
             }
         },
 
@@ -951,6 +1039,12 @@ define([
                 deferred.reject("Invalid git host.");
             }
 
+            return deferred.promise;
+        },
+
+        _createInvalidHostPromise: function () {
+            var deferred = new Deferred();
+            deferred.reject("Invalid git host.");
             return deferred.promise;
         },
 

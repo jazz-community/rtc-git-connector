@@ -7,13 +7,14 @@ define([
     "../../services/MainDataStore",
     "../../js/ViewHelper",
     "../ListItem/ListItem",
+    "dijit/Tooltip",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!./ViewIssuesToLink.html"
 ], function (declare, array, lang, domConstruct, domStyle,
     MainDataStore, ViewHelper, ListItem,
-    _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
+    Tooltip, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewIssuesToLink",
         [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],
@@ -56,14 +57,39 @@ define([
             var gitHost = this.mainDataStore.selectedRepositorySettings.get("gitHost");
             domConstruct.empty(this.listItemsContainer);
 
+            if (self.tooltip) {
+                self.tooltip.destroy();
+                self.tooltip = null;
+            }
+
+            self.tooltip = new Tooltip({
+                position: ["above", "below"],
+                showDelay: 0
+            });
+
             array.forEach(issuesToLink, function (issue) {
                 var details;
                 var buttonType;
+                var duplicate = false;
 
                 if (issue.id < 0) {
+                    var workItemTags = self.mainDataStore.workItem.getValue({
+                        path: ["attributes", "internalTags", "content"]
+                    });
+
+                    if (workItemTags.length && workItemTags.indexOf("created-as-git-issue") !== -1) {
+                        duplicate = true;
+                        self.tooltip.set("label", "This work item has already been created as a git issue.");
+                    }
+
                     details = "This will create a new issue in " + gitHost.displayName + " using the information from the current work item";
                     buttonType = "times";
                 } else {
+                    if (self.mainDataStore.newWorkItemMode && issue.labels && issue.labels.indexOf("created-as-rtc-work-item") !== -1) {
+                        duplicate = true;
+                        self.tooltip.set("label", "This git issue has already been created as a work item.");
+                    }
+
                     details = ViewHelper.GetIssueOrRequestDateString(issue);
                     buttonType = "trash";
                 }
@@ -72,12 +98,17 @@ define([
                 listItem.set("title", issue.title);
                 listItem.set("details", details);
                 listItem.set("buttonType", buttonType);
+                listItem.set("duplicate", duplicate);
                 listItem.set("notClickable", true);
 
                 listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
 
                 issue.listItem = listItem;
                 domConstruct.place(listItem.domNode, self.listItemsContainer);
+
+                if (duplicate) {
+                    self.tooltip.addTarget(listItem.itemRightButton);
+                }
             });
 
             // Get the mainDialog and resize to fit the new content

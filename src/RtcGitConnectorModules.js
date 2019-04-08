@@ -59,12 +59,13 @@ export const GitLabApi = require('gitlab/dist/es5').default;
 // Fontawesome fonts
 export const FontAwesome = require('@fortawesome/fontawesome');
 const FaCheck = require('@fortawesome/fontawesome-free-solid/faCheck');
-const FaPlus = require('@fortawesome/fontawesome-free-solid/faPlus');
-const FaMinus = require('@fortawesome/fontawesome-free-solid/faMinus');
-const FaTimes = require('@fortawesome/fontawesome-free-solid/faTimes');
+const FaExclamationTriangle = require('@fortawesome/fontawesome-free-solid/faExclamationTriangle');
 const FaLink = require('@fortawesome/fontawesome-free-solid/faLink');
-const FaTrash = require('@fortawesome/fontawesome-free-solid/faTrash');
+const FaMinus = require('@fortawesome/fontawesome-free-solid/faMinus');
+const FaPlus = require('@fortawesome/fontawesome-free-solid/faPlus');
 const FaSpinner = require('@fortawesome/fontawesome-free-solid/faSpinner');
+const FaTimes = require('@fortawesome/fontawesome-free-solid/faTimes');
+const FaTrash = require('@fortawesome/fontawesome-free-solid/faTrash');
 
 // Build version
 export const buildVersion = '__BUILD_VERSION__';
@@ -72,9 +73,10 @@ export const buildVersion = '__BUILD_VERSION__';
 // Adding the entire solid library doesn't seem to work in the frontend.
 // So we have no other choice than adding them one by one.
 FontAwesome.library.add(FaCheck);
-FontAwesome.library.add(FaPlus);
-FontAwesome.library.add(FaMinus);
-FontAwesome.library.add(FaTimes);
+FontAwesome.library.add(FaExclamationTriangle);
 FontAwesome.library.add(FaLink);
-FontAwesome.library.add(FaTrash);
+FontAwesome.library.add(FaMinus);
+FontAwesome.library.add(FaPlus);
 FontAwesome.library.add(FaSpinner);
+FontAwesome.library.add(FaTimes);
+FontAwesome.library.add(FaTrash);

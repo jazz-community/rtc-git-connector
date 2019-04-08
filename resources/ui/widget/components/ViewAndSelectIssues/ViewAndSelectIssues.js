@@ -12,13 +12,14 @@ define([
     "../../js/ViewHelper",
     "../DetailsPane/DetailsPane",
     "../ListItem/ListItem",
+    "dijit/Tooltip",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/text!./ViewAndSelectIssues.html"
 ], function (declare, array, lang, dom, domConstruct, on, json,
     MainDataStore, JazzRestService, GitRestService, ViewHelper, DetailsPane, ListItem,
-    _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
+    Tooltip, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.viewAndSelectIssues",
         [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],
@@ -28,6 +29,7 @@ define([
         jazzRestService: null,
         gitRestService: null,
         viewIssues: null,
+        tooltip: null,
 
         constructor: function () {
             this.mainDataStore = MainDataStore.getInstance();
@@ -184,6 +186,16 @@ define([
             var gitHost = self.mainDataStore.selectedRepositorySettings.get("gitHost");
             domConstruct.empty(this.listItemsContainer);
 
+            if (self.tooltip) {
+                self.tooltip.destroy();
+                self.tooltip = null;
+            }
+
+            self.tooltip = new Tooltip({
+                position: ["above", "below"],
+                showDelay: 0
+            });
+
             array.forEach(this.viewIssues, function (issue) {
                 // Don't add the create a new issue row when in new work item mode
                 if (issue.originalId < 0 && self.mainDataStore.newWorkItemMode) {
@@ -192,11 +204,26 @@ define([
 
                 var details;
                 var buttonType;
+                var duplicate = false;
 
                 if (issue.originalId < 0) {
+                    var workItemTags = self.mainDataStore.workItem.getValue({
+                        path: ["attributes", "internalTags", "content"]
+                    });
+
+                    if (workItemTags.length && workItemTags.indexOf("created-as-git-issue") !== -1) {
+                        duplicate = true;
+                        self.tooltip.set("label", "This work item has already been created as a git issue.");
+                    }
+
                     details = "This will create a new issue in " + gitHost.displayName + " using the information from the current work item";
                     buttonType = "plus";
                 } else {
+                    if (self.mainDataStore.newWorkItemMode && issue.labels && issue.labels.indexOf("created-as-rtc-work-item") !== -1) {
+                        duplicate = true;
+                        self.tooltip.set("label", "This git issue has already been created as a work item.");
+                    }
+
                     details = ViewHelper.GetIssueOrRequestDateString(issue);
 
                     if (issue.alreadyLinked) {
@@ -210,12 +237,17 @@ define([
                 listItem.set("title", issue.title);
                 listItem.set("details", details);
                 listItem.set("buttonType", buttonType);
+                listItem.set("duplicate", duplicate);
 
                 listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
                 listItem.onContentClick = lang.hitch(self, self.setSelectedItemById);
 
                 issue.listItem = listItem;
                 domConstruct.place(listItem.domNode, self.listItemsContainer);
+
+                if (duplicate) {
+                    self.tooltip.addTarget(listItem.itemRightButton);
+                }
             });
         },
 
