@@ -192,8 +192,17 @@ define([
 
                 var details;
                 var buttonType;
+                var duplicate = false;
 
                 if (issue.originalId < 0) {
+                    var workItemTags = self.mainDataStore.workItem.getValue({
+                        path: ["attributes", "internalTags", "content"]
+                    });
+
+                    if (workItemTags.length && workItemTags.indexOf("created-as-git-issue") !== -1) {
+                        duplicate = true;
+                    }
+
                     details = "This will create a new issue in " + gitHost.displayName + " using the information from the current work item";
                     buttonType = "plus";
                 } else {
@@ -210,6 +219,7 @@ define([
                 listItem.set("title", issue.title);
                 listItem.set("details", details);
                 listItem.set("buttonType", buttonType);
+                listItem.set("duplicate", duplicate);
 
                 listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
                 listItem.onContentClick = lang.hitch(self, self.setSelectedItemById);
