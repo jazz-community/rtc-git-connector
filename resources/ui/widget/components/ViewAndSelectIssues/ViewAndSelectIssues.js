@@ -219,17 +219,17 @@ define([
                     details = "This will create a new issue in " + gitHost.displayName + " using the information from the current work item";
                     buttonType = "plus";
                 } else {
+                    if (self.mainDataStore.newWorkItemMode && issue.labels && issue.labels.indexOf("created-as-rtc-work-item") !== -1) {
+                        duplicate = true;
+                        self.tooltip.set("label", "This git issue has already been created as a work item.");
+                    }
+
                     details = ViewHelper.GetIssueOrRequestDateString(issue);
 
                     if (issue.alreadyLinked) {
                         buttonType = "check";
                     } else {
                         buttonType = "link";
-                    }
-
-                    if (self.mainDataStore.newWorkItemMode && issue.labels && issue.labels.indexOf("created-as-rtc-work-item") !== -1) {
-                        duplicate = true;
-                        self.tooltip.set("label", "This git issue has already been created as a work item.");
                     }
                 }
 
