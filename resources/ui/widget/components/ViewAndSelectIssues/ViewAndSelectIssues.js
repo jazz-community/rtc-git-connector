@@ -213,6 +213,10 @@ define([
                     } else {
                         buttonType = "link";
                     }
+
+                    if (self.mainDataStore.newWorkItemMode && issue.labels && issue.labels.indexOf("created-as-rtc-work-item") !== -1) {
+                        duplicate = true;
+                    }
                 }
 
                 var listItem = new ListItem(issue.originalId);
