@@ -77,5 +77,6 @@
 
 .rtcGitConnectorViewAndSelectListItem .rtcGitConnectorViewAndSelectListItemButton.exclamationTriangle {
     color: darkorange;
+    cursor: help;
     transform: none;
 }

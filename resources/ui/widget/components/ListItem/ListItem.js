@@ -1,11 +1,12 @@
 define([
     "dojo/_base/declare",
     "dojo/dom-class",
+    "dojo/dom-style",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dojo/text!./ListItem.html",
     "jazz/css!./ListItem.css"
-], function (declare, domClass,
+], function (declare, domClass, domStyle,
     _WidgetBase, _TemplatedMixin,
     template) {
     return declare("com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.listItem",
@@ -59,8 +60,10 @@ define([
             if (duplicate) {
                 this.itemRightButton.innerHTML = com_siemens_bt_jazz_rtcgitconnector_modules
                     .FontAwesome.icon({ prefix: "fas", iconName: "exclamation-triangle" }).html[0];
+                domStyle.set(this.itemRightButton, "display", "block");
             } else {
                 this.itemRightButton.innerHtml = "";
+                domStyle.set(this.itemRightButton, "display", "none");
             }
 
             this._set("duplicate", duplicate);
