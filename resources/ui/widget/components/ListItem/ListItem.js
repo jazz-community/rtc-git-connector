@@ -28,7 +28,7 @@ define([
             domClass.remove(this.listItem, this.buttonType + "Button");
             domClass.add(this.listItem, buttonName + "Button");
             this.itemButton.innerHTML = com_siemens_bt_jazz_rtcgitconnector_modules
-                .FontAwesome.icon({ prefix: 'fas', iconName: buttonName }).html[0];
+                .FontAwesome.icon({ prefix: "fas", iconName: buttonName }).html[0];
             this._set("buttonType", buttonName);
         },
 
@@ -55,14 +55,15 @@ define([
         },
 
         duplicate: false,
-        _setDuplicateAttr: function (duplicateText) {
-            if (duplicateText) {
-                domClass.add(this.listItem, "duplicate");
+        _setDuplicateAttr: function (duplicate) {
+            if (duplicate) {
+                this.itemRightButton.innerHTML = com_siemens_bt_jazz_rtcgitconnector_modules
+                    .FontAwesome.icon({ prefix: "fas", iconName: "exclamation-triangle" }).html[0];
             } else {
-                domClass.remove(this.listItem, "duplicate");
+                this.itemRightButton.innerHtml = "";
             }
 
-            this._set("duplicate", !!duplicateText);
+            this._set("duplicate", duplicate);
         },
 
         _onButtonClick: function (e) {

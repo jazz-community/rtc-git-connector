@@ -6,10 +6,6 @@
     transition: all 0.3s ease-out;
 }
 
-.rtcGitConnectorViewAndSelectListItem.duplicate {
-    background-color: #fbbab7;
-}
-
 .rtcGitConnectorViewAndSelectListItem:hover {
     background-color: #cacaca;
 }
@@ -76,5 +72,10 @@
 .rtcGitConnectorViewAndSelectListItem.checkButton .rtcGitConnectorViewAndSelectListItemButton {
     color: #555;
     cursor: default;
+    transform: none;
+}
+
+.rtcGitConnectorViewAndSelectListItem .rtcGitConnectorViewAndSelectListItemButton.exclamationTriangle {
+    color: darkorange;
     transform: none;
 }
