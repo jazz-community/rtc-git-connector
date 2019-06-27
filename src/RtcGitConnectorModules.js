@@ -1,4 +1,4 @@
-const gzip = require('gzip-js');
+const pako = require('pako');
 const base64js = require('base64-js');
 const Buffer = require('buffer/').Buffer;
 
@@ -22,7 +22,7 @@ function base64UrlDecode(string) {
 export function encoder () {
     // Creates an encoded string from a stringified json object
     this.encode = function encode(value) {
-        const compressed = gzip.zip(Buffer.from(value));
+        const compressed = pako.gzip(Buffer.from(value));
         const encoded = base64js.fromByteArray(compressed);
         const urlEncoded = base64UrlEncode(encoded);
         return urlEncoded;
@@ -32,7 +32,7 @@ export function encoder () {
     this.decode = function decode(value) {
         const urlDecoded = base64UrlDecode(value);
         const compressed = base64js.toByteArray(urlDecoded);
-        const deflated = gzip.unzip(compressed);
+        const deflated = pako.ungzip(compressed);
         const buffer = Buffer.from(deflated);
         return buffer.toString();
     };
