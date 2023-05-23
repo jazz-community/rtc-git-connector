@@ -2,11 +2,12 @@
 *.jazzignore
 *.log
 *.swp
+.project
 .idea/
 .vscode/
-/com.siemens.bt.jazz.workitemeditor.rtcGitConnector*.zip
+com.siemens.bt.jazz.workitemeditor.rtcGitConnector*.zip
 deployment-properties.ini
-dist/
 jbe-build-wrapper.xml
+dist/
 node_modules/
 resources/dist/
