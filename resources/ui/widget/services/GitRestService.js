@@ -257,7 +257,7 @@ define([
             var github = new this.gitHubApi({
                 auth: this._createGitHubAuth(params.accessToken)
             });
-            var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
+            var commentBody = "was linked by [EWM Work Item " + params.workItem.object.id + "]" +
                     "(" + params.workItem.object.locationUri + ")" +
                     " on behalf of " + params.currentUser;
             var commitCommentBody = "This commit " + commentBody;
@@ -338,7 +338,7 @@ define([
                 useXMLHttpRequest: true
             });
 
-            var commentBody = "was linked by [RTC Work Item " + params.workItem.object.id + "]" +
+            var commentBody = "was linked by [EWM Work Item " + params.workItem.object.id + "]" +
                     "(" + params.workItem.object.locationUri + ")" +
                     " on behalf of " + params.currentUser;
             var commitCommentBody = "This commit " + commentBody;
