@@ -95,13 +95,13 @@ define([
             });
 
             on(dom.byId("viewAndSelectCommitsFilterClearButton"), "click", function (event) {
-                self.commitsFilterInput.setValue("");
+                self.commitsFilterInput.set("value", "");
             });
 
             on(dom.byId("viewAndSelectCommitsSearchButton"), "click", searchButtonClickFunc);
 
             on(dom.byId("viewAndSelectCommitsSearchClearButton"), "click", function (event) {
-                self.commitsSearchInput.setValue("");
+                self.commitsSearchInput.set("value", "");
                 searchButtonClickFunc();
             });
         },
@@ -137,7 +137,7 @@ define([
             }];
 
             // Clear the filter input
-            this.commitsFilterInput.setValue("");
+            this.commitsFilterInput.set("value", "");
 
             // Draw the commits list in the view
             this.drawViewCommits();

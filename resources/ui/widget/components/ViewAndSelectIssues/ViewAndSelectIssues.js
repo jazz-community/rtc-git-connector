@@ -98,13 +98,13 @@ define([
             });
 
             on(dom.byId("viewAndSelectIssuesFilterClearButton"), "click", function (event) {
-                self.issuesFilterInput.setValue("");
+                self.issuesFilterInput.set("value", "");
             });
 
             on(dom.byId("viewAndSelectIssuesSearchButton"), "click", searchButtonClickFunc);
 
             on(dom.byId("viewAndSelectIssuesSearchClearButton"), "click", function (event) {
-                self.issuesSearchInput.setValue("");
+                self.issuesSearchInput.set("value", "");
                 searchButtonClickFunc();
             });
         },
@@ -140,7 +140,7 @@ define([
             }];
 
             // Clear the filter input
-            this.issuesFilterInput.setValue("");
+            this.issuesFilterInput.set("value", "");
 
             // Draw the issues list in the view
             this.drawViewIssues();

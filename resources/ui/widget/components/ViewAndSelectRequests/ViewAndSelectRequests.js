@@ -95,13 +95,13 @@ define([
             });
 
             on(dom.byId("viewAndSelectRequestsFilterClearButton"), "click", function (event) {
-                self.requestsFilterInput.setValue("");
+                self.requestsFilterInput.set("value", "");
             });
 
             on(dom.byId("viewAndSelectRequestsSearchButton"), "click", searchButtonClickFunc);
 
             on(dom.byId("viewAndSelectRequestsSearchClearButton"), "click", function (event) {
-                self.requestsSearchInput.setValue("");
+                self.requestsSearchInput.set("value", "");
                 searchButtonClickFunc();
             });
         },
@@ -137,7 +137,7 @@ define([
             }];
 
             // Clear the filter input
-            this.requestsFilterInput.setValue("");
+            this.requestsFilterInput.set("value", "");
 
             // Draw the requests list in the view
             this.drawViewRequests();
