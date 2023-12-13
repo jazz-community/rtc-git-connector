@@ -352,7 +352,7 @@ define([
                             label: "Developer info: ",
                             node: domConstruct.create("button", {
                                 id: "viewAndSelectIssuesCopyWorkItemDetails",
-                                "class": "secondary-button",
+                                "class": "j-button-secondary",
                                 type: "button",
                                 innerHTML: "Copy work item details to clipboard"
                             })
