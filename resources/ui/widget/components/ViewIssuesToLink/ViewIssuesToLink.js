@@ -119,6 +119,7 @@ define([
                     listItem.set("buttonType", buttonType);
                     listItem.set("notClickable", true);
                     listItem.set("duplicate", duplicate);
+                    listItem.set("buttonTitle", "Remove");
 
                     listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
 

@@ -27,6 +27,13 @@ define([
             details: "",
             _setDetailsAttr: { node: "secondLine", type: "innerHTML" },
 
+            buttonTitle: "",
+            _setButtonTitleAttr: {
+                node: "itemButton",
+                type: "attribute",
+                attribute: "title"
+            },
+
             buttonType: "link",
             _setButtonTypeAttr: function (buttonName) {
                 domClass.remove(this.listItem, this.buttonType + "Button");

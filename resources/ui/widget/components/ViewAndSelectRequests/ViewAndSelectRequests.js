@@ -215,6 +215,10 @@ define([
                     listItem.set("details", ViewHelper.GetIssueOrRequestDateString(request));
                     listItem.set("buttonType", request.alreadyLinked ? "check" : "link");
                     listItem.set("duplicate", false);
+                    listItem.set(
+                        "buttonTitle",
+                        !request.alreadyLinked ? "Add Link" : request.originalId ? "Already Linked" : ""
+                    );
 
                     listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
                     listItem.onContentClick = lang.hitch(self, self.setSelectedItemById);

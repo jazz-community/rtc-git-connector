@@ -233,6 +233,7 @@ define([
 
                     var details;
                     var buttonType;
+                    var buttonTitle;
                     var duplicate = false;
 
                     if (issue.originalId < 0) {
@@ -250,6 +251,7 @@ define([
                             gitHost.displayName +
                             " using the information from the current work item";
                         buttonType = "plus";
+                        buttonTitle = "Create Issue";
                     } else {
                         if (
                             self.mainDataStore.newWorkItemMode &&
@@ -264,8 +266,10 @@ define([
 
                         if (issue.alreadyLinked) {
                             buttonType = "check";
+                            buttonTitle = issue.originalId ? "Already Linked" : "";
                         } else {
                             buttonType = "link";
+                            buttonTitle = "Add Link";
                         }
                     }
 
@@ -274,6 +278,7 @@ define([
                     listItem.set("details", details);
                     listItem.set("buttonType", buttonType);
                     listItem.set("duplicate", duplicate);
+                    listItem.set("buttonTitle", buttonTitle);
 
                     listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
                     listItem.onContentClick = lang.hitch(self, self.setSelectedItemById);

@@ -215,6 +215,10 @@ define([
                     listItem.set("details", ViewHelper.GetCommitDateString(commit));
                     listItem.set("buttonType", commit.alreadyLinked ? "check" : "link");
                     listItem.set("duplicate", false);
+                    listItem.set(
+                        "buttonTitle",
+                        !commit.alreadyLinked ? "Add Link" : commit.originalSha ? "Already Linked" : ""
+                    );
 
                     listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
                     listItem.onContentClick = lang.hitch(self, self.setSelectedItemById);
