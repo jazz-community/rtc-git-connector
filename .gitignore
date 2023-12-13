@@ -4,8 +4,7 @@
 *.swp
 .project
 .idea/
-.vscode/*
-!.vscode/settings.json
+.vscode/
 com.siemens.bt.jazz.workitemeditor.rtcGitConnector*.zip
 deployment-properties.ini
 jbe-build-wrapper.xml
