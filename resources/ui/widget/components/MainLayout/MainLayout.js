@@ -83,14 +83,14 @@ define([
                     }
 
                     self.accessTokenInput.set("value", "");
-                    self.saveAccessTokenButton.setDisabled(true);
+                    self.saveAccessTokenButton.set("disabled", true);
                     originalAccessTokenDialogShow.apply(self.getAccessTokenDialog);
                 };
 
                 // Function to run when save button is clicked or the enter key is pressed
                 var saveAccessTokenButtonClick = function (event) {
                     var accessTokenInputValue = self.accessTokenInput.value;
-                    self.saveAccessTokenButton.setDisabled(true);
+                    self.saveAccessTokenButton.set("disabled", true);
 
                     // Hide the dialog and check the access token
                     self.getAccessTokenDialog.hide().then(function () {
@@ -119,9 +119,9 @@ define([
                         // Delay checking the value so that the new value is used
                         window.setTimeout(function () {
                             if (self.accessTokenInput.displayedValue.trim()) {
-                                self.saveAccessTokenButton.setDisabled(false);
+                                self.saveAccessTokenButton.set("disabled", false);
                             } else {
-                                self.saveAccessTokenButton.setDisabled(true);
+                                self.saveAccessTokenButton.set("disabled", true);
                             }
                         }, 10);
                     }
