@@ -72,6 +72,7 @@ define([
                     listItem.set("details", ViewHelper.GetIssueOrRequestDateString(request));
                     listItem.set("buttonType", "trash");
                     listItem.set("notClickable", true);
+                    listItem.set("duplicate", false);
 
                     listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
 

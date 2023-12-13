@@ -214,6 +214,7 @@ define([
                     listItem.set("title", commit.message.split(/\r?\n/g)[0]);
                     listItem.set("details", ViewHelper.GetCommitDateString(commit));
                     listItem.set("buttonType", commit.alreadyLinked ? "check" : "link");
+                    listItem.set("duplicate", false);
 
                     listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
                     listItem.onContentClick = lang.hitch(self, self.setSelectedItemById);

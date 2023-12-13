@@ -117,8 +117,8 @@ define([
                     listItem.set("title", issue.title);
                     listItem.set("details", details);
                     listItem.set("buttonType", buttonType);
-                    listItem.set("duplicate", duplicate);
                     listItem.set("notClickable", true);
+                    listItem.set("duplicate", duplicate);
 
                     listItem.onButtonClick = lang.hitch(self, self.listItemButtonClick);
 
