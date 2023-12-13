@@ -1,11 +1,11 @@
-define([
-    "dojo/_base/declare",
-    "dojo/dom-construct",
-    "dojo/query",
-    "dijit/registry"
-], function (declare, domConstruct, query, registry) {
+define(["dojo/_base/declare", "dojo/dom-construct", "dojo/query", "dijit/registry"], function (
+    declare,
+    domConstruct,
+    query,
+    registry
+) {
     // Return an instance so that the functions can be used as if they were static
-    return new function () {
+    return new (function () {
         var self = this;
 
         // Sort a list of items by the date contained in the specified property
@@ -79,8 +79,8 @@ define([
             var commitDateString;
 
             if (commit.authoredDate) {
-                commitDateString = commit.authorName + " committed on "
-                    + self.GetFormattedDateFromString(commit.authoredDate);
+                commitDateString =
+                    commit.authorName + " committed on " + self.GetFormattedDateFromString(commit.authoredDate);
             } else {
                 commitDateString = "&nbsp;";
             }
@@ -93,9 +93,13 @@ define([
             var issueOrRequestDateString;
 
             if (issueOrRequest.openedDate) {
-                issueOrRequestDateString = "#" + issueOrRequest.id + " opened by "
-                    + issueOrRequest.openedBy + " on "
-                    + self.GetFormattedDateFromString(issueOrRequest.openedDate);
+                issueOrRequestDateString =
+                    "#" +
+                    issueOrRequest.id +
+                    " opened by " +
+                    issueOrRequest.openedBy +
+                    " on " +
+                    self.GetFormattedDateFromString(issueOrRequest.openedDate);
             } else {
                 issueOrRequestDateString = "&nbsp;";
             }
@@ -106,14 +110,18 @@ define([
         // Create and format a date from a string
         this.GetFormattedDateFromString = function (dateString) {
             var dateObject = new Date(dateString);
-            return dateObject.toDateString() + " at "
-                + self.FrontPadWithZeros(dateObject.getHours()) + ":"
-                + self.FrontPadWithZeros(dateObject.getMinutes());
+            return (
+                dateObject.toDateString() +
+                " at " +
+                self.FrontPadWithZeros(dateObject.getHours()) +
+                ":" +
+                self.FrontPadWithZeros(dateObject.getMinutes())
+            );
         };
 
         // Add zeros to the front if the passed in time has less than two digits
         this.FrontPadWithZeros = function (hoursOrMinutes) {
             return ("00" + hoursOrMinutes).slice(-2);
         };
-    };
+    })();
 });

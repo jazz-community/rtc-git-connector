@@ -1,25 +1,41 @@
 <div class="rtcGitConnectorMainLayout">
-    <div data-dojo-attach-point="selectRegisteredGitRepository"
-        data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectRegisteredGitRepository"></div>
-    <div data-dojo-attach-point="selectLinkType"
-        data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectLinkType"></div>
+    <div
+        data-dojo-attach-point="selectRegisteredGitRepository"
+        data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectRegisteredGitRepository"
+    ></div>
+    <div
+        data-dojo-attach-point="selectLinkType"
+        data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.selectLinkType"
+    ></div>
 
-    <div id="noRegisteredGitRepositoriesContainer" style="display: none;">
-        <p class="rtcGitConnectorMessage rtcGitConnectorMessageWarning">Please register a git repository in this project area. For instructions, please see the <a target="_blank" href="https://github.com/jazz-community/rtc-git-connector/wiki/3.4-Git-Repository-Registration">Git Repository Registration Wiki Page</a>.</p>
-    </div>
-
-    <div id="noGitRepositorySelectedContainer" style="display: none;">
-        <p class="rtcGitConnectorMessage rtcGitConnectorMessageInfo">No git repository selected.</p>
-    </div>
-
-    <div id="invalidGitRepositoryTypeContainer" style="display: none;">
-        <p class="rtcGitConnectorMessage rtcGitConnectorMessageError">The selected repository is not hosted on a supported platform. Currently only GitHub and GitLab are supported.<br />
-            If the repository is actually hosted on one of the supported platforms, please check the configuration and make sure that the URL is correct.
+    <div id="noRegisteredGitRepositoriesContainer" style="display: none">
+        <p class="rtcGitConnectorMessage rtcGitConnectorMessageWarning">
+            Please register a git repository in this project area. For instructions, please see the
+            <a
+                target="_blank"
+                href="https://github.com/jazz-community/rtc-git-connector/wiki/3.4-Git-Repository-Registration"
+                >Git Repository Registration Wiki Page</a
+            >.
         </p>
     </div>
 
-    <div id="couldNotGetAccessTokenContainer" style="display: none;">
-        <p class="rtcGitConnectorMessage rtcGitConnectorMessageError">An error occurred and the access token could not be retrieved from the server. Please refresh the page and try again.<br />
+    <div id="noGitRepositorySelectedContainer" style="display: none">
+        <p class="rtcGitConnectorMessage rtcGitConnectorMessageInfo">No git repository selected.</p>
+    </div>
+
+    <div id="invalidGitRepositoryTypeContainer" style="display: none">
+        <p class="rtcGitConnectorMessage rtcGitConnectorMessageError">
+            The selected repository is not hosted on a supported platform. Currently only GitHub and GitLab are
+            supported.<br />
+            If the repository is actually hosted on one of the supported platforms, please check the configuration and
+            make sure that the URL is correct.
+        </p>
+    </div>
+
+    <div id="couldNotGetAccessTokenContainer" style="display: none">
+        <p class="rtcGitConnectorMessage rtcGitConnectorMessageError">
+            An error occurred and the access token could not be retrieved from the server. Please refresh the page and
+            try again.<br />
             This may be caused by the token service being unavailable or incorrectly configured.<br />
             If this error persists, please contact the Jazz Administrator and inform them of the problem.
         </p>
@@ -29,41 +45,69 @@
 
     <div class="rtcGitConnectorActionButtons">
         <button id="rtcGitConnectorSaveButton" class="primary-button" type="button" disabled>Save</button>
-        <button id="rtcGitConnectorSaveAndCloseButton" class="primary-button" type="button" disabled>Save and Close</button>
+        <button id="rtcGitConnectorSaveAndCloseButton" class="primary-button" type="button" disabled>
+            Save and Close
+        </button>
         <button id="rtcGitConnectorCancelButton" class="secondary-button" type="button">Cancel</button>
     </div>
 
-    <div id="rtcGitConnectorFullPageLoadingOverlay" style="display: none;">
+    <div id="rtcGitConnectorFullPageLoadingOverlay" style="display: none">
         <div id="rtcGitConnectorFullPageLoadingOverlayContent">
             <span>&nbsp;</span>
-            <span id="rtcGitConnectorSavingSpinnerIcon" style="font-size: 10em;"></span>
-            <span style="font-size: initial;">Please wait while your changes are being saved</span>
+            <span id="rtcGitConnectorSavingSpinnerIcon" style="font-size: 10em"></span>
+            <span style="font-size: initial">Please wait while your changes are being saved</span>
             <span>&nbsp;</span>
         </div>
     </div>
 
-    <div data-dojo-type="dijit/Dialog" data-dojo-attach-point="getAccessTokenDialog" title="Save access token" id="getAndSaveAccessTokenDialog">
-        <p id="getGitHubAccessTokenContainer" style="display: none;">Please enter your GitHub access token below.<br />
-            You can create a new access token here: <a href='https://github.com/settings/tokens' target='_blank'>GitHub Access Token</a><br />
-            Please grant the token access to the "repo" and "user" scopes in order to ensure that it has enough permissions.<br /><br />
-            If you already saved an access token for GitHub, you are seeing it again because your access token has expired or has been revoked.<br />
+    <div
+        data-dojo-type="dijit/Dialog"
+        data-dojo-attach-point="getAccessTokenDialog"
+        title="Save access token"
+        id="getAndSaveAccessTokenDialog"
+    >
+        <p id="getGitHubAccessTokenContainer" style="display: none">
+            Please enter your GitHub access token below.<br />
+            You can create a new access token here:
+            <a href="https://github.com/settings/tokens" target="_blank">GitHub Access Token</a><br />
+            Please grant the token access to the "repo" and "user" scopes in order to ensure that it has enough
+            permissions.<br /><br />
+            If you already saved an access token for GitHub, you are seeing it again because your access token has
+            expired or has been revoked.<br />
             Please follow the instructions above to create a new access token to continue.<br /><br />
         </p>
-        <p id="getGitLabAccessTokenContainer" style="display: none;">Please enter your GitLab access token below.<br />
-            Instructions on creating an access token for GitLab can be found here: <a href='https://docs.gitlab.com/ce/user/profile/personal_access_tokens.html' target='_blank'>GitLab Access Token</a><br />
-            Please grant the token access to the "api" and "read_user" scopes in order to ensure that it has enough permissions.<br /><br />
-            If you already saved an access token for this GitLab host, you are seeing it again because your access token has expired or has been revoked.<br />
+        <p id="getGitLabAccessTokenContainer" style="display: none">
+            Please enter your GitLab access token below.<br />
+            Instructions on creating an access token for GitLab can be found here:
+            <a href="https://docs.gitlab.com/ce/user/profile/personal_access_tokens.html" target="_blank"
+                >GitLab Access Token</a
+            ><br />
+            Please grant the token access to the "api" and "read_user" scopes in order to ensure that it has enough
+            permissions.<br /><br />
+            If you already saved an access token for this GitLab host, you are seeing it again because your access token
+            has expired or has been revoked.<br />
             Please follow the instructions above to create a new access token to continue.<br />
         </p>
         <label for="getAccessTokenInput">Access Token</label><br />
-        <input id="getAccessTokenInput"
-            style="width: 100%;"
+        <input
+            id="getAccessTokenInput"
+            style="width: 100%"
             placeholder="Paste your access token here..."
             data-dojo-type="dijit/form/TextBox"
             data-dojo-attach-point="accessTokenInput"
-            data-dojo-props="trim:true">
+            data-dojo-props="trim:true"
+        />
         <br /><br />
-        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-point="saveAccessTokenButton" id="saveAccessTokenButton">Save</button>
-        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-point="cancelAccessTokenButton">Cancel</button>
+        <button
+            type="button"
+            data-dojo-type="dijit/form/Button"
+            data-dojo-attach-point="saveAccessTokenButton"
+            id="saveAccessTokenButton"
+        >
+            Save
+        </button>
+        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-point="cancelAccessTokenButton">
+            Cancel
+        </button>
     </div>
 </div>

@@ -11,9 +11,20 @@ define([
     "../models/RequestModel",
     "./TemplateService",
     "../components/DefaultIssueTemplate/DefaultIssueTemplate"
-], function (declare, url, array, json, xhr, Deferred, DeferredList,
-    CommitModel, IssueModel, RequestModel,
-    TemplateService, DefaultIssueTemplate) {
+], function (
+    declare,
+    url,
+    array,
+    json,
+    xhr,
+    Deferred,
+    DeferredList,
+    CommitModel,
+    IssueModel,
+    RequestModel,
+    TemplateService,
+    DefaultIssueTemplate
+) {
     var _instance = null;
     var GitRestService = declare(null, {
         gitHubString: "GITHUB",
@@ -23,16 +34,14 @@ define([
         issueTemplateName: "rtc-work-item-v1.md",
         gitHosts: null,
         gitHostType: function (name, displayName, requestPrefix) {
-            this.name = name,
-            this.displayName = displayName,
-            this.requestPrefix = requestPrefix
+            (this.name = name), (this.displayName = displayName), (this.requestPrefix = requestPrefix);
         },
 
         constructor: function () {
             var self = this;
 
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== 'undefined') {
+            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== "undefined") {
                 this.gitHubApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitHubApi;
                 this.gitLabApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitLabApi;
             }
@@ -77,22 +86,24 @@ define([
                 var tagsArray = this.getTagsFromWorkItem(workItem, true);
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                this.getGitHubIssueTemplate(github, urlParts).then(function (result) {
-                    createIssue(result);
-                }, function (error) {
-                    console.log("Couldn't find an issue template. Error: ", error);
+                this.getGitHubIssueTemplate(github, urlParts).then(
+                    function (result) {
+                        createIssue(result);
+                    },
+                    function (error) {
+                        console.log("Couldn't find an issue template. Error: ", error);
 
-                    // Use the default issue template if none was found on the server
-                    var defaultIssueTemplateString = new DefaultIssueTemplate().getTemplateString();
-                    createIssue(defaultIssueTemplateString);
-                });
+                        // Use the default issue template if none was found on the server
+                        var defaultIssueTemplateString = new DefaultIssueTemplate().getTemplateString();
+                        createIssue(defaultIssueTemplateString);
+                    }
+                );
 
                 var createIssue = function (templateString) {
                     var renderedTemplate = null;
 
                     try {
-                        renderedTemplate = new TemplateService()
-                            .renderTemplateWithWorkItem(templateString, workItem);
+                        renderedTemplate = new TemplateService().renderTemplateWithWorkItem(templateString, workItem);
                     } catch (error) {
                         deferred.reject("There was an error when parsing the issue template. Error: " + error);
 
@@ -100,17 +111,25 @@ define([
                         return;
                     }
 
-                    github.issues.create({
-                        owner: urlParts[0],
-                        repo: urlParts[1],
-                        title: workItem.object.attributes.summary.content.replace(/&nbsp;/g, ' '),
-                        body: renderedTemplate,
-                        labels: tagsArray
-                    }).then(function (response) {
-                        deferred.resolve(IssueModel.CreateFromGitHubIssue(response.data, []));
-                    }, function (error) {
-                        deferred.reject("Couldn't create an issue in the GitHub repository. Error: " + (error.message || error));
-                    });
+                    github.issues
+                        .create({
+                            owner: urlParts[0],
+                            repo: urlParts[1],
+                            title: workItem.object.attributes.summary.content.replace(/&nbsp;/g, " "),
+                            body: renderedTemplate,
+                            labels: tagsArray
+                        })
+                        .then(
+                            function (response) {
+                                deferred.resolve(IssueModel.CreateFromGitHubIssue(response.data, []));
+                            },
+                            function (error) {
+                                deferred.reject(
+                                    "Couldn't create an issue in the GitHub repository. Error: " +
+                                        (error.message || error)
+                                );
+                            }
+                        );
                 };
             }
 
@@ -121,18 +140,25 @@ define([
             var deferred = new Deferred();
             var filePath = ".github/ISSUE_TEMPLATE/" + this.issueTemplateName;
 
-            github.repos.getContents({
-                owner: urlParts[0],
-                repo: urlParts[1],
-                path: filePath,
-                headers: {
-                    accept: "application/vnd.github.VERSION.raw"
-                }
-            }).then(function (response) {
-                deferred.resolve(response.data);
-            }, function (error) {
-                deferred.reject("Couldn't get the issue template from GitHub. Error: " + (error.message || error));
-            });
+            github.repos
+                .getContents({
+                    owner: urlParts[0],
+                    repo: urlParts[1],
+                    path: filePath,
+                    headers: {
+                        accept: "application/vnd.github.VERSION.raw"
+                    }
+                })
+                .then(
+                    function (response) {
+                        deferred.resolve(response.data);
+                    },
+                    function (error) {
+                        deferred.reject(
+                            "Couldn't get the issue template from GitHub. Error: " + (error.message || error)
+                        );
+                    }
+                );
 
             return deferred.promise;
         },
@@ -151,22 +177,24 @@ define([
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                this.getGitLabIssueTemplate(gitlab, giturl.joined).then(function (result) {
-                    createIssue(result);
-                }, function (error) {
-                    console.log("Couldn't find an issue template. Error: ", error);
+                this.getGitLabIssueTemplate(gitlab, giturl.joined).then(
+                    function (result) {
+                        createIssue(result);
+                    },
+                    function (error) {
+                        console.log("Couldn't find an issue template. Error: ", error);
 
-                    // Use the default issue template if none was found on the server
-                    var defaultIssueTemplateString = new DefaultIssueTemplate().getTemplateString();
-                    createIssue(defaultIssueTemplateString);
-                });
+                        // Use the default issue template if none was found on the server
+                        var defaultIssueTemplateString = new DefaultIssueTemplate().getTemplateString();
+                        createIssue(defaultIssueTemplateString);
+                    }
+                );
 
                 var createIssue = function (templateString) {
                     var renderedTemplate = null;
 
                     try {
-                        renderedTemplate = new TemplateService()
-                            .renderTemplateWithWorkItem(templateString, workItem);
+                        renderedTemplate = new TemplateService().renderTemplateWithWorkItem(templateString, workItem);
                     } catch (error) {
                         deferred.reject("There was an error when parsing the issue template. Error: " + error);
 
@@ -175,14 +203,20 @@ define([
                     }
 
                     gitlab.Issues.create(giturl.joined, {
-                        title: workItem.object.attributes.summary.content.replace(/&nbsp;/g, ' '),
+                        title: workItem.object.attributes.summary.content.replace(/&nbsp;/g, " "),
                         description: renderedTemplate,
                         labels: tags
-                    }).then(function (response) {
-                        deferred.resolve(IssueModel.CreateFromGitLabIssue(response, []));
-                    }, function (error) {
-                        deferred.reject("Couldn't create an issue in the GitLab repository. Error: " + (error.message || (error.error && error.error.message) || error.error || error));
-                    });
+                    }).then(
+                        function (response) {
+                            deferred.resolve(IssueModel.CreateFromGitLabIssue(response, []));
+                        },
+                        function (error) {
+                            deferred.reject(
+                                "Couldn't create an issue in the GitLab repository. Error: " +
+                                    (error.message || (error.error && error.error.message) || error.error || error)
+                            );
+                        }
+                    );
                 };
             }
 
@@ -193,11 +227,14 @@ define([
             var deferred = new Deferred();
             var filePath = ".gitlab/issue_templates/" + this.issueTemplateName;
 
-            gitlab.RepositoryFiles.showRaw(projectId, filePath, "master").then(function (response) {
-                deferred.resolve(response);
-            }, function (error) {
-                deferred.reject("Couldn't get the issue template from GitLab. Error: " + (error.message || error));
-            });
+            gitlab.RepositoryFiles.showRaw(projectId, filePath, "master").then(
+                function (response) {
+                    deferred.resolve(response);
+                },
+                function (error) {
+                    deferred.reject("Couldn't get the issue template from GitLab. Error: " + (error.message || error));
+                }
+            );
 
             return deferred.promise;
         },
@@ -206,10 +243,10 @@ define([
             var tags = workItem.getValue({
                 path: ["attributes", "internalTags", "content"]
             });
-            tags = (tags.length) ? tags + ", " : tags;
+            tags = tags.length ? tags + ", " : tags;
             tags += "from-rtc-work-item";
 
-            return this.removeDuplicateTags(tags, asArray);;
+            return this.removeDuplicateTags(tags, asArray);
         },
 
         removeDuplicateTags: function (tags, asArray) {
@@ -257,9 +294,15 @@ define([
             var github = new this.gitHubApi({
                 auth: this._createGitHubAuth(params.accessToken)
             });
-            var commentBody = "was linked by [EWM Work Item " + params.workItem.object.id + "]" +
-                    "(" + params.workItem.object.locationUri + ")" +
-                    " on behalf of " + params.currentUser;
+            var commentBody =
+                "was linked by [EWM Work Item " +
+                params.workItem.object.id +
+                "]" +
+                "(" +
+                params.workItem.object.locationUri +
+                ")" +
+                " on behalf of " +
+                params.currentUser;
             var commitCommentBody = "This commit " + commentBody;
             var issueCommentBody = "This issue " + commentBody;
             var requestCommentBody = "This pull request " + commentBody;
@@ -273,19 +316,43 @@ define([
 
                 if (params.commitsToLink && params.commitsToLink.length > 0) {
                     array.forEach(params.commitsToLink, function (commit) {
-                        deferredArray.push(self.addBackLinksToGitHubCommit(github, urlParts[0], urlParts[1], commit.sha, commitCommentBody));
+                        deferredArray.push(
+                            self.addBackLinksToGitHubCommit(
+                                github,
+                                urlParts[0],
+                                urlParts[1],
+                                commit.sha,
+                                commitCommentBody
+                            )
+                        );
                     });
                 }
 
                 if (params.issuesToLink && params.issuesToLink.length > 0) {
                     array.forEach(params.issuesToLink, function (issue) {
-                        deferredArray.push(self.addBackLinksToGitHubIssueOrRequest(github, urlParts[0], urlParts[1], issue.id, issueCommentBody));
+                        deferredArray.push(
+                            self.addBackLinksToGitHubIssueOrRequest(
+                                github,
+                                urlParts[0],
+                                urlParts[1],
+                                issue.id,
+                                issueCommentBody
+                            )
+                        );
                     });
                 }
 
                 if (params.requestsToLink && params.requestsToLink.length > 0) {
                     array.forEach(params.requestsToLink, function (request) {
-                        deferredArray.push(self.addBackLinksToGitHubIssueOrRequest(github, urlParts[0], urlParts[1], request.id, requestCommentBody));
+                        deferredArray.push(
+                            self.addBackLinksToGitHubIssueOrRequest(
+                                github,
+                                urlParts[0],
+                                urlParts[1],
+                                request.id,
+                                requestCommentBody
+                            )
+                        );
                     });
                 }
             }
@@ -296,16 +363,23 @@ define([
         addBackLinksToGitHubCommit: function (github, owner, repo, sha, commentBody) {
             var deferred = new Deferred();
 
-            github.repos.createCommitComment({
-                owner: owner,
-                repo: repo,
-                sha: sha,
-                body: commentBody
-            }).then(function (response) {
-                deferred.resolve(response.data);
-            }, function (error) {
-                deferred.reject("Couldn't add a comment to the GitHub commit. Error: " + (error.message || error));
-            });
+            github.repos
+                .createCommitComment({
+                    owner: owner,
+                    repo: repo,
+                    sha: sha,
+                    body: commentBody
+                })
+                .then(
+                    function (response) {
+                        deferred.resolve(response.data);
+                    },
+                    function (error) {
+                        deferred.reject(
+                            "Couldn't add a comment to the GitHub commit. Error: " + (error.message || error)
+                        );
+                    }
+                );
 
             return deferred;
         },
@@ -313,16 +387,24 @@ define([
         addBackLinksToGitHubIssueOrRequest: function (github, owner, repo, id, commentBody) {
             var deferred = new Deferred();
 
-            github.issues.createComment({
-                owner: owner,
-                repo: repo,
-                number: id,
-                body: commentBody
-            }).then(function (response) {
-                deferred.resolve(response.data);
-            }, function (error) {
-                deferred.reject("Couldn't add a comment to the GitHub issue or pull request. Error: " + (error.message || error));
-            });
+            github.issues
+                .createComment({
+                    owner: owner,
+                    repo: repo,
+                    number: id,
+                    body: commentBody
+                })
+                .then(
+                    function (response) {
+                        deferred.resolve(response.data);
+                    },
+                    function (error) {
+                        deferred.reject(
+                            "Couldn't add a comment to the GitHub issue or pull request. Error: " +
+                                (error.message || error)
+                        );
+                    }
+                );
 
             return deferred;
         },
@@ -338,9 +420,15 @@ define([
                 useXMLHttpRequest: true
             });
 
-            var commentBody = "was linked by [EWM Work Item " + params.workItem.object.id + "]" +
-                    "(" + params.workItem.object.locationUri + ")" +
-                    " on behalf of " + params.currentUser;
+            var commentBody =
+                "was linked by [EWM Work Item " +
+                params.workItem.object.id +
+                "]" +
+                "(" +
+                params.workItem.object.locationUri +
+                ")" +
+                " on behalf of " +
+                params.currentUser;
             var commitCommentBody = "This commit " + commentBody;
             var issueCommentBody = "This issue " + commentBody;
             var requestCommentBody = "This merge request " + commentBody;
@@ -352,19 +440,25 @@ define([
             } else {
                 if (params.commitsToLink && params.commitsToLink.length > 0) {
                     array.forEach(params.commitsToLink, function (commit) {
-                        deferredArray.push(self.addBackLinksToGitLabCommits(gitlab, giturl.joined, commit.sha, commitCommentBody));
+                        deferredArray.push(
+                            self.addBackLinksToGitLabCommits(gitlab, giturl.joined, commit.sha, commitCommentBody)
+                        );
                     });
                 }
 
                 if (params.issuesToLink && params.issuesToLink.length > 0) {
                     array.forEach(params.issuesToLink, function (issue) {
-                        deferredArray.push(self.addBackLinksToGitLabIssues(gitlab, giturl.joined, issue.id, issueCommentBody));
+                        deferredArray.push(
+                            self.addBackLinksToGitLabIssues(gitlab, giturl.joined, issue.id, issueCommentBody)
+                        );
                     });
                 }
 
                 if (params.requestsToLink && params.requestsToLink.length > 0) {
                     array.forEach(params.requestsToLink, function (request) {
-                        deferredArray.push(self.addBackLinksToGitLabRequests(gitlab, giturl.joined, request.id, requestCommentBody));
+                        deferredArray.push(
+                            self.addBackLinksToGitLabRequests(gitlab, giturl.joined, request.id, requestCommentBody)
+                        );
                     });
                 }
             }
@@ -375,11 +469,17 @@ define([
         addBackLinksToGitLabCommits: function (gitlab, path, sha, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.Commits.createComment(path, sha, commentBody).then(function (response) {
-                deferred.resolve(response);
-            }, function (error) {
-                deferred.reject("Couldn't add a comment to the GitLab commit. Error: " + (error.message || (error.error && error.error.message) || error.error || error));
-            });
+            gitlab.Commits.createComment(path, sha, commentBody).then(
+                function (response) {
+                    deferred.resolve(response);
+                },
+                function (error) {
+                    deferred.reject(
+                        "Couldn't add a comment to the GitLab commit. Error: " +
+                            (error.message || (error.error && error.error.message) || error.error || error)
+                    );
+                }
+            );
 
             return deferred;
         },
@@ -389,11 +489,17 @@ define([
 
             gitlab.IssueNotes.create(path, id, {
                 body: commentBody
-            }).then(function (response) {
-                deferred.resolve(response);
-            }, function (error) {
-                deferred.reject("Couldn't add a comment to the GitLab issue. Error: " + (error.message || (error.error && error.error.message) || error.error || error));
-            });
+            }).then(
+                function (response) {
+                    deferred.resolve(response);
+                },
+                function (error) {
+                    deferred.reject(
+                        "Couldn't add a comment to the GitLab issue. Error: " +
+                            (error.message || (error.error && error.error.message) || error.error || error)
+                    );
+                }
+            );
 
             return deferred;
         },
@@ -403,11 +509,17 @@ define([
 
             gitlab.MergeRequestNotes.create(path, id, {
                 body: commentBody
-            }).then(function (response) {
-                deferred.resolve(response);
-            }, function (error) {
-                deferred.reject("Couldn't add a comment to the GitLab merge request. Error: " + (error.message || (error.error && error.error.message) || error.error || error));
-            });
+            }).then(
+                function (response) {
+                    deferred.resolve(response);
+                },
+                function (error) {
+                    deferred.reject(
+                        "Couldn't add a comment to the GitLab merge request. Error: " +
+                            (error.message || (error.error && error.error.message) || error.error || error)
+                    );
+                }
+            );
 
             return deferred;
         },
@@ -418,9 +530,19 @@ define([
 
             if (!gitIssue.labels || gitIssue.labels.indexOf(createdAsWorkItemLabel) === -1) {
                 if (gitHost.name === this.gitHubString) {
-                    return this.addLabelToGitHubIssue(selectedGitRepository, accessToken, gitIssue, createdAsWorkItemLabel);
+                    return this.addLabelToGitHubIssue(
+                        selectedGitRepository,
+                        accessToken,
+                        gitIssue,
+                        createdAsWorkItemLabel
+                    );
                 } else if (gitHost.name === this.gitLabString) {
-                    return this.addLabelToGitLabIssue(selectedGitRepository, accessToken, gitIssue, createdAsWorkItemLabel);
+                    return this.addLabelToGitLabIssue(
+                        selectedGitRepository,
+                        accessToken,
+                        gitIssue,
+                        createdAsWorkItemLabel
+                    );
                 } else {
                     return this._createInvalidHostPromise();
                 }
@@ -444,16 +566,21 @@ define([
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.issues.addLabels({
-                    owner: urlParts[0],
-                    repo: urlParts[1],
-                    number: gitIssue.id,
-                    labels: [createdAsWorkItemLabel]
-                }).then(function (response) {
-                    deferred.resolve("Successfully added a label to GitHub issue #" + gitIssue.id);
-                }, function (error) {
-                    deferred.resolve("Error adding a label to GitHub issue #" + gitIssue.id);
-                });
+                github.issues
+                    .addLabels({
+                        owner: urlParts[0],
+                        repo: urlParts[1],
+                        number: gitIssue.id,
+                        labels: [createdAsWorkItemLabel]
+                    })
+                    .then(
+                        function (response) {
+                            deferred.resolve("Successfully added a label to GitHub issue #" + gitIssue.id);
+                        },
+                        function (error) {
+                            deferred.resolve("Error adding a label to GitHub issue #" + gitIssue.id);
+                        }
+                    );
             }
 
             return deferred.promise;
@@ -477,11 +604,14 @@ define([
 
                 gitlab.Issues.edit(giturl.joined, gitIssue.id, {
                     labels: newLabels
-                }).then(function (response) {
-                    deferred.resolve("Successfully added a label to GitLab issue #" + gitIssue.id);
-                }, function (error) {
-                    deferred.resolve("Error adding a label to GitLab issue #" + gitIssue.id);
-                });
+                }).then(
+                    function (response) {
+                        deferred.resolve("Successfully added a label to GitLab issue #" + gitIssue.id);
+                    },
+                    function (error) {
+                        deferred.resolve("Error adding a label to GitLab issue #" + gitIssue.id);
+                    }
+                );
             }
 
             return deferred.promise;
@@ -512,18 +642,23 @@ define([
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.repos.getCommit({
-                    owner: urlParts[0],
-                    repo: urlParts[1],
-                    sha: commitSha
-                }).then(function (response) {
-                    var convertedCommits = [];
-                    convertedCommits.push(CommitModel.CreateFromGitHubCommit(response.data, alreadyLinkedUrls));
-                    deferred.resolve(convertedCommits);
-                }, function (error) {
-                    // Just resolve with an empty array if not found
-                    deferred.resolve([]);
-                });
+                github.repos
+                    .getCommit({
+                        owner: urlParts[0],
+                        repo: urlParts[1],
+                        sha: commitSha
+                    })
+                    .then(
+                        function (response) {
+                            var convertedCommits = [];
+                            convertedCommits.push(CommitModel.CreateFromGitHubCommit(response.data, alreadyLinkedUrls));
+                            deferred.resolve(convertedCommits);
+                        },
+                        function (error) {
+                            // Just resolve with an empty array if not found
+                            deferred.resolve([]);
+                        }
+                    );
             }
 
             return deferred.promise;
@@ -543,15 +678,20 @@ define([
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.Commits.show(giturl.joined, commitSha).then(function (response) {
-                    var commitUrlPath = giturl.repo + "/commit/";
-                    var convertedCommits = [];
-                    convertedCommits.push(CommitModel.CreateFromGitLabCommit(response, commitUrlPath, alreadyLinkedUrls));
-                    deferred.resolve(convertedCommits);
-                }, function (error) {
-                    // Just resolve with an empty array if not found
-                    deferred.resolve([]);
-                });
+                gitlab.Commits.show(giturl.joined, commitSha).then(
+                    function (response) {
+                        var commitUrlPath = giturl.repo + "/commit/";
+                        var convertedCommits = [];
+                        convertedCommits.push(
+                            CommitModel.CreateFromGitLabCommit(response, commitUrlPath, alreadyLinkedUrls)
+                        );
+                        deferred.resolve(convertedCommits);
+                    },
+                    function (error) {
+                        // Just resolve with an empty array if not found
+                        deferred.resolve([]);
+                    }
+                );
             }
 
             return deferred.promise;
@@ -581,20 +721,27 @@ define([
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.issues.get({
-                    owner: urlParts[0],
-                    repo: urlParts[1],
-                    number: issueId
-                }).then(function (response) {
-                    var convertedIssues = [];
-                    if (!response.data.pull_request) {
-                        convertedIssues.push(IssueModel.CreateFromGitHubIssue(response.data, alreadyLinkedUrls));
-                    }
-                    deferred.resolve(convertedIssues);
-                }, function (error) {
-                    // Just resolve with an empty array if not found
-                    deferred.resolve([]);
-                });
+                github.issues
+                    .get({
+                        owner: urlParts[0],
+                        repo: urlParts[1],
+                        number: issueId
+                    })
+                    .then(
+                        function (response) {
+                            var convertedIssues = [];
+                            if (!response.data.pull_request) {
+                                convertedIssues.push(
+                                    IssueModel.CreateFromGitHubIssue(response.data, alreadyLinkedUrls)
+                                );
+                            }
+                            deferred.resolve(convertedIssues);
+                        },
+                        function (error) {
+                            // Just resolve with an empty array if not found
+                            deferred.resolve([]);
+                        }
+                    );
             }
 
             return deferred.promise;
@@ -614,14 +761,17 @@ define([
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.Issues.show(giturl.joined, issueId).then(function (response) {
-                    var convertedIssues = [];
-                    convertedIssues.push(IssueModel.CreateFromGitLabIssue(response, alreadyLinkedUrls));
-                    deferred.resolve(convertedIssues);
-                }, function (error) {
-                    // Just resolve with an empty array if not found
-                    deferred.resolve([]);
-                });
+                gitlab.Issues.show(giturl.joined, issueId).then(
+                    function (response) {
+                        var convertedIssues = [];
+                        convertedIssues.push(IssueModel.CreateFromGitLabIssue(response, alreadyLinkedUrls));
+                        deferred.resolve(convertedIssues);
+                    },
+                    function (error) {
+                        // Just resolve with an empty array if not found
+                        deferred.resolve([]);
+                    }
+                );
             }
 
             return deferred.promise;
@@ -651,18 +801,25 @@ define([
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.pulls.get({
-                    owner: urlParts[0],
-                    repo: urlParts[1],
-                    number: requestId
-                }).then(function (response) {
-                    var convertedRequests = [];
-                    convertedRequests.push(RequestModel.CreateFromGitHubRequest(response.data, alreadyLinkedUrls));
-                    deferred.resolve(convertedRequests);
-                }, function (error) {
-                    // Just resolve with an empty array if not found
-                    deferred.resolve([]);
-                });
+                github.pulls
+                    .get({
+                        owner: urlParts[0],
+                        repo: urlParts[1],
+                        number: requestId
+                    })
+                    .then(
+                        function (response) {
+                            var convertedRequests = [];
+                            convertedRequests.push(
+                                RequestModel.CreateFromGitHubRequest(response.data, alreadyLinkedUrls)
+                            );
+                            deferred.resolve(convertedRequests);
+                        },
+                        function (error) {
+                            // Just resolve with an empty array if not found
+                            deferred.resolve([]);
+                        }
+                    );
             }
 
             return deferred.promise;
@@ -681,14 +838,17 @@ define([
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.MergeRequests.show(giturl.joined, requestId).then(function (response) {
-                    var convertedRequests = [];
-                    convertedRequests.push(RequestModel.CreateFromGitLabRequest(response, alreadyLinkedUrls));
-                    deferred.resolve(convertedRequests);
-                }, function (error) {
-                    // Just resolve with an empty array if not found
-                    deferred.resolve([]);
-                });
+                gitlab.MergeRequests.show(giturl.joined, requestId).then(
+                    function (response) {
+                        var convertedRequests = [];
+                        convertedRequests.push(RequestModel.CreateFromGitLabRequest(response, alreadyLinkedUrls));
+                        deferred.resolve(convertedRequests);
+                    },
+                    function (error) {
+                        // Just resolve with an empty array if not found
+                        deferred.resolve([]);
+                    }
+                );
             }
 
             return deferred.promise;
@@ -719,42 +879,50 @@ define([
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.repos.listCommits({
-                    owner: urlParts[0],
-                    repo: urlParts[1],
-                    per_page: 100
-                }).then(function (response) {
-                    var convertedCommits = [];
-                    array.forEach(response.data, function (commit) {
-                        convertedCommits.push(CommitModel.CreateFromGitHubCommit(commit, alreadyLinkedUrls));
-                    });
-                    deferred.resolve(convertedCommits);
-                }, function (error) {
-                    deferred.reject("Couldn't get the commits from the GitHub repository. Error: " + (error.message || error));
-                });
+                github.repos
+                    .listCommits({
+                        owner: urlParts[0],
+                        repo: urlParts[1],
+                        per_page: 100
+                    })
+                    .then(
+                        function (response) {
+                            var convertedCommits = [];
+                            array.forEach(response.data, function (commit) {
+                                convertedCommits.push(CommitModel.CreateFromGitHubCommit(commit, alreadyLinkedUrls));
+                            });
+                            deferred.resolve(convertedCommits);
+                        },
+                        function (error) {
+                            deferred.reject(
+                                "Couldn't get the commits from the GitHub repository. Error: " +
+                                    (error.message || error)
+                            );
+                        }
+                    );
             }
 
             return deferred.promise;
         },
 
         // this should really be extracted to a separate class
-        _createUrlInformation: function(param) {
+        _createUrlInformation: function (param) {
             var original = new url(param);
             var origin = this._getOriginFromUrlObject(original);
             // this should then call the revamped removegitending function
-            var sanitized = this._removeDotGitEnding(original.path)
+            var sanitized = this._removeDotGitEnding(original.path);
             var parts = this._getUrlPartsFromPath(sanitized);
             // as mentioned below, this should be a member function
             // or maybe not even... not quite sure yet about this one
 
             return {
-                original : original,
+                original: original,
                 origin: origin,
                 sanitized: sanitized,
                 parts: parts,
                 joined: parts.join("/"),
                 repo: origin + sanitized
-            }
+            };
         },
 
         // Get the last 100 commits from the specified repository on GitLab
@@ -774,16 +942,24 @@ define([
                 gitlab.Commits.all(giturl.joined, {
                     max_pages: 1,
                     per_page: 100
-                }).then(function (response) {
-                    var commitUrlPath = giturl.repo + "/commit/";
-                    var convertedCommits = [];
-                    array.forEach(response, function (commit) {
-                        convertedCommits.push(CommitModel.CreateFromGitLabCommit(commit, commitUrlPath, alreadyLinkedUrls));
-                    });
-                    deferred.resolve(convertedCommits);
-                }, function (error) {
-                    deferred.reject("Couldn't get the commits from the GitLab repository. Error: " + (error.message || (error.error && error.error.message) || error.error || error));
-                });
+                }).then(
+                    function (response) {
+                        var commitUrlPath = giturl.repo + "/commit/";
+                        var convertedCommits = [];
+                        array.forEach(response, function (commit) {
+                            convertedCommits.push(
+                                CommitModel.CreateFromGitLabCommit(commit, commitUrlPath, alreadyLinkedUrls)
+                            );
+                        });
+                        deferred.resolve(convertedCommits);
+                    },
+                    function (error) {
+                        deferred.reject(
+                            "Couldn't get the commits from the GitLab repository. Error: " +
+                                (error.message || (error.error && error.error.message) || error.error || error)
+                        );
+                    }
+                );
             }
 
             return deferred.promise;
@@ -815,21 +991,28 @@ define([
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.issues.listForRepo({
-                    owner: urlParts[0],
-                    repo: urlParts[1],
-                    state: "all",
-                    per_page: 100
-                }).then(function (response) {
-                    var convertedIssues = [];
-                    array.forEach(self._removePullRequestsFromIssuesList(response.data), function (issue) {
-                        convertedIssues.push(IssueModel.CreateFromGitHubIssue(issue, alreadyLinkedUrls));
-                    });
-                    convertedIssues.push(self._createNewIssueElement(self.gitHosts.gitHubHost.displayName));
-                    deferred.resolve(convertedIssues);
-                }, function (error) {
-                    deferred.reject("Couldn't get the issues from the GitHub repository. Error: " + (error.message || error));
-                });
+                github.issues
+                    .listForRepo({
+                        owner: urlParts[0],
+                        repo: urlParts[1],
+                        state: "all",
+                        per_page: 100
+                    })
+                    .then(
+                        function (response) {
+                            var convertedIssues = [];
+                            array.forEach(self._removePullRequestsFromIssuesList(response.data), function (issue) {
+                                convertedIssues.push(IssueModel.CreateFromGitHubIssue(issue, alreadyLinkedUrls));
+                            });
+                            convertedIssues.push(self._createNewIssueElement(self.gitHosts.gitHubHost.displayName));
+                            deferred.resolve(convertedIssues);
+                        },
+                        function (error) {
+                            deferred.reject(
+                                "Couldn't get the issues from the GitHub repository. Error: " + (error.message || error)
+                            );
+                        }
+                    );
             }
 
             return deferred.promise;
@@ -856,16 +1039,22 @@ define([
                     projectId: giturl.joined,
                     max_pages: 1,
                     per_page: 100
-                }).then(function (response) {
-                    var convertedIssues = [];
-                    array.forEach(response, function (issue) {
-                        convertedIssues.push(IssueModel.CreateFromGitLabIssue(issue, alreadyLinkedUrls));
-                    });
-                    convertedIssues.push(self._createNewIssueElement(self.gitHosts.gitLabHost.displayName));
-                    deferred.resolve(convertedIssues);
-                }, function (error) {
-                    deferred.reject("Couldn't get the issues from the GitLab repository. Error: " + (error.message || (error.error && error.error.message) || error.error || error));
-                });
+                }).then(
+                    function (response) {
+                        var convertedIssues = [];
+                        array.forEach(response, function (issue) {
+                            convertedIssues.push(IssueModel.CreateFromGitLabIssue(issue, alreadyLinkedUrls));
+                        });
+                        convertedIssues.push(self._createNewIssueElement(self.gitHosts.gitLabHost.displayName));
+                        deferred.resolve(convertedIssues);
+                    },
+                    function (error) {
+                        deferred.reject(
+                            "Couldn't get the issues from the GitLab repository. Error: " +
+                                (error.message || (error.error && error.error.message) || error.error || error)
+                        );
+                    }
+                );
             }
 
             return deferred.promise;
@@ -908,20 +1097,30 @@ define([
             } else {
                 urlParts[urlParts.length - 1] = this._removeDotGitEnding(urlParts[urlParts.length - 1]);
 
-                github.pulls.list({
-                    owner: urlParts[0],
-                    repo: urlParts[1],
-                    state: "all",
-                    per_page: 100
-                }).then(function (response) {
-                    var convertedRequests = [];
-                    array.forEach(response.data, function (request) {
-                        convertedRequests.push(RequestModel.CreateFromGitHubRequest(request, alreadyLinkedUrls));
-                    });
-                    deferred.resolve(convertedRequests);
-                }, function (error) {
-                    deferred.reject("Couldn't get the pull requests from the GitHub repository. Error: " + (error.message || error));
-                });
+                github.pulls
+                    .list({
+                        owner: urlParts[0],
+                        repo: urlParts[1],
+                        state: "all",
+                        per_page: 100
+                    })
+                    .then(
+                        function (response) {
+                            var convertedRequests = [];
+                            array.forEach(response.data, function (request) {
+                                convertedRequests.push(
+                                    RequestModel.CreateFromGitHubRequest(request, alreadyLinkedUrls)
+                                );
+                            });
+                            deferred.resolve(convertedRequests);
+                        },
+                        function (error) {
+                            deferred.reject(
+                                "Couldn't get the pull requests from the GitHub repository. Error: " +
+                                    (error.message || error)
+                            );
+                        }
+                    );
             }
 
             return deferred.promise;
@@ -945,15 +1144,21 @@ define([
                     projectId: giturl.joined,
                     max_pages: 1,
                     per_page: 100
-                }).then(function (response) {
-                    var convertedRequests = [];
-                    array.forEach(response, function (request) {
-                        convertedRequests.push(RequestModel.CreateFromGitLabRequest(request, alreadyLinkedUrls));
-                    });
-                    deferred.resolve(convertedRequests);
-                }, function (error) {
-                    deferred.reject("Couldn't get the merge requests from the GitLab repository. Error: " + (error.message || (error.error && error.error.message) || error.error || error));
-                });
+                }).then(
+                    function (response) {
+                        var convertedRequests = [];
+                        array.forEach(response, function (request) {
+                            convertedRequests.push(RequestModel.CreateFromGitLabRequest(request, alreadyLinkedUrls));
+                        });
+                        deferred.resolve(convertedRequests);
+                    },
+                    function (error) {
+                        deferred.reject(
+                            "Couldn't get the merge requests from the GitLab repository. Error: " +
+                                (error.message || (error.error && error.error.message) || error.error || error)
+                        );
+                    }
+                );
             }
 
             return deferred.promise;
@@ -993,19 +1198,24 @@ define([
         // Make a request for a single public project from the gitlab api.
         // Return true if the request was successful, otherwise false.
         isGitLabRepository: function (gitRepositoryUrl) {
-            return xhr.get(this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects", {
-                query: {
-                    per_page: 1
-                },
-                handleAs: "json",
-                headers: {
-                    "Accept": "application/json"
-                }
-            }).then(function (response) {
-                return true;
-            }, function (error) {
-                return false;
-            });
+            return xhr
+                .get(this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects", {
+                    query: {
+                        per_page: 1
+                    },
+                    handleAs: "json",
+                    headers: {
+                        Accept: "application/json"
+                    }
+                })
+                .then(
+                    function (response) {
+                        return true;
+                    },
+                    function (error) {
+                        return false;
+                    }
+                );
         },
 
         // Check if the access token works for the specified host type
@@ -1017,11 +1227,14 @@ define([
                 var github = new this.gitHubApi({
                     auth: this._createGitHubAuth(accessToken)
                 });
-                github.users.getAuthenticated({}).then(function (response) {
-                    deferred.resolve(true);
-                }, function (error) {
-                    deferred.resolve(false);
-                });
+                github.users.getAuthenticated({}).then(
+                    function (response) {
+                        deferred.resolve(true);
+                    },
+                    function (error) {
+                        deferred.resolve(false);
+                    }
+                );
             } else if (gitHost.name === this.gitLabString) {
                 // Check access token with GitLab
                 var gitlab = new this.gitLabApi({
@@ -1029,12 +1242,15 @@ define([
                     token: accessToken,
                     useXMLHttpRequest: true
                 });
-                gitlab.Users.current().then(function (response) {
-                    if (response) deferred.resolve(true);
-                    else deferred.resolve(false);
-                }, function (error) {
-                    deferred.resolve(false);
-                });
+                gitlab.Users.current().then(
+                    function (response) {
+                        if (response) deferred.resolve(true);
+                        else deferred.resolve(false);
+                    },
+                    function (error) {
+                        deferred.resolve(false);
+                    }
+                );
             } else {
                 deferred.reject("Invalid git host.");
             }
@@ -1055,12 +1271,12 @@ define([
 
         // Remove the ".git" suffix from the repository name if present
         _removeDotGitEnding: function (repositoryName) {
-            return repositoryName.replace(/\.git$/, '');
+            return repositoryName.replace(/\.git$/, "");
         },
 
         // Returns an array of non empty url parts taken from the specified url path
         _getUrlPartsFromPath: function (urlPath) {
-            return urlPath.split('/').filter(function (part) {
+            return urlPath.split("/").filter(function (part) {
                 return part; // Remove empty parts (initial slash).
             });
         },
@@ -1089,7 +1305,7 @@ define([
     //      GitRestService.destroyInstance();
     //
     // This is basically a singleton that can be asked to use a new instance when needed
-    return new function () {
+    return new (function () {
         // Gets the existing instance or creates one if none exists (singleton)
         this.getInstance = function () {
             if (!_instance) {
@@ -1104,5 +1320,5 @@ define([
         this.destroyInstance = function () {
             _instance = null;
         };
-    };
+    })();
 });

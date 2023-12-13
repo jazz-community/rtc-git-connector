@@ -1,18 +1,16 @@
-define([
-    "dojo/_base/declare"
-], function (declare) {
+define(["dojo/_base/declare"], function (declare) {
     var CommitModel = declare(null, {
-        sha: null,              // The full sha of the commit
-        message: null,          // The full commit message
-        authorName: null,       // The full name of the author
-        authorEmail: null,      // The email of the author
-        authoredDate: null,     // The date & time when the commit was made
-        webUrl: null,           // The web URL to view the commit
-        alreadyLinked: null     // True if already linked to the current work item
+        sha: null, // The full sha of the commit
+        message: null, // The full commit message
+        authorName: null, // The full name of the author
+        authorEmail: null, // The email of the author
+        authoredDate: null, // The date & time when the commit was made
+        webUrl: null, // The web URL to view the commit
+        alreadyLinked: null // True if already linked to the current work item
     });
 
     // Return an instance so that the functions can be used as if they were static
-    return new function () {
+    return new (function () {
         // Create a CommitModel object from a GitHub commit object
         this.CreateFromGitHubCommit = function (gitHubCommit, alreadyLinkedUrls) {
             var commitModel = new CommitModel();
@@ -40,5 +38,5 @@ define([
 
             return commitModel;
         };
-    };
+    })();
 });

@@ -1,8 +1,4 @@
-define([
-    "dojo/_base/declare",
-    "dojo/Stateful",
-    "dojox/mvc/StatefulArray"
-], function (declare, Stateful, StatefulArray) {
+define(["dojo/_base/declare", "dojo/Stateful", "dojox/mvc/StatefulArray"], function (declare, Stateful, StatefulArray) {
     var _instance = null;
     var MainDataStore = declare(null, {
         newWorkItemMode: null,
@@ -10,14 +6,14 @@ define([
         projectArea: null,
         registeredGitRepositories: null,
         selectedRepositorySettings: {
-            repository: null,   // Object from registeredGitRepositories
+            repository: null, // Object from registeredGitRepositories
             gitHost: {
-                name: "",       // Name is uppercase "GITHUB", "GITLAB", "OTHER"
+                name: "", // Name is uppercase "GITHUB", "GITLAB", "OTHER"
                 displayName: "",
                 requestPrefix: ""
             },
-            accessToken: null,  // For GitHub or GitLab
-            linkType: null,     // Uppercase "COMMIT", "ISSUE", "REQUEST"
+            accessToken: null, // For GitHub or GitLab
+            linkType: null, // Uppercase "COMMIT", "ISSUE", "REQUEST"
             commitsLoaded: false,
             commitsLoading: false,
             commitsLoadError: null,
@@ -83,7 +79,7 @@ define([
     //      MainDataStore.destroyInstance();
     //
     // This is basically a singleton that can be asked to use a new instance when needed
-    return new function () {
+    return new (function () {
         // Gets the existing instance or creates one if none exists (singleton)
         this.getInstance = function () {
             if (!_instance) {
@@ -98,5 +94,5 @@ define([
         this.destroyInstance = function () {
             _instance = null;
         };
-    };
+    })();
 });

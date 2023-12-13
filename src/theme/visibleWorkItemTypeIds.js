@@ -9,10 +9,6 @@
 // The menu items will be displayed in the same order as the ids in the list below.
 export default {
     getVisibleWorkItemTypeIds() {
-        return [
-            "defect",
-            "com.ibm.team.workitem.workItemType.defect",
-            "com.ibm.team.apt.workItemType.story"
-        ];
+        return ["defect", "com.ibm.team.workitem.workItemType.defect", "com.ibm.team.apt.workItemType.story"];
     }
 };

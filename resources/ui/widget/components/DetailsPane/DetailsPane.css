@@ -13,8 +13,8 @@
 .rtcGitConnectorViewAndSelectDetailsSpan {
     display: block;
     font-size: 1em;
-    padding-top: .5em;
-    padding-bottom: .5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
     border-bottom: 1px dashed #cacaca;
 }
 

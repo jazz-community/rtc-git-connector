@@ -1,25 +1,25 @@
-const pako = require('pako');
-const base64js = require('base64-js');
-const Buffer = require('buffer/').Buffer;
+const pako = require("pako");
+const base64js = require("base64-js");
+const Buffer = require("buffer/").Buffer;
 
 // Replace some characters in the input string (needed due to the strange implementation)
 function base64UrlEncode(string) {
-    string = string.replace(/\+/g, '-');
-    string = string.replace(/\//g, '_');
-    string = string.replace(/=/g, '.');
+    string = string.replace(/\+/g, "-");
+    string = string.replace(/\//g, "_");
+    string = string.replace(/=/g, ".");
     return string;
 }
 
 // Replace some characters in the input string (needed due to the strange implementation)
 function base64UrlDecode(string) {
-    string = string.replace(/-/g, '+');
-    string = string.replace(/_/g, '/');
-    string = string.replace(/\./g, '=');
+    string = string.replace(/-/g, "+");
+    string = string.replace(/_/g, "/");
+    string = string.replace(/\./g, "=");
     return string;
 }
 
 // Export the functions needed for encoding and decoding data in git commit links
-export function encoder () {
+export function encoder() {
     // Creates an encoded string from a stringified json object
     this.encode = function encode(value) {
         const compressed = pako.gzip(Buffer.from(value));
@@ -39,36 +39,36 @@ export function encoder () {
 }
 
 // Handlebars for the browser (templating)
-export const Handlebars = require('handlebars/dist/handlebars.min.js');
+export const Handlebars = require("handlebars/dist/handlebars.min.js");
 
 // Helpers for using in Handlebars templates
-export const JustHandlebarsHelpers = require('just-handlebars-helpers/dist/h.min.js');
+export const JustHandlebarsHelpers = require("just-handlebars-helpers/dist/h.min.js");
 
 // Turndown service for the browser (html to markdown)
-export const TurndownService = require('turndown/lib/turndown.browser.umd');
+export const TurndownService = require("turndown/lib/turndown.browser.umd");
 
 // Clipboard.js for copying directly to the clipboard with wide browser support
-export const ClipboardJS = require('clipboard/dist/clipboard.min');
+export const ClipboardJS = require("clipboard/dist/clipboard.min");
 
 // GitHub API client library
-export const GitHubApi = require('@octokit/rest');
+export const GitHubApi = require("@octokit/rest");
 
 // GitLab API client library
-export const GitLabApi = require('gitlab/dist/es5').default;
+export const GitLabApi = require("gitlab/dist/es5").default;
 
 // Fontawesome fonts
-export const FontAwesome = require('@fortawesome/fontawesome');
-const FaCheck = require('@fortawesome/fontawesome-free-solid/faCheck');
-const FaExclamationTriangle = require('@fortawesome/fontawesome-free-solid/faExclamationTriangle');
-const FaLink = require('@fortawesome/fontawesome-free-solid/faLink');
-const FaMinus = require('@fortawesome/fontawesome-free-solid/faMinus');
-const FaPlus = require('@fortawesome/fontawesome-free-solid/faPlus');
-const FaSpinner = require('@fortawesome/fontawesome-free-solid/faSpinner');
-const FaTimes = require('@fortawesome/fontawesome-free-solid/faTimes');
-const FaTrash = require('@fortawesome/fontawesome-free-solid/faTrash');
+export const FontAwesome = require("@fortawesome/fontawesome");
+const FaCheck = require("@fortawesome/fontawesome-free-solid/faCheck");
+const FaExclamationTriangle = require("@fortawesome/fontawesome-free-solid/faExclamationTriangle");
+const FaLink = require("@fortawesome/fontawesome-free-solid/faLink");
+const FaMinus = require("@fortawesome/fontawesome-free-solid/faMinus");
+const FaPlus = require("@fortawesome/fontawesome-free-solid/faPlus");
+const FaSpinner = require("@fortawesome/fontawesome-free-solid/faSpinner");
+const FaTimes = require("@fortawesome/fontawesome-free-solid/faTimes");
+const FaTrash = require("@fortawesome/fontawesome-free-solid/faTrash");
 
 // Build version
-export const buildVersion = '__BUILD_VERSION__';
+export const buildVersion = "__BUILD_VERSION__";
 
 // Adding the entire solid library doesn't seem to work in the frontend.
 // So we have no other choice than adding them one by one.

@@ -15,7 +15,8 @@
 /*
     Use before and after to create and position zero size elements in the same spot.
 */
-.rtcGitConnectorSelectItemMessage::after, .rtcGitConnectorSelectItemMessage::before {
+.rtcGitConnectorSelectItemMessage::after,
+.rtcGitConnectorSelectItemMessage::before {
     position: absolute;
     bottom: 100%;
     left: 25px;

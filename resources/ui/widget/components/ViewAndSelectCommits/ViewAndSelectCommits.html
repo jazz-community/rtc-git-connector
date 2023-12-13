@@ -4,36 +4,46 @@
         <div class="rtcGitConnectorViewAndSelectList">
             <div class="rtcGitConnectorViewAndSelectListControls">
                 <div class="rtcGitConnectorViewAndSelectListControl">
-                    <div class="viewAndSelectControlLabel">Search: </div>
-                    <input id="viewAndSelectCommitsSearchInput"
+                    <div class="viewAndSelectControlLabel">Search:</div>
+                    <input
+                        id="viewAndSelectCommitsSearchInput"
                         class="viewAndSelectSearchInput"
                         placeholder="Search commits by SHA..."
                         data-dojo-type="dijit/form/TextBox"
                         data-dojo-attach-point="commitsSearchInput"
-                        data-dojo-props="trim:true">
-                    <button id="viewAndSelectCommitsSearchButton"
+                        data-dojo-props="trim:true"
+                    />
+                    <button
+                        id="viewAndSelectCommitsSearchButton"
                         class="primary-button viewAndSelectSearchButton"
-                        type="button">Search</button>
-                    <button id="viewAndSelectCommitsSearchClearButton"
-                        class="secondary-button"
-                        type="button">Clear</button>
+                        type="button"
+                    >
+                        Search
+                    </button>
+                    <button id="viewAndSelectCommitsSearchClearButton" class="secondary-button" type="button">
+                        Clear
+                    </button>
                 </div>
                 <div class="rtcGitConnectorViewAndSelectListControl">
-                    <div class="viewAndSelectControlLabel">Filter: </div>
-                    <input id="viewAndSelectCommitsFilterInput"
+                    <div class="viewAndSelectControlLabel">Filter:</div>
+                    <input
+                        id="viewAndSelectCommitsFilterInput"
                         class="viewAndSelectFilterInput"
                         placeholder="Filter commits by message, author, SHA..."
                         data-dojo-type="dijit/form/TextBox"
                         data-dojo-attach-point="commitsFilterInput"
-                        data-dojo-props="trim:true, intermediateChanges:true">
-                    <button id="viewAndSelectCommitsFilterClearButton"
-                        class="secondary-button"
-                        type="button">Clear</button>
+                        data-dojo-props="trim:true, intermediateChanges:true"
+                    />
+                    <button id="viewAndSelectCommitsFilterClearButton" class="secondary-button" type="button">
+                        Clear
+                    </button>
                 </div>
             </div>
             <div class="rtcGitConnectorViewAndSelectListItems" data-dojo-attach-point="listItemsContainer"></div>
         </div>
-        <div data-dojo-attach-point="detailsPane"
-            data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.detailsPane"></div>
+        <div
+            data-dojo-attach-point="detailsPane"
+            data-dojo-type="com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.widget.detailsPane"
+        ></div>
     </div>
 </div>

@@ -13,10 +13,21 @@ define([
     "dijit/Dialog",
     "dojo/text!./RtcGitConnector.html",
     "dojo/domReady!"
-], function (declare, dom, domStyle,
-    MainLayout, MainDataStore, JazzRestService, GitRestService,
-    _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin,
-    registry, Dialog, template) {
+], function (
+    declare,
+    dom,
+    domStyle,
+    MainLayout,
+    MainDataStore,
+    JazzRestService,
+    GitRestService,
+    _WidgetBase,
+    _TemplatedMixin,
+    _WidgetsInTemplateMixin,
+    registry,
+    Dialog,
+    template
+) {
     return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
         mainDataStore: null,
@@ -36,8 +47,9 @@ define([
         },
 
         startup: function () {
-            this.mainDataStore.hasHiddenChanges = this.jazzRestService
-                .moveOldLinksToNewLinkTypes(this.mainDataStore.workItem);
+            this.mainDataStore.hasHiddenChanges = this.jazzRestService.moveOldLinksToNewLinkTypes(
+                this.mainDataStore.workItem
+            );
             this.setEventHandlers();
 
             // Change the popup title in new work item mode
@@ -104,10 +116,10 @@ define([
         isInternetExplorer: function () {
             var ms_ie = false;
             var ua = window.navigator.userAgent;
-            var old_ie = ua.indexOf('MSIE ');
-            var new_ie = ua.indexOf('Trident/');
+            var old_ie = ua.indexOf("MSIE ");
+            var new_ie = ua.indexOf("Trident/");
 
-            if ((old_ie > -1) || (new_ie > -1)) {
+            if (old_ie > -1 || new_ie > -1) {
                 ms_ie = true;
             }
 
