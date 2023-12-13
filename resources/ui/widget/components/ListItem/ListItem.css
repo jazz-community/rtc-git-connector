@@ -1,7 +1,7 @@
 .rtcGitConnectorViewAndSelectListItem {
     display: flex;
     border-bottom: 1px solid #cacaca;
-    padding: .2em;
+    padding: 0.2em;
     font-size: 1em;
     transition: all 0.3s ease-out;
 }
@@ -31,25 +31,25 @@
 .rtcGitConnectorViewAndSelectListItemButton {
     width: 2em;
     height: 1em;
-    margin: auto .3em;
+    margin: auto 0.3em;
     font-size: 1.5em;
     text-align: center;
     cursor: pointer;
-    transition: transform 500ms;
+    transition: transform 200ms;
 }
 
 /* Make the list item button grow and spin once when hovering over the list item. */
 .rtcGitConnectorViewAndSelectListItem:hover .rtcGitConnectorViewAndSelectListItemButton {
-    transform: scale(1.5) rotate(360deg);
+    transform: scale(1.5);
 }
 
 /* Make the list item button spin once again when the list item is selected (attract attention). */
 .rtcGitConnectorViewAndSelectListItem.selected .rtcGitConnectorViewAndSelectListItemButton {
-    transform: scale(1.5) rotate(720deg);
+    transform: scale(1.5);
 }
 
 .rtcGitConnectorViewAndSelectListItem.linkButton .rtcGitConnectorViewAndSelectListItemButton {
-    color: #0645AD;
+    color: #0645ad;
 }
 
 .rtcGitConnectorViewAndSelectListItem.plusButton .rtcGitConnectorViewAndSelectListItemButton {
@@ -61,7 +61,7 @@
 }
 
 .rtcGitConnectorViewAndSelectListItem.timesButton .rtcGitConnectorViewAndSelectListItemButton {
-    color: #CC2200;
+    color: #cc2200;
 }
 
 .rtcGitConnectorViewAndSelectListItem.checkButton {
