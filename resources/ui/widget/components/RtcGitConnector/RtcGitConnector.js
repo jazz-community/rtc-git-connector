@@ -12,7 +12,8 @@ define([
     "dijit/registry",
     "dijit/Dialog",
     "dojo/text!./RtcGitConnector.html",
-    "dojo/domReady!"
+    "dojo/domReady!",
+    "jazz.ui.Dialog"
 ], function (
     declare,
     dom,
@@ -32,6 +33,7 @@ define([
         templateString: template,
         mainDataStore: null,
         jazzRestService: null,
+        mainDialog: null,
 
         // Set the work item and project area properties in the
         // data store so that other classes can access them.
@@ -50,21 +52,25 @@ define([
             this.mainDataStore.hasHiddenChanges = this.jazzRestService.moveOldLinksToNewLinkTypes(
                 this.mainDataStore.workItem
             );
-            this.setEventHandlers();
-
-            // Change the popup title in new work item mode
-            if (this.mainDataStore.newWorkItemMode) {
-                this.mainDialog.set("title", "Create Work Items from Git Issues");
-            }
 
             // Show the error dialog in Internet Explorer (better than nothing happening)
             if (this.isInternetExplorer()) {
                 this.mainErrorDialog.startup();
                 this.mainErrorDialog.show();
             } else {
-                this.mainDialog.startup();
-                this.mainDialog.show();
+                // Change the popup title in new work item mode
+                var title = this.mainDataStore.newWorkItemMode
+                    ? "Create Work Items from Git Issues"
+                    : "Connect with Git";
+                var mainLayout = new MainLayout();
+                this.mainDialog = new jazz.ui.Dialog({
+                    heading: title,
+                    contentNode: mainLayout.domNode,
+                    id: "connectWithGitMainDialog"
+                });
             }
+
+            this.setEventHandlers();
         },
 
         setEventHandlers: function () {
@@ -73,7 +79,7 @@ define([
             // Clean up the dom and custom class instances when the widget is closed.
             // This is especially important for making the widget work when opened
             // and closed multiple times.
-            this.mainDialog.onHide = function () {
+            this.mainDialog.onClose = function () {
                 // Destroy all dialogs and remove them from the dom
                 self.destroyWidgetById("getAndSaveAccessTokenDialog");
                 self.destroyWidgetById("browserIsInternetExplorerContainer");
