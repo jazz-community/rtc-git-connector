@@ -80,9 +80,6 @@ define([
                     request.listItem = listItem;
                     domConstruct.place(listItem.domNode, self.listItemsContainer);
                 });
-
-                // Get the mainDialog and resize to fit the new content
-                ViewHelper.ResizeMainDialog();
             },
 
             // Remove the request with the specified id from the requests to link list in store and add to the requests list

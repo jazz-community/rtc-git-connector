@@ -130,9 +130,6 @@ define([
                         self.tooltip.addTarget(listItem.itemRightButton);
                     }
                 });
-
-                // Get the mainDialog and resize to fit the new content
-                ViewHelper.ResizeMainDialog();
             },
 
             // Remove the issue with the specified id from the issues to link list in store and add to the issues list

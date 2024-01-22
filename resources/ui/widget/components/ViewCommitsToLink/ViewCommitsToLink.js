@@ -80,9 +80,6 @@ define([
                     commit.listItem = listItem;
                     domConstruct.place(listItem.domNode, self.listItemsContainer);
                 });
-
-                // Get the mainDialog and resize to fit the new content
-                ViewHelper.ResizeMainDialog();
             },
 
             // Remove the commit with the specified sha from the commits to link list in store and add to the commits list

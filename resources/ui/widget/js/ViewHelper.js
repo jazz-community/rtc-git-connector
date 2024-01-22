@@ -59,21 +59,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/query", "dijit/registr
             return fullText;
         };
 
-        // Resize the main dialog to fit the content. Reset the scroll
-        // height to the previous value afterwards (otherwise the
-        // scroll is reset to the top every time the dialog is resized).
-        this.ResizeMainDialog = function () {
-            // Use a timeout to wait for the css transitions to finish before resizing
-            setTimeout(function () {
-                var mainDialog = registry.byId("connectWithGitMainDialog");
-                var paneContentNode = query(".dijitDialogPaneContent", mainDialog.domNode)[0];
-                var originalScrollTop = paneContentNode.scrollTop;
-                mainDialog.resize();
-                mainDialog.resize(); // The second time it fixes the positioning
-                paneContentNode.scrollTo(0, originalScrollTop);
-            }, 400);
-        };
-
         // Create a string with information about who created the commit and when
         this.GetCommitDateString = function (commit) {
             var commitDateString;
