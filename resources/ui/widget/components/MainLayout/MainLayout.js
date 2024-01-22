@@ -529,7 +529,7 @@ define([
                         this.mainDataStore.workItem,
                         function () {
                             domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
-                            mainDialog.hide();
+                            mainDialog.close();
                         },
                         function (error) {
                             var errorText = "";
@@ -540,11 +540,11 @@ define([
 
                             alert("Something went wrong and the changes could not be saved." + errorText);
                             domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "none");
-                            mainDialog.hide();
+                            mainDialog.close();
                         }
                     );
                 } else {
-                    mainDialog.hide();
+                    mainDialog.close();
                 }
             },
 
