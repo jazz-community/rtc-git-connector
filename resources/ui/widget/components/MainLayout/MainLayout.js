@@ -85,6 +85,9 @@ define([
                     self.accessTokenInput.set("value", "");
                     self.saveAccessTokenButton.set("disabled", true);
                     originalAccessTokenDialogShow.apply(self.getAccessTokenDialog);
+
+                    // Set the zIndex after the dialog is shown so that it appears in front of the main dialog
+                    domStyle.set("getAndSaveAccessTokenDialog", "zIndex", "1000");
                 };
 
                 // Function to run when save button is clicked or the enter key is pressed
