@@ -40,13 +40,6 @@
     padding-left: 10px;
 }
 
-.rtcGitConnectorActionButtons {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    font-size: 1em;
-}
-
 .rtcGitConnectorError {
     color: red;
 }

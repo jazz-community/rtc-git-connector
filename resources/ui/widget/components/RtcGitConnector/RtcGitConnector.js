@@ -66,6 +66,7 @@ define([
                 this.mainDialog = new jazz.ui.Dialog({
                     heading: title,
                     contentNode: mainLayout.domNode,
+                    footerNode: mainLayout.footerButtons,
                     id: "connectWithGitMainDialog",
                     width: "auto"
                 });
