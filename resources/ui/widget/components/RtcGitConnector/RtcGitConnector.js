@@ -67,6 +67,7 @@ define([
                     heading: title,
                     contentNode: mainLayout.domNode,
                     footerNode: mainLayout.footerButtons,
+                    contentPadding: jazz.ui.Dialog.DialogContentPadding.SIDES,
                     id: "connectWithGitMainDialog",
                     width: "auto"
                 });

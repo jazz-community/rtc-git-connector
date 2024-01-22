@@ -26,10 +26,8 @@
     box-sizing: border-box;
     width: 80vw;
     min-width: 800px;
-    min-height: 80vh;
-    margin: 5px;
+    min-height: 60vh;
     position: relative;
-    padding-bottom: 1em;
     overflow: hidden;
 }
 
@@ -228,7 +226,6 @@
     background-color: white;
     border: 1px solid #cacaca;
     padding: 10px;
-    margin-bottom: 10px;
 }
 
 .rtcGitConnectorViewItemsToLinkList {
