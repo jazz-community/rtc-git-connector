@@ -18,7 +18,7 @@
 /*
     Set the height and width of the widget in percentage of the window height / width.
 */
-#connectWithGitMainDialog .dijitDialogPaneContent {
+#connectWithGitMainDialog {
     background-color: #f5f5f5;
 }
 
