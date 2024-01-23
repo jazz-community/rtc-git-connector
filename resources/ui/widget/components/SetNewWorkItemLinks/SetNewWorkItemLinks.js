@@ -18,6 +18,7 @@ define([
     "com.ibm.team.rtc.foundation.web.model.ListBindings",
     "com.ibm.team.rtc.foundation.web.ui.util.Sprites",
     "com.ibm.team.rtc.foundation.web.ui.views.controller.ActionDropdown",
+    "com.ibm.team.rtc.foundation.web.ui.views.controller.ArtifactList",
     "com.ibm.team.rtc.foundation.web.ui.views.controller.ArtifactMultiList",
     "com.ibm.team.workitem.web.model.links.WorkItemEndpoints",
     "com.ibm.team.workitem.web.ui.internal.view.editor.presentations.nonattribute.links.LinksDialogLauncher"
@@ -41,6 +42,7 @@ define([
     var ListBindings = com.ibm.team.rtc.foundation.web.model.ListBindings;
     var Sprites = com.ibm.team.rtc.foundation.web.ui.util.Sprites;
     var ActionDropdown = com.ibm.team.rtc.foundation.web.ui.views.controller.ActionDropdown;
+    var ArtifactList = com.ibm.team.rtc.foundation.web.ui.views.controller.ArtifactList;
     var ArtifactMultiList = com.ibm.team.rtc.foundation.web.ui.views.controller.ArtifactMultiList;
     var WorkItemEndpoints = com.ibm.team.workitem.web.model.links.WorkItemEndpoints;
     var LinksDialogLauncher =
@@ -136,7 +138,9 @@ define([
                 var listViewDiv = domConstruct.create("div", null, this.linksContainer);
 
                 // Create the ArtifactMultiList and place it
-                var listView = ArtifactMultiList.create(listViewDiv);
+                var listView = new ArtifactMultiList(listViewDiv).listFactory(function () {
+                    return ArtifactList.create();
+                });
 
                 // Initialize empty BindableLists to bind with the enabledEndpointsWithValues later
                 var headers = new BindableList();
