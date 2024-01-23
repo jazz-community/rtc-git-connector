@@ -145,6 +145,7 @@ define([
 
                         // Show a loading overlay to disable the view until the save is complete
                         domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
+                        self._saveButtonsEnabled(false);
 
                         var saveTheLinks = function () {
                             // There are no more hidden changes because they will be saved
@@ -470,6 +471,7 @@ define([
                 if (this.mainDataStore.selectedRepositoryData.issuesToLink.length > 0) {
                     // Show a loading overlay to disable the view until the save is complete
                     domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
+                    this._saveButtonsEnabled(false);
 
                     this.jazzRestService.createNewWorkItems(
                         this.mainDataStore.workItem,
@@ -528,6 +530,7 @@ define([
                 // Save hidden changes before closing if there are any
                 if (this.mainDataStore.hasHiddenChanges) {
                     domStyle.set("rtcGitConnectorFullPageLoadingOverlay", "display", "block");
+                    this._saveButtonsEnabled(false);
                     this.jazzRestService.saveLinksInWorkItem(
                         this.mainDataStore.workItem,
                         function () {
@@ -587,6 +590,10 @@ define([
                     this._showSelectItemMessage(!enabled);
                 }
 
+                this._saveButtonsEnabled(enabled);
+            },
+
+            _saveButtonsEnabled: function (enabled) {
                 dom.byId("rtcGitConnectorSaveButton").disabled = !enabled;
                 dom.byId("rtcGitConnectorSaveAndCloseButton").disabled = !enabled;
             },
