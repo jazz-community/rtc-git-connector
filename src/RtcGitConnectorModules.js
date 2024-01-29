@@ -39,22 +39,22 @@ export function encoder() {
 }
 
 // Handlebars for the browser (templating)
-export const Handlebars = require("handlebars/dist/handlebars.min.js");
+export const Handlebars = require("handlebars");
 
 // Helpers for using in Handlebars templates
-export const JustHandlebarsHelpers = require("just-handlebars-helpers/dist/h.min.js");
+export const JustHandlebarsHelpers = require("just-handlebars-helpers");
 
 // Turndown service for the browser (html to markdown)
-export const TurndownService = require("turndown/lib/turndown.browser.umd");
+export const TurndownService = require("turndown/lib/turndown.browser.umd.js");
 
 // Clipboard.js for copying directly to the clipboard with wide browser support
-export const ClipboardJS = require("clipboard/dist/clipboard.min");
+export const ClipboardJS = require("clipboard/dist/clipboard.min.js");
 
 // GitHub API client library
 export const GitHubApi = require("@octokit/rest");
 
 // GitLab API client library
-export const GitLabApi = require("gitlab/dist/es5").default;
+export const GitLabApi = require("@gitbeaker/rest");
 
 // Fontawesome fonts
 export const FontAwesome = require("@fortawesome/fontawesome");

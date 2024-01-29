@@ -1,4 +1,3 @@
-const JazzUpdateSitePlugin = require("jazz-update-site-webpack-plugin");
 const RemovePlugin = require("remove-files-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
@@ -8,29 +7,33 @@ const packageJson = require("./package.json");
 module.exports = (env) => {
     const timestamp = moment().format("[_]YYYYMMDD[-]HHmm");
     const version =
-        (typeof env !== "undefined" && packageJson.version + "_" + env.buildUUID) || packageJson.version + timestamp;
+        (typeof env !== "undefined" &&
+            typeof env.buildUUID !== "undefined" &&
+            packageJson.version + "_" + env.buildUUID) ||
+        packageJson.version + timestamp;
     const config = {
-        node: {
-            fs: "empty",
-            net: "empty",
-            tls: "empty"
+        target: ["web", "es5"],
+        resolve: {
+            extensions: [".ts", ".js"],
+            fallback: {
+                "https": false
+            }
         },
-
-        entry: {
-            app: "./src/RtcGitConnectorModules.js"
+        externals: {
+            "currencyformatter.js": "currencyformatter.js",
+            "moment/min/moment-with-locales": "moment",
+            "sprintf-js": "sprintf-js"
         },
-
+        entry: "./src/RtcGitConnectorModules.js",
         output: {
             libraryTarget: "var",
             library: "com_siemens_bt_jazz_rtcgitconnector_modules",
             filename: "modules-bundle.js",
             path: __dirname + "/resources/dist"
         },
-
         optimization: {
             minimizer: [new TerserPlugin()]
         },
-
         module: {
             rules: [
                 {
@@ -42,24 +45,20 @@ module.exports = (env) => {
                         flags: "i",
                         strict: true
                     }
+                },
+                {
+                    test: /RtcGitConnectorModules\.js$/,
+                    exclude: /node_modules/,
+                    use: {
+                        loader: "babel-loader",
+                        options: {
+                            presets: ["@babel/preset-env"]
+                        }
+                    }
                 }
             ]
         },
-
         plugins: [
-            new JazzUpdateSitePlugin({
-                appType: "ccm",
-                projectId: "com.siemens.bt.jazz.workitemeditor.rtcGitConnector",
-                acceptGlobPattern: ["resources/**", "META-INF/**", "plugin.xml"],
-                projectInfo: {
-                    author: packageJson.author,
-                    copyright: packageJson.author,
-                    description: packageJson.description,
-                    license: packageJson.license,
-                    version: version
-                }
-            }),
-
             new RemovePlugin({
                 before: {
                     root: __dirname,
@@ -84,13 +83,12 @@ module.exports = (env) => {
     };
 
     const themeConfig = {
+        target: ["web", "es5"],
         entry: "./src/theme/customMenuItems.js",
-
         output: {
             path: __dirname + "/dist",
             filename: "com.siemens.bt.jazz.workitemeditor.rtcGitConnector_theme_" + version + ".js"
         },
-
         module: {
             rules: [
                 {
@@ -105,7 +103,6 @@ module.exports = (env) => {
                 }
             ]
         },
-
         plugins: [
             new ZipPlugin({
                 path: __dirname,
