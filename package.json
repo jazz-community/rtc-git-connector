@@ -6,7 +6,7 @@
     "dependencies": {
         "@fortawesome/fontawesome": "^1.1.8",
         "@fortawesome/fontawesome-free-solid": "^5.0.13",
-        "@gitbeaker/rest": "^39.33.2",
+        "@gitbeaker/rest": "^39.34.1",
         "@octokit/rest": "^20.0.2",
         "base64-js": "^1.5.1",
         "buffer": "^6.0.3",
@@ -31,9 +31,9 @@
         "zip-webpack-plugin": "^4.0.1"
     },
     "scripts": {
-        "webpack": "webpack --config ./webpack.config.js --mode production",
+        "build": "webpack --config ./webpack.config.js --mode production",
         "pack": "pack-jazz-web-plugin",
-        "build": "npm run webpack && npm run pack"
+        "both": "npm run build && npm run pack"
     },
     "repository": {
         "type": "git",
