@@ -26,8 +26,10 @@ module.exports = (env) => {
         },
         entry: "./src/RtcGitConnectorModules.js",
         output: {
-            libraryTarget: "var",
-            library: "com_siemens_bt_jazz_rtcgitconnector_modules",
+            library: {
+                name: "com_siemens_bt_jazz_rtcgitconnector_modules",
+                type: "amd"
+            },
             filename: "modules-bundle.js",
             path: __dirname + "/resources/dist"
         },
@@ -52,7 +54,7 @@ module.exports = (env) => {
                         loader: "babel-loader",
                         options: {
                             exclude: /node_modules[\\/]@babel/,
-                            presets: ["@babel/preset-env"],
+                            presets: [["@babel/preset-env", { "modules": "amd" }]],
                             plugins: ["@babel/plugin-transform-runtime"]
                         }
                     }
@@ -98,7 +100,7 @@ module.exports = (env) => {
                         loader: "babel-loader",
                         options: {
                             exclude: /node_modules[\\/]@babel/,
-                            presets: ["@babel/preset-env"],
+                            presets: [["@babel/preset-env", { "modules": "amd" }]],
                             plugins: ["@babel/plugin-transform-runtime"]
                         }
                     }
