@@ -14,7 +14,7 @@ module.exports = (env) => {
     const config = {
         target: ["web", "es5"],
         resolve: {
-            extensions: [".ts", ".js"],
+            extensions: [".ts", "..."],
             fallback: {
                 "https": false
             }
@@ -47,8 +47,7 @@ module.exports = (env) => {
                     }
                 },
                 {
-                    test: /RtcGitConnectorModules\.js$/,
-                    exclude: /node_modules/,
+                    test: /\.js$/,
                     use: {
                         loader: "babel-loader",
                         options: {
@@ -93,7 +92,6 @@ module.exports = (env) => {
             rules: [
                 {
                     test: /\.js$/,
-                    exclude: /node_modules/,
                     use: {
                         loader: "babel-loader",
                         options: {
