@@ -51,7 +51,9 @@ module.exports = (env) => {
                     use: {
                         loader: "babel-loader",
                         options: {
-                            presets: ["@babel/preset-env"]
+                            exclude: /node_modules[\\/]@babel/,
+                            presets: ["@babel/preset-env"],
+                            plugins: ["@babel/plugin-transform-runtime"]
                         }
                     }
                 }
@@ -95,7 +97,9 @@ module.exports = (env) => {
                     use: {
                         loader: "babel-loader",
                         options: {
-                            presets: ["@babel/preset-env"]
+                            exclude: /node_modules[\\/]@babel/,
+                            presets: ["@babel/preset-env"],
+                            plugins: ["@babel/plugin-transform-runtime"]
                         }
                     }
                 }
