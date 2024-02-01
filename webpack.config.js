@@ -35,6 +35,9 @@ module.exports = (env) => {
             TurndownService: ["turndown"]
         },
         output: {
+            library: {
+                type: "amd"
+            },
             filename: "[name].js",
             path: __dirname + "/resources/dist"
         },
