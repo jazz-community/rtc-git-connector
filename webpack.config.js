@@ -24,13 +24,18 @@ module.exports = (env) => {
             "moment/min/moment-with-locales": "moment",
             "sprintf-js": "sprintf-js"
         },
-        entry: "./src/RtcGitConnectorModules.js",
+        entry: {
+            CommitLinkEncoder: ["./src/CommitLinkEncoder.js"],
+            FontAwesomeProvider: ["./src/FontAwesomeProvider.js"],
+            ClipboardJS: ["clipboard"],
+            GitHubApi: ["@octokit/rest"],
+            GitLabApi: ["@gitbeaker/rest"],
+            Handlebars: ["handlebars"],
+            JustHandlebarsHelpers: ["just-handlebars-helpers"],
+            TurndownService: ["turndown"]
+        },
         output: {
-            library: {
-                name: "com_siemens_bt_jazz_rtcgitconnector_modules",
-                type: "amd"
-            },
-            filename: "modules-bundle.js",
+            filename: "[name].js",
             path: __dirname + "/resources/dist"
         },
         optimization: {
@@ -38,16 +43,6 @@ module.exports = (env) => {
         },
         module: {
             rules: [
-                {
-                    test: /RtcGitConnectorModules\.js$/,
-                    loader: "string-replace-loader",
-                    options: {
-                        search: "__BUILD_VERSION__",
-                        replace: version,
-                        flags: "i",
-                        strict: true
-                    }
-                },
                 {
                     test: /\.js$/,
                     use: {
@@ -75,7 +70,8 @@ module.exports = (env) => {
                                 ).test(filePath);
                             }
                         }
-                    ]
+                    ],
+                    include: ["./resources/dist"]
                 },
                 after: {
                     root: __dirname,

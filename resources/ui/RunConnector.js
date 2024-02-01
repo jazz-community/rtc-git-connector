@@ -10,7 +10,7 @@ define(["dojo/_base/declare", "dojo/request/script", "./widget/components/RtcGit
         .get(
             net.jazz.ajax._contextRoot +
                 net.jazz.ajax._webuiPrefix +
-                "com.siemens.bt.jazz.workitemeditor.rtcGitConnector/dist/modules-bundle.js"
+                "com.siemens.bt.jazz.workitemeditor.rtcGitConnector/dist/ModulesBundle.js"
         )
         .then(function () {
             window.autoOpenRtcGitConnector();
