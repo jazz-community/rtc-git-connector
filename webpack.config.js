@@ -19,6 +19,7 @@ module.exports = (env) => {
                 "https": false
             }
         },
+        externalsType: "var",
         externals: {
             "currencyformatter.js": "currencyformatter.js",
             "moment/min/moment-with-locales": "moment",
