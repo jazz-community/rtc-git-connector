@@ -42,7 +42,7 @@ module.exports = (env) => {
             path: __dirname + "/resources/dist"
         },
         optimization: {
-            minimizer: [new TerserPlugin()]
+            minimize: false
         },
         module: {
             rules: [
