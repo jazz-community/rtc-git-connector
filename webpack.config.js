@@ -42,7 +42,8 @@ module.exports = (env) => {
             path: __dirname + "/resources/dist"
         },
         optimization: {
-            minimize: false
+            minimize: false,
+            concatenateModules: false
         },
         module: {
             rules: [
