@@ -13,7 +13,6 @@ module.exports = (env) => {
     const config = {
         target: ["web", "es5"],
         resolve: {
-            extensions: [".ts", "..."],
             fallback: {
                 "https": false
             }
@@ -29,7 +28,7 @@ module.exports = (env) => {
             FontAwesomeProvider: ["./src/FontAwesomeProvider.js"],
             ClipboardJS: ["clipboard"],
             GitHubApi: ["@octokit/rest"],
-            GitLabApi: ["@gitbeaker/rest"],
+            GitLabApiProvider: ["./src/GitLabApiProvider.js"],
             Handlebars: ["handlebars"],
             JustHandlebarsHelpers: ["just-handlebars-helpers"],
             TurndownService: ["turndown"]
