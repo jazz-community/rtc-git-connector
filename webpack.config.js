@@ -1,5 +1,4 @@
 const RemovePlugin = require("remove-files-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
 const moment = require("moment");
 const packageJson = require("./package.json");
