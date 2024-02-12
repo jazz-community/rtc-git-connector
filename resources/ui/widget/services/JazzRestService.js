@@ -628,7 +628,6 @@ define([
         },
 
         getGitCommitLinksFromWorkItem: function (workItem) {
-            var self = this;
             var linkedCommitUrls = [];
             var commitLinkTypeContainer = this._getCommitLinkTypeContainer(workItem);
 
