@@ -1,9 +1,12 @@
-define(["dojo/_base/declare", "../../../dist/Handlebars"], function (declare, Handlebars) {
+define(["dojo/_base/declare", "../../../dist/Handlebars", "../../../dist/JustHandlebarsHelpers"], function (
+    declare,
+    Handlebars,
+    JustHandlebarsHelpers
+) {
     return declare(null, {
         turndownService: null,
 
         constructor: function () {
-            this.justHandlebarsHelpers = com_siemens_bt_jazz_rtcgitconnector_modules.JustHandlebarsHelpers;
             this.turndownService = new com_siemens_bt_jazz_rtcgitconnector_modules.TurndownService();
 
             this._doNotEscapeMarkdown();
@@ -37,7 +40,7 @@ define(["dojo/_base/declare", "../../../dist/Handlebars"], function (declare, Ha
 
         _registerJustHandlebarsHelpers: function () {
             // Register all the helpers in the just-handlebars-helpers package
-            this.justHandlebarsHelpers.registerHelpers(Handlebars);
+            JustHandlebarsHelpers.registerHelpers(Handlebars);
         }
     });
 });
