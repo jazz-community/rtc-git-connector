@@ -1,10 +1,8 @@
-define(["dojo/_base/declare"], function (declare) {
+define(["dojo/_base/declare", "../../../dist/Handlebars"], function (declare, Handlebars) {
     return declare(null, {
-        handlebars: null,
         turndownService: null,
 
         constructor: function () {
-            this.handlebars = com_siemens_bt_jazz_rtcgitconnector_modules.Handlebars;
             this.justHandlebarsHelpers = com_siemens_bt_jazz_rtcgitconnector_modules.JustHandlebarsHelpers;
             this.turndownService = new com_siemens_bt_jazz_rtcgitconnector_modules.TurndownService();
 
@@ -14,7 +12,7 @@ define(["dojo/_base/declare"], function (declare) {
         },
 
         renderTemplateWithWorkItem: function (templateString, workItem) {
-            var template = this.handlebars.compile(templateString);
+            var template = Handlebars.compile(templateString);
             return template(workItem.object);
         },
 
@@ -29,7 +27,7 @@ define(["dojo/_base/declare"], function (declare) {
         _registerHtmlToMarkdownHelper: function () {
             var self = this;
 
-            this.handlebars.registerHelper("turndown", function (inputString) {
+            Handlebars.registerHelper("turndown", function (inputString) {
                 // Convert HTML to Markdown. First replace non-breaking spaces with normal ones.
                 // The HTML editor in Jazz creates non-breaking spaces when there are multiple spaces in a row.
                 // For the Markdown formatting to work correctly, these need to be normal spaces.
@@ -39,7 +37,7 @@ define(["dojo/_base/declare"], function (declare) {
 
         _registerJustHandlebarsHelpers: function () {
             // Register all the helpers in the just-handlebars-helpers package
-            this.justHandlebarsHelpers.registerHelpers(this.handlebars);
+            this.justHandlebarsHelpers.registerHelpers(Handlebars);
         }
     });
 });
