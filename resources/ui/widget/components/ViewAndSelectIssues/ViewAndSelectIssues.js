@@ -422,7 +422,7 @@ define([
                     this.clipboard.destroy();
                 }
 
-                this.clipboard = new this.ClipboardJS("#viewAndSelectIssuesCopyWorkItemDetails", {
+                this.clipboard = new ClipboardJS("#viewAndSelectIssuesCopyWorkItemDetails", {
                     text: function () {
                         return json.stringify(self.mainDataStore.workItem.object, null, 2);
                     }
