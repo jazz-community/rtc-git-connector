@@ -1229,7 +1229,7 @@ define([
                     host: this._getOriginFromUrlObject(gitRepositoryUrl),
                     token: accessToken
                 });
-                gitlab.Users.current().then(
+                gitlab.Users.showCurrentUser().then(
                     function (response) {
                         if (response) deferred.resolve(true);
                         else deferred.resolve(false);
