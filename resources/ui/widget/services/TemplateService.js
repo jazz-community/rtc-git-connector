@@ -1,16 +1,15 @@
-define(["dojo/_base/declare", "../../../dist/Handlebars", "../../../dist/JustHandlebarsHelpers"], function (
-    declare,
-    Handlebars,
-    JustHandlebarsHelpers
-) {
+define([
+    "dojo/_base/declare",
+    "../../../dist/Handlebars",
+    "../../../dist/JustHandlebarsHelpers",
+    "../../../dist/TurndownService"
+], function (declare, Handlebars, JustHandlebarsHelpers, TurndownService) {
     return declare(null, {
-        turndownService: null,
-
         constructor: function () {
-            this.turndownService = new com_siemens_bt_jazz_rtcgitconnector_modules.TurndownService();
+            var turndownService = new TurndownService();
 
-            this._doNotEscapeMarkdown();
-            this._registerHtmlToMarkdownHelper();
+            this._doNotEscapeMarkdown(turndownService);
+            this._registerHtmlToMarkdownHelper(turndownService);
             this._registerJustHandlebarsHelpers();
         },
 
@@ -19,22 +18,20 @@ define(["dojo/_base/declare", "../../../dist/Handlebars", "../../../dist/JustHan
             return template(workItem.object);
         },
 
-        _doNotEscapeMarkdown: function () {
+        _doNotEscapeMarkdown: function (turndownService) {
             // Override the escape method so that markdown is not escaped
             // when converting HTML to Markdown
-            this.turndownService.escape = function (input) {
+            turndownService.escape = function (input) {
                 return input;
             };
         },
 
-        _registerHtmlToMarkdownHelper: function () {
-            var self = this;
-
+        _registerHtmlToMarkdownHelper: function (turndownService) {
             Handlebars.registerHelper("turndown", function (inputString) {
                 // Convert HTML to Markdown. First replace non-breaking spaces with normal ones.
                 // The HTML editor in Jazz creates non-breaking spaces when there are multiple spaces in a row.
                 // For the Markdown formatting to work correctly, these need to be normal spaces.
-                return inputString ? self.turndownService.turndown(inputString.replace(/&nbsp;/g, " ")) : "";
+                return inputString ? turndownService.turndown(inputString.replace(/&nbsp;/g, " ")) : "";
             });
         },
 
