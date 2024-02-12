@@ -5,16 +5,16 @@ define([
     "dojo/json",
     "dojo/request/xhr",
     "dojo/Deferred",
+    "../../../dist/CommitLinkEncoder",
     "../components/NewWorkItemList/NewWorkItemList",
     "com.ibm.team.workitem.web.model.links.WorkItemEndpoints",
     "com.ibm.team.workitem.web.ui.internal.module.WindowContext"
-], function (declare, array, lang, json, xhr, Deferred, NewWorkItemList) {
+], function (declare, array, lang, json, xhr, Deferred, CommitLinkEncoder, NewWorkItemList) {
     var WorkItemEndpoints = com.ibm.team.workitem.web.model.links.WorkItemEndpoints;
     var WindowContext = com.ibm.team.workitem.web.ui.internal.module.WindowContext;
 
     var _instance = null;
     var JazzRestService = declare(null, {
-        commitLinkEncoder: null,
         ajaxContextRoot: null,
         allRegisteredGitRepositoriesUrl: null,
         currentUserUrl: null,
@@ -33,11 +33,6 @@ define([
         _newWorkItemIdSuffix: 0,
 
         constructor: function () {
-            // Prevent errors in Internet Explorer (dojo parse error because undefined)
-            if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== "undefined") {
-                this.commitLinkEncoder = new com_siemens_bt_jazz_rtcgitconnector_modules.encoder();
-            }
-
             this.ajaxContextRoot = net.jazz.ajax._contextRoot;
             this.allRegisteredGitRepositoriesUrl =
                 this.ajaxContextRoot +
@@ -643,7 +638,7 @@ define([
 
                 if (lastIndex != -1) {
                     var encodedCommit = commitLink.url.slice(lastIndex + searchTerm.length);
-                    var linkCommit = json.parse(self.commitLinkEncoder.decode(encodedCommit));
+                    var linkCommit = json.parse(CommitLinkEncoder.decode(encodedCommit));
                     linkedCommitUrls.push(linkCommit.u.toLowerCase());
                 }
             });
@@ -863,7 +858,7 @@ define([
                 s: commit.sha,
                 u: commit.webUrl
             });
-            return this.gitCommitServiceUrl + "?value=" + this.commitLinkEncoder.encode(jsonString);
+            return this.gitCommitServiceUrl + "?value=" + CommitLinkEncoder.encode(jsonString);
         },
 
         // TODO: Keep this despite being unused. If we decide to use custom commit links
