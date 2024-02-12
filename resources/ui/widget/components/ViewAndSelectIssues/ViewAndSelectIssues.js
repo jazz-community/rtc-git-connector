@@ -6,6 +6,7 @@ define([
     "dojo/dom-construct",
     "dojo/on",
     "dojo/json",
+    "../../../../dist/ClipboardJS",
     "../../services/MainDataStore",
     "../../services/JazzRestService",
     "../../services/GitRestService",
@@ -25,6 +26,7 @@ define([
     domConstruct,
     on,
     json,
+    ClipboardJS,
     MainDataStore,
     JazzRestService,
     GitRestService,
@@ -420,14 +422,11 @@ define([
                     this.clipboard.destroy();
                 }
 
-                this.clipboard = new com_siemens_bt_jazz_rtcgitconnector_modules.ClipboardJS(
-                    "#viewAndSelectIssuesCopyWorkItemDetails",
-                    {
-                        text: function () {
-                            return json.stringify(self.mainDataStore.workItem.object, null, 2);
-                        }
+                this.clipboard = new this.ClipboardJS("#viewAndSelectIssuesCopyWorkItemDetails", {
+                    text: function () {
+                        return json.stringify(self.mainDataStore.workItem.object, null, 2);
                     }
-                );
+                });
                 this.clipboard.on("success", function (e) {
                     alert("Successfully copied the work item details. Paste into a text editor to view them.");
                 });
