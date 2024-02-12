@@ -1,20 +1,7 @@
-define(["dojo/_base/declare", "dojo/request/script", "./widget/components/RtcGitConnector/RtcGitConnector"], function (
+define(["dojo/_base/declare", "./widget/components/RtcGitConnector/RtcGitConnector"], function (
     declare,
-    script,
     RtcGitConnector
 ) {
-    window.autoOpenRtcGitConnector = function () {
-        console.log("window.autoOpenRtcGitConnector is not set");
-    };
-    script
-        .get(
-            net.jazz.ajax._contextRoot +
-                net.jazz.ajax._webuiPrefix +
-                "com.siemens.bt.jazz.workitemeditor.rtcGitConnector/dist/ModulesBundle.js"
-        )
-        .then(function () {
-            window.autoOpenRtcGitConnector();
-        });
     return declare(
         "com.siemens.bt.jazz.workitemeditor.rtcGitConnector.ui.RunConnector",
         com.ibm.team.workitem.web.ui2.internal.action.AbstractAction,
@@ -39,10 +26,6 @@ define(["dojo/_base/declare", "dojo/request/script", "./widget/components/RtcGit
             //      workingCopy: {}
             //  }
             constructor: function (params) {
-                var self = this;
-                window.autoOpenRtcGitConnector = function () {
-                    self.autoOpen();
-                };
                 this.autoOpen();
             },
 
@@ -65,10 +48,7 @@ define(["dojo/_base/declare", "dojo/request/script", "./widget/components/RtcGit
 
             // Open the widget if the auto open parameter is set and the modules bundle is loaded.
             autoOpen: function () {
-                if (
-                    typeof com_siemens_bt_jazz_rtcgitconnector_modules !== "undefined" &&
-                    window.location.hash.indexOf("&autoOpenRtcGitConnector=true") > -1
-                ) {
+                if (window.location.hash.indexOf("&autoOpenRtcGitConnector=true") > -1) {
                     window.history.replaceState(
                         undefined,
                         undefined,
