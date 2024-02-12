@@ -8,7 +8,7 @@ define([
     "../../services/MainDataStore",
     "../../services/JazzRestService",
     "../../services/GitRestService",
-    "../../js/ViewHelper",
+    "../../utils/ViewHelper",
     "../DetailsPane/DetailsPane",
     "../ListItem/ListItem",
     "dijit/_WidgetBase",
