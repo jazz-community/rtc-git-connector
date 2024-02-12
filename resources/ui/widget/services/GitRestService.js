@@ -29,7 +29,7 @@ define([
     TemplateService,
     DefaultIssueTemplate
 ) {
-    var GitLabApi = GitLabApiProvider.GitLabApi;
+    var GitLabApi = GitLabApiProvider.GitLabApi.Gitlab;
     var _instance = null;
     var GitRestService = declare(null, {
         gitHubString: "GITHUB",
@@ -166,9 +166,8 @@ define([
             var tags = this.getTagsFromWorkItem(workItem);
 
             var gitlab = new GitLabApi({
-                url: giturl.origin,
-                token: accessToken,
-                useXMLHttpRequest: true
+                host: giturl.origin,
+                token: accessToken
             });
 
             if (giturl.parts.length < 2) {
@@ -412,9 +411,8 @@ define([
             var giturl = this._createUrlInformation(params.selectedGitRepository.url);
 
             var gitlab = new GitLabApi({
-                url: giturl.origin,
-                token: params.accessToken,
-                useXMLHttpRequest: true
+                host: giturl.origin,
+                token: params.accessToken
             });
 
             var commentBody =
@@ -588,9 +586,8 @@ define([
             var giturl = this._createUrlInformation(selectedGitRepository.url);
 
             var gitlab = new GitLabApi({
-                url: giturl.origin,
-                token: accessToken,
-                useXMLHttpRequest: true
+                host: giturl.origin,
+                token: accessToken
             });
 
             if (giturl.parts.length < 2) {
@@ -667,9 +664,8 @@ define([
             var giturl = this._createUrlInformation(selectedGitRepository.url);
 
             var gitlab = new GitLabApi({
-                url: giturl.origin,
-                token: accessToken,
-                useXMLHttpRequest: true
+                host: giturl.origin,
+                token: accessToken
             });
 
             if (giturl.parts.length < 2) {
@@ -750,9 +746,8 @@ define([
             var giturl = this._createUrlInformation(selectedGitRepository.url);
 
             var gitlab = new GitLabApi({
-                url: giturl.origin,
-                token: accessToken,
-                useXMLHttpRequest: true
+                host: giturl.origin,
+                token: accessToken
             });
 
             if (giturl.parts.length < 2) {
@@ -827,9 +822,8 @@ define([
             var giturl = this._createUrlInformation(selectedGitRepository.url);
 
             var gitlab = new GitLabApi({
-                url: giturl.origin,
-                token: accessToken,
-                useXMLHttpRequest: true
+                host: giturl.origin,
+                token: accessToken
             });
 
             if (giturl.parts.length < 2) {
@@ -928,9 +922,8 @@ define([
             var giturl = this._createUrlInformation(selectedGitRepository.url);
 
             var gitlab = new GitLabApi({
-                url: giturl.origin,
-                token: accessToken,
-                useXMLHttpRequest: true
+                host: giturl.origin,
+                token: accessToken
             });
 
             if (giturl.parts.length < 2) {
@@ -1022,9 +1015,8 @@ define([
             var deferred = new Deferred();
 
             var gitlab = new GitLabApi({
-                url: giturl.origin,
-                token: accessToken,
-                useXMLHttpRequest: true
+                host: giturl.origin,
+                token: accessToken
             });
 
             // instead of checking for validity with the length of a path, it would be nice to
@@ -1129,9 +1121,8 @@ define([
             var deferred = new Deferred();
 
             var gitlab = new GitLabApi({
-                url: giturl.origin,
-                token: accessToken,
-                useXMLHttpRequest: true
+                host: giturl.origin,
+                token: accessToken
             });
 
             if (giturl.parts.length < 2) {
@@ -1235,9 +1226,8 @@ define([
             } else if (gitHost.name === this.gitLabString) {
                 // Check access token with GitLab
                 var gitlab = new GitLabApi({
-                    url: this._getOriginFromUrlObject(gitRepositoryUrl),
-                    token: accessToken,
-                    useXMLHttpRequest: true
+                    host: this._getOriginFromUrlObject(gitRepositoryUrl),
+                    token: accessToken
                 });
                 gitlab.Users.current().then(
                     function (response) {
