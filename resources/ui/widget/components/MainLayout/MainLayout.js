@@ -6,6 +6,7 @@ define([
     "dojo/dom-style",
     "dojo/on",
     "dojo/keys",
+    "../../../../dist/FontAwesomeProvider",
     "../../services/MainDataStore",
     "../../services/JazzRestService",
     "../../services/GitRestService",
@@ -27,6 +28,7 @@ define([
     domStyle,
     on,
     keys,
+    FontAwesomeProvider,
     MainDataStore,
     JazzRestService,
     GitRestService,
@@ -308,8 +310,10 @@ define([
                 });
 
                 // Add the font awesome icon to the loading screen
-                var fontAwesome = com_siemens_bt_jazz_rtcgitconnector_modules.FontAwesome;
-                var icon = fontAwesome.icon({ prefix: "fas", iconName: "spinner" }, { classes: ["fa-pulse"] });
+                var icon = FontAwesomeProvider.FontAwesome.icon(
+                    { prefix: "fas", iconName: "spinner" },
+                    { classes: ["fa-pulse"] }
+                );
                 domConstruct.create(
                     "span",
                     {
