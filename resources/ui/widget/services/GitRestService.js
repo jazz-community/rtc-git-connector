@@ -6,6 +6,7 @@ define([
     "dojo/request/xhr",
     "dojo/Deferred",
     "dojo/DeferredList",
+    "../../../dist/GitHubApi",
     "../models/CommitModel",
     "../models/IssueModel",
     "../models/RequestModel",
@@ -19,6 +20,7 @@ define([
     xhr,
     Deferred,
     DeferredList,
+    GitHubApi, // use with new
     CommitModel,
     IssueModel,
     RequestModel,
@@ -29,7 +31,6 @@ define([
     var GitRestService = declare(null, {
         gitHubString: "GITHUB",
         gitLabString: "GITLAB",
-        gitHubApi: null, // use with new
         gitLabApi: null, // use without new
         issueTemplateName: "rtc-work-item-v1.md",
         gitHosts: null,
@@ -42,7 +43,6 @@ define([
 
             // Prevent errors in Internet Explorer (dojo parse error because undefined)
             if (typeof com_siemens_bt_jazz_rtcgitconnector_modules !== "undefined") {
-                this.gitHubApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitHubApi;
                 this.gitLabApi = com_siemens_bt_jazz_rtcgitconnector_modules.GitLabApi;
             }
 
@@ -76,7 +76,7 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({
+            var github = new GitHubApi({
                 auth: this._createGitHubAuth(accessToken)
             });
 
@@ -291,7 +291,7 @@ define([
             var deferredArray = [];
             var repositoryUrl = new url(params.selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({
+            var github = new GitHubApi({
                 auth: this._createGitHubAuth(params.accessToken)
             });
             var commentBody =
@@ -557,7 +557,7 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({
+            var github = new GitHubApi({
                 auth: this._createGitHubAuth(accessToken)
             });
 
@@ -633,7 +633,7 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({
+            var github = new GitHubApi({
                 auth: this._createGitHubAuth(accessToken)
             });
 
@@ -712,7 +712,7 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({
+            var github = new GitHubApi({
                 auth: this._createGitHubAuth(accessToken)
             });
 
@@ -792,7 +792,7 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({
+            var github = new GitHubApi({
                 auth: this._createGitHubAuth(accessToken)
             });
 
@@ -870,7 +870,7 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({
+            var github = new GitHubApi({
                 auth: this._createGitHubAuth(accessToken)
             });
 
@@ -982,7 +982,7 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({
+            var github = new GitHubApi({
                 auth: this._createGitHubAuth(accessToken)
             });
 
@@ -1088,7 +1088,7 @@ define([
             var deferred = new Deferred();
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
-            var github = new this.gitHubApi({
+            var github = new GitHubApi({
                 auth: this._createGitHubAuth(accessToken)
             });
 
@@ -1224,7 +1224,7 @@ define([
 
             if (gitHost.name === this.gitHubString) {
                 // Check access token with GitHub
-                var github = new this.gitHubApi({
+                var github = new GitHubApi({
                     auth: this._createGitHubAuth(accessToken)
                 });
                 github.users.getAuthenticated({}).then(
