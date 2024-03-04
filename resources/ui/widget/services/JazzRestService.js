@@ -5,7 +5,7 @@ define([
     "dojo/json",
     "dojo/request/xhr",
     "dojo/Deferred",
-    "../../../dist/CommitLinkEncoder",
+    "com.siemens.bt.jazz.workitemeditor.rtcGitConnector|dist|CommitLinkEncoder.js",
     "../components/NewWorkItemList/NewWorkItemList",
     "com.ibm.team.workitem.web.model.links.WorkItemEndpoints",
     "com.ibm.team.workitem.web.ui.internal.module.WindowContext"

@@ -6,7 +6,7 @@ define([
     "dojo/dom-style",
     "dojo/on",
     "dojo/keys",
-    "../../../../dist/FontAwesomeProvider",
+    "com.siemens.bt.jazz.workitemeditor.rtcGitConnector|dist|FontAwesomeProvider.js",
     "../../services/MainDataStore",
     "../../services/JazzRestService",
     "../../services/GitRestService",

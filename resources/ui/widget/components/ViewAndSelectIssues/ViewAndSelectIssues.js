@@ -6,7 +6,7 @@ define([
     "dojo/dom-construct",
     "dojo/on",
     "dojo/json",
-    "../../../../dist/ClipboardJS",
+    "com.siemens.bt.jazz.workitemeditor.rtcGitConnector|dist|ClipboardJS.js",
     "../../services/MainDataStore",
     "../../services/JazzRestService",
     "../../services/GitRestService",

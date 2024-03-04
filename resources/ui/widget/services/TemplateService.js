@@ -1,8 +1,8 @@
 define([
     "dojo/_base/declare",
-    "../../../dist/Handlebars",
-    "../../../dist/JustHandlebarsHelpers",
-    "../../../dist/TurndownService"
+    "com.siemens.bt.jazz.workitemeditor.rtcGitConnector|dist|Handlebars.js",
+    "com.siemens.bt.jazz.workitemeditor.rtcGitConnector|dist|JustHandlebarsHelpers.js",
+    "com.siemens.bt.jazz.workitemeditor.rtcGitConnector|dist|TurndownService.js"
 ], function (declare, Handlebars, JustHandlebarsHelpers, TurndownService) {
     return declare(null, {
         constructor: function () {

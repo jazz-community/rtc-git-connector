@@ -2,7 +2,7 @@ define([
     "dojo/_base/declare",
     "dojo/dom-class",
     "dojo/dom-style",
-    "../../../../dist/FontAwesomeProvider",
+    "com.siemens.bt.jazz.workitemeditor.rtcGitConnector|dist|FontAwesomeProvider.js",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dojo/text!./ListItem.html",
