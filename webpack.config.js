@@ -36,7 +36,6 @@ const config = {
         path: __dirname + "/resources/dist"
     },
     optimization: {
-        minimize: false,
         concatenateModules: false
     },
     module: {
