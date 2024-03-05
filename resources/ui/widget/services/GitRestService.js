@@ -641,7 +641,7 @@ define([
                     .getCommit({
                         owner: urlParts[0],
                         repo: urlParts[1],
-                        sha: commitSha
+                        ref: commitSha
                     })
                     .then(
                         function (response) {
