@@ -364,7 +364,7 @@ define([
                 .createCommitComment({
                     owner: owner,
                     repo: repo,
-                    sha: sha,
+                    commit_sha: sha,
                     body: commentBody
                 })
                 .then(
