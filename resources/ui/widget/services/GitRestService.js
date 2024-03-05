@@ -566,7 +566,7 @@ define([
                     .addLabels({
                         owner: urlParts[0],
                         repo: urlParts[1],
-                        number: gitIssue.id,
+                        issue_number: gitIssue.id,
                         labels: [createdAsWorkItemLabel]
                     })
                     .then(
