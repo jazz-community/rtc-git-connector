@@ -30,6 +30,7 @@ define([
     DefaultIssueTemplate
 ) {
     var GitLabApi = GitLabApiProvider.GitLabApi.Gitlab;
+    var GitHubApi = GitHubApi.Octokit;
     var _instance = null;
     var GitRestService = declare(null, {
         gitHubString: "GITHUB",
