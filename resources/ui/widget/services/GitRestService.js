@@ -798,7 +798,7 @@ define([
                     .get({
                         owner: urlParts[0],
                         repo: urlParts[1],
-                        number: requestId
+                        pull_number: requestId
                     })
                     .then(
                         function (response) {
