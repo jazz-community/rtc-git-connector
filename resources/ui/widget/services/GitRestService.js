@@ -719,7 +719,7 @@ define([
                     .get({
                         owner: urlParts[0],
                         repo: urlParts[1],
-                        number: issueId
+                        issue_number: issueId
                     })
                     .then(
                         function (response) {
