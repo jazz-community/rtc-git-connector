@@ -388,7 +388,7 @@ define([
                 .createComment({
                     owner: owner,
                     repo: repo,
-                    number: id,
+                    issue_number: id,
                     body: commentBody
                 })
                 .then(
