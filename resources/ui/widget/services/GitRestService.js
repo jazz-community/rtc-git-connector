@@ -75,7 +75,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new GitHubApi({
-                auth: this._createGitHubAuth(accessToken)
+                auth: accessToken
             });
 
             if (urlParts.length < 2) {
@@ -289,7 +289,7 @@ define([
             var repositoryUrl = new url(params.selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new GitHubApi({
-                auth: this._createGitHubAuth(params.accessToken)
+                auth: params.accessToken
             });
             var commentBody =
                 "was linked by [EWM Work Item " +
@@ -554,7 +554,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new GitHubApi({
-                auth: this._createGitHubAuth(accessToken)
+                auth: accessToken
             });
 
             if (urlParts.length < 2) {
@@ -629,7 +629,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new GitHubApi({
-                auth: this._createGitHubAuth(accessToken)
+                auth: accessToken
             });
 
             if (urlParts.length < 2) {
@@ -707,7 +707,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new GitHubApi({
-                auth: this._createGitHubAuth(accessToken)
+                auth: accessToken
             });
 
             if (urlParts.length < 2) {
@@ -786,7 +786,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new GitHubApi({
-                auth: this._createGitHubAuth(accessToken)
+                auth: accessToken
             });
 
             if (urlParts.length < 2) {
@@ -863,7 +863,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new GitHubApi({
-                auth: this._createGitHubAuth(accessToken)
+                auth: accessToken
             });
 
             if (urlParts.length < 2) {
@@ -974,7 +974,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new GitHubApi({
-                auth: this._createGitHubAuth(accessToken)
+                auth: accessToken
             });
 
             if (urlParts.length < 2) {
@@ -1079,7 +1079,7 @@ define([
             var repositoryUrl = new url(selectedGitRepository.url);
             var urlParts = this._getUrlPartsFromPath(repositoryUrl.path);
             var github = new GitHubApi({
-                auth: this._createGitHubAuth(accessToken)
+                auth: accessToken
             });
 
             if (urlParts.length < 2) {
@@ -1214,7 +1214,7 @@ define([
             if (gitHost.name === this.gitHubString) {
                 // Check access token with GitHub
                 var github = new GitHubApi({
-                    auth: this._createGitHubAuth(accessToken)
+                    auth: accessToken
                 });
                 github.users.getAuthenticated({}).then(
                     function (response) {
@@ -1279,11 +1279,6 @@ define([
             return issues.filter(function (issue) {
                 return !issue.pull_request;
             });
-        },
-
-        // Create the value for the GitHub "auth" parameter
-        _createGitHubAuth: function (accessToken) {
-            return "token " + accessToken;
         }
     });
 
