@@ -139,7 +139,7 @@ define([
             var filePath = ".github/ISSUE_TEMPLATE/" + this.issueTemplateName;
 
             github.repos
-                .getContents({
+                .getContent({
                     owner: urlParts[0],
                     repo: urlParts[1],
                     path: filePath,
