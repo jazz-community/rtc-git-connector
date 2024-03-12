@@ -388,18 +388,18 @@ define([
             // Find out if the selected git repository is hosted on GitHub, GitLab, or neither of the two
             determineSelectedRepositoryGitHost: function () {
                 var self = this;
+                var gitHost =
+                    this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server;
 
                 // Set the git host in the data store once it has been determined.
                 if (
-                    typeof this.mainDataStore.selectedRepositorySettings.repository.configurationData
-                        .git_hosted_server === "string"
+                    typeof gitHost === "string" &&
+                    (gitHost.toUpperCase() === "GITHUB" || gitHost.toUpperCase() === "GITLAB")
                 ) {
                     // Set from the config
                     this.mainDataStore.selectedRepositorySettings.set(
                         "gitHost",
-                        this.gitRestService.gitHosts.getHostType(
-                            this.mainDataStore.selectedRepositorySettings.repository.configurationData.git_hosted_server
-                        )
+                        this.gitRestService.gitHosts.getHostType(gitHost)
                     );
                 } else {
                     // Make requests to find the type and then set it
