@@ -754,7 +754,7 @@ define([
             if (giturl.parts.length < 2) {
                 deferred.reject("Invalid repository URL.");
             } else {
-                gitlab.Issues.show(giturl.joined, issueId).then(
+                gitlab.Issues.show(issueId, { projectId: giturl.joined }).then(
                     function (response) {
                         var convertedIssues = [];
                         convertedIssues.push(IssueModel.CreateFromGitLabIssue(response, alreadyLinkedUrls));
