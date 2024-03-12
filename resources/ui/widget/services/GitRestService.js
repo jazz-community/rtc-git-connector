@@ -199,11 +199,14 @@ define([
                         return;
                     }
 
-                    gitlab.Issues.create(giturl.joined, {
-                        title: workItem.object.attributes.summary.content.replace(/&nbsp;/g, " "),
-                        description: renderedTemplate,
-                        labels: tags
-                    }).then(
+                    gitlab.Issues.create(
+                        giturl.joined,
+                        workItem.object.attributes.summary.content.replace(/&nbsp;/g, " "),
+                        {
+                            description: renderedTemplate,
+                            labels: tags
+                        }
+                    ).then(
                         function (response) {
                             deferred.resolve(IssueModel.CreateFromGitLabIssue(response, []));
                         },
