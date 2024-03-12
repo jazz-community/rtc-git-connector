@@ -931,8 +931,8 @@ define([
                 deferred.reject("Invalid repository URL.");
             } else {
                 gitlab.Commits.all(giturl.joined, {
-                    max_pages: 1,
-                    per_page: 100
+                    maxPages: 1,
+                    perPage: 100
                 }).then(
                     function (response) {
                         var commitUrlPath = giturl.repo + "/commit/";
@@ -1027,8 +1027,8 @@ define([
             } else {
                 gitlab.Issues.all({
                     projectId: giturl.joined,
-                    max_pages: 1,
-                    per_page: 100
+                    maxPages: 1,
+                    perPage: 100
                 }).then(
                     function (response) {
                         var convertedIssues = [];
@@ -1131,8 +1131,8 @@ define([
             } else {
                 gitlab.MergeRequests.all({
                     projectId: giturl.joined,
-                    max_pages: 1,
-                    per_page: 100
+                    maxPages: 1,
+                    perPage: 100
                 }).then(
                     function (response) {
                         var convertedRequests = [];
@@ -1190,7 +1190,7 @@ define([
             return xhr
                 .get(this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects", {
                     query: {
-                        per_page: 1
+                        perPage: 1
                     },
                     handleAs: "json",
                     headers: {
