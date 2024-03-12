@@ -1190,7 +1190,7 @@ define([
             return xhr
                 .get(this._getOriginFromUrlObject(gitRepositoryUrl) + "/api/v4/projects", {
                     query: {
-                        perPage: 1
+                        per_page: 1
                     },
                     handleAs: "json",
                     headers: {
