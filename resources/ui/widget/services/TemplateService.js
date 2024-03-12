@@ -4,6 +4,8 @@ define([
     "com.siemens.bt.jazz.workitemeditor.rtcGitConnector|dist|JustHandlebarsHelpers.js",
     "com.siemens.bt.jazz.workitemeditor.rtcGitConnector|dist|TurndownService.js"
 ], function (declare, Handlebars, JustHandlebarsHelpers, TurndownService) {
+    // This syntax is used to get around the Jazz JavaScript parser
+    var TurndownService = TurndownService["default"];
     return declare(null, {
         constructor: function () {
             var turndownService = new TurndownService();
