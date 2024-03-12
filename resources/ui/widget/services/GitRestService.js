@@ -483,9 +483,7 @@ define([
         addBackLinksToGitLabIssues: function (gitlab, path, id, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.IssueNotes.create(path, id, {
-                body: commentBody
-            }).then(
+            gitlab.IssueNotes.create(path, id, commentBody).then(
                 function (response) {
                     deferred.resolve(response);
                 },
@@ -503,9 +501,7 @@ define([
         addBackLinksToGitLabRequests: function (gitlab, path, id, commentBody) {
             var deferred = new Deferred();
 
-            gitlab.MergeRequestNotes.create(path, id, {
-                body: commentBody
-            }).then(
+            gitlab.MergeRequestNotes.create(path, id, commentBody).then(
                 function (response) {
                     deferred.resolve(response);
                 },
