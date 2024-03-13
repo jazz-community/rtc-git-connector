@@ -227,7 +227,7 @@ define([
             var deferred = new Deferred();
             var filePath = ".gitlab/issue_templates/" + this.issueTemplateName;
 
-            gitlab.RepositoryFiles.showRaw(projectId, filePath, "master").then(
+            gitlab.RepositoryFiles.showRaw(projectId, filePath).then(
                 function (response) {
                     deferred.resolve(response);
                 },
