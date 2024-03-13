@@ -213,7 +213,7 @@ define([
                         function (error) {
                             deferred.reject(
                                 "Couldn't create an issue in the GitLab repository. Error: " +
-                                    (error.message || (error.error && error.error.message) || error.error || error)
+                                    ((error && error.cause && error.cause.description) || error)
                             );
                         }
                     );
@@ -475,7 +475,7 @@ define([
                 function (error) {
                     deferred.reject(
                         "Couldn't add a comment to the GitLab commit. Error: " +
-                            (error.message || (error.error && error.error.message) || error.error || error)
+                            ((error && error.cause && error.cause.description) || error)
                     );
                 }
             );
@@ -493,7 +493,7 @@ define([
                 function (error) {
                     deferred.reject(
                         "Couldn't add a comment to the GitLab issue. Error: " +
-                            (error.message || (error.error && error.error.message) || error.error || error)
+                            ((error && error.cause && error.cause.description) || error)
                     );
                 }
             );
@@ -511,7 +511,7 @@ define([
                 function (error) {
                     deferred.reject(
                         "Couldn't add a comment to the GitLab merge request. Error: " +
-                            (error.message || (error.error && error.error.message) || error.error || error)
+                            ((error && error.cause && error.cause.description) || error)
                     );
                 }
             );
@@ -946,7 +946,7 @@ define([
                     function (error) {
                         deferred.reject(
                             "Couldn't get the commits from the GitLab repository. Error: " +
-                                (error.message || (error.error && error.error.message) || error.error || error)
+                                ((error && error.cause && error.cause.description) || error)
                         );
                     }
                 );
@@ -1040,7 +1040,7 @@ define([
                     function (error) {
                         deferred.reject(
                             "Couldn't get the issues from the GitLab repository. Error: " +
-                                (error.message || (error.error && error.error.message) || error.error || error)
+                                ((error && error.cause && error.cause.description) || error)
                         );
                     }
                 );
@@ -1143,7 +1143,7 @@ define([
                     function (error) {
                         deferred.reject(
                             "Couldn't get the merge requests from the GitLab repository. Error: " +
-                                (error.message || (error.error && error.error.message) || error.error || error)
+                                ((error && error.cause && error.cause.description) || error)
                         );
                     }
                 );
