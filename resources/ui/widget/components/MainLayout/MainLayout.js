@@ -329,6 +329,7 @@ define([
                 // React when the selected repository changes
                 this.mainDataStore.selectedRepositorySettings.watch("repository", function (name, oldValue, value) {
                     domStyle.set("noGitRepositorySelectedContainer", "display", value === null ? "block" : "none");
+                    domStyle.set("repositoryConnectionFailedContainer", "display", "none");
 
                     // Reset the selected repository settings and data because it has changed
                     self.mainDataStore.resetSelectedRepository();
@@ -445,15 +446,21 @@ define([
                 var repositoryUrl = new url(selectedRepository.url);
                 var gitHost = this.mainDataStore.selectedRepositorySettings.get("gitHost");
 
-                this.gitRestService.checkAccessToken(repositoryUrl, gitHost, accessToken).then(function (isTokenValid) {
-                    if (isTokenValid) {
-                        // Set the token in the store if it's valid
-                        self.mainDataStore.selectedRepositorySettings.set("accessToken", accessToken);
-                    } else {
-                        // Ask for a new token if it's invalid
-                        self.getAccessTokenDialog.show(gitHost);
+                this.gitRestService.checkAccessToken(repositoryUrl, gitHost, accessToken).then(
+                    function (isTokenValid) {
+                        if (isTokenValid) {
+                            // Set the token in the store if it's valid
+                            self.mainDataStore.selectedRepositorySettings.set("accessToken", accessToken);
+                        } else {
+                            // Ask for a new token if it's invalid
+                            self.getAccessTokenDialog.show(gitHost);
+                        }
+                    },
+                    function (error) {
+                        domStyle.set("repositoryConnectionFailedContainer", "display", "block");
+                        console.log(error);
                     }
-                });
+                );
             },
 
             // Saves the access token with the service

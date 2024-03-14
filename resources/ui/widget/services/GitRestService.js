@@ -1220,7 +1220,14 @@ define([
                         deferred.resolve(true);
                     },
                     function (error) {
-                        deferred.resolve(false);
+                        if (error && error.status === 401) {
+                            deferred.resolve(false);
+                        } else {
+                            deferred.reject(
+                                "Unable to connect to GitHub." +
+                                    (error && error.message ? " Error: " + error.message : "")
+                            );
+                        }
                     }
                 );
             } else if (gitHost.name === this.gitLabString) {
@@ -1231,11 +1238,19 @@ define([
                 });
                 gitlab.Users.showCurrentUser().then(
                     function (response) {
-                        if (response) deferred.resolve(true);
-                        else deferred.resolve(false);
+                        deferred.resolve(true);
                     },
                     function (error) {
-                        deferred.resolve(false);
+                        if (error && error.cause && error.cause.response && error.cause.response.status === 401) {
+                            deferred.resolve(false);
+                        } else {
+                            deferred.reject(
+                                "Unable to connect to GitLab." +
+                                    (error && error.cause && error.cause.description
+                                        ? " Error: " + error.cause.description
+                                        : "")
+                            );
+                        }
                     }
                 );
             } else {
