@@ -90,13 +90,13 @@ define([
                     // Hide the error (if any)
                     self.hideLoadingDataError();
 
+                    // Hide the whole widget if the linkType is null
                     if (value === null) {
                         domStyle.set("rtcGitConnectorSelectLinkTypeContainer", "display", "none");
                         self.showViewAndSelectWidget("");
                         return;
                     }
 
-                    // Hide the whole widget if the linkType is null
                     domStyle.set("rtcGitConnectorSelectLinkTypeContainer", "display", "block");
 
                     loadingError = self.mainDataStore.selectedRepositorySettings.get(
@@ -150,7 +150,10 @@ define([
                                         "issuesLoadError",
                                         error || "Unknown Error"
                                     );
-                                    self.showLoadingDataError(error);
+
+                                    if (self.mainDataStore.selectedRepositorySettings.get("linkType") === "ISSUE") {
+                                        self.showLoadingDataError(error);
+                                    }
                                 }
                             );
                     }
@@ -191,7 +194,10 @@ define([
                                         "requestsLoadError",
                                         error || "Unknown Error"
                                     );
-                                    self.showLoadingDataError(error);
+
+                                    if (self.mainDataStore.selectedRepositorySettings.get("linkType") === "REQUEST") {
+                                        self.showLoadingDataError(error);
+                                    }
                                 }
                             );
                     }
@@ -232,7 +238,10 @@ define([
                                         "commitsLoadError",
                                         error || "Unknown Error"
                                     );
-                                    self.showLoadingDataError(error);
+
+                                    if (self.mainDataStore.selectedRepositorySettings.get("linkType") === "COMMIT") {
+                                        self.showLoadingDataError(error);
+                                    }
                                 }
                             );
                     }
