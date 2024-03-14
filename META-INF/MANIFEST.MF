@@ -7,4 +7,4 @@ Bundle-Vendor: Siemens Building Technologies
 Bundle-Localization: plugin
 Require-Bundle: org.jazzcommunity.GitConnectorService;bundle-version="3.0.0",
     com.siemens.bt.jazz.services.PersonalTokenService;bundle-version="1.0.3",
-    com.siemens.jazz.provider.plainjavascript
+    com.siemens.jazz.provider.plainjavascript;bundle-version="1.0.0"
