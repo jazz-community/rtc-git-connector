@@ -418,7 +418,7 @@ define([
             filterViewIssuesByText: function (filterText) {
                 this.viewIssues = ViewHelper.FilterListDataByText(
                     filterText,
-                    ["id", "title", "state", "openedBy", "labelsWithSpaces"],
+                    ["id", "title", "state", "openedBy", "labelsWithSpaces", "milestone"],
                     this.viewIssues
                 );
             },
