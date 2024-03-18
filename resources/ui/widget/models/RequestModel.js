@@ -3,6 +3,7 @@ define(["dojo/_base/declare"], function (declare) {
         id: null, // The request id in the web UI
         title: null, // The title of the request
         labels: null, // A comma separated string with all the labels
+        milestone: null, // The name of the milestone assigned to the request
         state: null, // The state of the request
         openedBy: null, // The user that opened the request (user name or real name)
         openedDate: null, // The date & time when the request was opened
@@ -30,6 +31,7 @@ define(["dojo/_base/declare"], function (declare) {
             requestModel.apiUrl = gitHubRequest.url;
             requestModel.service = "github";
             requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
+            requestModel.milestone = gitHubRequest.milestone && gitHubRequest.milestone.title;
 
             if (gitHubRequest.labels && gitHubRequest.labels.length) {
                 requestModel.labels = gitHubRequest.labels
@@ -73,6 +75,7 @@ define(["dojo/_base/declare"], function (declare) {
             requestModel.alreadyLinked = alreadyLinkedUrls.some(function (alreadyLinkedUrl) {
                 return alreadyLinkedUrl.indexOf(lowerCaseLinkUrl) > -1;
             });
+            requestModel.milestone = gitLabRequest.milestone && gitLabRequest.milestone.title;
 
             if (gitLabRequest.labels && gitLabRequest.labels.length) {
                 requestModel.labels = gitLabRequest.labels.join(", ");
