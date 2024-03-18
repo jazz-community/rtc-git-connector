@@ -4,6 +4,7 @@ define(["dojo/_base/declare"], function (declare) {
         title: null, // The title of the issue
         description: null, // The description of the issue
         labels: null, // A comma separated string with all the labels
+        labelsWithSpaces: null, // Same as labels but without replacing spaces
         state: null, // The state of the issue
         openedBy: null, // The user that opened the issue (user name or real name)
         openedDate: null, // The date & time when the issue was opened
@@ -38,6 +39,11 @@ define(["dojo/_base/declare"], function (declare) {
                 issueModel.labels = gitHubIssue.labels
                     .map(function (label) {
                         return label.name.replace(/ /g, "-");
+                    })
+                    .join(", ");
+                issueModel.labelsWithSpaces = gitHubIssue.labels
+                    .map(function (label) {
+                        return label.name;
                     })
                     .join(", ");
             }
@@ -83,6 +89,7 @@ define(["dojo/_base/declare"], function (declare) {
                         return label.replace(/ /g, "-");
                     })
                     .join(", ");
+                issueModel.labelsWithSpaces = gitLabIssue.labels.join(", ");
             }
 
             return issueModel;
