@@ -290,6 +290,10 @@ define([
                             text: request.labels || "-"
                         },
                         {
+                            label: "Milestone: ",
+                            text: request.milestone || "-"
+                        },
+                        {
                             label: "Opened by: ",
                             text: request.openedBy
                         },
