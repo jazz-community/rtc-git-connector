@@ -3,7 +3,7 @@ define(["dojo/_base/declare"], function (declare) {
         id: null, // The issue id in the web UI
         title: null, // The title of the issue
         description: null, // The description of the issue
-        labels: null, // A comma separated string with all the labels
+        labels: null, // A comma separated string with all the labels (spaces are replaced with "-")
         labelsWithSpaces: null, // Same as labels but without replacing spaces
         state: null, // The state of the issue
         openedBy: null, // The user that opened the issue (user name or real name)

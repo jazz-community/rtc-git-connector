@@ -2,6 +2,7 @@ define(["dojo/_base/declare"], function (declare) {
     var RequestModel = declare(null, {
         id: null, // The request id in the web UI
         title: null, // The title of the request
+        labels: null, // A comma separated string with all the labels
         state: null, // The state of the request
         openedBy: null, // The user that opened the request (user name or real name)
         openedDate: null, // The date & time when the request was opened
@@ -27,8 +28,16 @@ define(["dojo/_base/declare"], function (declare) {
             requestModel.openedDate = gitHubRequest.created_at;
             requestModel.webUrl = gitHubRequest.html_url;
             requestModel.apiUrl = gitHubRequest.url;
-            (requestModel.service = "github"),
-                (requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1);
+            requestModel.service = "github";
+            requestModel.alreadyLinked = alreadyLinkedUrls.indexOf(requestModel.webUrl.toLowerCase()) > -1;
+
+            if (gitHubRequest.labels && gitHubRequest.labels.length) {
+                requestModel.labels = gitHubRequest.labels
+                    .map(function (label) {
+                        return label.name;
+                    })
+                    .join(", ");
+            }
 
             return requestModel;
         };
@@ -42,7 +51,8 @@ define(["dojo/_base/declare"], function (declare) {
             requestModel.openedBy = gitLabRequest.author.name;
             requestModel.openedDate = gitLabRequest.created_at;
             requestModel.webUrl = gitLabRequest.web_url;
-            (requestModel.service = "gitlab"), (requestModel.type = "merge-request");
+            requestModel.service = "gitlab";
+            requestModel.type = "merge-request";
             requestModel.projectId = gitLabRequest.project_id;
             requestModel.iid = gitLabRequest.iid;
             requestModel.linkUrl =
@@ -63,6 +73,10 @@ define(["dojo/_base/declare"], function (declare) {
             requestModel.alreadyLinked = alreadyLinkedUrls.some(function (alreadyLinkedUrl) {
                 return alreadyLinkedUrl.indexOf(lowerCaseLinkUrl) > -1;
             });
+
+            if (gitLabRequest.labels && gitLabRequest.labels.length) {
+                requestModel.labels = gitLabRequest.labels.join(", ");
+            }
 
             return requestModel;
         };
