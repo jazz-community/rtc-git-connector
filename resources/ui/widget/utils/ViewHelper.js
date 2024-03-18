@@ -39,7 +39,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/query", "dijit/registr
             return filterResult.filter(function (item) {
                 var keepItem = false;
                 for (var i = 0; i < filterBy.length; i++) {
-                    if (item[filterBy[i]].toString().toLowerCase().indexOf(filterText) > -1) {
+                    if (item[filterBy[i]] && item[filterBy[i]].toString().toLowerCase().indexOf(filterText) > -1) {
                         item[filterBy[i]] = self.HighlightTextInString(filterText, item[filterBy[i]].toString());
                         keepItem = true;
                     }
