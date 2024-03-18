@@ -381,6 +381,10 @@ define([
                             text: issue.labelsWithSpaces || "-"
                         },
                         {
+                            label: "Milestone: ",
+                            text: issue.milestone || "-"
+                        },
+                        {
                             label: "Opened by: ",
                             text: issue.openedBy
                         },
