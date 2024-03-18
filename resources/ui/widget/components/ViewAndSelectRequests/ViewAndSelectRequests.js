@@ -286,6 +286,10 @@ define([
                             text: request.state
                         },
                         {
+                            label: "Labels: ",
+                            text: request.labels || "-"
+                        },
+                        {
                             label: "Opened by: ",
                             text: request.openedBy
                         },
