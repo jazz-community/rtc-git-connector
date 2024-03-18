@@ -327,7 +327,7 @@ define([
             filterViewRequestsByText: function (filterText) {
                 this.viewRequests = ViewHelper.FilterListDataByText(
                     filterText,
-                    ["id", "title", "state", "openedBy", "labels"],
+                    ["id", "title", "state", "openedBy", "labels", "milestone"],
                     this.viewRequests
                 );
             }
