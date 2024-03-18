@@ -5,6 +5,7 @@ define(["dojo/_base/declare"], function (declare) {
         description: null, // The description of the issue
         labels: null, // A comma separated string with all the labels (spaces are replaced with "-")
         labelsWithSpaces: null, // Same as labels but without replacing spaces
+        milestone: null, // The name of the milestone assigned to the issue
         state: null, // The state of the issue
         openedBy: null, // The user that opened the issue (user name or real name)
         openedDate: null, // The date & time when the issue was opened
@@ -34,6 +35,7 @@ define(["dojo/_base/declare"], function (declare) {
             // TODO: this needs to be adjusted here and everywhere else to properly find the duplicates
             issueModel.alreadyLinked = alreadyLinkedUrls.indexOf(issueModel.webUrl.toLowerCase()) > -1;
             issueModel.service = "github";
+            issueModel.milestone = gitHubIssue.milestone && gitHubIssue.milestone.title;
 
             if (gitHubIssue.labels && gitHubIssue.labels.length) {
                 issueModel.labels = gitHubIssue.labels
@@ -82,6 +84,7 @@ define(["dojo/_base/declare"], function (declare) {
             issueModel.alreadyLinked = alreadyLinkedUrls.some(function (alreadyLinkedUrl) {
                 return alreadyLinkedUrl.indexOf(lowerCaseLinkUrl) > -1;
             });
+            issueModel.milestone = gitLabIssue.milestone && gitLabIssue.milestone.title;
 
             if (gitLabIssue.labels && gitLabIssue.labels.length) {
                 issueModel.labels = gitLabIssue.labels
