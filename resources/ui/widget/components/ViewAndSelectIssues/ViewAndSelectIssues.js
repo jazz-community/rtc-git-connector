@@ -377,6 +377,10 @@ define([
                             text: issue.state
                         },
                         {
+                            label: "Labels: ",
+                            text: issue.labelsWithSpaces || "-"
+                        },
+                        {
                             label: "Opened by: ",
                             text: issue.openedBy
                         },
